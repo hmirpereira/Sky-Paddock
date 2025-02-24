@@ -1,4 +1,11 @@
+[![build-docker](https://github.com/mwood77/ws4kp-international/actions/workflows/build-docker.yaml/badge.svg)](https://github.com/mwood77/ws4kp-international/actions/workflows/build-docker.yaml)
+[![pages-build-deployment](https://github.com/mwood77/ws4kp-international/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/mwood77/ws4kp-international/actions/workflows/pages/pages-build-deployment)
+
 # WeatherStar 4000+ (International)
+
+<div align="center"> 
+    <img src="./overview.gif" alt="Weatherstar 4000+ International" width="600">
+</div>
 
 This project is a fork of [`ws4kp`](https://github.com/netbymatt/ws4kp) by [@netbymatt](https://github.com/netbymatt), which has been refactored to run on [Open Meteo's aggregated forecast API](https://open-meteo.com/en/docs). This means this fork of the `ws4kp` works for locations outside of the USA.
 
