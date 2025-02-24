@@ -32,6 +32,9 @@ const copyCss = () => src(['server/styles/main.css'])
 	.pipe(concat('ws.min.css'))
 	.pipe(dest(BUILD_PATH));
 
+const copyAssets = () => src(['server/fonts/**/*', 'server/images/**/*'], { base: 'server' })
+	.pipe(dest('./docs'));
+
 const compressHtml = async () => {
 	const packageJson = await readFile('package.json');
 	const { version } = JSON.parse(packageJson);
@@ -49,6 +52,6 @@ const compressHtml = async () => {
 const copyOtherFiles = () => src(['server/robots.txt', 'server/manifest.json'], { base: 'server/' })
 	.pipe(dest('./docs'));
 
-const build = series(clean, parallel(buildJs, copyCss, compressHtml, copyOtherFiles));
+const build = series(clean, parallel(buildJs, copyCss, compressHtml, copyOtherFiles, copyAssets));
 
 export default build;
