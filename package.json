@@ -9,8 +9,7 @@
 		"lint": "eslint ./server/scripts/**/*.mjs",
 		"lint:fix": "eslint --fix ./server/scripts/**/*.mjs",
 		"start": "nodemon index.js",
-		"pages": "node dist/index.js",
-		"build": "rm -rf /dist && node build.mjs"
+		"build": "gulp"
 	},
 	"repository": {
 		"type": "git",
