@@ -2,7 +2,7 @@
 
 This project is a fork of [`ws4kp`](https://github.com/netbymatt/ws4kp) by [@netbymatt](https://github.com/netbymatt), which has been refactored to run on [Open Meteo's aggregated forecast API](https://open-meteo.com/en/docs). This means this fork of the `ws4kp` works for locations outside of the USA.
 
-<!-- A live version of this project is available at https://weatherstar.netbymatt.com -->
+A live version of this project is available at https://mwood77.github.io/ws4kp-international
 
 ## About
 
