@@ -9,7 +9,8 @@
 		"lint": "eslint ./server/scripts/**/*.mjs",
 		"lint:fix": "eslint --fix ./server/scripts/**/*.mjs",
 		"start": "nodemon index.js",
-		"build": "gulp"
+		"copy-assets": "mkdir -p docs/images && cp -r ./server/images docs && mkdir -p docs/fonts && cp -r ./server/fonts docs",
+		"build": "rm -rf docs/ && gulp && npm run copy-assets"
 	},
 	"repository": {
 		"type": "git",

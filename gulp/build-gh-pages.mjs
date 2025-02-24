@@ -67,10 +67,6 @@ const compressJsVendor = () => src(jsVendorSources)
 	.pipe(terser())
 	.pipe(dest(BUILD_PATH));
 
-// const buildJs = () => src(['server/scripts/index.mjs'])
-// 	.pipe(webpack(webpackOptions))
-// 	.pipe(dest(BUILD_PATH));
-
 const buildJs = () => src(mjsSources)
 	.pipe(webpack(webpackOptions))
 	.pipe(dest(BUILD_PATH));
@@ -78,9 +74,6 @@ const buildJs = () => src(mjsSources)
 const copyCss = () => src(['server/styles/main.css'])
 	.pipe(concat('ws.min.css'))
 	.pipe(dest(BUILD_PATH));
-
-const copyAssets = () => src(['server/fonts/**/*', 'server/images/**/*'], { base: 'server' })
-	.pipe(dest('./docs'));
 
 const compressHtml = async () => {
 	const packageJson = await readFile('package.json');
@@ -99,6 +92,6 @@ const compressHtml = async () => {
 const copyOtherFiles = () => src(['server/robots.txt', 'server/manifest.json'], { base: 'server/' })
 	.pipe(dest('./docs'));
 
-const build = series(clean, parallel(buildJs, copyCss, compressHtml, copyOtherFiles, copyAssets, compressJsData, compressJsVendor));
+const build = series(clean, parallel(buildJs, copyCss, compressHtml, copyOtherFiles, compressJsData, compressJsVendor));
 
 export default build;
