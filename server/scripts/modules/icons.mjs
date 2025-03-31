@@ -158,7 +158,16 @@ const getWeatherRegionalIconFromIconLink = (text, isDay) => {
 	}
 };
 
-const getWeatherIconFromIconLink = (text, timeZone) => {
+/**
+ * This function will return the icon for the current weather condition.
+ * This is based on the text description (which is provided by the API), the current timezone (used for CurrentWeather view),
+ * and the extended forecast (which is used to determine overrules the current time and isNight() function to return daytime images only).
+ * @param {*} text string - the text description of the weather condition
+ * @param {*} timeZone string - the timezone of the current location
+ * @param {*} extendedForecast boolean value to determine if the icon should be daytime only - this is required for the extended forecast view
+ * @returns string - the path to the icon
+ */
+const getWeatherIconFromIconLink = (text, timeZone, extendedForecast) => {
 	if (!text) return false;
 
 	const addPath = (icon) => `images/${icon}`;
@@ -166,7 +175,9 @@ const getWeatherIconFromIconLink = (text, timeZone) => {
 	const nightTime = isNightTime(timeZone);
 	let tidyText = text.toLowerCase().replaceAll(' ', '-');
 
-	if (nightTime && tidyText.includes('clear')) tidyText += '-night';
+	if (!extendedForecast) {
+		if (nightTime && tidyText.includes('clear')) tidyText += '-night';
+	}
 
 	// find the icon
 	switch (tidyText) {
@@ -187,6 +198,9 @@ const getWeatherIconFromIconLink = (text, timeZone) => {
 		case 2:
 		case 'partly-cloudy':
 			return addPath('CC_PartlyCloudy1.gif');
+
+		case 'partly-cloudy-night':
+			return addPath('CC_PartlyCloudy0.gif');
 
 		case 3:
 		case 'overcast':
