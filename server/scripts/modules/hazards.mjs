@@ -163,4 +163,4 @@ const calcSeverity = (severity, event) => {
 };
 
 // register display
-registerDisplay(new Hazards(0, 'hazards', true));
+registerDisplay(new Hazards(0, 'hazards', false));

@@ -63,12 +63,12 @@ const parse = (fullForecast) => {
 
 	Object.values(fullForecast.forecast).forEach((period) => {
 		const text = getConditionText(parseInt(period.weather_code, 10));
-		const date = new Date(period.hours[0].time);
+		const date = new Date(period.hours[11].time);
 
 		const fDay = {
 			text,
-			icon: getWeatherIconFromIconLink(text, fullForecast.timeZone),
-			date: period.hours[0].time,
+			icon: getWeatherIconFromIconLink(text, fullForecast.timeZone, true),
+			date,
 			dayName: date.toLocaleDateString('en-US', { weekday: 'long' }),
 			high: period.temperature_2m_max,
 			low: period.temperature_2m_min,

@@ -49,6 +49,20 @@ docker run -p 8080:8080 ghcr.io/mwood77/ws4kp-international
 After running this project in either way, pen your web browser: 
 - http://localhost:8080/ 
 
+### Deployment
+#### GitHub Pages
+
+`ws4kp-international`'s main "showcase" is a deployed instance via GitHub Pages. To prepare a new release run the following command:
+
+```
+npm run build
+```
+
+This will update the artifacts in the `/docs` folder. Simply commit them as part of your branch, and push them to remote. Deployment will be handled automatically when your PR is merged into `main`.
+
+#### Docker Image
+This is handled automatically as part of CI/CD, when your code is merged to `main`.
+
 ## Updates in 6.0.0 (Internationalization w/ Open Meteo)
 This is a significant divergence from 5.0.0 and is exclusive to this fork.
 
@@ -73,7 +87,7 @@ The change to 5.0 changes from drawing the weather graphics on canvas elements a
 * Removed Almanac 30-day outlook
 * Fixed startup issue when current conditions are unavailable
 
-## Why the fork?
+### Why the fork (pre 5.0.0)?
 
 The fork is a result of wanting a more manageable, modern code base to work with. Part of it is an exercise in my education in JavaScript. There are several technical changes that were made behind the scenes.
 
@@ -91,7 +105,7 @@ The fork is a result of wanting a more manageable, modern code base to work with
 * Proper settings for static resource caching
 * Build system integration to reduce the number of scripts that need to be loaded
 
-## What's different
+### What's different
 
 I've made several changes to this Weather Star 4000 simulation compared to the original hardware unit and the code that this was forked from.
 

@@ -15,7 +15,7 @@ import { getPoint } from './utils/weather.mjs';
 
 class RegionalForecast extends WeatherDisplay {
 	constructor(navId, elemId) {
-		super(navId, elemId, 'Regional Forecast', true);
+		super(navId, elemId, 'Regional Forecast', false);
 
 		// timings
 		this.timing.totalScreens = 3;

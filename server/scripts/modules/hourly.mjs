@@ -162,7 +162,7 @@ const parseForecast = async (data) => {
 };
 
 // register display
-const display = new Hourly(3, 'hourly', false);
+const display = new Hourly(3, 'hourly', true);
 registerDisplay(display);
 
 export default display.getCurrentData.bind(display);
