@@ -42,7 +42,7 @@ class LocalForecast extends WeatherDisplay {
 		// read each text
 		this.screenTexts = conditions.map((condition) => {
 			// process the text
-			let text = `${condition.DayName.toUpperCase()}...`;
+			let text = `${condition.DayName.toUpperCase()} `;
 			const conditionText = condition.Text;
 			text += conditionText.toUpperCase().replace('...', ' ');
 

@@ -13,14 +13,14 @@ function generateLocalForecast(dateStamp, hourlyData) {
 	};
 
 	const forecastTemplates = [
-		'{period}... {weatherEvent}. {cloudCover}, WITH A {tempLabel} AROUND {temp}. {windInfo}. {precipChance}',
-		'{period}: {weatherEvent}. EXPECT {cloudCover}, {tempLabel} NEAR {temp}. {windInfo}. {precipChance}',
-		'{period}: {weatherEvent}. {cloudCover}, {tempLabel} CLOSE TO {temp}. {windInfo}. {precipChance}',
-		'{weatherEvent} THIS {period}. {cloudCover}, WITH {tempLabel} AROUND {temp}. {windInfo}. {precipChance}',
-		'{period} FORECAST: {weatherEvent}. {cloudCover}, {tempLabel} {temp}. {windInfo}. {precipChance}',
-		'{period} OUTLOOK: {weatherEvent}. {cloudCover}, EXPECT A {tempLabel} AROUND {temp}. {windInfo}. {precipChance}',
-		'{period} WEATHER: {weatherEvent}. {cloudCover}, {tempLabel} AT {temp}. {windInfo}. {precipChance}',
-		'{period}: {weatherEvent}. {cloudCover}, {tempLabel} CLOSE TO {temp}. {windInfo}. {precipChance}',
+		'{period}...  {cloudCover}, WITH A {tempLabel} AROUND {temp}. {windInfo}. {precipChance}',
+		'{period}: {cloudCover}, {tempLabel} NEAR {temp}. {windInfo}. {precipChance}',
+		'{period}: {cloudCover}, {tempLabel} CLOSE TO {temp}. {windInfo}. {precipChance}',
+		'{cloudCover} THIS {period}, WITH {tempLabel} AROUND {temp}. {windInfo}. {precipChance}',
+		'{period} FORECAST: {cloudCover}, {tempLabel} {temp}. {windInfo}. {precipChance}',
+		'{period} OUTLOOK: {cloudCover}, EXPECT A {tempLabel} AROUND {temp}. {windInfo}. {precipChance}',
+		'{period} WEATHER: {cloudCover}, {tempLabel} AT {temp}. {windInfo}. {precipChance}',
+		'{period}: {cloudCover}, {tempLabel} CLOSE TO {temp}. {windInfo}. {precipChance}',
 	];
 
 	function getMostFrequent(arr) {
@@ -52,14 +52,23 @@ function generateLocalForecast(dateStamp, hourlyData) {
 			precipChance = `${phraseVariations['CHANCE OF PRECIPITATION'][Math.floor(Math.random() * 3)]} ${precipTime}. CHANCE IS ${maxPrecip}%.`;
 		}
 
-		const cloudCover = phraseVariations.CLOUDY[Math.floor(Math.random() * 3)];
+		const cloudCover = periodData.map((entry) => entry.cloud_cover);
+		const averagedCloudCover = Math.max(...cloudCover);
+		let cloudCoverText = '';
 
-		const weatherEvent = maxPrecip >= 30 ? 'A CHANCE OF SNOW SHOWERS' : 'CLEAR EXPECTED';
+		if (averagedCloudCover >= 0 && averagedCloudCover < 20) {
+			cloudCoverText = phraseVariations.CLEAR[Math.floor(Math.random() * 3)];
+		} else if (averagedCloudCover >= 20 && averagedCloudCover < 50) {
+			cloudCoverText = phraseVariations.CLEAR[Math.floor(Math.random() * 3)];
+		} else if (averagedCloudCover >= 50 && averagedCloudCover < 80) {
+			cloudCoverText = phraseVariations.CLOUDY[Math.floor(Math.random() * 3)];
+		} else {
+			cloudCoverText = phraseVariations.CLOUDY[Math.floor(Math.random() * 3)];
+		}
 
 		const forecastText = forecastTemplates[Math.floor(Math.random() * forecastTemplates.length)]
 			.replace('{period}', period)
-			.replace('{weatherEvent}', weatherEvent)
-			.replace('{cloudCover}', cloudCover)
+			.replace('{cloudCover}', cloudCoverText)
 			.replace('{tempLabel}', tempLabel)
 			.replace('{temp}', temp)
 			.replace('{windInfo}', windInfo)
