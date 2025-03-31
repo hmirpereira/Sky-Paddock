@@ -10,7 +10,7 @@ import * as utils from './radar-utils.mjs';
 
 class Radar extends WeatherDisplay {
 	constructor(navId, elemId) {
-		super(navId, elemId, 'Local Radar', true);
+		super(navId, elemId, 'Local Radar', false);
 
 		this.okToDrawCurrentConditions = false;
 		this.okToDrawCurrentDateTime = false;
