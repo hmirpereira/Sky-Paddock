@@ -58,7 +58,7 @@ After running this project in either way, pen your web browser:
 npm run build
 ```
 
-This will update the artifacts in the `/dist` folder. Simply commit them as part of your branch, and push them to remote. Deployment will be handled automatically when your PR is merged into `main`.
+This will update the artifacts in the `/docs` folder. Simply commit them as part of your branch, and push them to remote. Deployment will be handled automatically when your PR is merged into `main`.
 
 #### Docker Image
 This is handled automatically as part of CI/CD, when your code is merged to `main`.
