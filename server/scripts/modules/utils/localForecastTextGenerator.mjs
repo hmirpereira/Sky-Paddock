@@ -1,5 +1,7 @@
 import { directionToNSEW } from './calc.mjs';
 
+import ConversionHelpers from './converstionHelpers.mjs';
+
 function generateLocalForecast(dateStamp, hourlyData) {
 	const MORNING_HOURS = [...Array(12).keys()].map((h) => h + 6); // 6 AM - 6 PM
 	const NIGHT_HOURS = [...Array(6).keys()].map((h) => h + 18).concat([...Array(6).keys()]); // 6 PM - 6 AM
@@ -33,13 +35,13 @@ function generateLocalForecast(dateStamp, hourlyData) {
 
 		if (!periodData.length) return null;
 
-		const temps = periodData.map((entry) => entry.temperature_2m);
+		const temps = periodData.map((entry) => ConversionHelpers.convertTemperatureUnits(entry.temperature_2m));
 		const temp = period === 'MORNING' ? Math.max(...temps) : Math.min(...temps);
 		const tempLabel = period === 'MORNING' ? 'HIGH' : 'LOW';
 
-		const windSpeeds = periodData.map((entry) => entry.wind_speed_10m);
+		const windSpeeds = periodData.map((entry) => ConversionHelpers.convertWindUnits(entry.wind_speed_10m));
 		const windDirs = periodData.map((entry) => entry.wind_direction_10m);
-		const windInfo = `${directionToNSEW(getMostFrequent(windDirs))} WIND ${Math.min(...windSpeeds)} TO ${Math.max(...windSpeeds)} KPH`;
+		const windInfo = `${directionToNSEW(getMostFrequent(windDirs))} WIND ${Math.min(...windSpeeds)} TO ${Math.max(...windSpeeds)} ${ConversionHelpers.getWindUnitText().toUpperCase()}`;
 
 		const precipProbs = periodData.map((entry) => entry.precipitation_probability);
 		const maxPrecip = Math.max(...precipProbs);

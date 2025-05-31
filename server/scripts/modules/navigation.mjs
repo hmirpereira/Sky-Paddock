@@ -54,7 +54,7 @@ const getWeather = async (latLon, haveDataCallback) => {
 
 	// Get locality data from open-meteo and local storage
 	const localityName = localStorage.getItem('latLonQuery');
-	// 'latLonQuery' is set in server>scripts>index.mjs in the format of "Amsterdam, NLD" 
+	// 'latLonQuery' is set in server>scripts>index.mjs in the format of "Amsterdam, NLD"
 	// therefore we need to split on the "," to get the locality name for open-meteo
 	const locality = await getGeocoding(localityName.split(',')[0]);
 
@@ -63,10 +63,10 @@ const getWeather = async (latLon, haveDataCallback) => {
 	// this will error out.
 
 	// set the city and state
-	let city = locality.results[0].name;
-	let country = locality.results[0].country;
-	let state = locality.results[0].admin1;	// admin1 is usually the state / province
-	let timezone = locality.results[0].timezone;
+	const city = locality.results[0].name;
+	const { country } = locality.results[0];
+	const state = locality.results[0].admin1;	// admin1 is usually the state / province
+	const { timezone } = locality.results[0];
 
 	// populate the weather parameters
 	weatherParameters.latitude = latLon.lat;

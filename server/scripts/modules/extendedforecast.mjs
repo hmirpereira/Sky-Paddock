@@ -7,6 +7,8 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 
+import ConversionHelpers from './utils/converstionHelpers.mjs';
+
 class ExtendedForecast extends WeatherDisplay {
 	constructor(navId, elemId) {
 		super(navId, elemId, 'Extended Forecast', true);
@@ -70,8 +72,8 @@ const parse = (fullForecast) => {
 			icon: getWeatherIconFromIconLink(text, fullForecast.timeZone, true),
 			date,
 			dayName: date.toLocaleDateString('en-US', { weekday: 'long' }),
-			high: period.temperature_2m_max,
-			low: period.temperature_2m_min,
+			high: ConversionHelpers.convertTemperatureUnits(period.temperature_2m_max),
+			low: ConversionHelpers.convertTemperatureUnits(period.temperature_2m_min),
 		};
 
 		forecast.push(fDay);
