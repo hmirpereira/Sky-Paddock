@@ -99,7 +99,7 @@ const shortConditions = (_condition) => {
 
 const getCurrentWeatherByHourFromTime = (data) => {
 	const currentTime = new Date();
-	const onlyDate = currentTime.toISOString().split('T')[0]; // Extracts "YYYY-MM-DD"
+	const onlyDate = currentTime.toLocaleDateString('en-CA', { timeZone: data.timeZone }).split('T')[0]; // Extracts "YYYY-MM-DD"
 
 	const availableTimes = data.forecast[onlyDate].hours;
 
