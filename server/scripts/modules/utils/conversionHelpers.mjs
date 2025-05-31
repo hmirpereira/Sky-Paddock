@@ -15,6 +15,24 @@ import {
 } from './units.mjs';
 
 export default class ConversionHelpers {
+	static getHoursFormat() {
+		let hoursFormat = '';
+		// [1, '12-hour'],
+		// [2, '24-hour'],
+		switch (document.documentElement.attributes.getNamedItem('hours-format').value) {
+			case '1':
+				hoursFormat = '12-hour';
+				break;
+			case '2':
+				hoursFormat = '24-hour';
+				break;
+			default:
+				hoursFormat = '24-hour';
+		}
+
+		return hoursFormat;
+	}
+
 	static calculateCeilingInKM(temperature, dewPoint) {
 		if (temperature === null || dewPoint === null) {
 			return null;
