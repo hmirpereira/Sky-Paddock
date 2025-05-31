@@ -63,6 +63,11 @@ This will update the artifacts in the `/docs` folder. Simply commit them as part
 #### Docker Image
 This is handled automatically as part of CI/CD, when your code is merged to `main`.
 
+## Updates in 8.0.0
+- Introduces [Webamp](https://github.com/captbaritone/webamp)
+- Time is now configurable between 12-hour and 24-hour formats
+- Hourly forecast is now retrieved using timezone instead of toISOString
+
 ## Updates in 7.0.0
 - Weather units are now customizable. These are broken down by category, which are:
 	- Wind Units: `m/s`, `km/h`, `knots`, `mph`

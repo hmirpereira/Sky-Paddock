@@ -10,6 +10,7 @@ const settings = {
 	temperatureUnits: { value: 1 },
 	distanceUnits: { value: 1 },
 	pressureUnits: { value: 1 },
+	hoursFormat: { value: 2 },
 	speed: { value: 1.0 },
 };
 
@@ -26,7 +27,7 @@ const init = () => {
 		[2, 'F'],
 		[3, 'K'],
 	]);
-	settings.distanceUnits = new Setting('distanceUnits', 'Distance Units', 'select', 4, distanceChangeUnits, true, [
+	settings.distanceUnits = new Setting('distanceUnits', 'Distance Units', 'select', 1, distanceChangeUnits, true, [
 		[1, 'km'],
 		[2, 'mi'],
 		[3, 'ft'],
@@ -36,6 +37,10 @@ const init = () => {
 	settings.pressureUnits = new Setting('pressureUnits', 'Pressure Units', 'select', 1, pressureChangeUnits, true, [
 		[1, 'hPa'],
 		[2, 'inHG'],
+	]);
+	settings.hoursFormat = new Setting('hoursFormat', 'Hours Format', 'select', 2, hoursChangeFormat, true, [
+		[1, '12-hour'],
+		[2, '24-hour'],
 	]);
 
 	settings.speed = new Setting('speed', 'Speed', 'select', 1.0, null, true, [
@@ -79,6 +84,12 @@ const pressureChangeUnits = (value) => {
 const windUnitsChange = (value) => {
 	if (value) {
 		document.documentElement.setAttribute('wind-units', value);
+	}
+};
+
+const hoursChangeFormat = (value) => {
+	if (value) {
+		document.documentElement.setAttribute('hours-format', value);
 	}
 };
 

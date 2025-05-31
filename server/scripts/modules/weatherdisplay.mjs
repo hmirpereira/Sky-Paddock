@@ -8,6 +8,8 @@ import {
 import { parseQueryString } from './share.mjs';
 import settings from './settings.mjs';
 
+import ConversionHelpers from './utils/conversionHelpers.mjs';
+
 class WeatherDisplay {
 	constructor(navId, elemId, name, defaultEnabled) {
 		// navId is used in messaging and sort order
@@ -179,8 +181,12 @@ class WeatherDisplay {
 		// Get the current date and time.
 		const now = DateTime.local().setZone(timeZone());
 
-		// time = "11:35:08 PM";
-		const time = now.toLocaleString(DateTime.TIME_WITH_SECONDS).padStart(11, ' ');
+		const time = now.toLocaleString({
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hourCycle: ConversionHelpers.getHoursFormat() === '12-hour' ? 'h12' : 'h23',
+		}).padStart(11, ' ');
 		const date = now.toFormat(' ccc LLL ') + now.day.toString().padStart(2, ' ');
 
 		const dateElem = this.elem.querySelector('.date-time.date');
