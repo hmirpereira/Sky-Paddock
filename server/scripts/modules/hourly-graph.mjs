@@ -6,6 +6,8 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 
+import ConversionHelpers from './utils/conversionHelpers.mjs';
+
 class HourlyGraph extends WeatherDisplay {
 	constructor(navId, elemId, defaultActive) {
 		super(navId, elemId, 'Hourly Graph', defaultActive);
@@ -33,7 +35,7 @@ class HourlyGraph extends WeatherDisplay {
 		}
 
 		// get interesting data
-		const temperature = data.map((d) => d.temperature);
+		const temperature = data.map((d) => ConversionHelpers.convertTemperatureUnits(d.temperature));
 		const probabilityOfPrecipitation = data.map((d) => d.probabilityOfPrecipitation);
 		const skyCover = data.map((d) => d.skyCover);
 
@@ -64,11 +66,18 @@ class HourlyGraph extends WeatherDisplay {
 		// calculate time scale
 		const timeScale = calcScale(0, 5, this.data.temperature.length - 1, availableWidth);
 		const startTime = DateTime.now().startOf('hour');
-		document.querySelector('.x-axis .l-1').innerHTML = formatTime(startTime);
-		document.querySelector('.x-axis .l-2').innerHTML = formatTime(startTime.plus({ hour: 6 }));
-		document.querySelector('.x-axis .l-3').innerHTML = formatTime(startTime.plus({ hour: 12 }));
-		document.querySelector('.x-axis .l-4').innerHTML = formatTime(startTime.plus({ hour: 18 }));
-		document.querySelector('.x-axis .l-5').innerHTML = formatTime(startTime.plus({ hour: 24 }));
+		document.querySelector('.x-axis .l-1').innerHTML = startTime.toFormat('HH');
+		document.querySelector('.x-axis .l-2').innerHTML = startTime.plus({ hour: 6 }).toFormat('HH');
+		document.querySelector('.x-axis .l-3').innerHTML = startTime.plus({ hour: 12 }).toFormat('HH');
+		document.querySelector('.x-axis .l-4').innerHTML = startTime.plus({ hour: 18 }).toFormat('HH');
+		document.querySelector('.x-axis .l-5').innerHTML = startTime.plus({ hour: 24 }).toFormat('HH');
+
+		// If i ever want to use 12 hours time format again....
+		// document.querySelector('.x-axis .l-1').innerHTML = formatTime(startTime);
+		// document.querySelector('.x-axis .l-2').innerHTML = formatTime(startTime.plus({ hour: 6 }));
+		// document.querySelector('.x-axis .l-3').innerHTML = formatTime(startTime.plus({ hour: 12 }));
+		// document.querySelector('.x-axis .l-4').innerHTML = formatTime(startTime.plus({ hour: 18 }));
+		// document.querySelector('.x-axis .l-5').innerHTML = formatTime(startTime.plus({ hour: 24 }));
 
 		// order is important last line drawn is on top
 		// clouds

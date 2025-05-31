@@ -63,6 +63,20 @@ This will update the artifacts in the `/docs` folder. Simply commit them as part
 #### Docker Image
 This is handled automatically as part of CI/CD, when your code is merged to `main`.
 
+## Updates in 7.0.0
+- Weather units are now customizable. These are broken down by category, which are:
+	- Wind Units: `m/s`, `km/h`, `knots`, `mph`
+	- Temperature Units: `C`, `F`, `K`
+	- Distance Units: `km`, `mi`, `ft`, `meters`, `bananas`
+	- Pressure Units: `hpa`, `inHg`
+- Added new fields to the **Current Conditions** screen:
+	- Cloud Cover: `_%`
+	- UV Index: `0 -> 11`
+- Changed **Hourly Graph**'s time scale to use 24 hours instead of 12 hour cycle
+- Converted all compatible views to render correct values based on user's unit selection
+- Corrected an incorrect calculation of **Current Conditions** cloud cover value
+- Corrected an incorrect calculation of **Current Conditions** ceiling and visibility values
+
 ## Updates in 6.0.0 (Internationalization w/ Open Meteo)
 This is a significant divergence from 5.0.0 and is exclusive to this fork.
 

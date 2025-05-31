@@ -8,6 +8,8 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 
+import ConversionHelpers from './utils/conversionHelpers.mjs';
+
 class Hourly extends WeatherDisplay {
 	constructor(navId, elemId, defaultActive) {
 		// special height and width for scrolling
@@ -49,8 +51,8 @@ class Hourly extends WeatherDisplay {
 			fillValues.hour = formattedHour;
 
 			// temperatures, convert to strings with no decimal
-			const temperature = Math.round(data.temperature).toString().padStart(3);
-			const feelsLike = Math.round(data.apparentTemperature).toString().padStart(3);
+			const temperature = Math.round(ConversionHelpers.convertTemperatureUnits(data.temperature)).toString().padStart(3);
+			const feelsLike = Math.round(ConversionHelpers.convertTemperatureUnits(data.apparentTemperature)).toString().padStart(3);
 			fillValues.temp = temperature;
 			// only plot apparent temperature if there is a difference
 			// if (temperature !== feelsLike) line.querySelector('.like').innerHTML = feelsLike;
@@ -59,7 +61,7 @@ class Hourly extends WeatherDisplay {
 			// wind
 			let wind = 'Calm';
 			if (data.windSpeed > 0) {
-				const windSpeed = Math.round(data.windSpeed).toString();
+				const windSpeed = Math.round(ConversionHelpers.convertWindUnits(data.windSpeed)).toString();
 				const windDirection = directionToNSEW(data.windDirection);
 				wind = windDirection + (Array(6 - windDirection.length - windSpeed.length).join(' ')) + windSpeed;
 			}

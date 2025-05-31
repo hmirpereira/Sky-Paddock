@@ -7,6 +7,8 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 
+import ConversionHelpers from './utils/conversionHelpers.mjs';
+
 class CurrentWeather extends WeatherDisplay {
 	constructor(navId, elemId) {
 		super(navId, elemId, 'Current Conditions', true);
@@ -49,6 +51,8 @@ class CurrentWeather extends WeatherDisplay {
 			ceiling: (this.data.Ceiling === 0 ? 'Unlimited' : this.data.Ceiling + this.data.CeilingUnit),
 			visibility: this.data.Visibility + this.data.VisibilityUnit,
 			pressure: `${this.data.Pressure} ${this.data.PressureDirection}`,
+			cloud: this.data.CloudCover ? `${this.data.CloudCover}%` : 'N/A',
+			uv: this.data.UV ? this.data.UV : 'N/A',
 			icon: { type: 'img', src: iconImage },
 		};
 
@@ -105,6 +109,9 @@ const getCurrentWeatherByHourFromTime = (data) => {
 		return currDiff < prevDiff ? curr : prev;
 	});
 
+	// Append daily uv index max to the closest time
+	closestTime.uv_index_max = data.forecast[onlyDate].uv_index_max;
+
 	return closestTime;
 };
 
@@ -113,22 +120,24 @@ const parseData = (data) => {
 	const currentForecast = getCurrentWeatherByHourFromTime(data);
 
 	// values from api are provided in metric
-	data.Temperature = currentForecast.temperature_2m;
-	data.TemperatureUnit = 'C';
-	data.DewPoint = currentForecast.dew_point_2m;
-	data.Ceiling = currentForecast.cloud_cover;
-	data.CeilingUnit = 'm.';
-	data.Visibility = currentForecast.visibility;
-	data.VisibilityUnit = 'm.';
-	data.WindSpeed = currentForecast.wind_speed_10m;
+	data.Temperature = ConversionHelpers.convertTemperatureUnits(currentForecast.temperature_2m);
+	data.TemperatureUnit = ConversionHelpers.getTemperatureUnitText();
+	data.DewPoint = ConversionHelpers.convertTemperatureUnits(currentForecast.dew_point_2m);
+	data.Ceiling = ConversionHelpers.convertDistanceUnits(ConversionHelpers.calculateCeilingInKM(currentForecast.temperature_2m, currentForecast.dew_point_2m));
+	data.CeilingUnit = ConversionHelpers.getDistanceUnitText();
+	data.Visibility = ConversionHelpers.convertDistanceUnits((currentForecast.visibility / 1000));
+	data.VisibilityUnit = ConversionHelpers.getDistanceUnitText();
+	data.WindSpeed = ConversionHelpers.convertWindUnits(currentForecast.wind_speed_10m);
 	data.WindDirection = directionToNSEW(currentForecast.wind_direction_10m);
-	data.Pressure = currentForecast.pressure_msl;
+	data.Pressure = ConversionHelpers.convertPressureUnits(currentForecast.pressure_msl);
+	data.CloudCover = currentForecast.cloud_cover ? currentForecast.cloud_cover : 0;
+	data.UV = Math.round(currentForecast.uv_index_max);
 	// data.HeatIndex = Math.round(observations.heatIndex.value);
 	// data.WindChill = Math.round(observations.windChill.value);
-	data.WindGust = currentForecast.wind_gusts_10m;
-	data.WindUnit = 'km/h';
+	data.WindGust = ConversionHelpers.convertWindUnits(currentForecast.wind_gusts_10m);
+	data.WindUnit = ConversionHelpers.getWindUnitText();
 	data.Humidity = currentForecast.relative_humidity_2m;
-	data.PressureDirection = 'hPa';
+	data.PressureDirection = ConversionHelpers.getPressureUnitText();
 	data.TextConditions = currentForecast.weather_code;
 
 	return data;
