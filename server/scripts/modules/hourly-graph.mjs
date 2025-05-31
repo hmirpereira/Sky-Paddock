@@ -6,7 +6,7 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 
-import ConversionHelpers from './utils/converstionHelpers.mjs';
+import ConversionHelpers from './utils/conversionHelpers.mjs';
 
 class HourlyGraph extends WeatherDisplay {
 	constructor(navId, elemId, defaultActive) {

@@ -37,9 +37,6 @@ const init = () => {
 		[1, 'hPa'],
 		[2, 'inHG'],
 	]);
-	// settings.language = new Setting('language', 'Language', 'select', 1, languageChange, true, [
-	// 	[1, 'English'],
-	// ]);
 
 	settings.speed = new Setting('speed', 'Speed', 'select', 1.0, null, true, [
 		[0.5, 'Very Fast'],

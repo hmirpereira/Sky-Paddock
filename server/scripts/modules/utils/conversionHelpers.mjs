@@ -30,7 +30,6 @@ export default class ConversionHelpers {
 
 	static getWindUnitText() {
 		let windUnitText = '';
-
 		// [1, 'm/s'],
 		// [2, 'km/h'],
 		// [3, 'knots'],

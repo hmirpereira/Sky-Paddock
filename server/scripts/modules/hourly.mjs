@@ -8,7 +8,7 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 
-import ConversionHelpers from './utils/converstionHelpers.mjs';
+import ConversionHelpers from './utils/conversionHelpers.mjs';
 
 class Hourly extends WeatherDisplay {
 	constructor(navId, elemId, defaultActive) {

@@ -1,6 +1,6 @@
 import { directionToNSEW } from './calc.mjs';
 
-import ConversionHelpers from './converstionHelpers.mjs';
+import ConversionHelpers from './conversionHelpers.mjs';
 
 function generateLocalForecast(dateStamp, hourlyData) {
 	const MORNING_HOURS = [...Array(12).keys()].map((h) => h + 6); // 6 AM - 6 PM
