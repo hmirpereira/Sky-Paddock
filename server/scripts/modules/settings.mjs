@@ -12,6 +12,7 @@ const settings = {
 	pressureUnits: { value: 1 },
 	hoursFormat: { value: 2 },
 	speed: { value: 1.0 },
+	hideWebamp: { value: false },
 };
 
 const init = () => {
@@ -50,6 +51,7 @@ const init = () => {
 		[1.25, 'Slow'],
 		[1.5, 'Very Slow'],
 	]);
+	settings.hideWebamp = new Setting('hideWebamp', 'Hide Webamp', 'checkbox', false, hideWebampChange, true);
 
 	settings.wide = new Setting('wide', 'Widescreen', 'checkbox', false, wideScreenChange, true);
 	settings.kiosk = new Setting('kiosk', 'Kiosk', 'boolean', false, kioskChange, false);
@@ -90,6 +92,20 @@ const windUnitsChange = (value) => {
 const hoursChangeFormat = (value) => {
 	if (value) {
 		document.documentElement.setAttribute('hours-format', value);
+	}
+};
+
+const hideWebampChange = (value) => {
+	if (value) document.documentElement.setAttribute('hide-webamp', value);
+
+	// Webamp is a global variable, defined in a <script>
+	// tag in index.ejs, so we can access it directly
+	if (value === true) {
+		// eslint-disable-next-line no-undef
+		webamp.close();
+	} else {
+		// eslint-disable-next-line no-undef
+		webamp.reopen();
 	}
 };
 
