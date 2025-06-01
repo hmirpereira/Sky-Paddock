@@ -88,9 +88,32 @@ const screens = [
 
 // internal draw function with preset parameters
 const drawCondition = (text) => {
-	// update all html scroll elements
 	elemForEach('.weather-display .scroll .fixed', (elem) => {
-		elem.innerHTML = text;
+		// Remove old text-layers with exit
+		const layers = elem.querySelectorAll('.text-layer');
+		layers.forEach((layer) => {
+			layer.classList.remove('active');
+			layer.classList.add('exit');
+			layer.addEventListener('transitionend', () => {
+				layer.remove();
+			}, { once: true });
+		});
+
+		// Create new layer with wrapped content
+		const newLayer = document.createElement('div');
+		newLayer.className = 'text-layer';
+		const content = document.createElement('div');
+		content.className = 'text-content';
+		content.textContent = text;
+		newLayer.appendChild(content);
+		elem.appendChild(newLayer);
+
+		// Force reflow
+		// eslint-disable-next-line no-void
+		void newLayer.offsetWidth;
+
+		// Trigger wipe
+		newLayer.classList.add('active');
 	});
 };
 document.addEventListener('DOMContentLoaded', () => {
