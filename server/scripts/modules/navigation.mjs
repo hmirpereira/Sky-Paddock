@@ -5,6 +5,8 @@ import { wrap } from './utils/calc.mjs';
 import { getPoint, getGeocoding, aggregateWeatherForecastData } from './utils/weather.mjs';
 import settings from './settings.mjs';
 
+import { parseQueryString } from './share.mjs';
+
 document.addEventListener('DOMContentLoaded', () => {
 	init();
 });
@@ -54,9 +56,32 @@ const getWeather = async (latLon, haveDataCallback) => {
 
 	// Get locality data from open-meteo and local storage
 	const localityName = localStorage.getItem('latLonQuery');
-	// 'latLonQuery' is set in server>scripts>index.mjs in the format of "Amsterdam, NLD"
-	// therefore we need to split on the "," to get the locality name for open-meteo
-	const locality = await getGeocoding(localityName.split(',')[0]);
+	let locality;
+
+	// We need to check if localityName is set in localStorage
+	// if it is not set, it's likely that the page was loaded from a permalink
+	// and we need to derive the locality name from the latLon.
+
+	// We can assume this is safe because the latLon would've been set by the user
+	// during a previous search
+	if (!localityName) {
+		console.warn('getWeather:'
+			+ '\nlocalityName is not set in localStorage. Origin could be a permalink.'
+			+ '\nAttempting to derive localityName from latLonQuery.');
+
+		const parsedParameters = parseQueryString();
+		if (parsedParameters && parsedParameters.latLonQuery != null) {
+			console.warn(`getWeather: parsed localityName as: ${parsedParameters.latLonQuery}`);
+			// This is only useful if the page is refreshed
+			localStorage.setItem('latLonQuery', parsedParameters.latLonQuery);
+			// Pass the value from our query params
+			locality = await getGeocoding(parsedParameters.latLonQuery.split(',')[0]);
+		}
+	} else {
+		// 'latLonQuery' is set in server>scripts>index.mjs in the format of "Amsterdam, NLD"
+		// therefore we need to split on the "," to get the locality name for open-meteo
+		locality = await getGeocoding(localityName.split(',')[0]);
+	}
 
 	// @todo - this shouldn't be hardcoded
 	// when a user searches for a location that doesn't have a city
