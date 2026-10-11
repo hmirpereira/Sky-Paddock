@@ -4,7 +4,11 @@
 	/* eventually, when chrome supports paint-order for html elements */
 	/* -webkit-text-stroke: 2px black; */
 	/* paint-order: stroke fill; */
+	// --fringe-left / --fringe-right: red and blue colour fringe of the TV's analogue look
+	// (_scan-lines.scss); a transparent shadow everywhere else
 	text-shadow:
+		var(--fringe-left, 0 0 0 transparent),
+		var(--fringe-right, 0 0 0 transparent),
 		$offset $offset 0 c.$text-shadow,
 		(-$outline) (-$outline) 0 c.$text-shadow,
 		0 (-$outline) 0 c.$text-shadow,

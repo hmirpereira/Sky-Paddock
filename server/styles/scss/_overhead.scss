@@ -436,6 +436,9 @@
 				padding-left: 2px;
 				// the usual 3 px shadow smudges text this small
 				@include u.text-shadow(1px, 0.5px);
+				// and so would the colour fringe
+				--fringe-left: 0 0 0 transparent;
+				--fringe-right: 0 0 0 transparent;
 				color: #a9c4ef;
 				white-space: nowrap;
 			}

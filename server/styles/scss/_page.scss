@@ -328,6 +328,14 @@ body {
 	text-align: center;
 	justify-content: center;
 
+	// the logo (instead of the name), drawn larger than shown so it stays sharp on a 1080p TV
+	.logo {
+		display: block;
+		width: 280px;
+		height: 220px;
+		margin: 0 auto 8px;
+	}
+
 	.title {
 		font-family: Star4000 Large;
 		font-size: 36px;
