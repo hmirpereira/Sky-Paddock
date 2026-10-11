@@ -22,6 +22,8 @@ const settings = {
 	hideWebamp: { value: false },
 	kiosk: { value: false },
 	scanLines: { value: false },
+	vignette: { value: false },
+	colorFringe: { value: false },
 };
 
 const init = () => {
@@ -81,6 +83,9 @@ const init = () => {
 	]);
 	settings.hideWebamp = new Setting('hideWebamp', 'Hide Webamp (Winamp)', 'checkbox', false, hideWebampChange, true);
 	settings.scanLines = new Setting('scanLines', 'Enable Scan Lines', 'checkbox', false, scanLinesChange, true);
+	// analogue look (_scan-lines.scss): darker corners like a picture tube, red and blue fringe on the text like VHS
+	settings.vignette = new Setting('vignette', 'Enable Vignette', 'checkbox', false, (value) => document.body.classList.toggle('vignette', !!value), true);
+	settings.colorFringe = new Setting('colorFringe', 'Enable Colour Fringe (VHS)', 'checkbox', false, (value) => document.body.classList.toggle('color-fringe', !!value), true);
 
 	settings.wide = new Setting('wide', 'Widescreen', 'checkbox', false, wideScreenChange, true);
 	settings.kiosk = new Setting('kiosk', 'Kiosk', 'checkbox', false, kioskChange, false);
