@@ -26,3 +26,27 @@
 body #divTwc.scan-lines #container {
   @include scan-lines;
 }
+
+// On the TV (kiosk) the 640 x 480 screen is scaled about 2.25 times, so lines drawn inside it
+// come out 2 or 3 real pixels thick, unevenly. There the lines go over the whole window instead,
+// in real pixels: one dark line every two (540 lines on a 1080p TV), even at any scale.
+body.kiosk.scan-lines {
+  #divTwc.scan-lines #container::after {
+    display: none;
+  }
+
+  &::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2147483647;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.22) 0,
+      rgba(0, 0, 0, 0.22) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  }
+}

@@ -40,7 +40,7 @@ const init = () => {
 		[2, 'km/h'],
 		[3, 'knots'],
 		[4, 'mph'],
-		[5, 'bft']
+		[5, 'bft'],
 	]);
 	settings.marineWindUnits = new Setting('marineWindUnits', 'Wind Units (Marine)', 'select', 1, marineWindUnitsChange, true, [
 		[1, 'knots'],
@@ -163,11 +163,9 @@ const hideWebampChange = async (value) => {
 
 const scanLinesChange = (value) => {
 	const container = document.querySelector('#divTwc');
-	if (value) {
-		container.classList.add('scan-lines');
-	} else {
-		container.classList.remove('scan-lines');
-	}
+	// also on the page body: in kiosk mode the lines are drawn over the whole window (_scan-lines.scss)
+	container.classList.toggle('scan-lines', !!value);
+	document.body.classList.toggle('scan-lines', !!value);
 };
 
 const wideScreenChange = (value) => {
