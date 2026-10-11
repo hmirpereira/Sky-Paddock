@@ -73,3 +73,10 @@ body.color-fringe {
   --fringe-left: -1.5px 0 0 rgba(255, 40, 40, 0.75);
   --fringe-right: 1.5px 0 0 rgba(40, 170, 255, 0.75);
 }
+
+// and on the pictures (weather icons, team and airline icons, logos, maps): the red and blue channels
+// pulled apart by an SVG filter in index.ejs, so edges inside the pictures get the fringe too.
+// Not on the radar, which animates: the filter would be worked out again for every frame.
+body.color-fringe #container img:not(#radar-html img) {
+  filter: url(#vhs-rgb);
+}
