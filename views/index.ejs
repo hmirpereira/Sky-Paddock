@@ -367,6 +367,18 @@
       }
     })();
   </script>
+  <!-- colour fringe on the pictures (Enable Colour Fringe (VHS), _scan-lines.scss): red channel 1.5 px left, blue 1.5 px right -->
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position: absolute" aria-hidden="true">
+    <filter id="vhs-rgb" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%">
+      <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
+      <feOffset in="red" dx="-1.5" dy="0" result="redShifted" />
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green" />
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
+      <feOffset in="blue" dx="1.5" dy="0" result="blueShifted" />
+      <feBlend mode="screen" in="redShifted" in2="green" result="redGreen" />
+      <feBlend mode="screen" in="redGreen" in2="blueShifted" />
+    </filter>
+  </svg>
 </body>
 
 </html>
