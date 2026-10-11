@@ -1,92 +1,144 @@
 # Sky Pit Wall
 
-Weather, airport departures and a pit wall attitude on a TV. A personal fork of [WeatherStar 4000+ International](https://github.com/mwood77/ws4kp-international); see [Sky Pit Wall (this fork)](#sky-pit-wall-this-fork) below. The original README follows.
-
-[![build-docker](https://github.com/mwood77/ws4kp-international/actions/workflows/build-docker.yaml/badge.svg)](https://github.com/mwood77/ws4kp-international/actions/workflows/build-docker.yaml)
-[![pages-build-deployment](https://github.com/mwood77/ws4kp-international/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/mwood77/ws4kp-international/actions/workflows/pages/pages-build-deployment)
-
-# WeatherStar 4000+ (International)
-
-<div align="center"> 
-    <img src="./overview.gif" alt="Weatherstar 4000+ International" width="600">
-</div>
-
-This project is a fork of [`ws4kp`](https://github.com/netbymatt/ws4kp) by [@netbymatt](https://github.com/netbymatt), which has been refactored to run on [Open Meteo's aggregated forecast API](https://open-meteo.com/en/docs). This means this fork of the `ws4kp` works for locations outside of the USA.
-
-A live version of this project is available at https://mwood77.github.io/ws4kp-international
-
-## Sky Pit Wall (this fork)
-
-Sky Pit Wall is a personal fork of [mwood77/ws4kp-international](https://github.com/mwood77/ws4kp-international). It runs full screen on a 1080p TV from a Raspberry Pi 3 (DietPi, Chromium in kiosk mode, widescreen, 24-hour clock), with background music.
-
-Live version: https://hmirpereira.github.io/Sky-Pit-Wall
+Weather, aviation and Formula 1 on a TV, in the style of The Weather Channel's WeatherStar 4000 from the 1990s.
 
 <div align="center">
     <img src="./skypitwall-preview.gif" alt="Sky Pit Wall: one rotation of the screens" width="480">
 </div>
 
-One rotation in 4:3 with scan lines, vignette and colour fringe, three seconds per screen (sample location: Lisbon; the screens that only work on the Pi are left out).
+<p align="center"><em>One rotation in 4:3 with scan lines, vignette and colour fringe, three seconds per screen (sample location: Lisbon; the screens that only work on the Raspberry Pi are left out).</em></p>
 
-### Screens
+**Live version:** https://hmirpereira.github.io/Sky-Pit-Wall
 
-In rotation order, as configured on the TV:
+Sky Pit Wall is a personal project. It runs full screen on a 1080p TV from a Raspberry Pi 3 (DietPi, Chromium in kiosk mode, widescreen, 24-hour clock), with background music. It started as a fork of [WeatherStar 4000+ International](https://github.com/mwood77/ws4kp-international) and keeps its engine, fonts and look; the screens, data sources and much of the rest are its own. See [Credits](#credits-and-licence).
+
+## Contents
+
+- [Screens](#screens)
+- [Weather screens](#weather-screens)
+- [Aviation screens](#aviation-screens)
+- [Formula 1 screens](#formula-1-screens)
+- [Look and feel](#look-and-feel)
+- [Settings and the TV address](#settings-and-the-tv-address)
+- [The Raspberry Pi side](#the-raspberry-pi-side)
+- [Development](#development)
+- [Fixes to the original](#fixes-to-the-original)
+- [Credits and licence](#credits-and-licence)
+
+## Screens
+
+In rotation order. "Pi" means the screen only works on the Raspberry Pi and is skipped anywhere else.
 
 | Screen | What it shows | Source |
 |---|---|---|
-| Hazards | IPMA warnings for one district (in Portuguese); skipped when there are none | [IPMA](https://api.ipma.pt) |
-| Current Conditions, Hourly Forecast, Hourly Graph, Extended Forecast, Almanac, Air Quality | As upstream | [Open-Meteo](https://open-meteo.com) |
-| Travel Forecast | Frankfurt, Munich, Zurich, Geneva and Vienna | Open-Meteo |
-| Regional Forecast | Portugal: district and island capitals on five maps, with the day's icon, high and low | Open-Meteo; maps from [Natural Earth](https://www.naturalearthdata.com) |
-| Local Radar | As upstream | [RainViewer](https://www.rainviewer.com) |
-| Pollen | Daily pollen levels | Open-Meteo (CAMS) |
-| Airport METAR | METAR and TAF of one airport, decoded into plain English | [metar.vatsim.net](https://metar.vatsim.net); TAF from [aviationweather.gov](https://aviationweather.gov) via the Raspberry Pi |
-| Departures | Next departures from one airport for a configurable list of airlines (only on the Pi) | [AeroDataBox](https://aerodatabox.com) |
-| Cancellations | Cancelled departures from the same airport, all airlines (only on the Pi) | [AeroDataBox](https://aerodatabox.com) |
-| Overhead | Closest aircraft, a 50 km radar and the local airport's plan with the aircraft on the ground (only on the Pi) | Own ADS-B receiver, [adsb.lol](https://adsb.lol), [adsbdb](https://www.adsbdb.com), [OpenStreetMap](https://www.openstreetmap.org) |
-| Work Schedule | Shifts for the next 7 days and the next shift, with the weather at those times (only on the Pi) | Private spreadsheet |
-| F1 Last Race | Podium and fastest lap of the latest Grand Prix or sprint | Jolpica F1 |
-| F1 Grid | Starting order of the next sprint or race | Jolpica F1, [OpenF1](https://openf1.org) |
-| F1 Drivers | Drivers' championship, scrolling through the whole field | [Jolpica F1](https://github.com/jolpica/jolpica-f1) |
+| Hazards | IPMA warnings for one Portuguese district (in Portuguese); skipped when there are none | [IPMA](https://api.ipma.pt) |
+| Current Conditions | Temperature, sky, wind, humidity, pressure and more | [Open-Meteo](https://open-meteo.com) |
+| Hourly Forecast, Hourly Graph | The next 24 hours, as a list and as a graph | Open-Meteo |
+| Travel Forecast | Five European cities, high and low | Open-Meteo |
+| Regional Forecast | Portugal: district and island capitals on five maps | Open-Meteo; maps from [Natural Earth](https://www.naturalearthdata.com) |
+| Extended Forecast, Almanac | The next days; sun and moon | Open-Meteo |
+| Local Radar | Precipitation radar | [RainViewer](https://www.rainviewer.com) |
+| Air Quality, Pollen | Air quality index; daily pollen levels | Open-Meteo (CAMS) |
+| Airport METAR | METAR of one airport decoded into plain English, then its TAF (Pi) | [metar.vatsim.net](https://metar.vatsim.net); TAF from [aviationweather.gov](https://aviationweather.gov) |
+| Departures (Pi) | Next departures of a list of airlines from one airport | [AeroDataBox](https://aerodatabox.com) |
+| Cancellations (Pi) | Cancelled departures from the same airport, all airlines | AeroDataBox |
+| Overhead (Pi) | Closest aircraft, a 50 km radar and the airport plan with the aircraft on the ground | Own ADS-B receiver, [adsb.lol](https://adsb.lol), [adsbdb](https://www.adsbdb.com), [OpenStreetMap](https://www.openstreetmap.org) |
+| Work Schedule (Pi) | Shifts for the next 7 days, with the weather at those times | Private spreadsheet, kept on the Pi |
+| F1 Last Race | Podium and fastest lap of the latest Grand Prix or sprint | [Jolpica F1](https://github.com/jolpica/jolpica-f1), [OpenF1](https://openf1.org) |
+| F1 Grid | Starting order of the next sprint or race | Jolpica F1, OpenF1 |
+| F1 Drivers | Drivers' championship, scrolling through the field | Jolpica F1 |
 | F1 Next Race | Track, details and countdown; weekend schedule and race forecast | Jolpica F1, [f1-circuits](https://github.com/bacinger/f1-circuits), Open-Meteo |
 
-Latest Observations, Local Forecast, Marine Forecast and Personal Weather Station are left as upstream but switched off on the TV.
+Every screen can be switched on or off on the page. Latest Observations, Local Forecast, Marine Forecast and Personal Weather Station are kept from the original but are off on the TV.
 
-### New and reworked screens
+## Weather screens
 
-- **Regional Forecast** (reworked for Portugal): the original used the US National Weather Service and a US map, so it never worked outside the USA. It now shows the 18 district capitals and the island capitals (Ponta Delgada, Angra, Horta, Funchal) on five maps, North, Centre, Lisbon, South and Islands, 6 seconds each. Each label sits on its city (weather icon, high, low), without dots or lines. Today's forecast until 18:00, then tomorrow's. One Open-Meteo request for the 22 cities. The maps and label positions are made by a generator script (not in this repository) from Natural Earth 1:10m (public domain) into `images/regional-pt-*.png` and `utils/regional-pt.mjs`.
+- **Hazards**: yellow, orange and red warnings from IPMA (the Portuguese weather service) for the district chosen in the settings, kept in Portuguese on purpose and without accents (the Star4000 fonts have none). Skipped when there are none or no district is set. In widescreen the warning colour fills the whole width.
+- **Travel Forecast**: the cities in `TRAVEL_CITIES` (`travelforecast.mjs`, today Frankfurt, Munich, Zurich, Geneva and Vienna) in one Open-Meteo request; after 18:00 it shows tomorrow. Five cities fit on one screen without scrolling.
+- **Regional Forecast**: the original used the US National Weather Service and a US map, so it never worked outside the USA. Here it shows the 18 Portuguese district capitals and the island capitals (Ponta Delgada, Angra, Horta, Funchal) on five maps (North, Centre, Lisbon, South, Islands), 6 seconds each. Each label sits on its city, without dots or lines. Today's forecast until 18:00, then tomorrow's, in one Open-Meteo request. The maps and label positions come from a generator script (not in this repository) using Natural Earth 1:10m (public domain): `images/regional-pt-*.png` and `utils/regional-pt.mjs`.
+- **Pollen**: daily average from Open-Meteo / CAMS (Europe only), with the US National Allergy Bureau levels as a guide.
 
-- **Hazards**: warnings from IPMA (the Portuguese weather service) for one district, kept in Portuguese on purpose, without accents (the Star4000 fonts have none). Only yellow, orange and red warnings; the screen is skipped when there are none. In widescreen the warning colour fills the whole width.
-- **Airport METAR**: the airport's METAR decoded into plain English (wind, visibility, weather, clouds, temperature, humidity, pressure, trend). Busy reports are split into pages; the raw report is shown when there is room. When the page runs on the Raspberry Pi, the airport's TAF follows on its own pages: issue time, then each change group (Becoming, Temporary, Prob 30%, From) with its period in Portuguese time and its conditions (the raw TAF is not shown). aviationweather.gov does not accept browser requests, so the TAF is fetched by the `skypitwall-voos` service on the Pi and read from `http://127.0.0.1:8095/taf.json`; anywhere else the TAF pages are simply left out.
-- **Pollen**: daily average from Open-Meteo / CAMS (Europe only), with US National Allergy Bureau levels as a guide.
-- **Travel Forecast**: one Open-Meteo request for the cities in `TRAVEL_CITIES` (`travelforecast.mjs`); after 18:00 it shows tomorrow. Rows are 55 px high so five cities fit on one screen without scrolling (a sixth city would scroll).
-- **Departures** (off by default): next departures from the airport set on the Pi, for the airlines set there, with an airline tail icon, estimated time and status (ON TIME, DELAYED, CANCELLED, or SCHEDULED when there is no live data). Codeshares are left out; a delay counts from 15 minutes. The data comes from a small service on the Raspberry Pi (`skypitwall-voos`, not in this repository) that calls the AeroDataBox FIDS API with a private key, spreads the monthly quota over the days left, and serves `http://127.0.0.1:8095/flights.json`. Chromium on the Pi allows the site to read it through the `LocalNetworkAccessAllowedForUrls` and `LoopbackNetworkAllowedForUrls` policies. Anywhere else the screen is skipped.
-- **Cancellations** (off by default): today's cancelled departures from the same airport, all airlines: flight, destination and scheduled time (a `?` marks a cancellation AeroDataBox is not sure about). It uses the same API responses as Departures, so there are no extra calls: the list is refreshed only when the service calls the API for the Departures screen, and the footer shows when that was. Served at `http://127.0.0.1:8095/cancelled.json`; the screen is skipped when there are no cancellations or off the Pi.
-- **Overhead** (off by default): aircraft around home, from the owner's ADS-B receiver (tar1090/readsb on another Pi), completed by the open adsb.lol network. A service on the Pi (`skypitwall-voos`, not in this repository) merges both, looks up routes on adsbdb by callsign and serves `http://127.0.0.1:8095/overhead.json`; anywhere else the screen is skipped. Metric units throughout. Up to three pages, 12 seconds each:
-  - **Closest Now**: the closest aircraft in the air: flight number, airline (tail icon for the group's airlines), route, distance and direction from home, altitude with a climbing or descending mark, speed, type and registration. A route is shown only if the aircraft is near the line between its origin and destination (adsbdb routes are by callsign and sometimes out of date); otherwise "Route unknown".
-  - **Within 50 km**: radar with rings at 10, 25 and 50 km, home as a dot and the airport's name; each aircraft is an arrow with its flight number and, under it, the route (e.g. FRA-ZRH). Labels never overlap each other or the ring numbers: right, left, a little higher or lower, or left out. A list by distance sits beside it. Airline logos (48 x 16 pixel drawings by the owner of this fork, transparent background, scaled up without smoothing) sit above the flight number: `images/overhead-logos/<ICAO code>.png`, listed in `RADAR_LOGOS` in `overhead.mjs`; `LOGO_ALIASES` maps other callsign prefixes of the same brand (CLH to DLH, EJU and EZS to EZY).
-  - **Ground** (only when there are aircraft on it): the airport's plan, turned so the main runway lies across the screen, with a north mark: runways, taxiways with their letters (yellow on black, like the signs), aprons, buildings, and stand numbers where they fit. Aircraft on the ground show the stand they are parked on or the taxiway they are on; aircraft landing or taking off are in yellow. The group's aircraft (the airlines of the Departures screen, by callsign) stay in grey on their stand, with their last flight number, after switching the transponder off, until the same aircraft (same ICAO address) shows up again, another aircraft parks on that stand, or 36 hours pass. Aircraft on the ground then leave the radar page. In the empty corner under the runway, a list of the group's aircraft on a stand (flight, stand, time it arrived there; grey when the transponder is off), up to six rows.
+## Aviation screens
+
+Navy and silver, with yellow flight numbers. Apart from the METAR, they read their data from a small service on the Raspberry Pi (see [The Raspberry Pi side](#the-raspberry-pi-side)).
+
+- **Airport METAR**: the METAR of the airport set on the page, decoded into plain English (wind, visibility, weather, clouds, temperature, humidity, pressure, trend). Busy reports are split into pages; the raw report is shown when there is room. On the Pi, the airport's TAF follows on its own pages: issue time, then each change group (Becoming, Temporary, Prob 30%, From) with its period in Portuguese time. aviationweather.gov does not accept browser requests, so the TAF comes through the Pi (`/taf.json`) and is left out anywhere else.
+- **Departures**: next departures from the airport set on the Pi, for the airlines set there, with a tail icon, estimated time and status (ON TIME, DELAYED, CANCELLED, or SCHEDULED when there is no live data). Codeshares are left out; a delay counts from 15 minutes. The Pi calls the AeroDataBox FIDS API with a private key and spreads the monthly quota over the days left.
+- **Cancellations**: today's cancelled departures from the same airport, all airlines: flight, destination and scheduled time (a `?` marks a cancellation AeroDataBox is not sure about). It reuses the Departures responses, so it costs no extra calls; the footer shows when the list was last refreshed.
+- **Overhead**: aircraft around home, from the owner's ADS-B receiver (tar1090/readsb), completed by the open adsb.lol network; routes from adsbdb by callsign. Metric units throughout. Up to three pages, 12 seconds each:
+  - **Closest Now**: the closest aircraft in the air: flight number, airline, route, distance and direction from home, altitude with a climbing or descending mark, speed, type and registration. A route is shown only if the aircraft is near the line between its origin and destination (adsbdb routes are by callsign and sometimes out of date); otherwise "Route unknown".
+  - **Within 50 km**: radar with rings at 10, 25 and 50 km, home as a dot and the airport's name. Each aircraft is an arrow with its flight number and, under it, the route (e.g. FRA-ZRH), with the airline's logo above when there is one. Labels never overlap each other, the arrows or the ring numbers. A list by distance sits beside it.
+  - **Ground**: the airport plan, turned so the main runway lies across the screen, with a north mark: runways, taxiways with their letters, aprons, buildings and stand numbers where they fit. Aircraft on the ground show the stand or taxiway they are on; aircraft landing or taking off are in yellow. The group's aircraft (the airlines of the Departures screen, by callsign) stay in grey on their stand, with their last flight number, after switching the transponder off, until the same aircraft (same ICAO address) shows up again, another aircraft parks on that stand, or 36 hours pass. A list in the empty corner under the runway shows the group's aircraft on a stand and when they arrived.
   - Flight numbers (LH1176) come from callsigns made of the airline code and digits (DLH1176); callsigns with letters (RYR10UB) do not give the flight number, so the callsign is shown.
   - The airport plan is made from OpenStreetMap data (ODbL, credited on screen) by a script (not in this repository) and kept on the Pi with the home position, so no place is written in the code.
-- **Work Schedule** (off by default): two pages. Page 1: shifts for the next 7 days (day, shift code, start and end, or Day off) with the weather icon and temperature at the start of each shift; today's shift leaves the list once it has ended. Page 2: the next shift (or the current one) with a countdown and the weather at the start and at the end (Open-Meteo hourly forecast, kept for an hour). A job on the Pi (`skypitwall-horario`, not in this repository) copies a private schedule spreadsheet from cloud storage every hour with a read-only rclone remote and turns it into JSON, served at `http://127.0.0.1:8095/schedule.json`. The schedule never leaves the Pi; anywhere else the screen is skipped.
-- **F1 Last Race**: the latest Grand Prix or sprint ("F1 Last Sprint") with its flag and date, a podium with team icons, race time for the winner and gaps for 2nd and 3rd, and the fastest lap. From Jolpica F1, or from OpenF1 (classification and lap times) while Jolpica has not published the result.
-- **F1 Grid**: the starting order of the next sprint or race in two staggered columns, like a real grid, scrolling through the field. It is the qualifying classification, so grid penalties are not included. Pole shows its lap time and the others the gap to it, from the last part of qualifying each driver reached ("No time" if they set none there). Race grid from Jolpica F1 (qualifying); sprint grid from Jolpica F1's alpha API (sprint qualifying); OpenF1 as a backup for both, because Jolpica sometimes publishes a session only after the weekend. Team icons come from the car number.
-- **F1 weekend timing** (`utils/f1-weekend.mjs`): the two screens take turns. After sprint qualifying: sprint grid until the sprint; after the sprint: sprint result until qualifying; after qualifying: race grid until the race; after the race: race result until the next weekend starts. Results are asked for shortly after each session, then every 20 minutes until they appear, and once more at the next F1 update time to catch penalties. The season schedule is downloaded once a day.
-- **F1 Drivers**: the whole drivers' championship, 7 rows at a time, scrolling like the original Travel Forecast, with a team icon per driver. Each driver's current team comes from the latest race (the standings list every team a driver raced for, in no particular order).
-- **F1 Next Race**: page 1 has the track outline, Grand Prix, circuit, place with an 8-bit flag, track length, date and countdown; page 2 has the weekend schedule in Portuguese time and the forecast at the circuit for the start of the race (from 15 days before). Outlines for the 2026 circuits plus Portimão, Istanbul Park and Bahrain (2027) are in `utils/f1-circuits.mjs`. Long circuit names are shrunk to fit, and accents are removed because the Star4000 fonts draw accented letters blank (also in F1 Drivers and Cancellations).
-- **Local airport and IPMA area**: set on the page (Settings: airport ICAO code, airport name, IPMA warning area) and carried in the address as `settings-airportIcao-text`, `settings-airportName-text` and `settings-ipmaArea-select`. Nothing is set by default, so no place is written in the code: without them the Airport METAR and Hazards screens are skipped. The airport name goes into the titles ("<name> Airport", "<name> Departures"). The TAF is shown only when the Pi's TAF is for the same airport.
-- **TV address**: "Copy TV command" (TV panel) copies `skypitwall-tv url '<address>'` with the screens and settings chosen on the page plus kiosk, widescreen, scan lines and no Winamp. On the Pi, that command (not in this repository) replaces the browser address in `/boot/dietpi.txt`, keeps the previous one and restarts the browser.
-- **Pi warnings**: when something on the Pi stops updating (flight data refused or failing, flight quota low, TAF or work schedule stale), its screen is simply skipped, so the bottom line adds a red warning such as `Schedule stale since Tue 14:07` (`utils/pi-health.mjs`, from `http://127.0.0.1:8095/health.json`, checked every 5 minutes). Nothing is shown when all is well or off the Pi.
-- **F1 update rule**: F1 Drivers and F1 Next Race download their data once a day from Friday to Monday after 22:00 (Lisbon) and keep it in `localStorage` the rest of the week (`utils/f1-update.mjs`). Monday catches races in the Americas, which end late on Sunday in Portugal.
+- **Work Schedule**: two pages. Shifts for the next 7 days with the weather at the start of each; then the next (or current) shift with a countdown and the weather at its start and end. The schedule is a private spreadsheet that a job on the Pi copies from cloud storage (read only) every hour; it never leaves the Pi.
 
-### Look and feel
+## Formula 1 screens
 
-- **Name and logo**: the site is called Sky Pit Wall (title, loading and progress screens, manifest). The header logo is `images/skypitwalllogo.png` (340 x 268), shown at the size of the original logo; the original `Logo3.png` is kept. The loading screen shows `images/skypitwalllogo-large.png` (680 x 536, drawn at 280 x 220) instead of the name, and `images/Logo192.png` (the browser and app icon) is the same logo on a transparent square. All three are made from the owner's high resolution drawing.
-- **F1 screens in red and black**: recoloured copies of the WeatherStar backgrounds (`BackGround1_1_f1.png`, `BackGround1_1_wide_f1.png`) and colours in `_f1-theme.scss`. Colours only; no Formula 1 marks.
-- **Aviation screens in navy and silver** (Airport METAR/TAF, Departures, Cancellations, Overhead, Work Schedule): recoloured copies of the WeatherStar backgrounds (`BackGround1_1_aviation.png`, `BackGround1_1_wide_aviation.png`) with a silver to steel blue title band, navy rows, light blue labels and yellow flight numbers. Colours in `_aviation-theme.scss`. Colours only; no airline marks.
-- **Scan lines on the TV**: in kiosk mode the scan lines are drawn over the whole window in real pixels (one dark line every two, 540 lines at 1080p) instead of inside the scaled 640 x 480 screen, where the 2.25x scale made them 2 or 3 pixels thick and uneven (`_scan-lines.scss`). Elsewhere they are as upstream. Two more settings give the rest of the analogue look, both static: Enable Vignette (darker corners, like a picture tube) and Enable Colour Fringe (VHS): red and blue edges on the text, through the shared `text-shadow` mixin (`--fringe-left`, `--fringe-right`), and on the pictures (weather and team icons, logos, maps) through an SVG filter in `index.ejs` that pulls the red and blue channels apart (`#vhs-rgb`); not on the radar, which animates. Like the other checkboxes, they go into the address and into Copy TV command.
-- **Icons**: `images/airlines/<IATA code>.png` (airline tails) and `images/teams/<constructorId>.png` (F1 teams), 128 x 128 PNG with a transparent background, drawn by the owner of this fork. `images/flags/<country>.png` are 24 x 16 pixel flags scaled up without smoothing. A missing icon or flag is simply not shown.
+Red and black.
 
-### Fixes
+- **F1 Last Race**: the latest Grand Prix or sprint ("F1 Last Sprint") with flag and date, a podium with team icons, the winner's time and the gaps for 2nd and 3rd, and the fastest lap.
+- **F1 Grid**: the starting order of the next sprint or race in two staggered columns, like a real grid, scrolling through the field. It is the qualifying classification, so grid penalties are not included. Pole shows its lap time and the others the gap to it, from the last part of qualifying each driver reached ("No time" if they set none there).
+- **Weekend timing** (`utils/f1-weekend.mjs`): the two screens take turns. After sprint qualifying, sprint grid until the sprint; after the sprint, sprint result until qualifying; after qualifying, race grid until the race; after the race, race result until the next weekend starts. Results are asked for shortly after each session, then every 20 minutes until they appear, and once more at the next F1 update time to catch penalties.
+- **Sources**: Jolpica F1 first (its alpha API for sprint qualifying); OpenF1 when Jolpica has not published a session yet, which can take until after the weekend (`utils/f1-openf1.mjs`).
+- **F1 Drivers**: the whole drivers' championship, 7 rows at a time, scrolling like the original Travel Forecast, with a team icon per driver (each driver's current team comes from the latest race).
+- **F1 Next Race**: page 1 has the track outline, Grand Prix, circuit, place with an 8-bit flag, track length, date and countdown; page 2 has the weekend schedule in Portuguese time and the forecast at the circuit for the start of the race (from 15 days before). Outlines are in `utils/f1-circuits.mjs`.
+- **Update rule** (`utils/f1-update.mjs`): F1 Drivers and F1 Next Race download their data once a day from Friday to Monday after 22:00 (Lisbon time) and keep it in `localStorage` the rest of the week.
+
+## Look and feel
+
+- **Logo**: `images/skypitwalllogo.png` (340 x 268) in the header of every screen, `images/skypitwalllogo-large.png` (680 x 536) on the loading screen and `images/Logo192.png` as the browser and app icon, all made from the owner's high resolution drawing.
+- **Themes**: recoloured copies of the WeatherStar backgrounds for the F1 screens (red and black, `_f1-theme.scss`) and the aviation screens (navy and silver, `_aviation-theme.scss`). Colours only; no Formula 1 or airline marks.
+- **Icons**, drawn by the owner of this project: `images/airlines/<IATA code>.png` (airline tails, 128 x 128), `images/teams/<constructorId>.png` (F1 teams, 128 x 128) and `images/overhead-logos/<ICAO code>.png` (airline logos for the radar, 48 x 16, listed in `RADAR_LOGOS` in `overhead.mjs`; `LOGO_ALIASES` maps other callsign prefixes of the same brand). `images/flags/<country>.png` are 24 x 16 pixel flags scaled up without smoothing. A missing icon or flag is simply not shown.
+- **Accents**: the Star4000 fonts draw accented letters blank, so accents are removed from names (F1 screens, Cancellations, Hazards).
+- **Analogue look** (`_scan-lines.scss`), each a setting of its own and all static, so they cost the Pi almost nothing:
+  - **Scan lines**: on the TV (kiosk mode) they are drawn over the whole window in real pixels, one dark line every two (540 lines at 1080p). Drawn inside the 640 x 480 screen, as in the original, the 2.25x scale made them 2 or 3 pixels thick and uneven.
+  - **Vignette**: darker corners, like a picture tube.
+  - **Colour fringe on text**: red and blue edges on the text, like a VHS recording, through the shared `text-shadow` mixin (`--fringe-left`, `--fringe-right`).
+  - **Colour fringe on pictures**: the red and blue channels of the pictures pulled apart by an SVG filter in `index.ejs` (`#vhs-rgb`). Not on the radar, which animates.
+- **Music**: the page's Winamp plays *The Weather Channel Presents: The Best of Smooth Jazz*, streamed from the [Internet Archive](https://archive.org/details/the-weather-channel-presents-the-best-of-smooth-jazz-full-album). On the TV the Winamp is hidden and the Pi plays its own music.
+
+## Settings and the TV address
+
+The settings panel on the page holds:
+
+- **Local airport and IPMA area**: airport ICAO code, airport name and IPMA warning area, carried in the address as `settings-airportIcao-text`, `settings-airportName-text` and `settings-ipmaArea-select`. Nothing is set by default, so no place is written in the code: without them the Airport METAR and Hazards screens are skipped. The airport name goes into the titles ("<name> Airport", "<name> Departures").
+- **Units, hours format and speed**.
+- **Display options**: Hide Webamp, Kiosk, Enable Scan Lines, Enable Vignette, Enable Colour Fringe on Text (VHS), Enable Colour Fringe on Pictures (VHS), Widescreen.
+
+Every choice on the page goes into the address, so a whole setup is one link. **Copy TV command** (TV panel) copies `skypitwall-tv url '<address>'` with the screens and settings chosen on the page, plus kiosk, widescreen, scan lines and no Winamp. On the Pi, that command replaces the browser address, keeps the previous one and restarts the browser. Kiosk mode can also be added to any link with `&kiosk=true`.
+
+## The Raspberry Pi side
+
+The Pi-only screens read their data from services on the Pi that are not in this repository, because they hold private keys, the home position and personal data:
+
+- `skypitwall-voos` serves `http://127.0.0.1:8095/`: `flights.json` and `cancelled.json` (AeroDataBox), `taf.json` (aviationweather.gov), `overhead.json` (ADS-B receiver, adsb.lol, adsbdb, airport plan), `schedule.json` and `health.json`.
+- `skypitwall-horario` turns the private schedule spreadsheet into JSON for the Work Schedule screen.
+
+Chromium on the Pi lets the public site read the local service through the `LocalNetworkAccessAllowedForUrls` and `LoopbackNetworkAllowedForUrls` policies. Anywhere else those requests fail and the screens are skipped.
+
+**Pi warnings**: when something on the Pi stops updating (flight data refused or failing, flight quota low, TAF or schedule stale, ADS-B receiver down), its screen is skipped, so the bottom line adds a short red warning such as `Schedule stale since Tue 14:07` (`utils/pi-health.mjs`, checked every 5 minutes). Nothing is shown when all is well or off the Pi.
+
+## Development
+
+You need Node.js. Run it locally:
+
+```
+npm install
+npm run start
+```
+
+and open http://localhost:8080/.
+
+**Updating the live site**: edit the sources, run `npm run build:css` and `npm run build`, and commit the `docs/` folder together with the sources. GitHub Pages serves `docs/` from `main`. The Pi only loads new code when Chromium restarts.
+
+To replace an icon, flag or the logo without building, put the new file with the same name in both `server/images/...` and `docs/images/...` (otherwise the next build brings the old one back). GitHub Pages lets browsers cache images for 10 minutes.
+
+**Layout**: views in `views/` (EJS), one module per screen in `server/scripts/modules/`, styles in `server/styles/scss/`. Each screen is a `WeatherDisplay` subclass registered with `registerDisplay`; the build list is in `gulp/build-gh-pages.mjs`.
+
+**Version**: Sky Pit Wall has its own version number in `package.json`, starting at 1.0.0 (10 October 2026; forked from WeatherStar 4000+ International 12.1.0). It is shown on the loading screen and is the cache-buster of the script, style and icon links, so each release raises it: the last number for fixes, the middle one for new screens or features.
+
+## Fixes to the original
 
 - Auto refresh never started when a display stayed in "loading" (e.g. Hazards) or after a failed data request.
 - The Hazards screen was never hidden, which stalled the rotation as soon as there was a warning.
@@ -96,362 +148,18 @@ Latest Observations, Local Forecast, Marine Forecast and Personal Weather Statio
 - The GPS (current location) button still expected a reply from the US weather service (NOAA) and stalled; it now turns the coordinates into a place name (ArcGIS reverse geocoding) and asks to type a city when the browser gives no position.
 - The menu button with no location chosen drew the progress screen under the start screen; it now focuses the search box.
 - METAR to weather code conversion for personal weather stations (test order and codes).
-- Experimental Features removed (the setting, the nearby-cities lookup for Air Quality and Local Radar, and its third-party proxy `ws4kp-proxy.easypete.com`): slow, unreliable and of little use in Portugal, and the site no longer depends on that server.
-- Browser icon: its link carries the version, so browsers fetch a new icon after a release instead of keeping the old one. The web app manifest pointed outside the site (`/images/...`, start `/`) and had a wrong image type; now relative.
+- Experimental Features removed (the nearby-cities lookup for Air Quality and Local Radar and its third-party proxy): slow, unreliable and of little use in Portugal.
 - Webamp pinned to a fixed version instead of `@next`; image preloads resolve relative to the page.
-- Webamp playlist: *The Weather Channel Presents: The Best of Smooth Jazz* (one full-album file streamed from the [Internet Archive](https://archive.org/details/the-weather-channel-presents-the-best-of-smooth-jazz-full-album)) instead of the Weatherscan tracks. On the TV the Winamp is hidden and the Pi plays its own music.
+- The loading screen lists only the screens that are switched on, in smaller lines when there are many.
+- Browser icon and web app manifest: the icon link carries the version, and the manifest paths are relative to the site.
 
-### Updating the live site
+## Credits and licence
 
-Edit the sources, run `npm run build:css` and `npm run build`, and commit the `docs/` folder together with the sources. GitHub Pages serves `docs/` from `main`. The Pi only loads new code when Chromium restarts.
-
-To replace an icon, flag or the logo without building, put the new file with the same name in both `server/images/...` and `docs/images/...` (otherwise the next build brings the old one back). GitHub Pages lets browsers cache images for 10 minutes.
-
-### Version
-
-Sky Pit Wall has its own version number, in `package.json`, starting at 1.0.0 (10 October 2026); it was forked from WeatherStar 4000+ International 12.1.0. The version is shown on the loading screen and is the cache-buster of the script and style links, so each release should raise it: the last number for fixes, the middle one for new screens or features.
-
-### Credits
-
-- Based on [WeatherStar 4000+ International](https://github.com/mwood77/ws4kp-international) by [@mwood77](https://github.com/mwood77) and [ws4kp](https://github.com/netbymatt/ws4kp) by [@netbymatt](https://github.com/netbymatt) (MIT License).
+- Built on [WeatherStar 4000+ International](https://github.com/mwood77/ws4kp-international) by [@mwood77](https://github.com/mwood77), itself based on [ws4kp](https://github.com/netbymatt/ws4kp) by [@netbymatt](https://github.com/netbymatt) and the original project by [Mike Battaglia](https://github.com/vbguyny/ws4kp), who wrote the code that draws the weather displays and the background graphics.
+- Fonts and weather icons from [TWCClassics](https://twcclassics.com/downloads.html): fonts by Nick Smith; icons by Charles Abel, Nick Smith and Malek Masoud.
 - Track outlines from [bacinger/f1-circuits](https://github.com/bacinger/f1-circuits), MIT License, Copyright (c) 2019-2025 Tomislav Bacinger.
-- Data: Open-Meteo, IPMA, RainViewer, metar.vatsim.net, Jolpica F1, AeroDataBox, adsb.lol, adsbdb.
-- Airport plans: (c) OpenStreetMap contributors, [ODbL](https://opendatacommons.org/licenses/odbl/).
-- Personal, non-commercial project. Not affiliated with The Weather Channel, Formula 1, the FIA, the Lufthansa Group or any team or airline; their names and marks belong to their owners.
+- Map data: [Natural Earth](https://www.naturalearthdata.com) (public domain); airport plans (c) OpenStreetMap contributors, [ODbL](https://opendatacommons.org/licenses/odbl/).
+- Data: Open-Meteo, IPMA, RainViewer, metar.vatsim.net, aviationweather.gov, Jolpica F1, OpenF1, AeroDataBox, adsb.lol, adsbdb.
+- Licence: MIT, as the projects it is built on; see [LICENSE](LICENSE).
 
-## About
-
-This project aims to bring back the feel of the 90's with a weather forecast that has the look and feel of The Weather Channel at that time but available in a modern way. 
-
-This is by no means intended to be a perfect emulation of the WeatherStar 4000, the hardware that produced those wonderful blue and orange graphics you saw during the local forecast on The Weather Channel. If you would like a much more accurate project please see the [WS4000 Simulator](http://www.taiganet.com/). 
-
-Instead, this project intends to create a simple to use interface with minimal configuration fuss. Some changes have been made to the screens available because either more or less forecast information is available today than was in the 90's. Most of these changes are captured in sections below.
-
-## Acknowledgements
-
-This project is based on the work of [Mike Battaglia](https://github.com/vbguyny/ws4kp) and [@netbymatt](https://github.com/netbymatt). This internationalized version was forked in February 2025.
-
-* Mike Battaglia for the original project and all of the code which draws the weather displays. This code remains largely intact and was a huge amount of work to get exactly right. He's also responsible for all of the background graphics including the maps used in the application.
-* The team at [TWCClassics](https://twcclassics.com/) for several resources.
-	* A [font](https://twcclassics.com/downloads.html) set used on the original WeatherStar 4000
-	* [Icon](https://twcclassics.com/downloads.html) sets
-	* Countless photos and videos of WeatherStar 4000 forecasts used as references.
-* [@netbymatt](https://github.com/netbymatt) for modernizing & module'ing Mike's original project. 
-
-## Architecture
-
-The original authors of this project tried to use as few libraries (and external dependencies) as possible - I'm trying my best to continue in this manner where applicable.
-
-However, some compromises were made while porting this to a different data providers. NOAA was replaced as the sole data provider, with the following:
-- Open Meteo
-	- General forecast: https://open-meteo.com/en/docs
-	- Marine forecast: https://open-meteo.com/en/docs/marine-weather-api
-	- Air Quality: https://open-meteo.com/en/docs/air-quality-api
-	- Geocoding: https://open-meteo.com/en/docs/geocoding-api
-- Wikipedia API and Wikidata Sparql API
-	- [Used for unconventional reverse-geocoding-like lookups](https://github.com/mwood77/ws4kp-international/blob/main/server/scripts/modules/utils/nearby-cities.mjs). It's actually a knowledge graph lookup, but we're splitting hairs here.
-- Rainviewer API for radar precipitation (this may change):
-	- https://www.rainviewer.com/api.html
-- ArcGIS by Esri for leaflet map tiles:
-	- https://www.arcgis.com/index.html
-
-The project architecture is MVC-like, where views (`~/views/`) are separated from logic handlers (`~/server/scripts/modules/`
-), but there is no distinct flow-control logic. I hope to rectify this in the future.
-
-The closest flow control is handled in these files:
-- Entry point is: 
-	- https://github.com/mwood77/ws4kp-international/blob/main/server/scripts/index.mjs
-- A majority of the local storage manipulation is handled [here](https://github.com/mwood77/ws4kp-international/blob/7c13654b32f639e9c24c057ac1948b194d3f2aa4/server/scripts/index.mjs#L84-L146), but there are some outliers. This mostly pertains to Query Param handling, which needs a refactor. [See this issue](https://github.com/mwood77/ws4kp-international/issues/55)
-- Core forecast information is retrieved here: 
-	- https://github.com/mwood77/ws4kp-international/blob/main/server/scripts/modules/utils/weather.mjs
-- Global settings are instantiated here: 
-	- https://github.com/mwood77/ws4kp-international/blob/main/server/scripts/modules/settings.mjs
-- Base `Setting` class handles initialization and individual (local) storage: 
-	- https://github.com/mwood77/ws4kp-international/blob/main/server/scripts/modules/utils/setting.mjs
-
-Formatted weather data is passed into each "view controller" through their constructor as `_weatherParameters` (in getData(...)), and generally assigned to `this.weatherParameters` or `this.data` (depends on who authored the module). This data object looks like:
-
-```js
-// Example data for Tokyo
-
-{
-    "latitude": 35.6894,
-    "longitude": 139.6917,
-    "city": "Tokyo",
-    "state": "Tokyo",
-    "country": "Japan",
-    "timeZone": "Asia/Tokyo",
-    "forecast": {
-        "2025-07-09": {	// Day
-            "hours": [
-				...
-				// Data points per hour
-			],
-			// All parent values beneath are "daily" values, which were average from the "hours" array
-            "temperature_2m": 28.64583333333333,
-            "relative_humidity_2m": 78.79166666666667,
-            "dew_point_2m": 24.424999999999994,
-            "apparent_temperature": 34.400000000000006,
-            "precipitation_probability": 0,
-            "precipitation": 0,
-            "rain": 0,
-            "showers": 0,
-            "snowfall": 0,
-            "snow_depth": 0,
-            "weather_code": "0",
-            "pressure_msl": 1010.9916666666668,
-            "surface_pressure": 1006.4291666666668,
-            "cloud_cover": 8.083333333333334,
-            "visibility": 24140,
-            "evapotranspiration": 0.07541666666666667,
-            "et0_fao_evapotranspiration": 0.2233333333333333,
-            "vapour_pressure_deficit": 0.8979166666666667,
-            "uv_index": 2.672916666666667,
-            "uv_index_clear_sky": 2.672916666666667,
-            "is_day": 0.5833333333333334,
-            "sunshine_duration": 1849.0775,
-            "wet_bulb_temperature_2m": 25.545833333333334,
-            "wind_speed_10m": 6.379166666666666,
-            "wind_direction_10m": 181.25,
-            "wind_gusts_10m": 32.074999999999996,
-            "temperature_2m_max": 32.5,
-            "temperature_2m_min": 25.5,
-            "uv_index_max": 8.35
-        }
-    },
-    "stationId": "stationId-dont-matter-anymore",
-    "zoneId": "zoneId-dont-matter",
-    "radarId": "radarId-dont-matter",
-    "weatherOffice": "weatherOffice-dont-matter",
-    "Temperature": 30,
-    "TemperatureUnit": "C",
-    "DewPoint": 24.2,
-    "Ceiling": 0.39,
-    "CeilingUnit": "km",
-    "Visibility": 24.14,
-    "VisibilityUnit": "km",
-    "WindSpeed": 8.7,
-    "WindDirection": "S",
-    "Pressure": 1010.1,
-    "CloudCover": 11,
-    "UV": 8,
-    "WindGust": 46.8,
-    "WindUnit": "km/h",
-    "Humidity": 71,
-    "PressureUnit": "hPa",
-    "PressureDirection": "steady",
-    "TextConditions": 0,
-    "nearbyCities": [
-        {
-            "city": "Tokyo",
-            "lat": "35.683889",
-            "lon": "139.774444",
-            "population": "9640742"
-        },
-        {
-            "city": "Yokohama",
-            "lat": "35.433333333",
-            "lon": "139.65",
-            "population": "3757630"
-        },
-        {
-            "city": "Osaka",
-            "lat": "34.69375",
-            "lon": "135.502111111",
-            "population": "2751862"
-        },
-        {
-            "city": "Nagoya",
-            "lat": "35.181388888",
-            "lon": "136.906388888",
-            "population": "2326844"
-        }
-    ]
-}
-```
-
-Lastly, `ws4kp-international` utilizes a customized instance of [`cors-anywhere`](https://github.com/Rob--W/cors-anywhere) to manage CORS on some APIs. This instance of `cors-anywhere` is owned and managed by me (@mwood77), and is only available to this project. It does not collect any personally identifiable information (PII) and can only interact with the Wikidata API. Features that use this proxy are not enabled by default - the proxy is only utilized when "**Experimental Features**" are enabled.
-
-## Run Your WeatherStar
-There are a lot of CORS considerations and issues with api.weather.gov that are easiest to deal with by running a local server to see this in action (or use the live link above). You'll need Node.js >12.0 to run the local server.
-
-### To run via Node locally:
-```
-git clone https://github.com/mwood77/ws4kp-international.git
-cd ws4kp
-npm i
-npm run start
-```
-
-### To run via Docker: 
-```
-docker run -p 8080:8080 ghcr.io/mwood77/ws4kp-international
-```
-
-After running this project in either way, pen your web browser: 
-- http://localhost:8080/ 
-
-### Deployment
-#### GitHub Pages
-
-`ws4kp-international`'s main "showcase" is a deployed instance via GitHub Pages. To prepare a new release run the following command:
-
-```
-# Mac & Linux users
-npm run build
-
-# Windows users
-npm run build:win
-```
-
-This will update the artifacts in the `/docs` folder. Simply commit them as part of your branch, and push them to remote. Deployment will be handled automatically when your PR is merged into `main`.
-
-#### Docker Image
-This is handled automatically as part of CI/CD, when your code is merged to `main`.
-
-## Updates in 12.0.0
-
-- Introduces personal weather station data
-    - You can now display data from your own weather station.
-    - `ws4kp-international` supports the following ingestion "standards:"
-        - Weather Underground's [Personal Weather Station upload protocol](https://support.weather.com/s/article/PWS-Upload-Protocol?language=en_US)
-            - This interface expects the incoming data to be in ***imperial*** units.
-            - The ingestion point is located at:
-                ```shell
-                GET <YOUR-HOST>/v1/pws
-
-                # Example request
-                GET localhost:8080/v1/pws?ID=ASTATIONID&PASSWORD=notarealpassword&dateutc=2025-10-19T12:00:00Z&winddir=264&windspeedmph=12&windgustmph=5&windgustdir=264&humidity=43&dewptf=66&tempf=87&weather=RA&UV=2&visibility=40&baromin=30
-                ```
-
-## Updates in 11.0.0
-
-- Reintroduces Radar screen
-- Introduces ***Experimental Features***
-	- If this is enabled and data is present, cascading features ~~will~~ may appear across different displays; ex, additional city AQI values on the Air Quality Index Forecast and Radar Screen.
-#### Under the hood
-- Nearby cities lookup; this is a new query, which gets national city data (top populous cities) when enabled.
-	- However this is a very slow query and somewhat unreliable (can take 2-5 seconds to resolve on location change). This data is written to localStorage once retrieved, and removed when "Experimental Features" is disabled.
-
-## Updates in 10.0.0
-
-- Air Quality Index Forecast powered by [Open Meteo's Air Quality API](https://open-meteo.com/en/docs/air-quality-api)
-
-## Updates in 9.0.0
-
->[!IMPORTANT]
-> The Marine Forecast (and this site in general) **should not** be used in life threatening weather situations, or be relied on to inform the public of such situations. It is your responsibility to check your local forecast and make an informed decision. See [Disclaimer](#disclaimer)
-
-- Marine Forecast powered by [Open Meteo's Marine API](https://open-meteo.com/en/docs/marine-weather-api)
-
-## Updates in 8.0.0
-- Introduces [Webamp](https://github.com/captbaritone/webamp)
-	- Music is streamed from the Internet Archive and the playlist is a chunk of [*Weatherscan Music: The TRUE Complete Collection*](https://archive.org/details/weatherscancompletecollection/01+Fair+Weather.mp3)
-- Time is now configurable between 12-hour and 24-hour formats
-- Hourly forecast is now retrieved using timezone instead of toISOString
-- Scan lines
-- Pressure in mmHg added
-- Wipe reveal effect added to scrolling conditions
-
-## Updates in 7.0.0
-- Weather units are now customizable. These are broken down by category, which are:
-	- Wind Units: `m/s`, `km/h`, `knots`, `mph`
-	- Temperature Units: `C`, `F`, `K`
-	- Distance Units: `km`, `mi`, `ft`, `meters`, `bananas`
-	- Pressure Units: `hpa`, `inHg`
-- Added new fields to the **Current Conditions** screen:
-	- Cloud Cover: `_%`
-	- UV Index: `0 -> 11`
-- Changed **Hourly Graph**'s time scale to use 24 hours instead of 12 hour cycle
-- Converted all compatible views to render correct values based on user's unit selection
-- Corrected an incorrect calculation of **Current Conditions** cloud cover value
-- Corrected an incorrect calculation of **Current Conditions** ceiling and visibility values
-
-## Updates in 6.0.0 (Internationalization w/ Open Meteo)
-This is a significant divergence from 5.0.0 and is exclusive to this fork.
-
-This migrates the project away from NOAA's USA exclusive weather API to [Open Meteo's global weather API](https://open-meteo.com/en/docs). This means that _this fork_ is capable of rendering weather data across the globe.
-
-However, there are some caveats. Migrating to Open Meteo means that there is some loss of functionality, namely the loss of radar imagery, and observation station data, and hazards. This means that the following screens are no longer functional:
-- Hazards
-- Latest Observations
-- Travel Forecast
-- Regional Forecast
-- ~~Local Radar~~
-
-## Updates in 5.0.0
-The change to 5.0 changes from drawing the weather graphics on canvas elements and instead uses HTML and CSS to style all of the weather graphics. A lot of other changes and fixes were implemented at the same time.
-
-* Replace all canvas elements with HTML and CSS
-* City and airport names are better parsed to fit the available space
-* Remove the dependency on libgif-js
-* Use browser for text wrapping where necessary
-* Some new weather icons
-* Refresh only on slideshow repeat
-* Removed Almanac 30-day outlook
-* Fixed startup issue when current conditions are unavailable
-
-### Why the fork (pre 5.0.0)?
-
-The fork is a result of wanting a more manageable, modern code base to work with. Part of it is an exercise in my education in JavaScript. There are several technical changes that were made behind the scenes.
-
-* Make use of the new API available at https://api.weather.gov ([documentation](https://www.weather.gov/documentation/services-web-api)). This caused the removal of some of the original WeatherStar 4000 displays, and allowed for new displays to be created.
-* Changed code to make extensive use of ES6 functionality including:
-	* Arrow functions
-	* Promises
-	* Async/await and parallel loading of all forecast resources
-	* Classes
-* Common code base for each display through use of classes
-* Separation between weather display code and user interface
-* Use of a modern date parsing library [luxon](https://moment.github.io/luxon/)
-* Attempt to remove the need for a local server to bypass [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) issues with the various APIs used. This is almost workable but there are still some minor CORS issues with https://api.weather.gov.
-	* The necessary CORS pass through URLs have been rewritten so they can be deployed on Node.js using the included server or through S3/Cloudfront in a serverless environment.
-* Proper settings for static resource caching
-* Build system integration to reduce the number of scripts that need to be loaded
-
-### What's different
-
-I've made several changes to this Weather Star 4000 simulation compared to the original hardware unit and the code that this was forked from.
-
-* Radar displays the timestamp of the image.
-* A new hour-by-hour graph of the temperature, cloud cover and precipitation chances for the next 24 hours.
-* A new hourly forecast display for the next 24 hours is available, and is shown in the style of the travel cities forecast. (off by default because it duplicates the hourly graph)
-* The "Local Forecast" and "Extended Forecast" provide several additional days of information compared to the original format in the 90's.
-* Narration was removed. In the original code narration made use of the computer's local text-to-speech engine which didn't sound great.
-* Music was removed. I don't want to deal with copyright issues and hosting MP3s. If you're looking for the music that played during forecasts please visit [TWCClassics](https://twcclassics.com/audio/).
-* Marine forecast (tides) is not available as it is not part of the new API.
-* The nearby cities displayed on screens such as "Latest Observations" and "Regional Forecast" are likely not the same as they were in the 90's. The weather monitoring equipment at these stations move over time for one reason or another, and coming up with a simple formulaic way of finding nearby stations is sufficient to give the same look-and-feel as the original.
-* "Flavors" are not present in this simulation. Flavors refer to the order of the weather information that was shown on the original units. Instead, the order of the displays has been fixed and a checkboxes can be used to turn on and off individual displays. The travel forecast has been defaulted to off so only local information shows for new users.
-
-## Sharing a permalink (bookmarking)
-Selected displays, the forecast city and widescreen setting are sticky from one session to the next. However if you would like to share your exact configuration or bookmark it click the "Copy Permalink" (or get "Get Parmalink") near the bottom of the page. A URL will be copied to your clipboard with all of you selected displays and location (or copy it from the page if your browser doesn't support clipboard transfers directly). You can then share this link or add it to your bookmarks.
-
-## Kiosk mode
-Kiosk mode can be activated by a checkbox on the page. Note that there is no way out of kiosk mode (except refresh or closing the browser), and the play/pause and other controls will not be available. This is deliberate as a browser's kiosk mode it intended not to be exited or significantly modified.
-
-It's also possible to enter kiosk mode using a permalink. First generate a [Permalink](#sharing-a-permalink-bookmarking), then to the end of it add `&kiosk=true`. Opening this link will load all of the selected displays included in the Permalink, enter kiosk mode immediately upon loading and start playing the forecast.
-
-## Wish list (Feature Requests)
-
-If you think a feature is missing, please add a feature request here:
-- https://github.com/mwood77/ws4kp-international/issues
-
-## Community Notes
-
-Thanks to the WeatherStar community for providing these discussions to further extend your retro forecasts!
-
-* [Stream as FFMPEG](https://github.com/netbymatt/ws4kp/issues/37#issuecomment-2008491948)
-
-<!-- ## Customization
-A hook is provided as `/server/scripts/custom.js` to allow customizations to your own fork of this project, without accidentally pushing your customizations back upstream to the git repository. An sample file is provided at `/server/scripts/custom.sample.js` and should be renamed to `custom.js` activate it. -->
-
-## Issue reporting and feature requests
-Found a bug? Please report it here:
-- https://github.com/mwood77/ws4kp-international/issues
-
-## Disclaimer
-
-This web site should NOT be used in life threatening weather situations, or be relied on to inform the public of such situations. The Internet is an unreliable network subject to server and network outages and by nature is not suitable for such mission critical use. If you require such access to NWS data, please consider one of their subscription services. The authors of this web site shall not be held liable in the event of injury, death or property damage that occur as a result of disregarding this warning.
-
-The WeatherSTAR 4000 unit and technology is owned by The Weather Channel. This web site is a free, non-profit work by fans. All of the back ground graphics of this web site were created from scratch.  The icons were created by Charles Abel and Nick Smith (http://twcclassics.com/downloads/icons.html) as well as by Malek Masoud.  The fonts were originally created by Nick Smith (http://twcclassics.com/downloads/fonts.html).
-
+**Disclaimer**: this is a personal, non-commercial project. Do not rely on it in dangerous weather or for flight operations; the data can be late, wrong or missing. The WeatherSTAR 4000 belongs to The Weather Channel. Sky Pit Wall is not affiliated with The Weather Channel, Formula 1, the FIA, the Lufthansa Group or any team or airline; their names and marks belong to their owners.
