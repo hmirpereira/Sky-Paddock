@@ -2,11 +2,11 @@
   "name": "Sky Pit Wall",
   "icons": [
 	{
-	  "src": "/images/Logo192.png",
+	  "src": "images/Logo192.png",
 	  "sizes": "192x192",
-	  "type": "images/png"
+	  "type": "image/png"
 	}
   ],
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone"
 }
