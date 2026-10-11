@@ -91,6 +91,7 @@ Latest Observations, Local Forecast, Marine Forecast and Personal Weather Statio
 - The menu button with no location chosen drew the progress screen under the start screen; it now focuses the search box.
 - METAR to weather code conversion for personal weather stations (test order and codes).
 - Experimental Features removed (the setting, the nearby-cities lookup for Air Quality and Local Radar, and its third-party proxy `ws4kp-proxy.easypete.com`): slow, unreliable and of little use in Portugal, and the site no longer depends on that server.
+- Browser icon: its link carries the version, so browsers fetch a new icon after a release instead of keeping the old one. The web app manifest pointed outside the site (`/images/...`, start `/`) and had a wrong image type; now relative.
 - Webamp pinned to a fixed version instead of `@next`; image preloads resolve relative to the page.
 - Webamp playlist: *The Weather Channel Presents: The Best of Smooth Jazz* (one full-album file streamed from the [Internet Archive](https://archive.org/details/the-weather-channel-presents-the-best-of-smooth-jazz-full-album)) instead of the Weatherscan tracks. On the TV the Winamp is hidden and the Pi plays its own music.
 
