@@ -27,12 +27,28 @@ body #divTwc.scan-lines #container {
   @include scan-lines;
 }
 
+// On the TV (kiosk) the scan lines come with the rest of the analogue look: a vignette (darker
+// corners, like a picture tube) and a red and blue colour fringe on the text, like a VHS recording
+// (1.5 px of the 640 x 480 screen, about 3 real pixels). All of it is static: no cost to the Pi.
+//
 // On the TV (kiosk) the 640 x 480 screen is scaled about 2.25 times, so lines drawn inside it
 // come out 2 or 3 real pixels thick, unevenly. There the lines go over the whole window instead,
 // in real pixels: one dark line every two (540 lines on a 1080p TV), even at any scale.
 body.kiosk.scan-lines {
+  --fringe-left: -1.5px 0 0 rgba(255, 40, 40, 0.75);
+  --fringe-right: 1.5px 0 0 rgba(40, 170, 255, 0.75);
+
   #divTwc.scan-lines #container::after {
     display: none;
+  }
+
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2147483646;
+    background: radial-gradient(ellipse 75% 70% at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.55) 100%);
   }
 
   &::after {
