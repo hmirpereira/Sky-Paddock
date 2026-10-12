@@ -24,6 +24,11 @@ const TYPES = {
 	HDJT: 'HondaJet',
 };
 
+// Max Verstappen's MV logo (file supplied by the owner of this project, without the (R) mark),
+// 218 x 104 units, centred on the jet's place on the route line and drawn in the page's colours
+const MARK = '<g transform="scale(0.24) translate(-103.3 -52)" fill="#ffd23f" stroke="black" stroke-width="6" stroke-linejoin="round">'
+	+ '<polygon points="172.2,48.5 206.6,83 137.8,83"/><polygon points="34.4,48.5 68.9,83 0,83"/>'
+	+ '<polygon points="103.3,103.7 0,0.3 65.4,10.6 103.3,48.5 141.2,10.6 206.6,0.3"/></g>';
 const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '');
 const code = (airport) => airport?.iata ?? airport?.icao ?? '?';
 const city = (airport) => stripAccents(airport?.city ?? '');
@@ -86,27 +91,56 @@ class F1Jet extends WeatherDisplay {
 		const flight = jet.flight ?? {};
 		page.querySelector('.reg').textContent = jet.registration;
 		page.querySelector('.type').textContent = TYPES[jet.type] ?? jet.type ?? '';
+		const status = page.querySelector('.status');
+		status.textContent = jet.airborne ? 'IN FLIGHT' : 'PARKED';
+		status.classList.toggle('airborne', !!jet.airborne);
+
+		// boarding pass: airports, cities, times (Lisbon), duration and date
+		[['from', flight.from, flight.departed], ['to', flight.to, jet.airborne ? null : flight.landed]].forEach(([side, airport, time]) => {
+			const end = page.querySelector(`.end.${side}`);
+			end.querySelector('.code').textContent = code(airport);
+			end.querySelector('.city').textContent = city(airport);
+			end.querySelector('.time').textContent = time ? DateTime.fromISO(time, { zone: LOCAL_TZ }).toFormat('HH:mm') : '--:--';
+		});
+		page.querySelector('.duration').textContent = jet.airborne ? `since ${when(flight.departed)}` : duration(flight.departed, flight.landed);
+		page.querySelector('.date').textContent = flight.departed ? DateTime.fromISO(flight.departed, { zone: LOCAL_TZ }).toFormat('ccc d LLL') : '';
+
+		// dashed line with the jet on it: at the end once landed, at its progress while flying
+		const progress = jet.airborne ? this.progress() : 1;
+		const x = 36 + progress * 198;
+		page.querySelector('.line').innerHTML = `<svg viewBox="0 0 270 44" preserveAspectRatio="none">
+			<line x1="8" y1="22" x2="262" y2="22" stroke="white" stroke-width="3" stroke-dasharray="8 7"/>
+			<circle cx="8" cy="22" r="5" fill="white"/><circle cx="262" cy="22" r="5" fill="white"/>
+			<g transform="translate(${x.toFixed(1)} 22)">${MARK}</g></svg>`;
 
 		const where = page.querySelector('.where');
 		where.classList.toggle('airborne', !!jet.airborne);
 		if (jet.airborne) {
-			where.textContent = `In the air to ${code(flight.to)}`;
 			const alt = jet.position?.altitudeFt ? `${(Math.round((jet.position.altitudeFt * 0.3048) / 10) * 10).toLocaleString('en-US')} m` : '';
 			const speed = jet.position?.speedKt ? `${Math.round(jet.position.speedKt * 1.852)} km/h` : '';
-			page.querySelector('.where-detail').textContent = [alt, speed].filter(Boolean).join('   ');
+			where.textContent = [`To ${city(flight.to) || code(flight.to)}`, alt, speed].filter(Boolean).join('   ');
 		} else {
-			const at = flight.to ?? null;
-			where.textContent = at ? `On the ground at ${code(at)}` : 'On the ground';
-			page.querySelector('.where-detail').textContent = city(at);
+			const place = city(flight.to) || code(flight.to);
+			const since = flight.landed ? DateTime.now().diff(DateTime.fromISO(flight.landed), 'hours').hours : null;
+			let stay = '';
+			if (since !== null && since >= 0) stay = since < 48 ? `${Math.floor(since)}h ${String(Math.floor((since % 1) * 60)).padStart(2, '0')}m` : `${Math.floor(since / 24)} days`;
+			where.textContent = stay ? `In ${place} for ${stay}` : `In ${place}`;
 		}
+	}
 
-		page.querySelector('.label.flight-label').textContent = jet.airborne ? 'THIS FLIGHT' : 'LAST FLIGHT';
-		page.querySelector('.route').textContent = `${code(flight.from)}-${code(flight.to)}`;
-		const cities = [city(flight.from), city(flight.to)].every(Boolean) ? `${city(flight.from)} to ${city(flight.to)}` : '';
-		const times = jet.airborne
-			? `Took off ${when(flight.departed)}`
-			: [`Took off ${when(flight.departed)}`, flight.landed ? `landed ${when(flight.landed)}` : '', duration(flight.departed, flight.landed)].filter(Boolean).join(', ');
-		page.querySelector('.route-detail').textContent = [cities, times].filter(Boolean).join('\n');
+	// share of the flight done, by distance from the origin over the whole route
+	progress() {
+		const { from, to } = this.jet.flight ?? {};
+		const here = this.jet.position;
+		if (!from?.lat || !to?.lat || !here?.lat) return 0.5;
+		const dist = (a, b) => {
+			const r = (d) => (d * Math.PI) / 180;
+			const h = Math.sin(r(b.lat - a.lat) / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(r(b.lon - a.lon) / 2) ** 2;
+			return 2 * Math.asin(Math.sqrt(h));
+		};
+		const done = dist(from, here);
+		const left = dist(here, to);
+		return Math.min(0.95, Math.max(0.05, done / (done + left || 1)));
 	}
 
 	drawMap() {

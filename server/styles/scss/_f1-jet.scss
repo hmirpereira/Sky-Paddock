@@ -15,51 +15,186 @@
 			box-sizing: border-box;
 		}
 
-		// page 1: where the jet is and its last flight
+		// page 1: a boarding pass of the last flight, and where the jet is now
 		.now {
-			padding: 4px 30px 0;
+			padding: 10px 22px 0;
 
-			.aircraft {
-				font-family: 'Star4000 Small';
-				font-size: 20pt;
-				color: f1.$f1-text;
-				@include u.text-shadow(2px, 1px);
-				height: 30px;
+			.topline {
+				position: relative;
+				height: 40px;
 
-				.reg {
-					color: #ffd23f;
+				// registration in a tail-coloured tag
+				.tail {
+					position: absolute;
+					left: 0;
+					top: 2px;
+					padding: 0 16px;
+					height: 34px;
+					line-height: 36px;
+					background: f1.$f1-red;
+					border: 2px solid white;
+					font-family: 'Star4000 Large';
+					font-size: 18pt;
+					color: white;
+					@include u.text-shadow(2px, 1px);
+				}
+
+				.type {
+					position: absolute;
+					left: 165px;
+					top: 8px;
+					font-family: 'Star4000 Small';
+					font-size: 18pt;
+					color: white;
+					@include u.text-shadow(2px, 1px);
+				}
+
+				.status {
+					position: absolute;
+					right: 0;
+					top: 4px;
+					padding: 0 10px;
+					height: 30px;
+					line-height: 26px;
+					border: 2px solid white;
+					font-family: 'Star4000 Small';
+					font-size: 18pt;
+					color: black;
+					background: white;
+
+					&.airborne {
+						background: #ffd23f;
+					}
 				}
 			}
 
-			.label {
-				margin-top: 4px;
-				font-family: 'Star4000 Small';
-				font-size: 18pt;
-				color: f1.$f1-accent;
-				@include u.text-shadow(2px, 1px);
-			}
+			// the boarding pass
+			.pass {
+				position: relative;
+				margin-top: 10px;
+				height: 162px;
+				background: rgba(0, 0, 0, 0.45);
+				border: 2px solid rgba(255, 255, 255, 0.55);
+				border-radius: 8px;
+				overflow: hidden;
 
-			.where,
-			.route {
-				font-family: 'Star4000 Large';
-				font-size: 28pt;
-				line-height: 40px;
-				color: white;
-				@include u.text-shadow();
+				// the lion (images/f1jet-lion.png, supplied by the owner of this project) on the left,
+				// larger than the card so it is cut by the edges, fading out towards the right
+				&::before {
+					content: '';
+					position: absolute;
+					left: -30px;
+					top: -55px;
+					width: 290px;
+					height: 285px;
+					// the picture is already half transparent
+					background: url(../images/f1jet-lion.png) no-repeat center / contain;
+					opacity: 1;
+					filter: brightness(1.5);
+					-webkit-mask-image: linear-gradient(to right, black 30%, transparent 95%);
+					mask-image: linear-gradient(to right, black 30%, transparent 95%);
+					pointer-events: none;
+				}
 
-				&.airborne {
-					color: #ffd23f;
+				>div {
+					z-index: 1;
+				}
+
+				.end {
+					position: absolute;
+					top: 16px;
+					width: 170px;
+					text-align: center;
+
+					&.from { left: 14px; }
+					&.to { right: 14px; }
+
+					.code {
+						font-family: 'Star4000 Large';
+						font-size: 50pt;
+						line-height: 70px;
+						color: white;
+						@include u.text-shadow(3px, 1.5px);
+					}
+
+					.city {
+						font-family: 'Star4000 Small';
+						font-size: 16pt;
+						line-height: 26px;
+						color: f1.$f1-accent;
+						@include u.text-shadow(2px, 1px);
+						white-space: nowrap;
+						overflow: hidden;
+					}
+
+					.time {
+						font-family: 'Star4000 Large';
+						font-size: 20pt;
+						line-height: 34px;
+						color: #ffd23f;
+						@include u.text-shadow(2px, 1px);
+					}
+				}
+
+				.middle {
+					position: absolute;
+					left: 185px;
+					right: 185px;
+					top: 28px;
+					text-align: center;
+
+					.duration,
+					.date {
+						font-family: 'Star4000 Small';
+						font-size: 16pt;
+						line-height: 26px;
+						color: white;
+						@include u.text-shadow(2px, 1px);
+					}
+
+					.line {
+						position: relative;
+						height: 44px;
+
+						svg {
+							width: 100%;
+							height: 44px;
+							display: block;
+						}
+					}
 				}
 			}
 
-			.where-detail,
-			.route-detail {
-				font-family: 'Star4000 Small';
-				font-size: 18pt;
-				line-height: 28px;
-				color: white;
-				@include u.text-shadow(2px, 1px);
-				white-space: pre;
+			.now-line {
+				position: relative;
+				margin-top: 6px;
+				height: 50px;
+
+				.label {
+					position: absolute;
+					left: 0;
+					top: 12px;
+					font-family: 'Star4000 Small';
+					font-size: 18pt;
+					color: f1.$f1-accent;
+					@include u.text-shadow(2px, 1px);
+				}
+
+				.where {
+					position: absolute;
+					left: 70px;
+					top: 0;
+					font-family: 'Star4000 Large';
+					font-size: 24pt;
+					line-height: 48px;
+					color: white;
+					white-space: pre;
+					@include u.text-shadow();
+
+					&.airborne {
+						color: #ffd23f;
+					}
+				}
 			}
 		}
 
