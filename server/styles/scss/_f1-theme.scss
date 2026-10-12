@@ -19,7 +19,8 @@ $f1-text: white;
 #f1-standings-html,
 #f1-last-race-html,
 #f1-grid-html,
-#f1-next-race-html {
+#f1-next-race-html,
+#f1-jet-html {
 	background-image: url(../images/BackGround1_1_f1.png);
 
 	.header .title {
@@ -30,6 +31,7 @@ $f1-text: white;
 .wide.f1-standings #container,
 .wide.f1-last-race #container,
 .wide.f1-grid #container,
-.wide.f1-next-race #container {
+.wide.f1-next-race #container,
+.wide.f1-jet #container {
 	background: url(../images/BackGround1_1_wide_f1.png);
 }

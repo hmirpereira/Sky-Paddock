@@ -401,10 +401,10 @@ const DISPLAY_GROUPS = [
 	{ title: 'Weather', ids: null },
 	{ title: 'Aviation', ids: ['metar', 'departures', 'cancellations', 'overhead'] },
 	{ title: 'Personal', ids: ['work-schedule'] },
-	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-grid', 'f1-standings', 'f1-next-race'] },
+	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-grid', 'f1-standings', 'f1-next-race', 'f1-jet'] },
 ];
 // screens that read data served by the Raspberry Pi (skipped anywhere else)
-const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule'];
+const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule', 'f1-jet'];
 
 const generateCheckboxes = () => {
 	const availableDisplays = document.querySelector('#enabledDisplays');

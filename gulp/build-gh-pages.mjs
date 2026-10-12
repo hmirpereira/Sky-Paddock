@@ -55,6 +55,7 @@ const mjsSources = [
 	'server/scripts/modules/f1grid.mjs',
 	'server/scripts/modules/f1standings.mjs',
 	'server/scripts/modules/f1nextrace.mjs',
+	'server/scripts/modules/f1jet.mjs',
 	'server/scripts/modules/progress.mjs',
 	'server/scripts/index.mjs',
 ];

@@ -1,0 +1,17 @@
+<%- include('header.ejs', {titleDual:{ top: 'Verstappen Jet' , bottom: 'Where It Is' }, hasTime: true, noaaLogo: false}) %>
+	<div class="main f1-jet">
+		<div class="jet-page now">
+			<div class="aircraft"><span class="reg"></span> <span class="type"></span></div>
+			<div class="label">NOW</div>
+			<div class="where"></div>
+			<div class="where-detail"></div>
+			<div class="label flight-label">LAST FLIGHT</div>
+			<div class="route"></div>
+			<div class="route-detail"></div>
+		</div>
+		<div class="jet-page map">
+			<div class="map-svg"></div>
+			<div class="map-route"></div>
+		</div>
+		<div class="credit">Data: F1 Jet Tracker (public ADS-B), OurAirports, Natural Earth</div>
+	</div>
