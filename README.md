@@ -48,6 +48,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | F1 Grid | Starting order of the next sprint or race | Jolpica F1, OpenF1 |
 | F1 Drivers | Drivers' championship, scrolling through the field | Jolpica F1 |
 | F1 Next Race | Track, details and countdown; weekend schedule and race forecast | Jolpica F1, [f1-circuits](https://github.com/bacinger/f1-circuits), Open-Meteo |
+| F1 Jet (Pi) | Where Max Verstappen's jet is and its last flight, with a map of the route | [F1 Jet Tracker](https://f1jettracker.com) (public ADS-B), [OurAirports](https://ourairports.com), Natural Earth |
 
 Every screen can be switched on or off on the page. Latest Observations, Local Forecast, Marine Forecast and Personal Weather Station are kept from the original but are off on the TV.
 
@@ -83,6 +84,7 @@ Red and black.
 - **Sources**: Jolpica F1 first (its alpha API for sprint qualifying); OpenF1 when Jolpica has not published a session yet, which can take until after the weekend (`utils/f1-openf1.mjs`).
 - **F1 Drivers**: the whole drivers' championship, 7 rows at a time, scrolling like the original Travel Forecast, with a team icon per driver (each driver's current team comes from the latest race).
 - **F1 Next Race**: page 1 has the track outline, Grand Prix, circuit, place with an 8-bit flag, track length, date and countdown; page 2 has the weekend schedule in Portuguese time and the forecast at the circuit for the start of the race (from 15 days before). Outlines are in `utils/f1-circuits.mjs`.
+- **F1 Jet**: Max Verstappen's private jet (as identified by F1 Jet Tracker). Page 1: where it is now (on the ground at an airport, or in the air with altitude and speed) and its last flight with three-letter airport codes (e.g. TZX-NCE), cities, times in Lisbon and duration. Page 2: a map of that flight's route from its ADS-B positions, with the two airports; while flying, a dot marks the jet. F1 Jet Tracker's data files cannot be read by the browser from another site, so the Pi service fetches them every 5 minutes, turns ICAO codes into IATA ones with a monthly copy of OurAirports and serves `f1jet.json`. The world map is Natural Earth 1:10m simplified into `utils/world-map.mjs` by a script (not in this repository).
 - **Update rule** (`utils/f1-update.mjs`): F1 Drivers and F1 Next Race download their data once a day from Friday to Monday after 22:00 (Lisbon time) and keep it in `localStorage` the rest of the week.
 
 ## Look and feel
@@ -112,7 +114,7 @@ Every choice on the page goes into the address, so a whole setup is one link. **
 
 The Pi-only screens read their data from services on the Pi that are not in this repository, because they hold private keys, the home position and personal data:
 
-- `skypitwall-voos` serves `http://127.0.0.1:8095/`: `flights.json` and `cancelled.json` (AeroDataBox), `taf.json` (aviationweather.gov), `overhead.json` (ADS-B receiver, adsb.lol, adsbdb, airport plan), `schedule.json` and `health.json`.
+- `skypitwall-voos` serves `http://127.0.0.1:8095/`: `flights.json` and `cancelled.json` (AeroDataBox), `taf.json` (aviationweather.gov), `overhead.json` (ADS-B receiver, adsb.lol, adsbdb, airport plan), `f1jet.json` (F1 Jet Tracker, OurAirports), `schedule.json` and `health.json`.
 - `skypitwall-horario` turns the private schedule spreadsheet into JSON for the Work Schedule screen.
 
 Chromium on the Pi lets the public site read the local service through the `LocalNetworkAccessAllowedForUrls` and `LoopbackNetworkAllowedForUrls` policies. Anywhere else those requests fail and the screens are skipped.
@@ -159,7 +161,7 @@ To replace an icon, flag or the logo without building, put the new file with the
 - Fonts and weather icons from [TWCClassics](https://twcclassics.com/downloads.html): fonts by Nick Smith; icons by Charles Abel, Nick Smith and Malek Masoud.
 - Track outlines from [bacinger/f1-circuits](https://github.com/bacinger/f1-circuits), MIT License, Copyright (c) 2019-2025 Tomislav Bacinger.
 - Map data: [Natural Earth](https://www.naturalearthdata.com) (public domain); airport plans (c) OpenStreetMap contributors, [ODbL](https://opendatacommons.org/licenses/odbl/).
-- Data: Open-Meteo, IPMA, RainViewer, metar.vatsim.net, aviationweather.gov, Jolpica F1, OpenF1, AeroDataBox, adsb.lol, adsbdb.
+- Data: Open-Meteo, IPMA, RainViewer, metar.vatsim.net, aviationweather.gov, Jolpica F1, OpenF1, AeroDataBox, adsb.lol, adsbdb, F1 Jet Tracker, OurAirports.
 - Licence: MIT, as the projects it is built on; see [LICENSE](LICENSE).
 
 **Disclaimer**: this is a personal, non-commercial project. Do not rely on it in dangerous weather or for flight operations; the data can be late, wrong or missing. The WeatherSTAR 4000 belongs to The Weather Channel. Sky Pit Wall is not affiliated with The Weather Channel, Formula 1, the FIA, the Lufthansa Group or any team or airline; their names and marks belong to their owners.

@@ -1,0 +1,145 @@
+@use 'shared/_utils'as u;
+@use 'f1-theme'as f1;
+
+// 310px = page 286 + credit 24
+.weather-display .main.f1-jet {
+	&.main {
+		overflow: hidden;
+		height: 310px;
+		@include f1.f1-rows-background;
+
+		.jet-page {
+			position: relative;
+			height: 286px;
+			overflow: hidden;
+			box-sizing: border-box;
+		}
+
+		// page 1: where the jet is and its last flight
+		.now {
+			padding: 4px 30px 0;
+
+			.aircraft {
+				font-family: 'Star4000 Small';
+				font-size: 20pt;
+				color: f1.$f1-text;
+				@include u.text-shadow(2px, 1px);
+				height: 30px;
+
+				.reg {
+					color: #ffd23f;
+				}
+			}
+
+			.label {
+				margin-top: 4px;
+				font-family: 'Star4000 Small';
+				font-size: 18pt;
+				color: f1.$f1-accent;
+				@include u.text-shadow(2px, 1px);
+			}
+
+			.where,
+			.route {
+				font-family: 'Star4000 Large';
+				font-size: 28pt;
+				line-height: 40px;
+				color: white;
+				@include u.text-shadow();
+
+				&.airborne {
+					color: #ffd23f;
+				}
+			}
+
+			.where-detail,
+			.route-detail {
+				font-family: 'Star4000 Small';
+				font-size: 18pt;
+				line-height: 28px;
+				color: white;
+				@include u.text-shadow(2px, 1px);
+				white-space: pre;
+			}
+		}
+
+		// page 2: map of the last flight
+		.map {
+			.map-svg {
+				position: absolute;
+				inset: 0;
+
+				svg {
+					width: 640px;
+					height: 286px;
+					display: block;
+				}
+
+				.sea {
+					fill: #12050a;
+				}
+
+				.land {
+					fill: #4a0d10;
+					stroke: #8a2a2a;
+					stroke-width: 0.6;
+				}
+
+				.track {
+					fill: none;
+					stroke: #ffd23f;
+					stroke-width: 3;
+					stroke-linejoin: round;
+				}
+
+				.airport {
+					fill: white;
+					stroke: black;
+					stroke-width: 1.5;
+				}
+
+				.code {
+					font-family: 'Star4000 Large';
+					font-size: 20px;
+					fill: white;
+					stroke: black;
+					stroke-width: 3px;
+					paint-order: stroke;
+				}
+
+				.plane {
+					fill: #ffd23f;
+					stroke: black;
+					stroke-width: 1;
+				}
+			}
+
+			.map-route {
+				position: absolute;
+				left: 14px;
+				bottom: 8px;
+				font-family: 'Star4000 Small';
+				font-size: 18pt;
+				color: white;
+				@include u.text-shadow(2px, 1px);
+				white-space: pre;
+			}
+		}
+
+		&.page-map .now,
+		&:not(.page-map) .map {
+			display: none;
+		}
+
+		.credit {
+			height: 24px;
+			line-height: 24px;
+			padding-left: 20px;
+			background-color: f1.$f1-column-header;
+			font-family: 'Star4000 Small';
+			font-size: 14pt;
+			color: f1.$f1-text;
+			@include u.text-shadow(2px, 1px);
+		}
+	}
+}
