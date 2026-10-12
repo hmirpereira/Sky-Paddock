@@ -1,13 +1,32 @@
 <%- include('header.ejs', {titleDual:{ top: 'Verstappen Jet' , bottom: 'Where It Is' }, hasTime: true, noaaLogo: false}) %>
 	<div class="main f1-jet">
 		<div class="jet-page now">
-			<div class="aircraft"><span class="reg"></span> <span class="type"></span></div>
-			<div class="label">NOW</div>
-			<div class="where"></div>
-			<div class="where-detail"></div>
-			<div class="label flight-label">LAST FLIGHT</div>
-			<div class="route"></div>
-			<div class="route-detail"></div>
+			<div class="topline">
+				<div class="tail"><span class="reg"></span></div>
+				<div class="type"></div>
+				<div class="status"></div>
+			</div>
+			<div class="pass">
+				<div class="end from">
+					<div class="code"></div>
+					<div class="city"></div>
+					<div class="time"></div>
+				</div>
+				<div class="middle">
+					<div class="duration"></div>
+					<div class="line"></div>
+					<div class="date"></div>
+				</div>
+				<div class="end to">
+					<div class="code"></div>
+					<div class="city"></div>
+					<div class="time"></div>
+				</div>
+			</div>
+			<div class="now-line">
+				<div class="label">NOW</div>
+				<div class="where"></div>
+			</div>
 		</div>
 		<div class="jet-page map">
 			<div class="map-svg"></div>
