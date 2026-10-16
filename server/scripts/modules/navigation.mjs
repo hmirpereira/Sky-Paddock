@@ -10,6 +10,7 @@ import settings from './settings.mjs';
 
 import { parseQueryString } from './share.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
+import piHeartbeat from './utils/pi-heartbeat.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
 	init();
@@ -301,6 +302,8 @@ const loadDisplay = (direction) => {
 	// show the new display and navigate to an appropriate display
 	if (direction < 0) newDisplay.showCanvas(msg.command.lastFrame);
 	if (direction > 0) newDisplay.showCanvas(msg.command.firstFrame);
+	// the rotation is alive: tell the kiosk watchdog on the Pi
+	piHeartbeat(newDisplay.elemId);
 };
 
 // get the current display index or value
@@ -401,10 +404,11 @@ const DISPLAY_GROUPS = [
 	{ title: 'Weather', ids: null },
 	{ title: 'Aviation', ids: ['metar', 'departures', 'cancellations', 'overhead'] },
 	{ title: 'Personal', ids: ['work-schedule'] },
-	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-grid', 'f1-standings', 'f1-next-race', 'f1-jet'] },
+	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-grid', 'f1-telemetry', 'f1-standings', 'f1-next-race', 'f1-jet'] },
+	{ title: 'News', ids: ['news'] },
 ];
 // screens that read data served by the Raspberry Pi (skipped anywhere else)
-const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule', 'f1-jet'];
+const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule', 'f1-jet', 'news'];
 
 const generateCheckboxes = () => {
 	const availableDisplays = document.querySelector('#enabledDisplays');

@@ -3,26 +3,39 @@ import getCurrentWeather from './currentweather.mjs';
 import { currentDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import piProblems from './utils/pi-health.mjs';
+import { newsNow, plainText } from './utils/news.mjs';
+// eslint-disable-next-line import/no-cycle
+import settings from './settings.mjs';
 
 // constants
 const degree = String.fromCharCode(176);
+const LINE_MS = 4000;
+// news headlines: shown from the start, then crawl to the end at this speed, then stay a moment
+const NEWS_HOLD_MS = 1500;
+const NEWS_END_MS = 1500;
+const NEWS_PX_PER_S = 110;
+const NEWS_PER_ROUND = 1;
+const BREAKING_PER_ROUND = 2;
 
 // local variables
-let interval;
+let timer;
 let screenIndex = 0;
+let newsCursor = 0;
+let roundNews = [];
+
+// next step after `ms`
+const schedule = (ms) => {
+	clearTimeout(timer);
+	timer = setTimeout(incrementInterval, ms);
+};
 
 // start drawing conditions
 // reset starts from the first item in the text scroll list
-const start = () => {
-	// store see if the context is new
-
-	// set up the interval if needed
-	if (!interval) {
-		interval = setInterval(incrementInterval, 4000);
-	}
-
+const start = async () => {
+	schedule(LINE_MS);
 	// draw the data
-	drawScreen();
+	const ms = await drawScreen();
+	if (ms) schedule(ms);
 };
 
 const stop = (reset) => {
@@ -30,30 +43,55 @@ const stop = (reset) => {
 };
 
 // increment interval, roll over
-const incrementInterval = () => {
+const incrementInterval = async () => {
 	// test current screen
 	const display = currentDisplay();
 	if (!display?.okToDrawCurrentConditions) {
 		stop(display?.elemId === 'progress');
+		schedule(LINE_MS);
 		return;
 	}
 	screenIndex = (screenIndex + 1) % (allScreens().length);
+	// a new round: choose its headlines
+	if (screenIndex === 0) pickNews();
 	// draw new text
-	drawScreen();
+	schedule(LINE_MS);
+	const ms = await drawScreen();
+	if (ms) schedule(ms);
 };
 
+// how long the line stays (ms), or nothing for the usual 4 seconds
 const drawScreen = async () => {
 	// get the conditions
 	const data = await getCurrentWeather();
 
 	// nothing to do if there's no data yet
-	if (!data) return;
+	if (!data) return undefined;
 
 	const list = allScreens();
 	if (screenIndex >= list.length) screenIndex = 0;
 	const item = list[screenIndex];
+	if (item?.news) return drawNews(item);
 	// Pi warnings are drawn in red
 	drawCondition(typeof item === 'string' ? item : item(data), typeof item === 'string');
+	return undefined;
+};
+
+// headlines for the next round of the bottom line: the breaking ones every round, plus the next of the others
+const pickNews = () => {
+	roundNews = [];
+	if (!settings.newsTicker?.value) return;
+	const items = newsNow().items ?? [];
+	const breaking = items.filter((item) => item.breaking).slice(0, BREAKING_PER_ROUND);
+	const others = items.filter((item) => !item.breaking);
+	const chosen = [...breaking];
+	for (let i = 0; i < NEWS_PER_ROUND && others.length; i += 1) {
+		chosen.push(others[newsCursor % others.length]);
+		newsCursor += 1;
+	}
+	roundNews = chosen.map((item) => ({
+		news: true, breaking: item.breaking, top: item.top, source: plainText(item.source), text: plainText(item.title),
+	}));
 };
 
 // the "screens" are stored in an array for easy addition and removal
@@ -109,11 +147,32 @@ const screens = [
 	},
 ];
 
-// the weather lines, then one line per warning from the Pi services (only when there is a problem)
-const allScreens = () => [...screens, ...piProblems()];
+// the weather lines, then one line per warning from the Pi services (only when there is a problem),
+// then this round's news headlines (if turned on)
+const allScreens = () => [...screens, ...piProblems(), ...roundNews];
+
+// a headline: the source, then the text, which crawls to the left until its end is shown
+const drawNews = (item) => {
+	const layers = drawCondition(item.text, false, item);
+	// measure on the screen being shown (hidden screens have no size)
+	let overflow = 0;
+	layers.forEach((layer) => {
+		const content = layer.querySelector('.text-content');
+		if (layer.offsetParent) overflow = Math.max(overflow, content.scrollWidth - layer.clientWidth);
+	});
+	if (overflow <= 0) return NEWS_HOLD_MS + NEWS_END_MS + 1000;
+	const crawlMs = Math.round((overflow / NEWS_PX_PER_S) * 1000);
+	layers.forEach((layer) => {
+		const content = layer.querySelector('.text-content');
+		content.style.transition = `clip-path 0.2s ease-out, transform ${crawlMs}ms linear ${NEWS_HOLD_MS}ms`;
+		content.style.transform = `translateX(-${overflow}px)`;
+	});
+	return NEWS_HOLD_MS + crawlMs + NEWS_END_MS;
+};
 
 // internal draw function with preset parameters
-const drawCondition = (text, warning = false) => {
+const drawCondition = (text, warning = false, news = null) => {
+	const layersAdded = [];
 	elemForEach('.weather-display .scroll .fixed', (elem) => {
 		// Remove old text-layers with exit
 		const layers = elem.querySelectorAll('.text-layer');
@@ -130,8 +189,19 @@ const drawCondition = (text, warning = false) => {
 		newLayer.className = warning ? 'text-layer warning' : 'text-layer';
 		const content = document.createElement('div');
 		content.className = 'text-content';
-		content.textContent = text;
+		if (news) {
+			// "RTP  Headline..." with the source as a label (red for breaking news)
+			newLayer.classList.add('news');
+			if (news.breaking) newLayer.classList.add('breaking');
+			const source = document.createElement('span');
+			source.className = 'news-source';
+			source.textContent = news.breaking ? `BREAKING ${news.source}` : news.source;
+			content.append(source, ` ${text}`);
+		} else {
+			content.textContent = text;
+		}
 		newLayer.appendChild(content);
+		layersAdded.push(newLayer);
 		elem.appendChild(newLayer);
 
 		// Force reflow
@@ -141,6 +211,7 @@ const drawCondition = (text, warning = false) => {
 		// Trigger wipe
 		newLayer.classList.add('active');
 	});
+	return layersAdded;
 };
 document.addEventListener('DOMContentLoaded', () => {
 	start();

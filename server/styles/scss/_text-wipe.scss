@@ -36,3 +36,16 @@
     }
 
 }
+
+// news headlines (utils/news.mjs): the source as a label, then the headline crawling to the left
+.weather-display .scroll .fixed .text-layer.news {
+	.news-source {
+		color: #ffe060;
+	}
+
+	&.breaking .news-source {
+		color: white;
+		background: #c00000;
+		padding: 0 6px;
+	}
+}

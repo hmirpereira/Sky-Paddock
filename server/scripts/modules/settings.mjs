@@ -25,6 +25,7 @@ const settings = {
 	vignette: { value: false },
 	colorFringe: { value: false },
 	imageFringe: { value: false },
+	newsTicker: { value: false },
 };
 
 const init = () => {
@@ -89,6 +90,8 @@ const init = () => {
 	settings.colorFringe = new Setting('colorFringe', 'Enable Colour Fringe on Text (VHS)', 'checkbox', false, (value) => document.body.classList.toggle('color-fringe', !!value), true);
 	settings.imageFringe = new Setting('imageFringe', 'Enable Colour Fringe on Pictures (VHS)', 'checkbox', false, (value) => document.body.classList.toggle('image-fringe', !!value), true);
 
+	// Portuguese news headlines crawling in the bottom line, between the weather lines (Pi only, utils/news.mjs)
+	settings.newsTicker = new Setting('newsTicker', 'Show News Headlines in the Bottom Line', 'checkbox', false, null, true);
 	settings.wide = new Setting('wide', 'Widescreen', 'checkbox', false, wideScreenChange, true);
 	settings.kiosk = new Setting('kiosk', 'Kiosk', 'checkbox', false, kioskChange, false);
 

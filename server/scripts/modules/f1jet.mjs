@@ -1,8 +1,8 @@
-// Max Verstappen's private jet, as tracked by F1 Jet Tracker (https://f1jettracker.com) from
-// public ADS-B data. Its data files cannot be read by the browser from another site, so the
-// skypitwall-voos service on the Pi fetches them every 5 minutes, turns the ICAO airport codes
-// into IATA ones (OurAirports) and serves /f1jet.json; anywhere else the screen is skipped.
-// Who uses the jet is F1 Jet Tracker's statement.
+// Max Verstappen's private jet (PH-UTL, ICAO address 4867E6), followed by the skypaddock-voos
+// service on the Pi in the open adsb.lol network (ODbL): it asks for the jet every 5 minutes
+// (2 while flying), reads its track of the last hours, finds the airports at both ends (OurAirports)
+// and serves /f1jet.json; anywhere else the screen is skipped. Until 1.3 the data came from
+// F1 Jet Tracker, which now lets only its own site read its files.
 // Page 1: where the jet is now and its last flight. Page 2: map of the last flight.
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
@@ -216,5 +216,5 @@ class F1Jet extends WeatherDisplay {
 	}
 }
 
-// register display (off by default: it only works on the Pi running skypitwall-voos)
-registerDisplay(new F1Jet(24, 'f1-jet', false));
+// register display (off by default: it only works on the Pi running skypaddock-voos)
+registerDisplay(new F1Jet(25, 'f1-jet', false));

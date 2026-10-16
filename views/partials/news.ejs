@@ -1,0 +1,13 @@
+<%- include('header.ejs', {titleDual:{ top: 'Latest' , bottom: 'News' }, hasTime: true, noaaLogo: false}) %>
+	<div class="main has-scroll news">
+		<div class="news-lines">
+			<div class="news-item template">
+				<div class="meta">
+					<span class="badge"></span><span class="source"></span><span class="when"></span><span class="count"></span>
+				</div>
+				<div class="headline"></div>
+			</div>
+		</div>
+		<div class="news-footer"><span class="sources"></span><span class="page"></span></div>
+	</div>
+	<%- include('scroll.ejs') %>

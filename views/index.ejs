@@ -4,11 +4,11 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Sky Pit Wall</title>
-  <meta name="description" content="Weather, airport departures and a pit wall attitude, in the style of the WeatherStar 4000. Based on WeatherStar 4000+ International." />
-  <meta name="keywords" content="Sky Pit Wall, WeatherStar 4000+" />
+  <title>Sky Paddock</title>
+  <meta name="description" content="Weather, aviation and Formula 1, in the style of the WeatherStar 4000. Based on WeatherStar 4000+ International." />
+  <meta name="keywords" content="Sky Paddock, WeatherStar 4000+" />
   <meta name="author" content="Michael Wood" />
-  <meta name="application-name" content="Sky Pit Wall" />
+  <meta name="application-name" content="Sky Paddock" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -74,7 +74,7 @@
 
 
   <header class="site-header">
-    <div class="site-title">Sky Pit Wall</div>
+    <div class="site-title">Sky Paddock</div>
     <div class="site-tagline">Weather, airport departures and Formula 1, WeatherStar style</div>
   <div id="divQuery">
 		<input id="txtAddress" type="text" value="" placeholder="City or place" />
@@ -97,7 +97,7 @@
     <div id="container">
       <div id="loading" width="640" height="480">
         <div>
-          <img class="logo" src="images/skypitwalllogo-large.png" alt="Sky Pit Wall" />
+          <img class="logo" src="images/skypaddock-logo-large.png" alt="Sky Paddock" />
 					<div class="version">v<%- version %></div>
           <div class="instructions">Enter your location above to continue</div>
         </div>
@@ -171,6 +171,9 @@
       <div id="f1-grid-html" class="weather-display">
         <%- include('partials/f1-grid.ejs') %>
       </div>
+      <div id="f1-telemetry-html" class="weather-display">
+        <%- include('partials/f1-telemetry.ejs') %>
+      </div>
       <div id="f1-standings-html" class="weather-display">
         <%- include('partials/f1-standings.ejs') %>
       </div>
@@ -179,6 +182,9 @@
       </div>
       <div id="f1-jet-html" class="weather-display">
         <%- include('partials/f1-jet.ejs') %>
+      </div>
+      <div id="news-html" class="weather-display">
+        <%- include('partials/news.ejs') %>
       </div>
     </div>
     <div id="divTwcBottom">
@@ -243,8 +249,8 @@
 
     <section class="panel panel-about">
       <div class="heading">About</div>
-      <p>Sky Pit Wall is a personal fork of <a href="https://github.com/mwood77/ws4kp-international" target="_blank">WeatherStar 4000+ International</a> by @mwood77, itself based on <a href="https://github.com/netbymatt/ws4kp" target="_blank">ws4kp</a> by @netbymatt: a simulation of The Weather Channel's WeatherStar 4000. Not affiliated with The Weather Channel, Formula 1, the FIA, the Lufthansa Group or any team or airline.</p>
-      <p><a href="https://github.com/hmirpereira/Sky-Pit-Wall" target="_blank">Source code and README</a></p>
+      <p>Sky Paddock is a personal fork of <a href="https://github.com/mwood77/ws4kp-international" target="_blank">WeatherStar 4000+ International</a> by @mwood77, itself based on <a href="https://github.com/netbymatt/ws4kp" target="_blank">ws4kp</a> by @netbymatt: a simulation of The Weather Channel's WeatherStar 4000. Not affiliated with The Weather Channel, Formula 1, the FIA, the Lufthansa Group or any team or airline.</p>
+      <p><a href="https://github.com/hmirpereira/Sky-Paddock" target="_blank">Source code and README</a></p>
       <div class="credits">
         <div>
           <div class="credits-title">Weather</div>
