@@ -1,0 +1,21 @@
+<%- include('header.ejs', {titleDual:{ top: 'F1 Telemetry' , bottom: 'Qualifying' }, hasTime: true, noaaLogo: false}) %>
+	<div class="main f1-telemetry">
+		<div class="tel-page laps">
+			<div class="cards">
+				<% for (let i = 0; i < 2; i += 1) { %>
+				<div class="lap-card">
+					<div class="who"><span class="team-mark"></span><span class="code"></span><span class="lap"></span></div>
+					<div class="times"><span class="time"></span><span class="gap"></span></div>
+					<div class="sectors"><span class="sector"></span><span class="sector"></span><span class="sector"></span></div>
+				</div>
+				<% } %>
+				<div class="mini">FASTER IN MINI-SECTORS<div class="mini-count"></div></div>
+			</div>
+			<div class="track"></div>
+		</div>
+		<div class="tel-page speed">
+			<div class="legend"></div>
+			<div class="chart"></div>
+		</div>
+		<div class="credit"></div>
+	</div>

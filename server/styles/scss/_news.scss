@@ -1,0 +1,112 @@
+@use 'shared/_colors'as c;
+@use 'shared/_utils'as u;
+
+// 310px in total: 3 headlines of 94px + footer 28
+.weather-display .main.news {
+	&.main {
+		overflow: hidden;
+		height: 310px;
+
+		.news-lines {
+			height: 282px;
+			padding: 0 24px;
+			background: repeating-linear-gradient(0deg, c.$gradient-main-background-2 0px,
+					c.$gradient-main-background-1 136px,
+					c.$gradient-main-background-1 202px,
+					c.$gradient-main-background-2 338px,
+				);
+
+			.news-item {
+				height: 94px;
+				overflow: hidden;
+				box-sizing: border-box;
+				padding-top: 4px;
+				border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+
+				&:last-child {
+					border-bottom: none;
+				}
+
+				.meta {
+					height: 26px;
+					font-family: 'Star4000 Small';
+					font-size: 20pt;
+					line-height: 26px;
+					white-space: pre;
+					color: c.$title-color;
+					@include u.text-shadow(2px, 1px);
+
+					.badge {
+						display: none;
+						margin-right: 12px;
+						padding: 0 8px;
+					}
+
+					.when {
+						margin-left: 14px;
+						color: white;
+					}
+
+					.count {
+						float: right;
+						color: #9fd0ff;
+					}
+				}
+
+				// two lines at most; longer headlines end in "..."
+				.headline {
+					font-family: 'Star4000';
+					font-size: 20pt;
+					line-height: 30px;
+					color: white;
+					display: -webkit-box;
+					-webkit-box-orient: vertical;
+					-webkit-line-clamp: 2;
+					overflow: hidden;
+					@include u.text-shadow(2px, 1px);
+				}
+
+				// long headlines: smaller letters on three lines
+				&.long .headline {
+					font-size: 16pt;
+					line-height: 21px;
+					-webkit-line-clamp: 3;
+				}
+
+				&.breaking {
+					.badge {
+						display: inline-block;
+						background: #c00000;
+						color: white;
+					}
+
+					.headline {
+						color: #ffe060;
+					}
+				}
+
+				&.top .badge {
+					display: inline-block;
+					background: #e0b000;
+					color: black;
+					text-shadow: none;
+				}
+			}
+		}
+
+		.news-footer {
+			height: 28px;
+			line-height: 28px;
+			padding: 0 24px;
+			font-family: 'Star4000 Small';
+			font-size: 18pt;
+			color: white;
+			background-color: c.$column-header;
+			white-space: pre;
+			overflow: hidden;
+			display: flex;
+			justify-content: space-between;
+			@include u.text-shadow(2px, 1px);
+		}
+	}
+}

@@ -38,7 +38,7 @@ const createLink = async (e) => {
 	}
 };
 
-// the same address with the TV settings, ready for "skypitwall-tv url" on the Pi
+// the same address with the TV settings, ready for "skypaddock-tv url" on the Pi
 const createTvLink = async (e) => {
 	e.preventDefault();
 	const box = document.querySelector('#tv-link-command');
@@ -49,7 +49,7 @@ const createTvLink = async (e) => {
 		return;
 	}
 	const url = buildUrl(TV_SETTINGS);
-	const command = `skypitwall-tv url '${url.toString()}'`;
+	const command = `skypaddock-tv url '${url.toString()}'`;
 	box.value = command;
 	box.style.display = 'block';
 	box.focus();

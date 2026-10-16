@@ -1,0 +1,181 @@
+@use 'shared/_utils'as u;
+@use 'f1-theme'as f1;
+
+// 310px = page 286 + credit 24
+.weather-display .main.f1-telemetry {
+	&.main {
+		overflow: hidden;
+		height: 310px;
+		position: relative;
+		@include f1.f1-rows-background;
+
+		.tel-page {
+			position: relative;
+			height: 286px;
+			overflow: hidden;
+		}
+
+		.tel-page.speed {
+			display: none;
+		}
+
+		&.page-chart {
+			.tel-page.laps {
+				display: none;
+			}
+
+			.tel-page.speed {
+				display: block;
+			}
+		}
+
+		// page 1: the two laps on the left, the track on the right
+		.cards {
+			position: absolute;
+			left: 14px;
+			top: 6px;
+			width: 226px;
+		}
+
+		.lap-card {
+			height: 100px;
+			box-sizing: border-box;
+			padding: 4px 8px 0 10px;
+			margin-bottom: 6px;
+			border-left: 4px solid var(--driver);
+			background: rgba(0, 0, 0, 0.35);
+			color: white;
+			white-space: pre;
+			@include u.text-shadow(2px, 1px);
+
+			.who {
+				font-family: 'Star4000 Large';
+				font-size: 18pt;
+				height: 30px;
+
+				.team-mark {
+					display: inline-block;
+					width: 6px;
+					height: 20px;
+					margin-right: 8px;
+					vertical-align: -2px;
+				}
+
+				.code {
+					color: var(--driver);
+				}
+
+				.lap {
+					margin-left: 12px;
+					font-family: 'Star4000 Small';
+					font-size: 18pt;
+					color: #d0d0d0;
+				}
+			}
+
+			.times {
+				font-family: 'Star4000 Large';
+				font-size: 20pt;
+				height: 34px;
+
+				.gap {
+					margin-left: 12px;
+					font-family: 'Star4000 Small';
+					font-size: 18pt;
+					color: f1.$f1-accent;
+				}
+			}
+
+			.sectors {
+				font-family: 'Star4000 Small';
+				font-size: 16pt;
+				color: #b0b0b0;
+
+				.sector {
+					margin-right: 10px;
+				}
+
+				.sector.faster {
+					color: var(--driver);
+				}
+			}
+		}
+
+		.mini {
+			font-family: 'Star4000 Small';
+			font-size: 14pt;
+			color: #d0d0d0;
+			padding-left: 2px;
+			white-space: pre;
+			@include u.text-shadow(2px, 1px);
+
+			.mini-count {
+				font-family: 'Star4000 Large';
+				font-size: 16pt;
+
+				.of {
+					font-family: 'Star4000 Small';
+					color: #d0d0d0;
+				}
+			}
+		}
+
+		.track {
+			position: absolute;
+			left: 240px;
+			top: 4px;
+			width: 392px;
+			height: 278px;
+		}
+
+		// page 2: speed along the lap
+		.legend {
+			height: 26px;
+			padding: 2px 0 0 24px;
+			font-family: 'Star4000 Small';
+			font-size: 16pt;
+			white-space: pre;
+			@include u.text-shadow(2px, 1px);
+		}
+
+		.chart {
+			padding-left: 20px;
+
+			svg {
+				.grid {
+					stroke: rgba(255, 255, 255, 0.18);
+					stroke-width: 1;
+				}
+
+				.sector-line {
+					stroke: rgba(255, 255, 255, 0.5);
+					stroke-width: 1;
+					stroke-dasharray: 4 4;
+				}
+
+				.axis {
+					fill: #d0d0d0;
+					font-family: 'Star4000 Small';
+					font-size: 16px;
+				}
+			}
+		}
+
+		.credit {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 24px;
+			line-height: 24px;
+			padding: 0 20px;
+			background: f1.$f1-column-header;
+			font-family: 'Star4000 Small';
+			font-size: 16pt;
+			color: #d0d0d0;
+			white-space: pre;
+			overflow: hidden;
+			@include u.text-shadow(2px, 1px);
+		}
+	}
+}
