@@ -18,6 +18,7 @@ Sky Paddock is a personal project. It runs full screen on a 1080p TV from a Rasp
 - [Weather screens](#weather-screens)
 - [Aviation screens](#aviation-screens)
 - [Formula 1 screens](#formula-1-screens)
+- [GT World](#gt-world)
 - [News](#news)
 - [Look and feel](#look-and-feel)
 - [Settings and the TV address](#settings-and-the-tv-address)
@@ -52,6 +53,8 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | F1 Drivers | Drivers' championship, scrolling through the field | Jolpica F1 |
 | F1 Next Race | Track, details and countdown; weekend schedule and race forecast | Jolpica F1, [f1-circuits](https://github.com/bacinger/f1-circuits), Open-Meteo |
 | F1 Jet (Pi) | Where Max Verstappen's jet is and its last flight, with a map of the route | [adsb.lol](https://adsb.lol) (ADS-B, ODbL), OpenSky, [OurAirports](https://ourairports.com), Natural Earth |
+| GT World (Pi) | Result of the latest GT World Challenge Europe race(s), with Verstappen's team always shown | Public pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com) |
+| GT World Next (Pi) | Next GT World Challenge Europe event: track outline, round, cup, country with flag, length and turns, race date, countdown, weekend timetable and race forecast | Public event pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com), Open-Meteo |
 
 Every screen can be switched on or off on the page. Latest Observations, Local Forecast, Marine Forecast and Personal Weather Station are kept from the original but are off on the TV.
 
@@ -90,6 +93,12 @@ Red and black.
 - **F1 Telemetry**: the best laps of the two fastest drivers in the latest practice or qualifying session (sprint qualifying included), from OpenF1's car data (speed about 4 times a second) and positions. Page 1: lap number, lap time, gap and sector times (the faster sector in the driver's colour), how many of 25 mini-sectors each won, and the track drawn from the fastest driver's positions, each mini-sector in the colour of the driver who was faster there. Page 2: speed along the lap for both, with the sector lines. The distance along the lap comes from integrating the speed, so both laps are put on the same scale; small differences in the line taken are ignored. The screen looks for a newer session at most once an hour, 30 minutes after a session ends (OpenF1 refuses free requests while a session is live), and keeps the latest result in `localStorage`. Driver colours are cyan and yellow, readable on the red and black theme; the small bar beside the name is the team colour.
 - **F1 Jet**: Max Verstappen's private jet (PH-UTL, a Falcon 8X, ICAO address 4867E6). Page 1: a boarding pass of the last flight (three-letter airport codes such as TZX-NCE, cities, times in Lisbon, duration and date), with the MV logo on the route line at the jet's place and a lion in the background (both supplied by the owner of this project), and where the jet is now (how long it has been on the ground, or altitude and speed in the air). Page 2: a map of that flight's route from its ADS-B positions, with the two airports; while flying, a dot marks the jet. The Pi service asks the open adsb.lol network for the jet every 5 minutes (2 while it flies) and reads its track of the last hours; a flight is a stretch in the air between two stretches on the ground, and its airports are the nearest ones (within 12 km) to the ground points or to the low points of the climb and descent, from a monthly copy of OurAirports. Flights older than about a day come from The OpenSky Network with the owner's free account (flights by aircraft, worked out overnight, and their tracks; checked at start-up up to 30 days back and then every 6 hours); without a track the map shows a straight line between the two airports. The last flight is kept on the Pi. It serves `f1jet.json`. Until version 1.3 the data came from F1 Jet Tracker, which now lets only its own site read its files. The world map is Natural Earth 1:10m simplified into `utils/world-map.mjs` by a script (not in this repository).
 - **Update rule** (`utils/f1-update.mjs`): F1 Drivers and F1 Next Race download their data once a day from Friday to Monday after 22:00 (Lisbon time) and keep it in `localStorage` the rest of the week.
+
+## GT World
+
+- **GT World** (Pi): the result of the latest GT World Challenge Europe race, one page per race (two on a sprint weekend): event, dates, the first seven with car number, drivers, team and gap, and a light band with the position of the highlighted team's car(s), Verstappen's team by default (`GT_HIGHLIGHT` on the Pi), shown also in the list when in the top seven (red row). There is no API: the Pi service reads the public results pages of the official site (the same form the site uses, by season, event and session) and the calendar for the dates, every 6 hours, every 30 minutes from Friday to Monday, and serves `gt.json`. If the site changes its pages, the screen is skipped.
+- **GT World Next** (Pi): the next event, or the current one during the weekend, laid out like F1 Next Race. Page 1 has the track outline, event, cup (Sprint or Endurance), country with an 8-bit flag, track length and number of turns, race date and countdown; page 2 has the timetable in Portuguese time (the last six sessions on a busy weekend) and the forecast at the circuit for the start of the race (from 15 days before). The Pi service takes the first event of the calendar that has not ended and reads its event page (round, length, turns and the timetable in GMT). Outlines and positions are in `utils/gt-circuits.mjs` (`ferramentas/mkgtcircuits.py`); they are the Grand Prix layouts, and Brands Hatch and Misano have no outline, so the details use the whole width there.
+- Both GT screens use the charcoal and red of the official site: `_gt-theme.scss` and the backgrounds `BackGround1_1_gt.png` / `BackGround1_1_wide_gt.png` (`recolor_theme.py gt`).
 
 ## News
 
@@ -174,7 +183,7 @@ To replace an icon, flag or the logo without building, put the new file with the
 - Fonts and weather icons from [TWCClassics](https://twcclassics.com/downloads.html): fonts by Nick Smith; icons by Charles Abel, Nick Smith and Malek Masoud.
 - Track outlines from [bacinger/f1-circuits](https://github.com/bacinger/f1-circuits), MIT License, Copyright (c) 2019-2025 Tomislav Bacinger.
 - Map data: [Natural Earth](https://www.naturalearthdata.com) (public domain); airport plans (c) OpenStreetMap contributors, [ODbL](https://opendatacommons.org/licenses/odbl/).
-- Data: Open-Meteo, IPMA, RainViewer, metar.vatsim.net, aviationweather.gov, Jolpica F1, OpenF1, RTP, Observador, Publico, CNN Portugal, AeroDataBox, adsb.lol, The OpenSky Network, adsbdb, OurAirports.
+- Data: Open-Meteo, IPMA, RainViewer, metar.vatsim.net, aviationweather.gov, Jolpica F1, OpenF1, RTP, Observador, Publico, CNN Portugal, gt-world-challenge-europe.com, AeroDataBox, adsb.lol, The OpenSky Network, adsbdb, OurAirports.
 - Licence: MIT, as the projects it is built on; see [LICENSE](LICENSE).
 
 **Disclaimer**: this is a personal, non-commercial project. Do not rely on it in dangerous weather or for flight operations; the data can be late, wrong or missing. The WeatherSTAR 4000 belongs to The Weather Channel. Sky Paddock is not affiliated with The Weather Channel, Formula 1, the FIA, the Lufthansa Group, Max Verstappen or any team or airline; their names and marks (including the MV logo) belong to their owners.

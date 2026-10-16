@@ -1,0 +1,126 @@
+@use 'shared/_colors'as c;
+@use 'shared/_utils'as u;
+@use 'gt-theme'as gt;
+
+// 310px = event 30 + highlight 44 + 7 rows of 30 + credit 26
+.weather-display .main.gt-race {
+	&.main {
+		overflow: hidden;
+		height: 310px;
+		position: relative;
+		@include gt.gt-rows-background;
+
+		.gt-event {
+			height: 30px;
+			line-height: 30px;
+			padding: 0 20px;
+			font-family: 'Star4000 Small';
+			font-size: 20pt;
+			color: white;
+			white-space: pre;
+			overflow: hidden;
+			background-color: gt.$gt-red;
+			@include u.text-shadow(2px, 1px);
+		}
+
+		// the highlighted team's car(s), always shown
+		.gt-highlight {
+			height: 44px;
+			box-sizing: border-box;
+			padding: 3px 20px 0;
+			font-family: 'Star4000 Small';
+			font-size: 18pt;
+			line-height: 20px;
+			color: black;
+			background: gt.$gt-card;
+			border-left: 10px solid gt.$gt-red;
+			white-space: pre;
+			overflow: hidden;
+
+			.who {
+				font-family: 'Star4000';
+				color: gt.$gt-red;
+			}
+		}
+
+		.gt-lines {
+			height: 210px;
+			padding: 0 12px;
+		}
+
+		.gt-row {
+			position: relative;
+			height: 30px;
+			font-family: 'Star4000';
+			font-size: 18pt;
+			line-height: 30px;
+			color: white;
+			white-space: pre;
+			@include u.text-shadow(2px, 1px);
+
+			>div {
+				position: absolute;
+				top: 0;
+				overflow: hidden;
+			}
+
+			.pos {
+				left: 0;
+				width: 34px;
+				text-align: right;
+				color: white;
+			}
+
+			.car {
+				left: 44px;
+				width: 50px;
+				color: #ff6a55;
+			}
+
+			.drivers {
+				left: 100px;
+				width: 228px;
+			}
+
+			// endurance cars have three drivers
+			&.three .drivers {
+				font-size: 15pt;
+			}
+
+			.team {
+				left: 342px;
+				width: 160px;
+				font-family: 'Star4000 Small';
+				font-size: 16pt;
+				color: gt.$gt-muted;
+			}
+
+			.gap {
+				right: 0;
+				width: 100px;
+				text-align: right;
+			}
+
+			&.highlight {
+				background: rgba(216, 34, 18, 0.55);
+			}
+		}
+
+		.credit {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 26px;
+			line-height: 26px;
+			padding: 0 20px;
+			font-family: 'Star4000 Small';
+			font-size: 16pt;
+			color: gt.$gt-muted;
+			background-color: gt.$gt-charcoal;
+			white-space: pre;
+			overflow: hidden;
+			@include u.text-shadow(2px, 1px);
+		}
+	}
+}
