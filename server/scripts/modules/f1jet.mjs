@@ -1,4 +1,4 @@
-// Max Verstappen's private jet (PH-UTL, ICAO address 4867E6), followed by the skypaddock-voos
+// Max Verstappen's private jet (PH-UTL, ICAO address 4867E6), followed by the skypaddock-hub
 // service on the Pi in the open adsb.lol network (ODbL): it asks for the jet every 5 minutes
 // (2 while flying), reads its track of the last hours, finds the airports at both ends (OurAirports)
 // and serves /f1jet.json; anywhere else the screen is skipped. Until 1.3 the data came from
@@ -216,5 +216,5 @@ class F1Jet extends WeatherDisplay {
 	}
 }
 
-// register display (off by default: it only works on the Pi running skypaddock-voos)
+// register display (off by default: it only works on the Pi running skypaddock-hub)
 registerDisplay(new F1Jet(26, 'f1-jet', false));

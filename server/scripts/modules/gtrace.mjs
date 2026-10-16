@@ -1,14 +1,18 @@
 // GT World Challenge Europe: result of the latest race(s), one page per race (a sprint weekend has two),
-// with the highlighted team (Verstappen's, set on the Pi) always shown on a light band. The skypaddock-voos
+// with the highlighted team's car(s) (Verstappen's, set on the Pi) marked in the list and always shown: a car below
+// the visible rows takes the last row, after a gap line. Team logos replace names where the owner supplied one. The skypaddock-hub
 // service on the Pi reads the public pages of the official site (no API, no CORS) and serves /gt.json;
 // anywhere else this screen is skipped.
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
+// eslint-disable-next-line import/no-cycle
+import settings from './settings.mjs';
+import gtTeamLogo from './utils/gt-team-logos.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/gt.json';
-const ROWS = 7;
+const ROWS = 8;
 const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '');
 const surname = (name) => stripAccents(name).trim().split(/\s+/).slice(-1)[0] ?? '';
 const drivers = (row) => row.drivers.map(surname).join('/');
@@ -16,7 +20,6 @@ const gap = (row) => {
 	if (row.pos === 1) return 'Winner';
 	return row.gap ? `+${row.gap.replace(/^\+/, '')}` : '';
 };
-const ordinal = (n) => `P${n}`;
 
 class GtRace extends WeatherDisplay {
 	constructor(navId, elemId, defaultActive) {
@@ -49,24 +52,15 @@ class GtRace extends WeatherDisplay {
 		this.elem.querySelector('.header .title.dual .bottom').innerHTML = stripAccents(race.race);
 		this.elem.querySelector('.gt-event').textContent = stripAccents(`${data.event} ${data.season}${data.dates ? `   ${data.dates}` : ''}`);
 
-		// the highlighted team: position, car and drivers of each of its cars
-		const mine = race.results.filter((r) => r.highlight);
-		const box = this.elem.querySelector('.gt-highlight');
-		box.innerHTML = '';
-		if (mine.length) {
-			mine.slice(0, 2).forEach((r) => {
-				const line = document.createElement('div');
-				line.innerHTML = `<span class="who">${ordinal(r.pos)}</span>  #${r.car} ${drivers(r)}  ${gap(r)}`;
-				box.append(line);
-			});
-			const team = document.createElement('div');
-			if (mine.length === 1) team.textContent = stripAccents(mine[0].team);
-			box.append(team);
-		} else {
-			box.textContent = `${stripAccents(data.highlight ?? '')}: not classified`;
-		}
-
-		const rows = race.results.slice(0, ROWS).map((r) => {
+		// first rows, with the highlighted car(s) moved into the last rows when they finished further down
+		const mine = race.results.map((r, index) => ({ r, index })).filter(({ r }) => r.highlight).slice(0, 2);
+		const outside = (n) => mine.filter(({ index }) => index >= ROWS - n).length;
+		let moved = 0;
+		while (outside(moved) > moved) moved += 1;
+		const below = mine.filter(({ index }) => index >= ROWS - moved);
+		const list = [...race.results.slice(0, ROWS - moved).map((r, index) => ({ r, index })), ...below];
+		const useLogos = settings.gtTeamLogos?.value ?? true;
+		const rows = list.map(({ r, index }, i) => {
 			const row = this.fillTemplate('gt-row', {
 				pos: String(r.pos),
 				car: `#${r.car}`,
@@ -76,14 +70,28 @@ class GtRace extends WeatherDisplay {
 			});
 			if (r.drivers.length > 2) row.classList.add('three');
 			if (r.highlight) row.classList.add('highlight');
+			// gap line where positions are skipped (a car pulled up from below)
+			if (i > 0 && index > list[i - 1].index + 1) row.classList.add('jump');
+			const logo = useLogos && gtTeamLogo(r.team);
+			if (logo) {
+				const team = row.querySelector('.team');
+				const img = document.createElement('img');
+				img.alt = '';
+				img.src = `images/gt-teams/${logo}`;
+				// no logo file: back to the name
+				img.addEventListener('error', () => { team.textContent = stripAccents(r.team); });
+				team.textContent = '';
+				team.classList.add('logo');
+				team.append(img);
+			}
 			return row;
 		});
-		const list = this.elem.querySelector('.gt-lines');
-		list.innerHTML = '';
-		list.append(...rows);
+		const lines = this.elem.querySelector('.gt-lines');
+		lines.innerHTML = '';
+		lines.append(...rows);
 		this.finishDraw();
 	}
 }
 
-// register display (off by default: it only works on the Pi running skypaddock-voos)
+// register display (off by default: it only works on the Pi running skypaddock-hub)
 registerDisplay(new GtRace(27, 'gt-race', false));

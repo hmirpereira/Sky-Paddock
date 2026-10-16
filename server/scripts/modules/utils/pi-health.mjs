@@ -1,6 +1,6 @@
 // warnings from the Raspberry Pi services (flights, TAF, work schedule) for the bottom line:
 // when something there stops updating, its screen is simply skipped, so without this nobody notices.
-// Read from the skypaddock-voos service (/health.json); anywhere else there are no warnings.
+// Read from the skypaddock-hub service (/health.json); anywhere else there are no warnings.
 const HEALTH_URL = 'http://127.0.0.1:8095/health.json';
 const CHECK_EVERY_MS = 5 * 60 * 1000;
 

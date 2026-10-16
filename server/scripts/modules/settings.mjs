@@ -26,6 +26,7 @@ const settings = {
 	colorFringe: { value: false },
 	imageFringe: { value: false },
 	newsTicker: { value: false },
+	gtTeamLogos: { value: true },
 };
 
 const init = () => {
@@ -92,6 +93,8 @@ const init = () => {
 
 	// Portuguese breaking news crawling in the bottom line, between the weather lines (Pi only, utils/news.mjs)
 	settings.newsTicker = new Setting('newsTicker', 'Show Breaking News in the Bottom Line', 'checkbox', false, null, true);
+	// GT World: owner-supplied team logos instead of the team name (utils/gt-team-logos.mjs)
+	settings.gtTeamLogos = new Setting('gtTeamLogos', 'GT World: Team Logos Instead of Names', 'checkbox', true, null, true);
 	settings.wide = new Setting('wide', 'Widescreen', 'checkbox', false, wideScreenChange, true);
 	settings.kiosk = new Setting('kiosk', 'Kiosk', 'checkbox', false, kioskChange, false);
 

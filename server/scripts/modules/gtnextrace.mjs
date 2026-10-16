@@ -1,7 +1,7 @@
 // GT World Challenge Europe, next event: track outline, event, cup, place with flag, track length and turns,
 // race date and countdown (page 1); weekend timetable in Portuguese time and the forecast at the circuit
 // for the start of the main race (page 2). Same layout as F1 Next Race.
-// The skypaddock-voos service on the Pi reads the event page of the official site and serves it in /gt.json
+// The skypaddock-hub service on the Pi reads the event page of the official site and serves it in /gt.json
 // ('next'); anywhere else this screen is skipped. Outlines and positions: utils/gt-circuits.mjs.
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
@@ -209,5 +209,5 @@ class GtNextRace extends WeatherDisplay {
 	}
 }
 
-// register display (off by default: it only works on the Pi running skypaddock-voos)
+// register display (off by default: it only works on the Pi running skypaddock-hub)
 registerDisplay(new GtNextRace(28, 'gt-next-race', false));
