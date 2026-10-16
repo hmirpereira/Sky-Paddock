@@ -77,4 +77,4 @@ class News extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-voos)
-registerDisplay(new News(26, 'news', false));
+registerDisplay(new News(20, 'news', false));

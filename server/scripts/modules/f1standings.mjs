@@ -125,4 +125,4 @@ class F1Standings extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new F1Standings(23, 'f1-standings', true));
+registerDisplay(new F1Standings(24, 'f1-standings', true));

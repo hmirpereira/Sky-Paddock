@@ -45,13 +45,13 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | Cancellations (Pi) | Cancelled departures from the same airport, all airlines | AeroDataBox |
 | Overhead (Pi) | Closest aircraft, a 50 km radar and the airport plan with the aircraft on the ground | Own ADS-B receiver, [adsb.lol](https://adsb.lol), [OpenSky](https://opensky-network.org), [adsbdb](https://www.adsbdb.com), [OpenStreetMap](https://www.openstreetmap.org) |
 | Work Schedule (Pi) | Shifts for the next 7 days, with the weather at those times | Private spreadsheet, kept on the Pi |
+| News (Pi) | Latest Portuguese headlines, breaking and top stories first; breaking news can also crawl in the bottom line | RSS feeds of [RTP](https://www.rtp.pt/noticias), [Observador](https://observador.pt), [Publico](https://www.publico.pt) and [CNN Portugal](https://cnnportugal.iol.pt) |
 | F1 Last Race | Podium and fastest lap of the latest Grand Prix or sprint | [Jolpica F1](https://github.com/jolpica/jolpica-f1), [OpenF1](https://openf1.org) |
 | F1 Grid | Starting order of the next sprint or race | Jolpica F1, OpenF1 |
 | F1 Telemetry | The two fastest laps of the latest practice or qualifying: times, the track coloured by who was faster where, and speed along the lap | OpenF1 |
 | F1 Drivers | Drivers' championship, scrolling through the field | Jolpica F1 |
 | F1 Next Race | Track, details and countdown; weekend schedule and race forecast | Jolpica F1, [f1-circuits](https://github.com/bacinger/f1-circuits), Open-Meteo |
 | F1 Jet (Pi) | Where Max Verstappen's jet is and its last flight, with a map of the route | [adsb.lol](https://adsb.lol) (ADS-B, ODbL), OpenSky, [OurAirports](https://ourairports.com), Natural Earth |
-| News (Pi) | Latest Portuguese headlines, breaking and top stories first; can also crawl in the bottom line | RSS feeds of [RTP](https://www.rtp.pt/noticias), [Observador](https://observador.pt), [Publico](https://www.publico.pt) and [CNN Portugal](https://cnnportugal.iol.pt) |
 
 Every screen can be switched on or off on the page. Latest Observations, Local Forecast, Marine Forecast and Personal Weather Station are kept from the original but are off on the TV.
 
@@ -94,11 +94,12 @@ Red and black.
 ## News
 
 - **News** (Pi): the Pi service reads the RSS feeds of RTP, Observador, Publico and CNN Portugal every 10 minutes (conditional requests, so an unchanged feed is not downloaded again) and serves `news.json` with the headlines of the last 12 hours. The same story from several sources is shown once (headlines that share enough words, within 6 hours). **Breaking**: the source marks the headline as "Ultima hora" or "Urgente", in the last 2 hours. **Top story**: the same story in 3 or more of the 4 sources in the last 3 hours. Both come first. Opinion, podcasts and match reports are left out. Three headlines per page, up to four pages; the Star4000 fonts have no accents, so they are removed.
-- **Bottom line**: with *Show News Headlines in the Bottom Line* on, each round of the bottom line ends with the next headline and any breaking ones, with the source as a label, shown from the start and then crawling to the left until the end has been read.
+- **Bottom line**: with *Show Breaking News in the Bottom Line* on, each round of the bottom line ends with the breaking news (at most two), with the source as a label: shown from the start for 3 seconds, then crawling slowly to the left, within the same margins as the weather lines, until the end has been read, and staying another 3.5 seconds. Without breaking news nothing is added.
 - Only headlines, with their source, are shown; nothing is stored on disk.
 
 ## Look and feel
 
+- **Loading screen**: the list of screens with their state; with more than 11 it goes into two columns by group (Weather, Aviation, Personal, News, Formula 1), each with its title, so it always fits.
 - **Logo**: `images/skypaddock-logo.png` (340 x 268) in the header of every screen, `images/skypaddock-logo-large.png` (680 x 536) on the loading screen and `images/Logo192.png` as the browser and app icon, all made from the owner's high resolution drawing.
 - **Themes**: recoloured copies of the WeatherStar backgrounds for the F1 screens (red and black, `_f1-theme.scss`) and the aviation screens (navy and silver, `_aviation-theme.scss`). Colours only; no Formula 1 or airline marks.
 - **Icons**, drawn by the owner of this project: `images/airlines/<IATA code>.png` (airline tails, 128 x 128), `images/teams/<constructorId>.png` (F1 teams, 128 x 128) and `images/overhead-logos/<ICAO code>.png` (airline logos for the radar, 48 x 16, listed in `RADAR_LOGOS` in `overhead.mjs`; `LOGO_ALIASES` maps other callsign prefixes of the same brand). `images/flags/<country>.png` are 24 x 16 pixel flags scaled up without smoothing. A missing icon or flag is simply not shown.
@@ -116,7 +117,7 @@ The settings panel on the page holds:
 
 - **Local airport and IPMA area**: airport ICAO code, airport name and IPMA warning area, carried in the address as `settings-airportIcao-text`, `settings-airportName-text` and `settings-ipmaArea-select`. Nothing is set by default, so no place is written in the code: without them the Airport METAR and Hazards screens are skipped. The airport name goes into the titles ("<name> Airport", "<name> Departures").
 - **Units, hours format and speed**.
-- **Display options**: Hide Webamp, Kiosk, Enable Scan Lines, Enable Vignette, Enable Colour Fringe on Text (VHS), Enable Colour Fringe on Pictures (VHS), Show News Headlines in the Bottom Line, Widescreen.
+- **Display options**: Hide Webamp, Kiosk, Enable Scan Lines, Enable Vignette, Enable Colour Fringe on Text (VHS), Enable Colour Fringe on Pictures (VHS), Show Breaking News in the Bottom Line, Widescreen.
 
 Every choice on the page goes into the address, so a whole setup is one link. **Copy TV command** (TV panel) copies `skypaddock-tv url '<address>'` with the screens and settings chosen on the page, plus kiosk, widescreen, scan lines and no Winamp. On the Pi, that command replaces the browser address, keeps the previous one and restarts the browser. Kiosk mode can also be added to any link with `&kiosk=true`.
 
