@@ -2,7 +2,7 @@
 @use 'shared/_utils'as u;
 @use 'gt-theme'as gt;
 
-// 310px = event 30 + highlight 44 + 7 rows of 30 + credit 26
+// 310px = event 30 + 8 rows of 30 with 7px above + credit 26
 .weather-display .main.gt-race {
 	&.main {
 		overflow: hidden;
@@ -23,29 +23,9 @@
 			@include u.text-shadow(2px, 1px);
 		}
 
-		// the highlighted team's car(s), always shown
-		.gt-highlight {
-			height: 44px;
-			box-sizing: border-box;
-			padding: 3px 20px 0;
-			font-family: 'Star4000 Small';
-			font-size: 18pt;
-			line-height: 20px;
-			color: black;
-			background: gt.$gt-card;
-			border-left: 10px solid gt.$gt-red;
-			white-space: pre;
-			overflow: hidden;
-
-			.who {
-				font-family: 'Star4000';
-				color: gt.$gt-red;
-			}
-		}
-
 		.gt-lines {
-			height: 210px;
-			padding: 0 12px;
+			height: 240px;
+			padding: 7px 12px 0;
 		}
 
 		.gt-row {
@@ -101,9 +81,45 @@
 				text-align: right;
 			}
 
-			&.highlight {
-				background: rgba(216, 34, 18, 0.55);
+			// team logo instead of the name, on a charcoal badge: the logo's red lettering
+			// would disappear on the red highlighted row
+			.team.logo {
+				top: 1px;
+				width: auto;
+				height: 28px;
+				padding: 0 5px;
+				box-sizing: border-box;
+				background: gt.$gt-charcoal;
+				border-radius: 4px;
+				display: flex;
+				align-items: center;
+
+				img {
+					height: 26px;
+					max-width: 150px;
+					object-fit: contain;
+				}
 			}
+
+			// the highlighted team's car(s)
+			&.highlight {
+				background: gt.$gt-red;
+				box-shadow: inset 6px 0 0 gt.$gt-card;
+
+				.pos,
+				.car,
+				.team {
+					color: white;
+				}
+			}
+		}
+
+		// gap line before a car pulled up from further down
+		.gt-row.jump {
+			margin-top: 0;
+			border-top: 2px dashed gt.$gt-muted;
+			height: 28px;
+			line-height: 28px;
 		}
 
 		.credit {

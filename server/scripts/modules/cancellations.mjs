@@ -1,5 +1,5 @@
 // cancelled departures from the local airport (set on the Pi), all airlines
-// Comes from the same skypaddock-voos service on the Raspberry Pi as the Departures screen. The list is
+// Comes from the same skypaddock-hub service on the Raspberry Pi as the Departures screen. The list is
 // only refreshed when the service calls AeroDataBox for the Lufthansa Group flights (no extra calls),
 // so the footer shows when it was last updated. Anywhere else this screen is skipped.
 import STATUS from './status.mjs';
@@ -100,5 +100,5 @@ class Cancellations extends WeatherDisplay {
 	}
 }
 
-// register display (off by default: it only works on the Pi running skypaddock-voos)
+// register display (off by default: it only works on the Pi running skypaddock-hub)
 registerDisplay(new Cancellations(17, 'cancellations', false));

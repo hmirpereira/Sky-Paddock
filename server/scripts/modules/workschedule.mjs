@@ -1,6 +1,6 @@
 // work shifts: page 1 lists the next 7 days with the weather at the start of each shift,
 // page 2 shows the next shift with a countdown and the weather at the start and at the end.
-// Shifts are read from the skypaddock-voos service on the Raspberry Pi, which serves what
+// Shifts are read from the skypaddock-hub service on the Raspberry Pi, which serves what
 // skypaddock-horario extracts from a private schedule spreadsheet. The schedule never leaves the Pi;
 // anywhere else this screen is skipped. Weather: Open-Meteo hourly forecast for the chosen location.
 import STATUS from './status.mjs';
@@ -193,5 +193,5 @@ class WorkSchedule extends WeatherDisplay {
 	}
 }
 
-// register display (off by default: it only works on the Pi running skypaddock-voos and skypaddock-horario)
+// register display (off by default: it only works on the Pi running skypaddock-hub and skypaddock-horario)
 registerDisplay(new WorkSchedule(19, 'work-schedule', false));

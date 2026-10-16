@@ -1,5 +1,5 @@
 // latest Portuguese news headlines (RTP, Observador, Publico, CNN Portugal), served by the
-// skypaddock-voos service on the Pi, which reads the RSS feeds every 10 minutes and joins the same
+// skypaddock-hub service on the Pi, which reads the RSS feeds every 10 minutes and joins the same
 // story from several sources. BREAKING: the source marks it as such ("Ultima hora") in the last 2 hours;
 // TOP STORY: the same story in 3 or more sources in the last 3 hours. Anywhere else this screen is skipped.
 import STATUS from './status.mjs';
@@ -76,5 +76,5 @@ class News extends WeatherDisplay {
 	}
 }
 
-// register display (off by default: it only works on the Pi running skypaddock-voos)
+// register display (off by default: it only works on the Pi running skypaddock-hub)
 registerDisplay(new News(20, 'news', false));

@@ -1,5 +1,5 @@
 // heartbeat for the kiosk watchdog on the Raspberry Pi: each time the rotation moves to another
-// screen, tell the skypaddock-voos service (at most once a minute). If the page goes blank,
+// screen, tell the skypaddock-hub service (at most once a minute). If the page goes blank,
 // freezes or never loads, the beats stop and skypaddock-kiosk restarts the browser.
 // Only in kiosk mode, so a browser elsewhere never knocks on its own 127.0.0.1.
 // eslint-disable-next-line import/no-cycle

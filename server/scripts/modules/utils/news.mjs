@@ -1,4 +1,4 @@
-// Portuguese news headlines for the News screen and the bottom line, from the skypaddock-voos service
+// Portuguese news headlines for the News screen and the bottom line, from the skypaddock-hub service
 // on the Pi (RSS feeds of RTP, Observador, Publico and CNN Portugal, read there because the browser
 // cannot read them from another site). Anywhere else the list is empty.
 const NEWS_URL = 'http://127.0.0.1:8095/news.json';
