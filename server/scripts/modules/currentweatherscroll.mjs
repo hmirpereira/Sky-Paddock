@@ -10,17 +10,15 @@ import settings from './settings.mjs';
 // constants
 const degree = String.fromCharCode(176);
 const LINE_MS = 4000;
-// news headlines: shown from the start, then crawl to the end at this speed, then stay a moment
-const NEWS_HOLD_MS = 1500;
-const NEWS_END_MS = 1500;
-const NEWS_PX_PER_S = 110;
-const NEWS_PER_ROUND = 1;
+// breaking news: shown from the start for a moment, then crawl slowly to the end, then stay a while
+const NEWS_HOLD_MS = 3000;
+const NEWS_END_MS = 3500;
+const NEWS_PX_PER_S = 60;
 const BREAKING_PER_ROUND = 2;
 
 // local variables
 let timer;
 let screenIndex = 0;
-let newsCursor = 0;
 let roundNews = [];
 
 // next step after `ms`
@@ -77,19 +75,12 @@ const drawScreen = async () => {
 	return undefined;
 };
 
-// headlines for the next round of the bottom line: the breaking ones every round, plus the next of the others
+// headlines for the next round of the bottom line: only breaking news (the rest is on the News screen)
 const pickNews = () => {
 	roundNews = [];
 	if (!settings.newsTicker?.value) return;
 	const items = newsNow().items ?? [];
-	const breaking = items.filter((item) => item.breaking).slice(0, BREAKING_PER_ROUND);
-	const others = items.filter((item) => !item.breaking);
-	const chosen = [...breaking];
-	for (let i = 0; i < NEWS_PER_ROUND && others.length; i += 1) {
-		chosen.push(others[newsCursor % others.length]);
-		newsCursor += 1;
-	}
-	roundNews = chosen.map((item) => ({
+	roundNews = items.filter((item) => item.breaking).slice(0, BREAKING_PER_ROUND).map((item) => ({
 		news: true, breaking: item.breaking, top: item.top, source: plainText(item.source), text: plainText(item.title),
 	}));
 };

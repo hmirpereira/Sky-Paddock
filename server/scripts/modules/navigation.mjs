@@ -404,8 +404,8 @@ const DISPLAY_GROUPS = [
 	{ title: 'Weather', ids: null },
 	{ title: 'Aviation', ids: ['metar', 'departures', 'cancellations', 'overhead'] },
 	{ title: 'Personal', ids: ['work-schedule'] },
-	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-grid', 'f1-telemetry', 'f1-standings', 'f1-next-race', 'f1-jet'] },
 	{ title: 'News', ids: ['news'] },
+	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-grid', 'f1-telemetry', 'f1-standings', 'f1-next-race', 'f1-jet'] },
 ];
 // screens that read data served by the Raspberry Pi (skipped anywhere else)
 const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule', 'f1-jet', 'news'];
@@ -553,6 +553,7 @@ const registerRefreshData = (callback) => {
 const timeZone = () => weatherParameters.timeZone;
 
 export {
+	DISPLAY_GROUPS,
 	hideAllCanvases,
 	updateStatus,
 	displayNavMessage,

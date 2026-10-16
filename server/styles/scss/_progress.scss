@@ -14,11 +14,34 @@
 		height: 310px;
 		overflow: hidden;
 
-		// many screens: smaller lines (height set in progress.mjs)
-		&.compact .item {
-			height: var(--line-height);
-			line-height: var(--line-height);
-			font-size: calc(var(--line-height) * 0.9);
+		// many screens: two columns by group, with smaller lines (height set in progress.mjs)
+		&.columns {
+			display: flex;
+			gap: 22px;
+			top: 8px;
+
+			.column {
+				flex: 1 1 0;
+				min-width: 0;
+			}
+
+			.group-title,
+			.item {
+				height: var(--line-height);
+				line-height: var(--line-height);
+				font-size: calc(var(--line-height) * 0.8);
+				overflow: hidden;
+			}
+
+			.group-title {
+				color: c.$title-color;
+				text-transform: uppercase;
+				font-size: calc(var(--line-height) * 0.7);
+			}
+
+			.item .links>div {
+				padding-left: 6px;
+			}
 		}
 
 		.item {

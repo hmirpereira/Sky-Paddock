@@ -3,8 +3,13 @@ import { loadImg } from './utils/image.mjs';
 import STATUS, { calcStatusClass, statusClasses } from './status.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import {
-	registerProgress, message, getDisplay, msg,
+	registerProgress, message, getDisplay, msg, DISPLAY_GROUPS,
 } from './navigation.mjs';
+
+// up to this many lines the list is one column, as in the original; more than that, the screens go
+// into two columns by group (Weather, Aviation, ...), each group with its title
+const ONE_COLUMN_MAX = 11;
+const BOX_HEIGHT = 296;
 
 class Progress extends WeatherDisplay {
 	constructor(navId, elemId) {
@@ -36,6 +41,7 @@ class Progress extends WeatherDisplay {
 		if (!displays) return;
 		// screens that are switched off are left out: with this many screens the list no longer fits
 		const lines = displays.map((display, index) => {
+			if (!display) return false;
 			if (display.showOnProgress === false) return false;
 			if (display.status === STATUS.disabled) return false;
 			const fill = {
@@ -54,17 +60,48 @@ class Progress extends WeatherDisplay {
 			links.classList.remove(...statusClasses);
 			links.classList.add(statusClass);
 			links.dataset.index = index;
+			line.dataset.elemId = display.elemId;
 			return line;
 		}).filter((d) => d);
 
 		// get the container and update
 		const container = this.elem.querySelector('.container');
 		container.innerHTML = '';
-		container.append(...lines);
-		// more than 10 lines: shrink them so all fit in the box (296 px of the 310), down to 15 px a line
-		const lineHeight = lines.length > 10 ? Math.max(15, Math.floor(296 / lines.length)) : null;
-		container.style.setProperty('--line-height', lineHeight ? `${lineHeight}px` : '');
-		container.classList.toggle('compact', !!lineHeight);
+		const twoColumns = lines.length > ONE_COLUMN_MAX;
+		container.classList.toggle('columns', twoColumns);
+		if (!twoColumns) {
+			container.append(...lines);
+			container.style.setProperty('--line-height', '');
+		} else {
+			// groups in rotation order, each with its title
+			const grouped = new Set(DISPLAY_GROUPS.flatMap((g) => g.ids ?? []));
+			const groups = DISPLAY_GROUPS.map((group) => {
+				const members = lines.filter((line) => (group.ids ? group.ids.includes(line.dataset.elemId) : !grouped.has(line.dataset.elemId)));
+				if (!members.length) return null;
+				const title = document.createElement('div');
+				title.className = 'group-title';
+				title.textContent = group.title;
+				return [title, ...members];
+			}).filter((g) => g);
+			// whole groups into two columns, as even as possible
+			const total = groups.reduce((n, g) => n + g.length, 0);
+			const left = [];
+			const right = [];
+			groups.forEach((g) => {
+				const leftCount = left.length;
+				if (!right.length && (leftCount === 0 || leftCount + g.length / 2 <= total / 2)) left.push(...g);
+				else right.push(...g);
+			});
+			const columns = [left, right].map((items) => {
+				const column = document.createElement('div');
+				column.className = 'column';
+				column.append(...items);
+				return column;
+			});
+			container.append(...columns);
+			const lineHeight = Math.min(30, Math.floor(BOX_HEIGHT / Math.max(left.length, right.length)));
+			container.style.setProperty('--line-height', `${lineHeight}px`);
+		}
 
 		this.finishDraw();
 
