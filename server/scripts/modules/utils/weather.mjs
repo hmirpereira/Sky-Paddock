@@ -3,14 +3,27 @@ import { json } from './fetch.mjs';
 const openMeteoAdditionalForecastParameters = '&daily=temperature_2m_max,uv_index_max,temperature_2m_min&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,rain,showers,snowfall,snow_depth,weather_code,pressure_msl,surface_pressure,cloud_cover,visibility,evapotranspiration,et0_fao_evapotranspiration,vapour_pressure_deficit,uv_index,uv_index_clear_sky,is_day,sunshine_duration,wet_bulb_temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m&models=best_match&timezone=auto';
 const openMeteoAdditionalForecastParametersMarine = '&hourly=wave_height,wind_wave_direction,swell_wave_height,swell_wave_height,swell_wave_direction,swell_wave_period&timezone=auto&forecast_days=1';
 
+// the forecast everything else waits for: a request that never answers used to leave the page on
+// "Enter your location" for good, so each try gives up after 20 s and there are 4 tries
+const POINT_TRIES = 4;
+const POINT_TIMEOUT_MS = 20000;
+const POINT_WAIT_MS = [5000, 15000, 30000];
+
 const getPoint = async (lat, lon) => {
-	try {
-		return await json(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}${openMeteoAdditionalForecastParameters}`);
-	} catch (error) {
-		console.log(`Unable to get point ${lat}, ${lon}`);
-		console.error(error);
-		return false;
+	for (let attempt = 0; attempt < POINT_TRIES; attempt += 1) {
+		try {
+			// eslint-disable-next-line no-await-in-loop
+			return await json(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}${openMeteoAdditionalForecastParameters}`, { signal: AbortSignal.timeout(POINT_TIMEOUT_MS) });
+		} catch (error) {
+			console.log(`Unable to get point ${lat}, ${lon} (try ${attempt + 1} of ${POINT_TRIES})`);
+			console.error(error);
+			if (attempt < POINT_TRIES - 1) {
+				// eslint-disable-next-line no-await-in-loop
+				await new Promise((resolve) => { setTimeout(resolve, POINT_WAIT_MS[attempt]); });
+			}
+		}
 	}
+	return false;
 };
 
 const getMarineDataModels = () => {
