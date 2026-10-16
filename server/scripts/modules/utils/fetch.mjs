@@ -15,6 +15,8 @@ const fetchAsync = async (_url, responseType, _params = {}) => {
 	};
 	// store original number of retries
 	params.originalRetries = params.retryCount;
+	// no request waits for ever: without a signal of its own, give up after 30 s
+	if (!params.signal) params.signal = AbortSignal.timeout(params.timeout ?? 30000);
 
 	// build a url, including the rewrite for cors if necessary
 	let corsUrl = _url;
