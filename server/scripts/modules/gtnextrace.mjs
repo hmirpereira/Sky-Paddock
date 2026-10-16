@@ -79,7 +79,11 @@ class GtNextRace extends WeatherDisplay {
 			console.warn('GT World Next: no data from the Pi', error.message);
 		}
 		const next = data?.next;
-		const sessions = (next?.sessions ?? []).filter((s) => s.start).sort((a, b) => a.start.localeCompare(b.start));
+		const all = (next?.sessions ?? []).filter((s) => s.start);
+		// "Qualifying Combined" is the combined result of Q1 to Q3 and starts with Q1: drop it when the parts are listed
+		const sessions = all
+			.filter((s) => !(/combined/i.test(s.name) && all.some((o) => o !== s && o.start === s.start)))
+			.sort((a, b) => a.start.localeCompare(b.start));
 		const last = sessions.at(-1)?.start;
 		const end = last ?? next?.race;
 		// no event announced, or the last session is over: skip the screen
