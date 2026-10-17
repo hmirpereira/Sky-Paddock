@@ -2,3 +2,7 @@ node_modules
 **/debug.log
 server/scripts/custom.js
 .DS_Store
+# built by GitHub Actions at every push (.github/workflows/pages.yml); not committed
+docs/
+server/styles/main.css
+server/styles/main.css.map
