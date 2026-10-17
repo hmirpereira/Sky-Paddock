@@ -1,0 +1,57 @@
+# Sky Paddock: builds the site and publishes it on GitHub Pages at every push.
+# The built files (docs/, server/styles/main.css) are made here, so they do not need to be in the commits.
+# Needs Settings > Pages > Build and deployment > Source: "GitHub Actions".
+name: Publish site
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# one publication at a time; a newer push waits for the one running
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci --no-audit --no-fund
+      - name: Lint (stops here if the code has errors, so a broken page never reaches the TV)
+        run: npm run lint
+      - name: Build
+        run: |
+          npm run build:css
+          npm run build
+      - name: Check the build
+        run: |
+          test -s docs/index.html
+          test -s docs/resources/ws.min.js
+          test -s docs/resources/ws.min.css
+          grep -q "_=$(node -p "require('./package.json').version")" docs/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
