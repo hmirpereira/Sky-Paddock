@@ -91,4 +91,4 @@ class RegionalForecast extends WeatherDisplay {
 	}
 }
 
-registerDisplay(new RegionalForecast(6, 'regional-forecast'));
+registerDisplay(new RegionalForecast(5, 'regional-forecast'));

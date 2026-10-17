@@ -21,7 +21,7 @@ $gt-text: white;
 // frame and header band: recoloured copies of the WeatherStar backgrounds (recolor_theme.py gt)
 #gt-race-html,
 #gt-next-race-html {
-	background-image: url(../images/BackGround1_1_gt.png);
+	background-image: url(/images/BackGround1_1_gt.png);
 
 	.header .title {
 		color: $gt-text;
@@ -30,5 +30,5 @@ $gt-text: white;
 
 .wide.gt-race #container,
 .wide.gt-next-race #container {
-	background: url(../images/BackGround1_1_wide_gt.png);
+	background: url(/images/BackGround1_1_wide_gt.png);
 }

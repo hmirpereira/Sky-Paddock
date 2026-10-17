@@ -1,0 +1,35 @@
+// Sky Paddock: the single entry for Vite (dev server and build). Order matters: each screen
+// registers itself on import, and index.mjs (last) starts the page.
+import './vendor-globals.mjs';
+import './modules/currentweatherscroll.mjs';
+import './modules/hazards.mjs';
+import './modules/currentweather.mjs';
+import './modules/almanac.mjs';
+import './modules/icons.mjs';
+import './modules/extendedforecast.mjs';
+import './modules/hourly.mjs';
+import './modules/hourly-graph.mjs';
+import './modules/localforecast.mjs';
+import './modules/radar.mjs';
+import './modules/regionalforecast.mjs';
+import './modules/travelforecast.mjs';
+import './modules/marine-forecast.mjs';
+import './modules/aqi-forecast.mjs';
+import './modules/customweatherstation.mjs';
+import './modules/pollen.mjs';
+import './modules/metar.mjs';
+import './modules/departures.mjs';
+import './modules/cancellations.mjs';
+import './modules/overhead.mjs';
+import './modules/workschedule.mjs';
+import './modules/news.mjs';
+import './modules/f1lastrace.mjs';
+import './modules/f1grid.mjs';
+import './modules/f1telemetry.mjs';
+import './modules/f1standings.mjs';
+import './modules/f1nextrace.mjs';
+import './modules/f1jet.mjs';
+import './modules/gtrace.mjs';
+import './modules/gtnextrace.mjs';
+import './modules/progress.mjs';
+import './index.mjs';

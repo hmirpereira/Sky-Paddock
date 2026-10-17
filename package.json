@@ -1,18 +1,16 @@
 {
 	"name": "sky-paddock",
-	"version": "1.5.4",
+	"version": "1.6.0",
 	"description": "Welcome to the WeatherStar 4000+ project page!",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build:css": "sass --style=compressed ./server/styles/scss/main.scss ./server/styles/main.css",
+		"dev": "vite",
+		"start": "vite",
+		"build": "vite build",
+		"preview": "vite build && vite preview",
 		"lint": "eslint ./server/scripts/**/*.mjs",
 		"lint:fix": "eslint --fix ./server/scripts/**/*.mjs",
-		"start": "nodemon index.js",
-		"copy-assets": "mkdir -p docs/images && cp -r ./server/images docs && mkdir -p docs/fonts && cp -r ./server/fonts docs",
-		"build": "rm -rf docs/ && gulp && npm run copy-assets",
-		"copy-assets:win": "cmd /c \"mkdir docs\\images && xcopy /e /i /y server\\images docs\\images && mkdir docs\\fonts && xcopy /e /i /y server\\fonts docs\\fonts\"",
-		"build:win": "cmd /c \"rmdir /s /q docs && gulp && npm run copy-assets:win\""
+		"server": "node index.js"
 	},
 	"repository": {
 		"type": "git",
@@ -25,28 +23,15 @@
 	},
 	"homepage": "https://github.com/mwood77/ws4kp-international#readme",
 	"devDependencies": {
-		"@aws-sdk/client-cloudfront": "^3.609.0",
-		"del": "^7.1.0",
 		"eslint": "^8.2.0",
 		"eslint-config-airbnb-base": "^15.0.0",
 		"eslint-plugin-import": "^2.10.0",
-		"gulp": "^5.0.0",
-		"gulp-awspublish": "^8.0.0",
-		"gulp-concat": "^2.6.1",
-		"gulp-ejs": "^5.1.0",
-		"gulp-htmlmin": "^5.0.1",
-		"gulp-rename": "^2.0.0",
-		"gulp-s3-upload": "^1.7.3",
-		"gulp-sass": "^5.1.0",
-		"gulp-terser": "^2.0.0",
 		"luxon": "^3.0.0",
-		"nodemon": "^3.1.9",
 		"nosleep.js": "^0.12.0",
 		"sass": "^1.54.0",
 		"suncalc": "^1.8.0",
 		"swiped-events": "^1.1.4",
-		"terser-webpack-plugin": "^5.3.6",
-		"webpack-stream": "^7.0.0"
+		"vite": "^8.3.4"
 	},
 	"dependencies": {
 		"ejs": "^3.1.5",

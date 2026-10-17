@@ -98,4 +98,4 @@ class Pollen extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new Pollen(14, 'pollen', true));
+registerDisplay(new Pollen(13, 'pollen', true));

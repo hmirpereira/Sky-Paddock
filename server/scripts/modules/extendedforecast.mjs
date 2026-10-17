@@ -106,4 +106,4 @@ const parse = (fullForecast) => {
 };
 
 // register display
-registerDisplay(new ExtendedForecast(8, 'extended-forecast'));
+registerDisplay(new ExtendedForecast(7, 'extended-forecast'));

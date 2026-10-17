@@ -174,7 +174,7 @@ const imageName = (type) => {
 };
 
 // register display
-const display = new Almanac(9, 'almanac');
+const display = new Almanac(8, 'almanac');
 registerDisplay(display);
 
 export default display.getSun.bind(display);

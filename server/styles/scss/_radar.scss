@@ -2,7 +2,7 @@
 @use 'shared/_utils'as u;
 
 #radar-html.weather-display {
-	background-image: url('../images/BackGround4_1.png');
+	background-image: url('/images/BackGround4_1.png');
 
 	.header {
 		height: 83px;
@@ -116,5 +116,5 @@
 }
 
 .wide.radar #container {
-	background: url(../images/BackGround4_1_wide.png);
+	background: url(/images/BackGround4_1_wide.png);
 }

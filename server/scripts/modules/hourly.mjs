@@ -178,7 +178,7 @@ const parseForecast = (data) => {
 };
 
 // register display
-const display = new Hourly(3, 'hourly', true);
+const display = new Hourly(2, 'hourly', true);
 registerDisplay(display);
 
 export default display.getCurrentData.bind(display);

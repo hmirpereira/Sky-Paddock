@@ -88,7 +88,7 @@
 					width: 290px;
 					height: 285px;
 					// the picture is already half transparent
-					background: url(../images/f1jet-lion.png) no-repeat center / contain;
+					background: url(/images/f1jet-lion.png) no-repeat center / contain;
 					opacity: 1;
 					filter: brightness(1.5);
 					-webkit-mask-image: linear-gradient(to right, black 30%, transparent 95%);

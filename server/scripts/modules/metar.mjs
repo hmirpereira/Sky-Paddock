@@ -201,4 +201,4 @@ const buildRows = (d) => {
 };
 
 // register display
-registerDisplay(new Metar(15, 'metar', true));
+registerDisplay(new Metar(14, 'metar', true));

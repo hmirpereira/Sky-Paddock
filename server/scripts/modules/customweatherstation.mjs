@@ -64,4 +64,4 @@ class CustomWeatherStation extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new CustomWeatherStation(13, 'custom-weather-station', false));
+registerDisplay(new CustomWeatherStation(12, 'custom-weather-station', false));

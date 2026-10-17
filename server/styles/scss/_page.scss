@@ -3,7 +3,7 @@
 
 @font-face {
 	font-family: "Star4000";
-	src: url('../fonts/Star4000.woff') format('woff');
+	src: url('/fonts/Star4000.woff') format('woff');
 }
 
 body {
@@ -40,13 +40,12 @@ body {
 
 		button {
 			font-size: 16pt;
+			border: 1px solid darkgray;
 
 			@media (prefers-color-scheme: dark) {
 				background-color: #000000;
 				color: white;
 			}
-
-			border: 1px solid darkgray;
 		}
 
 		#btnGetGps {
@@ -134,7 +133,7 @@ body {
 
 	&.wide {
 		max-width: 854px;
-		// background: url(../images/BackGround1_1_wide.png);
+		// background: url(/images/BackGround1_1_wide.png);
 		;
 	}
 }
@@ -174,13 +173,12 @@ body {
 	display: flex;
 	flex-direction: row;
 	background-color: #000000;
+	color: #ffffff;
+	width: 100%;
 
 	@media (prefers-color-scheme: dark) {
 		background-color: rgb(48, 48, 48);
 	}
-
-	color: #ffffff;
-	width: 100%;
 }
 
 #divTwcBottom>div {
@@ -251,37 +249,37 @@ body {
 
 @font-face {
 	font-family: "Star4000";
-	src: url('../fonts/Star4000.woff') format('woff');
+	src: url('/fonts/Star4000.woff') format('woff');
 }
 
 @font-face {
 	font-family: "Star 4 Radar";
-	src: url('../fonts/Star 4 Radar.woff') format('woff');
+	src: url('/fonts/Star 4 Radar.woff') format('woff');
 }
 
 @font-face {
 	font-family: 'Star4000 Extended';
-	src: url('../fonts/Star4000 Extended.woff') format('woff');
+	src: url('/fonts/Star4000 Extended.woff') format('woff');
 }
 
 @font-face {
 	font-family: 'Star4000LCN';
-	src: url('../fonts/Star4000LCN.woff') format('woff');
+	src: url('/fonts/Star4000LCN.woff') format('woff');
 }
 
 @font-face {
 	font-family: 'Star4000 Large Compressed';
-	src: url('../fonts/Star4000 Large Compressed.woff') format('woff');
+	src: url('/fonts/Star4000 Large Compressed.woff') format('woff');
 }
 
 @font-face {
 	font-family: 'Star4000 Large';
-	src: url('../fonts/Star4000 Large.ttf') format('truetype');
+	src: url('/fonts/Star4000 Large.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: 'Star4000 Small';
-	src: url('../fonts/Star4000 Small.woff') format('woff');
+	src: url('/fonts/Star4000 Small.woff') format('woff');
 }
 
 #display {
@@ -295,7 +293,7 @@ body {
 	width: 640px;
 	height: 480px;
 	// overflow: hidden;
-	background-image: url(../images/BackGround1_1.png);
+	background-image: url(/images/BackGround1_1.png);
 	transform-origin: 0 0;
 }
 
@@ -303,7 +301,7 @@ body {
 	padding-left: 107px;
 	padding-right: 107px;
 	background-repeat: no-repeat;
-	background: url(../images/BackGround1_1_wide.png)
+	background: url(/images/BackGround1_1_wide.png)
 }
 
 #divTwc:fullscreen #container,
