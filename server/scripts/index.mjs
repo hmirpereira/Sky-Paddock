@@ -1,4 +1,5 @@
 import { json } from './modules/utils/fetch.mjs';
+import autocomplete from './modules/utils/autocomplete.mjs';
 import noSleep from './modules/utils/nosleep.mjs';
 import { round2 } from './modules/utils/units.mjs';
 import { parseQueryString } from './modules/share.mjs';
@@ -58,7 +59,7 @@ const init = () => {
 	document.addEventListener('keydown', documentKeydown);
 	document.addEventListener('touchmove', (e) => { if (document.fullscreenElement) e.preventDefault(); });
 
-	$(TXT_ADDRESS_SELECTOR).devbridgeAutocomplete({
+	const search = autocomplete(document.querySelector(TXT_ADDRESS_SELECTOR), {
 		serviceUrl: 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest',
 		deferRequestBy: 300,
 		paramName: 'text',
@@ -67,23 +68,20 @@ const init = () => {
 			category,
 			maxSuggestions: 10,
 		},
-		dataType: 'json',
 		transformResult: (response) => ({
-			suggestions: response.suggestions.map((i) => ({
+			suggestions: (response.suggestions ?? []).map((i) => ({
 				value: i.text,
 				data: i.magicKey,
 			})),
 		}),
 		minChars: 3,
-		showNoSuggestionNotice: true,
 		noSuggestionNotice: 'No results found. Please try a different search string.',
-		onSelect(suggestion) { autocompleteOnSelect(suggestion, this); },
+		onSelect: autocompleteOnSelect,
 		width: 490,
 	});
 
 	const formSubmit = () => {
-		const ac = $(TXT_ADDRESS_SELECTOR).devbridgeAutocomplete();
-		if (ac.suggestions[0]) $(ac.suggestionsContainer.children[0]).trigger('click');
+		search.selectCurrent();
 		return false;
 	};
 
@@ -145,10 +143,8 @@ const init = () => {
 	document.querySelector('#container').addEventListener('swiped-right', () => swipeCallBack('right'));
 };
 
-const autocompleteOnSelect = async (suggestion, elem) => {
-	// Do not auto get the same city twice.
-	if (elem.previousSuggestionValue === suggestion.value) return;
-
+// the same place twice in a row is filtered in utils/autocomplete.mjs
+const autocompleteOnSelect = async (suggestion) => {
 	const data = await json('https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/find', {
 		data: {
 			text: suggestion.value,

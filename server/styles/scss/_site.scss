@@ -318,3 +318,28 @@ body:not(.kiosk) {
 		display: none;
 	}
 }
+
+// place suggestions under the address box (utils/autocomplete.mjs), in the page colours
+body:not(.kiosk) .autocomplete-suggestions {
+	background: $site-panel;
+	border: 1px solid $site-border;
+	border-radius: 0 0 4px 4px;
+	color: $site-text;
+	font-family: 'Star4000';
+
+	.autocomplete-suggestion,
+	.autocomplete-no-suggestion {
+		padding: 3px 10px;
+		cursor: pointer;
+	}
+
+	.autocomplete-no-suggestion {
+		color: $site-muted;
+		cursor: default;
+	}
+
+	.autocomplete-selected {
+		background: $site-accent;
+		color: black;
+	}
+}
