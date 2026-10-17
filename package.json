@@ -1,6 +1,6 @@
 {
 	"name": "sky-paddock",
-	"version": "1.5.3",
+	"version": "1.5.4",
 	"description": "Welcome to the WeatherStar 4000+ project page!",
 	"main": "index.js",
 	"scripts": {
@@ -39,8 +39,6 @@
 		"gulp-s3-upload": "^1.7.3",
 		"gulp-sass": "^5.1.0",
 		"gulp-terser": "^2.0.0",
-		"jquery": "^3.6.0",
-		"jquery-touchswipe": "^1.6.19",
 		"luxon": "^3.0.0",
 		"nodemon": "^3.1.9",
 		"nosleep.js": "^0.12.0",
