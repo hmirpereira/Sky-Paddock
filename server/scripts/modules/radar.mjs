@@ -367,6 +367,11 @@ class Radar extends WeatherDisplay {
 			keyboard: false,
 			tap: false,
 			attributionControl: false,
+			// no fades or zoom animations: the frames already switch by opacity, and the fade keeps
+			// redrawing the tiles many times a second, even with the radar screen hidden
+			fadeAnimation: false,
+			zoomAnimation: false,
+			markerZoomAnimation: false,
 		};
 
 		try {

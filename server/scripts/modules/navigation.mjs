@@ -3,7 +3,7 @@ import noSleep from './utils/nosleep.mjs';
 import STATUS from './status.mjs';
 import { wrap } from './utils/calc.mjs';
 import {
-	getPoint, getMarinePoint, getGeocoding, aggregateWeatherForecastData, getAirQualityPoint,
+	getPoint, getMarinePoint, getGeocoding, aggregateWeatherForecastData,
 } from './utils/weather.mjs';
 // eslint-disable-next-line import/no-cycle
 import settings from './settings.mjs';
@@ -158,30 +158,19 @@ const getWeather = async (latLon, haveDataCallback) => {
 
 	// call for new data on each display
 	displays.forEach((display) => display.getData(weatherParameters));
+	return point;
 };
 
-const getMarineForecast = async (latLon, haveDataCallback) => {
+// the marine data asks Open-Meteo once per wave model (about 8 requests): only when the screen is on
+const getMarineForecast = async (latLon, point, haveDataCallback) => {
+	if (!displays.some((display) => display?.name === 'Marine Forecast' && display.isEnabled)) return;
 	const marinePoint = await getMarinePoint(latLon.lat, latLon.lon, 'marine');
-	const point = await getPoint(latLon.lat, latLon.lon);
 
 	if (typeof haveDataCallback === 'function') haveDataCallback(marinePoint);
 
 	displays.forEach((display) => {
 		if (display.name === 'Marine Forecast') {
 			display.getMarineData(point, marinePoint);
-		}
-	});
-};
-
-const getAirQualityForecast = async (latLon, haveDataCallback) => {
-	const airQualityPoint = await getAirQualityPoint(latLon.lat, latLon.lon);
-	const point = await getPoint(latLon.lat, latLon.lon);
-
-	if (typeof haveDataCallback === 'function') haveDataCallback(airQualityPoint);
-
-	displays.forEach((display) => {
-		if (display.name === 'Air Quality') {
-			display.getAirQualityData(point, airQualityPoint);
 		}
 	});
 };
@@ -312,6 +301,8 @@ const currentDisplay = () => displays[currentDisplayIndex()];
 
 const setPlaying = (newValue) => {
 	playing = newValue;
+	// freeze or restart the countdown bar of the screen on show
+	currentDisplay()?.syncCountdown(playing);
 	const playButton = document.querySelector('#NavigatePlay');
 	localStorage.setItem('play', playing);
 
@@ -483,9 +474,8 @@ const latLonReceived = async (data, haveDataCallback) => {
 	// clear the timestamp before loading (it used to be cleared afterwards, wiping the new value)
 	AssignLastUpdate(null);
 	try {
-		await getWeather(data, haveDataCallback);
-		await getMarineForecast(data, haveDataCallback);
-		await getAirQualityForecast(data, haveDataCallback);
+		const point = await getWeather(data, haveDataCallback);
+		await getMarineForecast(data, point, haveDataCallback);
 
 		// We can immediately start playing (auto play),
 		// as all data has been retrieved
@@ -518,7 +508,10 @@ const startAutoRefreshTimer = () => {
 			RemainingMs = 0;
 		}
 		const dt = new Date(RemainingMs);
-		document.querySelector('#spanRefreshCountDown').innerHTML = `${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}`;
+		// the countdown under the screen: only when its text changes (the timer runs twice a second)
+		const countdown = `${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}`;
+		const countdownElem = document.querySelector('#spanRefreshCountDown');
+		if (countdownElem.textContent !== countdown) countdownElem.textContent = countdown;
 
 		// Time has elapsed.
 		if (AutoRefreshCountMs >= AUTO_REFRESH_TIME_MS && !isPlaying()) loadTwcData();

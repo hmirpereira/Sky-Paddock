@@ -38,7 +38,6 @@ jobs:
           test -s docs/index.html
           ls docs/assets/*.js docs/assets/*.css
           test -d docs/images/flags
-          test -d docs/fonts
           grep -q "$(node -p "require('./package.json').version")" docs/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

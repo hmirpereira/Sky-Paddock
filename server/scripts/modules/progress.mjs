@@ -39,6 +39,11 @@ class Progress extends WeatherDisplay {
 
 		// if no displays provided just draw the backgrounds (above)
 		if (!displays) return;
+		// every status change of every screen lands here, also while this screen is hidden:
+		// rebuild the list only when a status actually changed
+		const signature = displays.map((display) => (display ? `${display.elemId}:${String(display.status)}` : '')).join('|');
+		if (signature === this.lastSignature) return;
+		this.lastSignature = signature;
 		// screens that are switched off are left out: with this many screens the list no longer fits
 		const lines = displays.map((display, index) => {
 			if (!display) return false;

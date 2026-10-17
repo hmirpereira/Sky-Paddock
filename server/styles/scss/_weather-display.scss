@@ -124,10 +124,92 @@
 		overflow: hidden;
 		margin-top: 10px;
 
+		// the same free space on both sides, so the text sits in the middle
 		.fixed {
 			font-family: 'Star4000';
 			font-size: 24pt;
-			margin-left: 55px;
+			margin: 0 55px;
 		}
 	}
+}
+// widescreen: the bottom line (conditions and breaking news) uses the whole 16:9 width,
+// not only the 4:3 screen in the middle (the wide background already draws its band across)
+.wide .weather-display.show {
+	overflow: visible;
+}
+
+.wide .weather-display .scroll {
+	width: 854px;
+	margin-left: -107px;
+}
+
+// countdown to the next screen, on the line between the main area and the bottom line:
+// a continuous line that fills from the left (weatherdisplay.mjs), with a light moving along;
+// full when the screen changes.
+// Stepped on purpose (4px at a time, the light in 8 steps a second) instead of every frame (lighter on the Pi).
+.weather-display .countdown-bar {
+	--bar-from: #fff35c;
+	--bar-mid: #ffb000;
+	--bar-to: #ff5a1f;
+	position: absolute;
+	left: 0;
+	top: 398px;
+	width: 640px;
+	height: 4px;
+	z-index: 2;
+	pointer-events: none;
+	// the part still to fill, dim
+	background: rgba(0, 0, 0, 0.55);
+
+	.fill {
+		height: 100%;
+		background:
+			linear-gradient(90deg, transparent 0 40%, rgba(255, 255, 255, 0.85) 50%, transparent 60% 100%) 0 0 / 200% 100%,
+			linear-gradient(90deg, var(--bar-from), var(--bar-mid), var(--bar-to));
+		clip-path: inset(0 100% 0 0);
+		animation: countdown-glint 2s steps(16) infinite;
+	}
+}
+
+@keyframes countdown-glint {
+	from {
+		background-position: 100% 0, 0 0;
+	}
+
+	to {
+		background-position: -100% 0, 0 0;
+	}
+}
+
+// colours of the themed screens
+#f1-standings-html,
+#f1-last-race-html,
+#f1-grid-html,
+#f1-next-race-html,
+#f1-jet-html,
+#f1-telemetry-html,
+#gt-race-html,
+#gt-next-race-html {
+	.countdown-bar {
+		--bar-from: #ffffff;
+		--bar-mid: #ff4a3d;
+		--bar-to: #b00000;
+	}
+}
+
+#metar-html,
+#departures-html,
+#cancellations-html,
+#overhead-html,
+#work-schedule-html {
+	.countdown-bar {
+		--bar-from: #a9c4ef;
+		--bar-mid: #ffffff;
+		--bar-to: #ffad00;
+	}
+}
+
+.wide .weather-display .countdown-bar {
+	width: 854px;
+	left: -107px;
 }

@@ -10,6 +10,15 @@ import settings from './settings.mjs';
 
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 
+// the clock in the header: one timer for all the screens, just after each second turns, and only the
+// screen on show is drawn (before: one timer per screen, 10 times a second, about 270 wake-ups a second)
+const clockDisplays = new Set();
+let clockTimer = null;
+const clockTick = () => {
+	clockDisplays.forEach((display) => { if (display.active) display.drawCurrentDateTime(); });
+	clockTimer = setTimeout(clockTick, 1000 - (Date.now() % 1000) + 20);
+};
+
 class WeatherDisplay {
 	constructor(navId, elemId, name, defaultEnabled) {
 		// navId is used in messaging and sort order
@@ -17,7 +26,6 @@ class WeatherDisplay {
 		this.elemId = undefined;
 		this.data = undefined;
 		this.marineData = undefined;
-		this.aqiData = undefined;
 		this.loadingStatus = STATUS.loading;
 		this.name = name ?? elemId;
 		this.getDataCallbacks = [];
@@ -151,25 +159,6 @@ class WeatherDisplay {
 		return true;
 	}
 
-	getAqiData(weatherParameters) {
-		this.aqiData = undefined;
-
-		// store weatherParameters locally in case we need them later
-		if (weatherParameters) this.weatherParameters = weatherParameters;
-
-		// set status
-		if (this.isEnabled) {
-			this.setStatus(STATUS.loading);
-		} else {
-			this.setStatus(STATUS.disabled);
-			return false;
-		}
-
-		// recalculate navigation timing (in case it was modified in the constructor)
-		this.calcNavTiming();
-		return true;
-	}
-
 	// get necessary data for this display
 	getData(weatherParameters) {
 		// clear current data
@@ -209,11 +198,9 @@ class WeatherDisplay {
 		// draw date and time
 		if (this.okToDrawCurrentDateTime) {
 			this.drawCurrentDateTime();
-			// auto clock refresh
-			if (!this.dateTimeInterval) {
-				// only draw if canvas is active to conserve battery
-				this.dateTimeInterval = setInterval(() => this.active && this.drawCurrentDateTime(), 100);
-			}
+			// auto clock refresh: one shared timer for all screens, once a second (see clockTick)
+			clockDisplays.add(this);
+			if (!clockTimer) clockTick();
 		}
 	}
 
@@ -253,6 +240,7 @@ class WeatherDisplay {
 		this.startNavCount();
 
 		this.elem.classList.add('show');
+		this.syncCountdown();
 		document.querySelector('#divTwc').classList.add(this.elemId);
 	}
 
@@ -263,6 +251,25 @@ class WeatherDisplay {
 		if (this.elem?.classList.length !== 0) this.elem.classList.remove('show');
 		// used to change backgrounds for widescreen
 		document.querySelector('#divTwc').classList.remove(this.elemId);
+	}
+
+	// countdown bar to the next screen (scroll.ejs): fills from the left with the part of this screen's
+	// time already gone, full when the screen changes, in steps of 4px; frozen while paused
+	syncCountdown(running = isPlaying()) {
+		const fill = this.elem?.querySelector('.countdown-bar .fill');
+		if (!fill || !this.timing?.fullDelay?.length) return;
+		const total = this.timing.fullDelay.at(-1);
+		const step = this.timing.baseDelay * settings.speed.value;
+		const left = Math.max(0, Math.min(total, total - this.navBaseCount));
+		const done = ((total - left) / total) * 100;
+		fill.style.transition = 'none';
+		fill.style.clipPath = `inset(0 ${100 - done}% 0 0)`;
+		if (!running || left === 0) return;
+		// start the transition from the value just set
+		fill.getBoundingClientRect();
+		const blocks = Math.max(1, Math.round((fill.offsetWidth * left) / total / 4));
+		fill.style.transition = `clip-path ${left * step}ms steps(${blocks}, end)`;
+		fill.style.clipPath = 'inset(0 0 0 0)';
 	}
 
 	get active() {

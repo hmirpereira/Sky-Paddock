@@ -9,7 +9,6 @@ import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
-import WORLD from './utils/world-map.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/f1jet.json';
 const LOCAL_TZ = 'Europe/Lisbon';
@@ -65,6 +64,15 @@ class F1Jet extends WeatherDisplay {
 		}
 		// the map page only when there is a route to draw
 		this.timing.totalScreens = (this.jet.trail?.length ?? 0) > 1 ? 2 : 1;
+		// the world outlines (215 KB) are only loaded when there is a map to draw, so only on the Pi
+		if (this.timing.totalScreens > 1 && !this.world) {
+			try {
+				this.world = (await import('./utils/world-map.mjs')).default;
+			} catch (error) {
+				console.error('F1 Jet: unable to load the world map', error);
+				this.timing.totalScreens = 1;
+			}
+		}
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
 	}
@@ -188,7 +196,7 @@ class F1Jet extends WeatherDisplay {
 		// land: only the outlines that reach the view (copies one turn east and west for routes over the 180th meridian)
 		const land = [];
 		[-360, 0, 360].forEach((shift) => {
-			WORLD.forEach((ring) => {
+			this.world.forEach((ring) => {
 				let inView = false;
 				for (let i = 0; i < ring.length && !inView; i += 1) {
 					const lon = ring[i][0] + shift;
@@ -217,4 +225,4 @@ class F1Jet extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new F1Jet(25, 'f1-jet', false));
+registerDisplay(new F1Jet(23, 'f1-jet', false));

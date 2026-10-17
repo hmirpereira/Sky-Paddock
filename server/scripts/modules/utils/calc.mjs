@@ -82,51 +82,13 @@ function getMarineAdvisory(periodMarineData, dailyWindMinMaxInKnots) {
 	return advisory.toUpperCase();
 }
 
-// Used to calculate the distance between two points on the Earth specified in latitude and longitude
-// Used for calculating distance between two points on the map
-// Returns the distance in kilometers
-function haversineDistance(lat1, lon1, lat2, lon2) {
-	const R = 6371; // Earth radius in km
-	const toRad = (deg) => deg * Math.PI / 180;
-
-	const dLat = toRad(lat2 - lat1);
-	const dLon = toRad(lon2 - lon1);
-
-	const a = Math.sin(dLat / 2) ** 2
-            + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2))
-            * Math.sin(dLon / 2) ** 2;
-
-	return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-const distance = (x1, y1, x2, y2) => Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 
 // wrap a number to 0-m
 const wrap = (x, m) => ((x % m) + m) % m;
-
-function metarsToWeatherCode(metar) {
-	// This is a very basic implementation and may not cover all cases
-	// the most specific patterns must be tested first
-	// (previously "RA" matched "+RA" and "TSRA" before their own tests)
-	if (metar.includes('TS')) return 95; // thunderstorm (with or without rain)
-	if (metar.includes('SN')) return 73; // snow
-	if (metar.includes('+RA')) return 65; // heavy rain
-	if (metar.includes('-RA')) return 61; // light rain
-	if (metar.includes('RA')) return 63; // moderate rain
-	if (metar.includes('DZ')) return 53; // drizzle
-	if (metar.includes('FZFG')) return 48; // freezing fog
-	if (metar.includes('FG')) return 45; // fog
-	// BR (mist) and HZ (haze) have no WMO precipitation code; treated as overcast
-	if (metar.includes('BR') || metar.includes('HZ')) return 3;
-	return 0; // default to "clear" if no conditions found
-}
 
 export {
 	calculateSeasCondition,
 	getMarineAdvisory,
 	directionToNSEW,
-	haversineDistance,
-	distance,
 	wrap,
-	metarsToWeatherCode,
 };
