@@ -22,7 +22,7 @@ $f1-text: white;
 #f1-next-race-html,
 #f1-jet-html,
 #f1-telemetry-html {
-	background-image: url(../images/BackGround1_1_f1.png);
+	background-image: url(/images/BackGround1_1_f1.png);
 
 	.header .title {
 		color: $f1-text;
@@ -35,5 +35,5 @@ $f1-text: white;
 .wide.f1-next-race #container,
 .wide.f1-jet #container,
 .wide.f1-telemetry #container {
-	background: url(../images/BackGround1_1_wide_f1.png);
+	background: url(/images/BackGround1_1_wide_f1.png);
 }

@@ -230,4 +230,4 @@ const parseAirQualityData = (_weatherParameters, aqiData, coreData) => {
 };
 
 // register display
-registerDisplay(new AirQualityForecast(12, 'aqi-forecast'));
+registerDisplay(new AirQualityForecast(11, 'aqi-forecast'));

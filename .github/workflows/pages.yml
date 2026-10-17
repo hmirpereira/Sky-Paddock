@@ -1,5 +1,5 @@
 # Sky Paddock: builds the site and publishes it on GitHub Pages at every push.
-# The built files (docs/, server/styles/main.css) are made here, so they do not need to be in the commits.
+# The built site (docs/) is made here with Vite, so it does not need to be in the commits.
 # Needs Settings > Pages > Build and deployment > Source: "GitHub Actions".
 name: Publish site
 
@@ -31,16 +31,15 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Lint (stops here if the code has errors, so a broken page never reaches the TV)
         run: npm run lint
-      - name: Build
-        run: |
-          npm run build:css
-          npm run build
+      - name: Build (Vite)
+        run: npm run build
       - name: Check the build
         run: |
           test -s docs/index.html
-          test -s docs/resources/ws.min.js
-          test -s docs/resources/ws.min.css
-          grep -q "_=$(node -p "require('./package.json').version")" docs/index.html
+          ls docs/assets/*.js docs/assets/*.css
+          test -d docs/images/flags
+          test -d docs/fonts
+          grep -q "$(node -p "require('./package.json').version")" docs/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

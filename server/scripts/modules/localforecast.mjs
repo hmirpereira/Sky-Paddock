@@ -78,4 +78,4 @@ class LocalForecast extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new LocalForecast(7, 'local-forecast'));
+registerDisplay(new LocalForecast(6, 'local-forecast'));

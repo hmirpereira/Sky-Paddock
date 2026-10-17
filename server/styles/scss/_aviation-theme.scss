@@ -22,7 +22,7 @@ $av-yellow: #ffad00;
 #cancellations-html,
 #overhead-html,
 #work-schedule-html {
-	background-image: url(../images/BackGround1_1_aviation.png);
+	background-image: url(/images/BackGround1_1_aviation.png);
 
 	.header .title {
 		color: white;
@@ -34,7 +34,7 @@ $av-yellow: #ffad00;
 .wide.cancellations #container,
 .wide.overhead #container,
 .wide.work-schedule #container {
-	background: url(../images/BackGround1_1_wide_aviation.png);
+	background: url(/images/BackGround1_1_wide_aviation.png);
 }
 
 .weather-display .main.metar.main {

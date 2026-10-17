@@ -56,7 +56,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | GT World (Pi) | Result of the latest GT World Challenge Europe race(s), with Verstappen's team always shown | Public pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com) |
 | GT World Next (Pi) | Next GT World Challenge Europe event: track outline, round, cup, country with flag, length and turns, race date, countdown, weekend timetable and race forecast | Public event pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com), Open-Meteo |
 
-Every screen can be switched on or off on the page. Latest Observations, Local Forecast, Marine Forecast and Personal Weather Station are kept from the original but are off on the TV.
+Every screen can be switched on or off on the page. Local Forecast, Marine Forecast and Personal Weather Station are kept from the original but are off on the TV. Latest Observations (United States weather.gov stations only) and the original's United States city and station lists were removed in 1.5.5.
 
 ## Weather screens
 
@@ -149,14 +149,14 @@ You need Node.js. Run it locally:
 
 ```
 npm install
-npm run start
+npm run dev
 ```
 
-and open http://localhost:8080/.
+and open http://localhost:8080/ (Vite: changes to the code and the styles show at once). `npm run preview` builds and serves the finished site.
 
-**Updating the live site**: edit the sources and push to `main`. GitHub Actions (`.github/workflows/pages.yml`) checks the code with ESLint, builds the site (`npm run build:css`, `npm run build`) and publishes it on GitHub Pages; if the check or the build fails, nothing is published and the site stays as it was. The built files (`docs/`, `server/styles/main.css`) are not in the repository; for `npm run start` run `npm run build:css` first. The Pi only loads new code when Chromium restarts. GitHub Pages lets browsers cache files for 10 minutes; the version number in the links (`?_=1.5.3`) makes the TV load the new code.
+**Updating the live site**: edit the sources and push to `main`. GitHub Actions (`.github/workflows/pages.yml`) checks the code with ESLint, builds the site with Vite (`npm run build`, into `docs/`) and publishes it on GitHub Pages; if the check or the build fails, nothing is published and the site stays as it was. The built files are not in the repository. Vite gives the code and style files names that change with their content, so browsers and the TV always load the new ones; the Pi loads new code when Chromium restarts. `npm run server` starts the original Express server, only needed for the Personal Weather Station push endpoint.
 
-**Layout**: views in `views/` (EJS), one module per screen in `server/scripts/modules/`, styles in `server/styles/scss/`. Each screen is a `WeatherDisplay` subclass registered with `registerDisplay`; the build list is in `gulp/build-gh-pages.mjs`.
+**Layout**: views in `views/` (EJS), one module per screen in `server/scripts/modules/`, all loaded from `server/scripts/main.mjs`, styles in `server/styles/scss/`. Each screen is a `WeatherDisplay` subclass registered with `registerDisplay`; a new screen is added to `server/scripts/main.mjs`; the build is set in `vite.config.mjs`.
 
 **Version**: Sky Paddock has its own version number in `package.json`, starting at 1.0.0 (10 October 2026; forked from WeatherStar 4000+ International 12.1.0). It is shown on the loading screen and is the cache-buster of the script, style and icon links, so each release raises it: the last number for fixes, the middle one for new screens or features.
 
