@@ -3,11 +3,13 @@
 	overflow: hidden;
 	height: 70px;
 
+    // centred; a line longer than the space (a news headline) starts at the left and crawls
     .text-layer {
         position: absolute;
         width: 100%;
         overflow: hidden;
         opacity: 1;
+        text-align: center;
     }
 
     .text-layer.exit {
@@ -40,7 +42,6 @@
 // news headlines (utils/news.mjs): the source as a label, then the headline crawling to the left,
 // inside the same width as the weather lines (55px free on each side)
 .weather-display .scroll .fixed .text-layer.news {
-	width: calc(100% - 55px);
 
 	.news-source {
 		color: #ffe060;

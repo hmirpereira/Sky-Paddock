@@ -14,8 +14,6 @@ import './modules/radar.mjs';
 import './modules/regionalforecast.mjs';
 import './modules/travelforecast.mjs';
 import './modules/marine-forecast.mjs';
-import './modules/aqi-forecast.mjs';
-import './modules/customweatherstation.mjs';
 import './modules/pollen.mjs';
 import './modules/metar.mjs';
 import './modules/departures.mjs';

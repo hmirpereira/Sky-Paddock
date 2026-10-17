@@ -19,12 +19,13 @@ const renderEjs = () => ({
 	},
 });
 
-// the screens load images and fonts by name at run time (flags, logos, icons), so they are copied as they are
+// the screens load images by name at run time (flags, logos, icons), so they are copied as they are
+// (fonts are only used by the styles, so Vite already puts them in assets/)
 const copyStatic = () => ({
 	name: 'sky-paddock-static',
 	apply: 'build',
 	closeBundle() {
-		['images', 'fonts', 'robots.txt', 'manifest.json'].forEach((item) => {
+		['images', 'robots.txt', 'manifest.json'].forEach((item) => {
 			cpSync(resolve(server, item), resolve(out, item), { recursive: true });
 		});
 	},
@@ -34,7 +35,7 @@ export default defineConfig({
 	root: server,
 	// relative links, because the site lives in /Sky-Paddock/ on GitHub Pages
 	base: './',
-	// images and fonts are served from server/ while developing and copied by copyStatic when building
+	// images and fonts are served from server/ while developing; copyStatic copies the images when building
 	publicDir: false,
 	plugins: [renderEjs(), copyStatic()],
 	build: {

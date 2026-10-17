@@ -405,4 +405,4 @@ class Overhead extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new Overhead(17, 'overhead', false));
+registerDisplay(new Overhead(15, 'overhead', false));

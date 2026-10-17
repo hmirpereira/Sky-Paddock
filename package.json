@@ -1,16 +1,15 @@
 {
 	"name": "sky-paddock",
-	"version": "1.6.0",
+	"version": "1.7.0",
 	"description": "Welcome to the WeatherStar 4000+ project page!",
-	"main": "index.js",
+	"main": "vite.config.mjs",
 	"scripts": {
 		"dev": "vite",
 		"start": "vite",
 		"build": "vite build",
 		"preview": "vite build && vite preview",
 		"lint": "eslint ./server/scripts/**/*.mjs",
-		"lint:fix": "eslint --fix ./server/scripts/**/*.mjs",
-		"server": "node index.js"
+		"lint:fix": "eslint --fix ./server/scripts/**/*.mjs"
 	},
 	"repository": {
 		"type": "git",
@@ -23,6 +22,7 @@
 	},
 	"homepage": "https://github.com/mwood77/ws4kp-international#readme",
 	"devDependencies": {
+		"ejs": "^3.1.5",
 		"eslint": "^8.2.0",
 		"eslint-config-airbnb-base": "^15.0.0",
 		"eslint-plugin-import": "^2.10.0",
@@ -32,9 +32,5 @@
 		"suncalc": "^1.8.0",
 		"swiped-events": "^1.1.4",
 		"vite": "^8.3.4"
-	},
-	"dependencies": {
-		"ejs": "^3.1.5",
-		"express": "^4.20.0"
 	}
 }

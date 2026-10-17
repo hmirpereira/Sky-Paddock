@@ -101,4 +101,4 @@ class Cancellations extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new Cancellations(16, 'cancellations', false));
+registerDisplay(new Cancellations(14, 'cancellations', false));

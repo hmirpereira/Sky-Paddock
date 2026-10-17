@@ -1,64 +1,251 @@
 @use 'shared/_colors'as c;
 @use 'shared/_utils'as u;
 
+// Air & Pollen: European Air Quality Index on a dial (left), pollen levels (right)
+// colours of the European Environment Agency bands (lighter where text needs it)
+$good: #50f0e6;
+$fair: #50ccaa;
+$moderate: #f0e641;
+$poor: #ff5050;
+$very-poor: #c8285a;
+$extremely-poor: #9a3fbf;
+
 .weather-display .main.pollen {
 	&.main {
 		overflow: hidden;
+		position: relative;
+		background: radial-gradient(ellipse at 25% 45%, #10183f 0%, #070b22 60%, #04061a 100%);
 
-		.column-headers {
-			background-color: c.$column-header;
-			height: 20px;
-			position: relative;
+		// ---------- air quality dial ----------
+		.air-quality {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 320px;
+			height: 310px;
 
-			div {
+			.dial svg {
 				position: absolute;
-				top: -14px;
+				left: 0;
+				top: 0;
+				width: 320px;
+				height: 310px;
+			}
+
+			.tick {
+				stroke: #4a557f;
+				stroke-width: 2;
+
+				&.major {
+					stroke: #8f9ac4;
+					stroke-width: 3;
+				}
+			}
+
+			.scale-label {
 				font-family: 'Star4000 Small';
-				font-size: 24pt;
-				color: c.$column-header-text;
-				@include u.text-shadow();
+				font-size: 20px;
+				fill: #8f9ac4;
 			}
 
-			.level {
-				left: 300px;
+			.band-arc,
+			.value-arc {
+				fill: none;
+				stroke-width: 20;
 			}
 
-			.count {
-				left: 480px;
+			.band-arc {
+				opacity: 0.28;
+			}
+
+			.value-line {
+				fill: none;
+				stroke: white;
+				stroke-width: 3;
+				stroke-linecap: round;
+				opacity: 0.9;
+			}
+
+			.marker {
+				fill: black;
+				stroke: white;
+				stroke-width: 3;
+			}
+
+			.marker-glow {
+				opacity: 0.45;
+			}
+
+			// the big number in the middle of the dial
+			.value {
+				position: absolute;
+				left: 0;
+				width: 320px;
+				top: 86px;
+				text-align: center;
+				font-family: 'Star4000 Large';
+				font-size: 52pt;
+				line-height: 64px;
+				color: white;
+				@include u.text-shadow(4px, 2px);
+			}
+
+			// the band as a pill under the number
+			.band {
+				position: absolute;
+				left: 50%;
+				top: 166px;
+				transform: translateX(-50%);
+				padding: 1px 12px 0;
+				border-radius: 14px;
+				font-family: 'Star4000 Small';
+				font-size: 16pt;
+				line-height: 26px;
+				letter-spacing: 2px;
+				text-transform: uppercase;
+				white-space: nowrap;
+				color: black;
+				box-shadow: 0 0 18px 2px currentColor;
+			}
+
+			.caption {
+				position: absolute;
+				left: 0;
+				width: 320px;
+				top: 268px;
+				text-align: center;
+				font-family: 'Star4000 Small';
+				font-size: 18pt;
+				letter-spacing: 4px;
+				color: #8f9ac4;
+				@include u.text-shadow(2px, 1px);
+			}
+
+			// band colours: the arcs, the glow and the pill
+			@each $name, $colour in (good: $good, fair: $fair, moderate: $moderate, poor: $poor, very-poor: $very-poor, extremely-poor: $extremely-poor) {
+				.band-arc.#{$name},
+				.value-arc.#{$name} {
+					stroke: $colour;
+				}
+
+				.marker-glow.#{$name} {
+					fill: $colour;
+				}
+
+				.band.#{$name} {
+					background: $colour;
+					box-shadow: 0 0 18px 2px rgba($colour, 0.6);
+				}
+			}
+
+			.band.very-poor,
+			.band.extremely-poor {
+				color: white;
+			}
+
+			.band.long {
+				font-size: 13pt;
+				letter-spacing: 1px;
 			}
 		}
 
-		.pollen-lines {
-			height: 290px;
-			background: repeating-linear-gradient(0deg, c.$gradient-main-background-2 0px,
-					c.$gradient-main-background-1 136px,
-					c.$gradient-main-background-1 202px,
-					c.$gradient-main-background-2 338px,
-				);
+		// ---------- pollen ----------
+		.pollen-table {
+			position: absolute;
+			left: 328px;
+			right: 10px;
+			top: 18px;
+
+			&.alone {
+				left: 60px;
+				right: 60px;
+			}
+
+			.column-headers {
+				position: relative;
+				height: 30px;
+				border-bottom: 2px solid #2a3360;
+
+				div {
+					position: absolute;
+					top: 0;
+					font-family: 'Star4000 Small';
+					font-size: 20pt;
+					letter-spacing: 3px;
+					color: #8f9ac4;
+					@include u.text-shadow(2px, 1px);
+				}
+
+				.name {
+					left: 8px;
+				}
+
+				.level {
+					right: 8px;
+				}
+			}
 
 			.pollen-row {
 				position: relative;
-				height: 47px;
-				font-family: 'Star4000 Large';
-				font-size: 24pt;
-				color: c.$title-color;
+				height: 42px;
+				border-bottom: 1px solid rgba(42, 51, 96, 0.6);
 				@include u.text-shadow();
 
 				>div {
 					position: absolute;
-					top: 8px;
+					top: 7px;
 					white-space: pre;
 				}
 
 				.name {
-					left: 80px;
+					left: 8px;
+					font-family: 'Star4000 Large';
+					font-size: 22pt;
+					color: c.$title-color;
+				}
+
+				// four steps: low, moderate, high, very high
+				.pips {
+					left: 124px;
+					top: 14px;
+					display: flex;
+					gap: 4px;
+
+					div {
+						width: 14px;
+						height: 14px;
+						background: #1c2450;
+						outline: 1px solid #39437a;
+
+						&.on.low {
+							background: #7CFC00;
+						}
+
+						&.on.moderate {
+							background: yellow;
+						}
+
+						&.on.high {
+							background: orange;
+						}
+
+						&.on.very-high {
+							background: #ff4040;
+						}
+					}
 				}
 
 				.level {
-					left: 300px;
+					right: 6px;
+					top: 11px;
+					font-family: 'Star4000';
+					font-size: 16pt;
 					color: white;
 
-					&.none,
+					&.none {
+						color: #8f9ac4;
+					}
+
 					&.low {
 						color: #7CFC00;
 					}
@@ -75,13 +262,10 @@
 						color: #ff4040;
 					}
 				}
+			}
 
-				.count {
-					left: 470px;
-					width: 100px;
-					text-align: right;
-					color: white;
-				}
+			&.alone .pollen-row .pips {
+				left: 220px;
 			}
 		}
 	}

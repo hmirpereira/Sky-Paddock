@@ -40,7 +40,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | Regional Forecast | Portugal: district and island capitals on five maps | Open-Meteo; maps from [Natural Earth](https://www.naturalearthdata.com) |
 | Extended Forecast, Almanac | The next days; sun and moon | Open-Meteo |
 | Local Radar | Precipitation radar | [RainViewer](https://www.rainviewer.com) |
-| Air Quality, Pollen | Air quality index; daily pollen levels | Open-Meteo (CAMS) |
+| Air & Pollen | European Air Quality Index now and daily pollen levels, on one screen | Open-Meteo (CAMS) |
 | Airport METAR | METAR of one airport decoded into plain English, then its TAF (Pi) | [metar.vatsim.net](https://metar.vatsim.net); TAF from [aviationweather.gov](https://aviationweather.gov) |
 | Departures (Pi) | Next departures of a list of airlines from one airport | [AeroDataBox](https://aerodatabox.com) |
 | Cancellations (Pi) | Cancelled departures from the same airport, all airlines | AeroDataBox |
@@ -56,14 +56,14 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | GT World (Pi) | Result of the latest GT World Challenge Europe race(s), with Verstappen's team always shown | Public pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com) |
 | GT World Next (Pi) | Next GT World Challenge Europe event: track outline, round, cup, country with flag, length and turns, race date, countdown, weekend timetable and race forecast | Public event pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com), Open-Meteo |
 
-Every screen can be switched on or off on the page. Local Forecast, Marine Forecast and Personal Weather Station are kept from the original but are off on the TV. Latest Observations (United States weather.gov stations only) and the original's United States city and station lists were removed in 1.5.5.
+Every screen can be switched on or off on the page. Local Forecast and Marine Forecast are kept from the original but are off on the TV. Removed from the original: Latest Observations and the United States city and station lists (1.5.5), the Personal Weather Station screen with its Express server and Docker files (1.6.1).
 
 ## Weather screens
 
 - **Hazards**: yellow, orange and red warnings from IPMA (the Portuguese weather service) for the district chosen in the settings, kept in Portuguese on purpose and without accents (the Star4000 fonts have none). Skipped when there are none or no district is set. In widescreen the warning colour fills the whole width.
 - **Travel Forecast**: the cities in `TRAVEL_CITIES` (`travelforecast.mjs`, today Frankfurt, Munich, Zurich, Geneva and Vienna) in one Open-Meteo request; after 18:00 it shows tomorrow. Five cities fit on one screen without scrolling.
 - **Regional Forecast**: the original used the US National Weather Service and a US map, so it never worked outside the USA. Here it shows the 18 Portuguese district capitals and the island capitals (Ponta Delgada, Angra, Horta, Funchal) on five maps (North, Centre, Lisbon, South, Islands), 6 seconds each. Each label sits on its city, without dots or lines. Today's forecast until 18:00, then tomorrow's, in one Open-Meteo request. The maps and label positions come from a generator script (not in this repository) using Natural Earth 1:10m (public domain): `images/regional-pt-*.png` and `utils/regional-pt.mjs`.
-- **Pollen**: daily average from Open-Meteo / CAMS (Europe only), with the US National Allergy Bureau levels as a guide.
+- **Air & Pollen**: on the left, a dial with the European Air Quality Index for the current hour (0 to 150, the bands in the colours of the European Environment Agency, the number and the band in the middle); on the right, the daily pollen averages from Open-Meteo / CAMS (Europe only) as a level and four steps, with the US National Allergy Bureau scales as a guide. One request for both; until 1.6 the air quality had a screen of its own (US index). Outside Europe only the air quality is shown.
 
 ## Aviation screens
 
@@ -109,6 +109,7 @@ Red and black.
 ## Look and feel
 
 - **Loading screen**: the list of screens with their state; with more than 11 it goes into two columns by group (Weather, Aviation, Personal, News, Formula 1), each with its title, so it always fits.
+- **Countdown bar**: on the line between the main area and the bottom line, a thin coloured line that fills from left to right while a screen is on; when it is full the next screen comes. Yellow and orange on the weather screens, white and red on F1 and GT, light blue and amber on the aviation ones, with a light running along it. It stops while the rotation is paused. It moves in small steps (4 pixels at a time) so the Pi does not redraw it on every frame. Not on Radar and the loading screen, which have no bottom line.
 - **Logo**: `images/skypaddock-logo.png` (340 x 268) in the header of every screen, `images/skypaddock-logo-large.png` (680 x 536) on the loading screen and `images/Logo192.png` as the browser and app icon, all made from the owner's high resolution drawing.
 - **Themes**: recoloured copies of the WeatherStar backgrounds for the F1 screens (red and black, `_f1-theme.scss`) and the aviation screens (navy and silver, `_aviation-theme.scss`). Colours only; no Formula 1 or airline marks.
 - **Icons**, drawn by the owner of this project: `images/airlines/<IATA code>.png` (airline tails, 128 x 128), `images/teams/<constructorId>.png` (F1 teams, 128 x 128) and `images/overhead-logos/<ICAO code>.png` (airline logos for the radar, 48 x 16, listed in `RADAR_LOGOS` in `overhead.mjs`; `LOGO_ALIASES` maps other callsign prefixes of the same brand). `images/flags/<country>.png` are 24 x 16 pixel flags scaled up without smoothing. A missing icon or flag is simply not shown.
@@ -126,7 +127,7 @@ The settings panel on the page holds:
 
 - **Local airport and IPMA area**: airport ICAO code, airport name and IPMA warning area, carried in the address as `settings-airportIcao-text`, `settings-airportName-text` and `settings-ipmaArea-select`. Nothing is set by default, so no place is written in the code: without them the Airport METAR and Hazards screens are skipped. The airport name goes into the titles ("<name> Airport", "<name> Departures").
 - **Units, hours format and speed**.
-- **Display options**: Hide Webamp, Kiosk, Enable Scan Lines, Enable Vignette, Enable Colour Fringe on Text (VHS), Enable Colour Fringe on Pictures (VHS), Show Breaking News in the Bottom Line, Widescreen.
+- **Display options**: Hide Webamp, Kiosk, Enable Scan Lines, Enable Vignette, Enable Colour Fringe on Text (VHS), Enable Colour Fringe on Pictures (VHS), Show Breaking News in the Bottom Line, Widescreen (16:9: the side bands and the bottom line use the whole width).
 
 Every choice on the page goes into the address, so a whole setup is one link. **Copy TV command** (TV panel) copies `skypaddock-tv url '<address>'` with the screens and settings chosen on the page, plus kiosk, widescreen, scan lines and no Winamp. On the Pi, that command replaces the browser address, keeps the previous one and restarts the browser. Kiosk mode can also be added to any link with `&kiosk=true`.
 
@@ -154,7 +155,7 @@ npm run dev
 
 and open http://localhost:8080/ (Vite: changes to the code and the styles show at once). `npm run preview` builds and serves the finished site.
 
-**Updating the live site**: edit the sources and push to `main`. GitHub Actions (`.github/workflows/pages.yml`) checks the code with ESLint, builds the site with Vite (`npm run build`, into `docs/`) and publishes it on GitHub Pages; if the check or the build fails, nothing is published and the site stays as it was. The built files are not in the repository. Vite gives the code and style files names that change with their content, so browsers and the TV always load the new ones; the Pi loads new code when Chromium restarts. `npm run server` starts the original Express server, only needed for the Personal Weather Station push endpoint.
+**Updating the live site**: edit the sources and push to `main`. GitHub Actions (`.github/workflows/pages.yml`) checks the code with ESLint, builds the site with Vite (`npm run build`, into `docs/`) and publishes it on GitHub Pages; if the check or the build fails, nothing is published and the site stays as it was. The built files are not in the repository. Vite gives the code and style files names that change with their content, so browsers and the TV always load the new ones; the Pi loads new code when Chromium restarts.
 
 **Layout**: views in `views/` (EJS), one module per screen in `server/scripts/modules/`, all loaded from `server/scripts/main.mjs`, styles in `server/styles/scss/`. Each screen is a `WeatherDisplay` subclass registered with `registerDisplay`; a new screen is added to `server/scripts/main.mjs`; the build is set in `vite.config.mjs`.
 
@@ -169,7 +170,6 @@ and open http://localhost:8080/ (Vite: changes to the code and the styles show a
 - Times follow the "Hours Format" setting everywhere (Hourly Forecast, Almanac, Radar, Local Forecast text).
 - The GPS (current location) button still expected a reply from the US weather service (NOAA) and stalled; it now turns the coordinates into a place name (ArcGIS reverse geocoding) and asks to type a city when the browser gives no position.
 - The menu button with no location chosen drew the progress screen under the start screen; it now focuses the search box.
-- METAR to weather code conversion for personal weather stations (test order and codes).
 - Experimental Features removed (the nearby-cities lookup for Air Quality and Local Radar and its third-party proxy): slow, unreliable and of little use in Portugal.
 - Webamp pinned to a fixed version instead of `@next`; image preloads resolve relative to the page.
 - The loading screen lists only the screens that are switched on, in smaller lines when there are many.

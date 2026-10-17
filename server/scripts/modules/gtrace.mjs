@@ -94,4 +94,4 @@ class GtRace extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new GtRace(26, 'gt-race', false));
+registerDisplay(new GtRace(24, 'gt-race', false));
