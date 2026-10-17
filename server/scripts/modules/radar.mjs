@@ -134,8 +134,6 @@ class Radar extends WeatherDisplay {
 			icon: customIcon,
 			zIndexOffset: 1000, // Ensure it appears above other layers
 		}).addTo(window._leafletMap);
-
-		return this.locationMarker;
 	}
 
 	updateLocationMarker(weatherData) {

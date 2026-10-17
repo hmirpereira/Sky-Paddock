@@ -1,5 +1,5 @@
 <%- include('header.ejs', {titleDual:{ top: 'Verstappen Jet' , bottom: 'Where It Is' }, hasTime: true, noaaLogo: false}) %>
-	<div class="main f1-jet">
+	<div class="main has-scroll f1-jet">
 		<div class="jet-page now">
 			<div class="topline">
 				<div class="tail"><span class="reg"></span></div>
@@ -34,3 +34,4 @@
 		</div>
 		<div class="credit">Data: adsb.lol, OpenSky, OurAirports, Natural Earth</div>
 	</div>
+	<%- include('scroll.ejs') %>

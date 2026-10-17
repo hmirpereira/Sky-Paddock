@@ -154,9 +154,7 @@ npm run start
 
 and open http://localhost:8080/.
 
-**Updating the live site**: edit the sources, run `npm run build:css` and `npm run build`, and commit the `docs/` folder together with the sources. GitHub Pages serves `docs/` from `main`. The Pi only loads new code when Chromium restarts.
-
-To replace an icon, flag or the logo without building, put the new file with the same name in both `server/images/...` and `docs/images/...` (otherwise the next build brings the old one back). GitHub Pages lets browsers cache images for 10 minutes.
+**Updating the live site**: edit the sources and push to `main`. GitHub Actions (`.github/workflows/pages.yml`) checks the code with ESLint, builds the site (`npm run build:css`, `npm run build`) and publishes it on GitHub Pages; if the check or the build fails, nothing is published and the site stays as it was. The built files (`docs/`, `server/styles/main.css`) are not in the repository; for `npm run start` run `npm run build:css` first. The Pi only loads new code when Chromium restarts. GitHub Pages lets browsers cache files for 10 minutes; the version number in the links (`?_=1.5.3`) makes the TV load the new code.
 
 **Layout**: views in `views/` (EJS), one module per screen in `server/scripts/modules/`, styles in `server/styles/scss/`. Each screen is a `WeatherDisplay` subclass registered with `registerDisplay`; the build list is in `gulp/build-gh-pages.mjs`.
 
