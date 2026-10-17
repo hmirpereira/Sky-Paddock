@@ -118,6 +118,11 @@
 				background: black;
 			}
 
+			// the same red as the box in Sabado's logo
+			&.plate-red {
+				background: rgb(226, 13, 43);
+			}
+
 			&.plate-none {
 				padding: 0;
 
@@ -156,8 +161,12 @@
 					height: 14px;
 				}
 
-				&.plate-none img {
-					height: 18px;
+				&.plate-none {
+					padding: 0;
+
+					img {
+						height: 18px;
+					}
 				}
 			}
 		}

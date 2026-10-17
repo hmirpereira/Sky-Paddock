@@ -1,5 +1,5 @@
 // Portuguese news headlines for the News screen and the bottom line, from the skypaddock-hub service
-// on the Pi (RSS feeds of RTP, Observador, Publico and CNN Portugal, and FlyingLapF1 for Formula 1,
+// on the Pi (RSS feeds of RTP, Expresso, Publico, CNN Portugal and Sabado, and FlyingLapF1 for Formula 1,
 // read there because the browser cannot read them from another site). Anywhere else the list is empty.
 const NEWS_URL = 'http://127.0.0.1:8095/news.json';
 const CHECK_EVERY_MS = 5 * 60 * 1000;
@@ -45,12 +45,14 @@ export const plainText = (text) => (text ?? '').normalize('NFD').replace(/[̀-ͯ
 	.replace(/[–—]/g, '-');
 
 // logo of each source (images/news, from the owner's files), on a plate so it shows on the blue
-// background: light for the dark or red logos, dark for the white one, none for Observador's own black box
+// background: light for the dark or red logos, dark for the white one, red for Sabado (the red of its own box,
+// so the logo has the same margins and size as the others)
 const LOGOS = {
 	RTP: { file: 'rtp.svg', plate: 'light' },
-	Observador: { file: 'observador.png', plate: 'none' },
+	Expresso: { file: 'expresso.svg', plate: 'light' },
 	Publico: { file: 'publico.svg', plate: 'light' },
 	'CNN Portugal': { file: 'cnn.svg', plate: 'light' },
+	Sabado: { file: 'sabado.png', plate: 'red' },
 	FlyingLapF1: { file: 'flyinglapf1.png', plate: 'dark' },
 };
 
