@@ -258,6 +258,11 @@ class WeatherDisplay {
 	syncCountdown(running = isPlaying()) {
 		const fill = this.elem?.querySelector('.countdown-bar .fill');
 		if (!fill || !this.timing?.fullDelay?.length) return;
+		// screens that scroll (they have baseCountChange) already show how far they are: no bar
+		if (this.baseCountChange) {
+			fill.parentElement.style.display = 'none';
+			return;
+		}
 		const total = this.timing.fullDelay.at(-1);
 		const step = this.timing.baseDelay * settings.speed.value;
 		const left = Math.max(0, Math.min(total, total - this.navBaseCount));

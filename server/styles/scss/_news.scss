@@ -94,6 +94,39 @@
 			}
 		}
 
+		// logo of a source on its plate (utils/news.mjs)
+		.source-logo {
+			display: inline-block;
+			vertical-align: top;
+			box-sizing: border-box;
+			height: 22px;
+			margin-top: 2px;
+			padding: 3px 6px;
+			border-radius: 2px;
+			box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+
+			img {
+				display: block;
+				height: 16px;
+			}
+
+			&.plate-light {
+				background: white;
+			}
+
+			&.plate-dark {
+				background: black;
+			}
+
+			&.plate-none {
+				padding: 0;
+
+				img {
+					height: 22px;
+				}
+			}
+		}
+
 		.news-footer {
 			height: 28px;
 			line-height: 28px;
@@ -107,6 +140,26 @@
 			display: flex;
 			justify-content: space-between;
 			@include u.text-shadow(2px, 1px);
+
+			.sources {
+				display: flex;
+				gap: 10px;
+				align-items: center;
+			}
+
+			.source-logo {
+				height: 18px;
+				margin-top: 0;
+				padding: 2px 5px;
+
+				img {
+					height: 14px;
+				}
+
+				&.plate-none img {
+					height: 18px;
+				}
+			}
 		}
 	}
 }
