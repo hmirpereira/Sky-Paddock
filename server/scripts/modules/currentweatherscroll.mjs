@@ -181,12 +181,12 @@ const drawCondition = (text, warning = false, news = null) => {
 		const content = document.createElement('div');
 		content.className = 'text-content';
 		if (news) {
-			// "RTP  Headline..." with the source as a label (red for breaking news)
+			// "BREAKING  Headline..." with a red label; the source is not shown (it is on the News screen)
 			newLayer.classList.add('news');
 			if (news.breaking) newLayer.classList.add('breaking');
 			const source = document.createElement('span');
 			source.className = 'news-source';
-			source.textContent = news.breaking ? `BREAKING ${news.source}` : news.source;
+			source.textContent = news.breaking ? 'BREAKING' : news.source;
 			content.append(source, ` ${text}`);
 		} else {
 			content.textContent = text;

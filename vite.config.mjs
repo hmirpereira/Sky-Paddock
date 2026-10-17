@@ -5,6 +5,7 @@ import { cpSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import ejs from 'ejs';
+import { minify } from 'html-minifier-terser';
 
 const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
 const server = resolve('server');
@@ -16,6 +17,16 @@ const renderEjs = () => ({
 	transformIndexHtml: {
 		order: 'pre',
 		handler: (html) => ejs.render(html, { version }, { filename: resolve(server, 'index.html') }),
+	},
+});
+
+// as gulp-htmlmin did until 1.5.x: no spaces and line breaks between the tags, which the many
+// white-space: pre boxes would otherwise show
+const collapseHtml = () => ({
+	name: 'sky-paddock-collapse',
+	transformIndexHtml: {
+		order: 'post',
+		handler: (html) => minify(html, { collapseWhitespace: true }),
 	},
 });
 
@@ -37,7 +48,7 @@ export default defineConfig({
 	base: './',
 	// images and fonts are served from server/ while developing; copyStatic copies the images when building
 	publicDir: false,
-	plugins: [renderEjs(), copyStatic()],
+	plugins: [renderEjs(), collapseHtml(), copyStatic()],
 	build: {
 		outDir: out,
 		emptyOutDir: true,
