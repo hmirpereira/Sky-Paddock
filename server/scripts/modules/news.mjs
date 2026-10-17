@@ -1,4 +1,4 @@
-// latest Portuguese news headlines (RTP, Observador, Publico, CNN Portugal), served by the
+// latest Portuguese news headlines (RTP, Expresso, Publico, CNN Portugal, Sabado), served by the
 // skypaddock-hub service on the Pi, which reads the RSS feeds every 10 minutes and joins the same
 // story from several sources. BREAKING: the source marks it as such ("Ultima hora") in the last 2 hours;
 // TOP STORY: the same story in 3 or more sources in the last 3 hours. The last page has the Formula 1
