@@ -1,6 +1,7 @@
 // Sky Paddock: Vite builds the site into docs/ (published by .github/workflows/pages.yml)
 // and serves it while developing (npm run dev).
 // The page itself is views/index.ejs (with its partials), rendered here with EJS.
+import { execSync } from 'node:child_process';
 import { cpSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
@@ -8,6 +9,18 @@ import ejs from 'ejs';
 import { minify } from 'html-minifier-terser';
 
 const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
+// date of the commit being built, in Lisbon time, for the version mark (settings: Show Version Mark);
+// GitHub Actions builds the pushed commit, so on the site it is the date of that commit
+const commitDate = (() => {
+	let date = new Date();
+	try {
+		date = new Date(execSync('git log -1 --format=%cI', { encoding: 'utf8' }).trim());
+	} catch {
+		// no git here: the build date instead
+	}
+	const part = (options) => new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Lisbon', ...options }).format(date);
+	return `${part({ day: '2-digit', month: 'short', year: 'numeric' })} ${part({ hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })}`;
+})();
 const server = resolve('server');
 const out = resolve('docs');
 
@@ -16,7 +29,7 @@ const renderEjs = () => ({
 	name: 'sky-paddock-ejs',
 	transformIndexHtml: {
 		order: 'pre',
-		handler: (html) => ejs.render(html, { version }, { filename: resolve(server, 'index.html') }),
+		handler: (html) => ejs.render(html, { version, commitDate }, { filename: resolve(server, 'index.html') }),
 	},
 });
 

@@ -16,8 +16,8 @@ const test = base.extend({ record: [false, { option: true }] });
 const RECORDED = path.resolve('tests', 'recorded');
 const HAR = path.join(RECORDED, 'sites.har');
 const META = path.join(RECORDED, 'recorded.json');
-// what is recorded and replayed: every https site except archive.org (the background music)
-const SITES = /^https:\/\/(?!([a-z0-9-]+\.)*archive\.org\/)/;
+// what is recorded and replayed: every https site
+const SITES = /^https:\/\//;
 
 // a public place, not anyone's home
 const LOCATION = {
@@ -81,8 +81,6 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 			await page.routeFromHAR(HAR, { url: SITES, notFound: 'fallback' });
 			await page.clock.install({ time: meta.time });
 		}
-		// the background music (archive.org) is not part of the test, and its audio keeps asking again
-		await page.route(/^https:\/\/([a-z0-9-]+\.)*archive\.org\//, (route) => route.abort());
 
 		// the list of screens comes from the page, so new screens are tested too
 		await page.goto('./', { waitUntil: 'domcontentloaded' });
@@ -101,7 +99,7 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		// as on the TV (TV_SETTINGS in share.mjs)
 		params.set('kiosk', 'true');
 		params.set('settings-scanLines-checkbox', 'true');
-		params.set('settings-hideWebamp-checkbox', 'true');
+		params.set('settings-versionMark-checkbox', 'true');
 		await page.goto(`./?${params}`, { waitUntil: 'domcontentloaded' });
 
 		// every screen has finished loading (loaded, no data, or failed)

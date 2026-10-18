@@ -138,15 +138,6 @@ body:not(.kiosk) {
 		grid-column: 1 / -1;
 	}
 
-	.site-music {
-		flex: 1 1 100%;
-
-		#webamp-app {
-			position: relative;
-			height: 30px;
-		}
-	}
-
 	.panel-note {
 		color: $site-muted;
 		font-size: 11pt;

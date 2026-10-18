@@ -19,7 +19,6 @@ const settings = {
 	pressureUnits: { value: 1 },
 	hoursFormat: { value: 2 },
 	speed: { value: 1.0 },
-	hideWebamp: { value: false },
 	kiosk: { value: false },
 	scanLines: { value: false },
 	vignette: { value: false },
@@ -27,6 +26,7 @@ const settings = {
 	imageFringe: { value: false },
 	newsTicker: { value: false },
 	gtTeamLogos: { value: true },
+	versionMark: { value: false },
 };
 
 const init = () => {
@@ -84,7 +84,6 @@ const init = () => {
 		[1.25, 'Slow'],
 		[1.5, 'Very Slow'],
 	]);
-	settings.hideWebamp = new Setting('hideWebamp', 'Hide Webamp (Winamp)', 'checkbox', false, hideWebampChange, true);
 	settings.scanLines = new Setting('scanLines', 'Enable Scan Lines', 'checkbox', false, scanLinesChange, true);
 	// analogue look (_scan-lines.scss): darker corners like a picture tube, red and blue fringe on the text like VHS
 	settings.vignette = new Setting('vignette', 'Enable Vignette', 'checkbox', false, (value) => document.body.classList.toggle('vignette', !!value), true);
@@ -93,6 +92,8 @@ const init = () => {
 
 	// Portuguese breaking news crawling in the bottom line, between the weather lines (Pi only, utils/news.mjs)
 	settings.newsTicker = new Setting('newsTicker', 'Show Breaking News in the Bottom Line', 'checkbox', false, null, true);
+	// version and commit date in the bottom right corner, to see which version a screen is running (on the TV)
+	settings.versionMark = new Setting('versionMark', 'Show Version Mark', 'checkbox', false, (value) => document.body.classList.toggle('version-mark', !!value), true);
 	// GT World: owner-supplied team logos instead of the team name (utils/gt-team-logos.mjs)
 	settings.gtTeamLogos = new Setting('gtTeamLogos', 'GT World: Team Logos Instead of Names', 'checkbox', true, null, true);
 	settings.wide = new Setting('wide', 'Widescreen', 'checkbox', false, wideScreenChange, true);
@@ -146,31 +147,6 @@ const windUnitsChange = (value) => {
 const hoursChangeFormat = (value) => {
 	if (value) {
 		document.documentElement.setAttribute('hours-format', value);
-	}
-};
-
-const hideWebampChange = async (value) => {
-	if (value) {
-		document.documentElement.setAttribute('hide-webamp', value);
-	} else {
-		document.documentElement.removeAttribute('hide-webamp');
-	}
-
-	// Webamp is a global variable, defined in a <script>
-	// tag in index.ejs, so we can access it directly
-
-	// Wait until the global webamp instance is available
-	if (!window.webamp) {
-		console.warn('Webamp not initialized yet.');
-		return;
-	}
-
-	if (value === true) {
-		// eslint-disable-next-line no-undef
-		await webamp.close();
-	} else {
-		// eslint-disable-next-line no-undef
-		await webamp.reopen();
 	}
 };
 

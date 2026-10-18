@@ -316,6 +316,25 @@ body {
 	transform-origin: 0 0;
 }
 
+// version and commit date (settings: Show Version Mark), over the bottom right corner of the bottom line
+#version-mark {
+	display: none;
+	position: absolute;
+	right: 6px;
+	bottom: 3px;
+	z-index: 20;
+	font-family: 'Star4000 Small';
+	font-size: 16px;
+	color: rgb(255 255 255 / 60%);
+	text-shadow: 1px 1px black;
+	pointer-events: none;
+	white-space: nowrap;
+}
+
+.version-mark #version-mark {
+	display: block;
+}
+
 #loading {
 	width: 640px;
 	height: 480px;
