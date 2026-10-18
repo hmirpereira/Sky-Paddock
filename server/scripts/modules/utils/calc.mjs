@@ -82,7 +82,6 @@ function getMarineAdvisory(periodMarineData, dailyWindMinMaxInKnots) {
 	return advisory.toUpperCase();
 }
 
-
 // wrap a number to 0-m
 const wrap = (x, m) => ((x % m) + m) % m;
 
