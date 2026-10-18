@@ -96,11 +96,13 @@ $extremely-poor: #9a3fbf;
 				left: 50%;
 				top: 166px;
 				transform: translateX(-50%);
-				padding: 1px 12px 0;
+				// the Star4000 Small letters sit about 3 px low in their line, and the letter spacing adds
+				// 2 px after the last letter: more room below and on the left keeps the word in the middle
+				padding: 0 12px 6px 14px;
 				border-radius: 14px;
 				font-family: 'Star4000 Small';
 				font-size: 16pt;
-				line-height: 26px;
+				line-height: 22px;
 				letter-spacing: 2px;
 				text-transform: uppercase;
 				white-space: nowrap;
@@ -144,6 +146,7 @@ $extremely-poor: #9a3fbf;
 			}
 
 			.band.long {
+				padding-left: 13px;
 				font-size: 13pt;
 				letter-spacing: 1px;
 			}
