@@ -225,4 +225,4 @@ class F1Jet extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new F1Jet(23, 'f1-jet', false));
+registerDisplay(new F1Jet(22, 'f1-jet', false));

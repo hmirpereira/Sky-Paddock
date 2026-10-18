@@ -450,4 +450,4 @@ class F1Telemetry extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new F1Telemetry(20, 'f1-telemetry', false));
+registerDisplay(new F1Telemetry(19, 'f1-telemetry', false));

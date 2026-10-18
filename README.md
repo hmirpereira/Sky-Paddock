@@ -56,7 +56,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | GT World (Pi) | Result of the latest GT World Challenge Europe race(s), with Verstappen's team always shown | Public pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com) |
 | GT World Next (Pi) | Next GT World Challenge Europe event: track outline, round, cup, country with flag, length and turns, race date, countdown, weekend timetable and race forecast | Public event pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com), Open-Meteo |
 
-Every screen can be switched on or off on the page. Local Forecast and Marine Forecast are kept from the original but are off on the TV. Removed from the original: Latest Observations and the United States city and station lists (1.5.5), the Personal Weather Station screen with its Express server and Docker files (1.6.1).
+Every screen can be switched on or off on the page. Marine Forecast is kept from the original but is off on the TV. Removed from the original: Latest Observations and the United States city and station lists (1.5.5), the Personal Weather Station screen with its Express server and Docker files (1.6.1), the Local Forecast text screen (1.10.1).
 
 ## Weather screens
 
@@ -171,7 +171,7 @@ and open http://localhost:8080/ (Vite: changes to the code and the styles show a
 - The Hazards screen was never hidden, which stalled the rotation as soon as there was a warning.
 - "Last Update" always showed "(none)".
 - Missing weather icons: fog, freezing drizzle and rain, hail and violent rain showers.
-- Times follow the "Hours Format" setting everywhere (Hourly Forecast, Almanac, Radar, Local Forecast text).
+- Times follow the "Hours Format" setting everywhere (Hourly Forecast, Almanac, Radar).
 - The GPS (current location) button still expected a reply from the US weather service (NOAA) and stalled; it now turns the coordinates into a place name (ArcGIS reverse geocoding) and asks to type a city when the browser gives no position.
 - The menu button with no location chosen drew the progress screen under the start screen; it now focuses the search box.
 - Experimental Features removed (the nearby-cities lookup for Air Quality and Local Radar and its third-party proxy): slow, unreliable and of little use in Portugal.

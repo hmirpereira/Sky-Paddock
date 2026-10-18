@@ -1,6 +1,6 @@
 {
-	"time": 1792341421149,
-	"recorded": "2026-10-18T16:37:01.149Z",
+	"time": 1792352775143,
+	"recorded": "2026-10-18T19:46:15.143Z",
 	"statuses": {
 		"hazards": "loaded",
 		"current-weather": "loaded",
@@ -8,7 +8,6 @@
 		"hourly-graph": "loaded",
 		"travel": "loaded",
 		"regional-forecast": "loaded",
-		"local-forecast": "loaded",
 		"extended-forecast": "loaded",
 		"almanac": "loaded",
 		"radar": "loaded",

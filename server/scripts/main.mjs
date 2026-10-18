@@ -9,7 +9,6 @@ import './modules/icons.mjs';
 import './modules/extendedforecast.mjs';
 import './modules/hourly.mjs';
 import './modules/hourly-graph.mjs';
-import './modules/localforecast.mjs';
 import './modules/radar.mjs';
 import './modules/regionalforecast.mjs';
 import './modules/travelforecast.mjs';

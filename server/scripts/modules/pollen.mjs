@@ -183,4 +183,4 @@ class Pollen extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new Pollen(11, 'pollen', true));
+registerDisplay(new Pollen(10, 'pollen', true));
