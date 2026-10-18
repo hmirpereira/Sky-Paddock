@@ -30,7 +30,7 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 
 ## Things that break easily
 
-- navIds must stay contiguous (0..25 today); a hole makes navigation crash in `findIndex`.
+- navIds must stay contiguous (0..24 today); a hole makes navigation crash in `findIndex`.
 - `STATUS` values are Symbols: wrap them in `String()` inside template strings.
 - Templates (`.template`) are removed from the DOM at start-up and cloned by `fillTemplate`.
 - Many boxes use `white-space: pre`. The build compacts the HTML (`html-minifier-terser`,

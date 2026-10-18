@@ -111,4 +111,4 @@ class Departures extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new Departures(13, 'departures', false));
+registerDisplay(new Departures(12, 'departures', false));

@@ -199,4 +199,4 @@ const parseMarineData = (weatherParameters) => {
 };
 
 // register display
-registerDisplay(new MarineForecast(10, 'marine-forecast'));
+registerDisplay(new MarineForecast(9, 'marine-forecast'));

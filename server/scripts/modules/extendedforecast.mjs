@@ -1,5 +1,4 @@
 // display extended forecast graphically
-// technically uses the same data as the local forecast, we'll let the browser do the caching of that
 
 import STATUS from './status.mjs';
 import { getWeatherIconFromIconLink } from './icons.mjs';
@@ -106,4 +105,4 @@ const parse = (fullForecast) => {
 };
 
 // register display
-registerDisplay(new ExtendedForecast(7, 'extended-forecast'));
+registerDisplay(new ExtendedForecast(6, 'extended-forecast'));
