@@ -120,7 +120,8 @@ Red and black.
   - **Vignette**: darker corners, like a picture tube.
   - **Colour fringe on text**: red and blue edges on the text, like a VHS recording, through the shared `text-shadow` mixin (`--fringe-left`, `--fringe-right`).
   - **Colour fringe on pictures**: the red and blue channels of the pictures pulled apart by an SVG filter in `index.ejs` (`#vhs-rgb`). Not on the radar, which animates.
-- **Music**: the page's Winamp plays *The Weather Channel Presents: The Best of Smooth Jazz*, streamed from the [Internet Archive](https://archive.org/details/the-weather-channel-presents-the-best-of-smooth-jazz-full-album). On the TV the Winamp is hidden and the Pi plays its own music.
+- **Music**: the page plays none. On the TV the Pi plays its own background music (outside this repository). The Webamp (Winamp) player of the original project was removed in 1.9.0.
+- **Version mark**: with *Show Version Mark*, the version and the date of the commit it was built from (Lisbon time) are shown small in the bottom right corner, to check that a screen runs the latest version. On by default in the TV command. The date comes from `git log` when building (`vite.config.mjs`); without git it is the build date.
 
 ## Settings and the TV address
 
@@ -128,9 +129,9 @@ The settings panel on the page holds:
 
 - **Local airport and IPMA area**: airport ICAO code, airport name and IPMA warning area, carried in the address as `settings-airportIcao-text`, `settings-airportName-text` and `settings-ipmaArea-select`. Nothing is set by default, so no place is written in the code: without them the Airport METAR and Hazards screens are skipped. The airport name goes into the titles ("<name> Airport", "<name> Departures").
 - **Units, hours format and speed**.
-- **Display options**: Hide Webamp, Kiosk, Enable Scan Lines, Enable Vignette, Enable Colour Fringe on Text (VHS), Enable Colour Fringe on Pictures (VHS), Show Breaking News in the Bottom Line, Widescreen (16:9: the side bands and the bottom line use the whole width).
+- **Display options**: Kiosk, Enable Scan Lines, Enable Vignette, Enable Colour Fringe on Text (VHS), Enable Colour Fringe on Pictures (VHS), Show Breaking News in the Bottom Line, Widescreen (16:9: the side bands and the bottom line use the whole width), Show Version Mark.
 
-Every choice on the page goes into the address, so a whole setup is one link. **Copy TV command** (TV panel) copies `skypaddock-tv url '<address>'` with the screens and settings chosen on the page, plus kiosk, widescreen, scan lines and no Winamp. On the Pi, that command replaces the browser address, keeps the previous one and restarts the browser. Kiosk mode can also be added to any link with `&kiosk=true`.
+Every choice on the page goes into the address, so a whole setup is one link. **Copy TV command** (TV panel) copies `skypaddock-tv url '<address>'` with the screens and settings chosen on the page, plus kiosk, widescreen, scan lines and the version mark. On the Pi, that command replaces the browser address, keeps the previous one and restarts the browser. Kiosk mode can also be added to any link with `&kiosk=true`.
 
 ## The Raspberry Pi side
 
@@ -174,7 +175,7 @@ and open http://localhost:8080/ (Vite: changes to the code and the styles show a
 - The GPS (current location) button still expected a reply from the US weather service (NOAA) and stalled; it now turns the coordinates into a place name (ArcGIS reverse geocoding) and asks to type a city when the browser gives no position.
 - The menu button with no location chosen drew the progress screen under the start screen; it now focuses the search box.
 - Experimental Features removed (the nearby-cities lookup for Air Quality and Local Radar and its third-party proxy): slow, unreliable and of little use in Portugal.
-- Webamp pinned to a fixed version instead of `@next`; image preloads resolve relative to the page.
+- Image preloads resolve relative to the page.
 - The loading screen lists only the screens that are switched on, in smaller lines when there are many.
 - Browser icon and web app manifest: the icon link carries the version, and the manifest paths are relative to the site.
 

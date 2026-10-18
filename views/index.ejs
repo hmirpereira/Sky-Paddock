@@ -47,8 +47,6 @@
 			<button id="btnClearQuery" type="reset">Reset</button>
 		</div>
   </div>
-    <!-- music player: above the screen, so it stays in place when the page below changes size -->
-    <div class="site-music"><div id="webamp-app"></div></div>
   </header>
   <div id="version" style="display:none">
     <%- version %>
@@ -144,6 +142,8 @@
       <div id="news-html" class="weather-display">
         <%- include('partials/news.ejs') %>
       </div>
+      <!-- version and commit date in the bottom right corner (settings: Show Version Mark) -->
+      <div id="version-mark">v<%- version %> <%- commitDate %></div>
     </div>
     <div id="divTwcBottom">
       <div id="divTwcBottomLeft">
@@ -156,7 +156,6 @@
         <img id="NavigateRefresh" class="navButton" src="images/nav/ic_refresh_white_24dp_2x.png" title="Refresh" />
       </div>
       <div id="divTwcBottomRight">
-        <img id="ToggleMusic" class="navButton" src="images/nav/ic_volume_off_white_24dp_2x.png" title="Toggle Music" />
         <img id="ToggleFullScreen" class="navButton" src="images/nav/ic_fullscreen_white_24dp_2x.png" title="Enter Fullscreen" />
       </div>
     </div>
@@ -188,7 +187,7 @@
       <div class="heading">TV</div>
       <div class='info'>
         <a href='' id='tv-link'>Copy TV command</a> <span id="tv-link-copied">Copied!</span>
-        <div class="panel-note">The choices on this page, plus kiosk, widescreen, scan lines and no Winamp. Paste it on the Raspberry Pi: it updates the TV's address and restarts the browser.</div>
+        <div class="panel-note">The choices on this page, plus kiosk, widescreen, scan lines and the version mark. Paste it on the Raspberry Pi: it updates the TV's address and restarts the browser.</div>
         <textarea id="tv-link-command" rows="4" readonly></textarea>
       </div>
       <div class="heading">Sharing</div>
@@ -228,60 +227,13 @@
           <a href="https://github.com/bacinger/f1-circuits" target="_blank">f1-circuits</a>
         </div>
         <div>
-          <div class="credits-title">Look and sound</div>
+          <div class="credits-title">Look</div>
           <a href="https://twcclassics.com/" target="_blank">TWC Classics</a>
-          <a href="https://archive.org/details/the-weather-channel-presents-the-best-of-smooth-jazz-full-album" target="_blank">Internet Archive (music)</a>
         </div>
       </div>
     </section>
   </div>
 
-  <script type="module">
-      import Webamp from "https://unpkg.com/webamp@0.0.0-next-0882aa7";
-      const webamp = new Webamp({    
-          windowLayout: {
-            main: {
-              position: { top: 20, left: 0 },
-              shadeMode: true,
-            },
-            playlist: {
-              position: { top: 30, left: 0 },
-              shadeMode: true,
-              closed: false,
-            },
-          }, 
-          availableSkins: [
-            {
-              url: "https://archive.org/cors/winampskin_Green-Dimension-V2/Green-Dimension-V2.wsz",
-              name: "Green Dimension V2",
-            },
-            {
-              url: "https://archive.org/cors/winampskin_mac_os_x_1_5-aqua/mac_os_x_1_5-aqua.wsz",
-              name: "Mac OSX v1.5 (Aqua)",
-            },
-        ],
-        initialTracks: [
-          {
-            metaData: {
-              artist: "The Weather Channel",
-              title: "Presents: The Best of Smooth Jazz (full album)",
-            },
-            // one 53-minute file on the Internet Archive (the page only links to it)
-            url: "https://archive.org/download/the-weather-channel-presents-the-best-of-smooth-jazz-full-album/The%20Weather%20Channel%20Presents%20-%20The%20Best%20of%20Smooth%20Jazz%20%28FULL%20ALBUM%29.mp3",
-            duration: 3164,
-          },
-        ],
-      });
-
-      // Expose it globally for setting.mjs
-      window.webamp = webamp;
-
-      webamp.setVolume(100);
-      webamp.toggleRepeat();
-      webamp.toggleShuffle();
-
-      webamp.renderWhenReady(document.getElementById("webamp-app"));
-  </script>
   <script>
     (function () {
       // Parse bootstrapped JSON from a dedicated script tag to avoid template parsing issues
