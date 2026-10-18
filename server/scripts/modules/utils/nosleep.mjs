@@ -10,8 +10,8 @@ const noSleep = (enable = false) => {
 	if (wakeLock === enable) return false;
 	// store the value
 	wakeLock = enable;
-	// call the function
-	if (enable) return noSleep.controller.enable();
+	// call the function (the browser may refuse the wake lock, e.g. without a user gesture: not an error)
+	if (enable) return Promise.resolve(noSleep.controller.enable()).catch((error) => console.warn('noSleep:', error.message));
 	return noSleep.controller.disable();
 };
 
