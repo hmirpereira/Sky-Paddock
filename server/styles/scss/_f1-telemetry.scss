@@ -86,17 +86,27 @@
 				}
 			}
 
+			// the sector each driver did faster than the other on a chip of their colour
 			.sectors {
 				font-family: 'Star4000 Small';
-				font-size: 16pt;
+				font-size: 14pt;
 				color: #b0b0b0;
 
+				// a chip only a little taller than the digits (they sit low in their line: short line, room below)
 				.sector {
-					margin-right: 10px;
+					display: inline-block;
+					vertical-align: top;
+					box-sizing: border-box;
+					height: 14px;
+					margin: 5px 3px 0 0;
+					padding: 0 3px 4px;
+					line-height: 10px;
 				}
 
 				.sector.faster {
-					color: var(--driver);
+					background: var(--driver);
+					color: black;
+					text-shadow: none;
 				}
 			}
 		}
@@ -109,14 +119,23 @@
 			white-space: pre;
 			@include u.text-shadow(2px, 1px);
 
+			// the lap in 25 pieces, each in the colour of the faster driver
+			.mini-strip {
+				display: flex;
+				gap: 2px;
+				width: 220px;
+				height: 12px;
+				margin: 4px 0 2px;
+
+				span {
+					flex: 1;
+					box-shadow: 1px 1px 0 black;
+				}
+			}
+
 			.mini-count {
 				font-family: 'Star4000 Large';
 				font-size: 16pt;
-
-				.of {
-					font-family: 'Star4000 Small';
-					color: #d0d0d0;
-				}
 			}
 		}
 
@@ -126,16 +145,43 @@
 			top: 4px;
 			width: 392px;
 			height: 278px;
+
+			.sector-label {
+				fill: white;
+				font-family: 'Star4000 Small';
+				font-size: 16px;
+				paint-order: stroke;
+				stroke: black;
+				stroke-width: 3px;
+			}
 		}
 
 		// page 2: speed along the lap
+		// each driver on a chip of their colour, with the top speed beside it
 		.legend {
 			height: 26px;
-			padding: 2px 0 0 24px;
+			padding: 2px 0 0 64px;
 			font-family: 'Star4000 Small';
 			font-size: 16pt;
 			white-space: pre;
-			@include u.text-shadow(2px, 1px);
+
+			// the Star4000 Small letters sit low in their line: a short line and the room left below it
+			.chip {
+				display: inline-block;
+				vertical-align: top;
+				box-sizing: border-box;
+				height: 22px;
+				padding: 0 6px;
+				background: var(--driver);
+				color: black;
+				line-height: 16px;
+			}
+
+			.top {
+				margin: 0 28px 0 8px;
+				color: #d0d0d0;
+				@include u.text-shadow(2px, 1px);
+			}
 		}
 
 		.chart {
@@ -153,10 +199,19 @@
 					stroke-dasharray: 4 4;
 				}
 
+				.zero {
+					stroke: rgba(255, 255, 255, 0.6);
+					stroke-width: 1;
+				}
+
 				.axis {
 					fill: #d0d0d0;
 					font-family: 'Star4000 Small';
 					font-size: 16px;
+				}
+
+				.axis.small {
+					font-size: 13px;
 				}
 			}
 		}

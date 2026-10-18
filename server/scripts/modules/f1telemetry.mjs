@@ -1,34 +1,69 @@
 // fastest laps of the two quickest drivers in the latest practice or qualifying session,
 // from OpenF1 (https://openf1.org, car telemetry and positions at about 4 per second).
-// Page 1: lap and sector times, and the track coloured by who was faster in each of 25 mini-sectors.
-// Page 2: speed along the lap for both drivers.
+// Page 1: lap and sector times, the 25 mini-sectors as a strip, and the track coloured by who was faster
+// in each of them, with the sector lines and the direction of the lap.
+// Page 2: speed along the lap for both drivers, and under it the gap between them along the lap.
 // The distance along the lap comes from integrating the speed, so both laps are put on the same
 // 0..1 scale; small differences in the line taken are ignored. OpenF1 refuses free requests while a
 // session is live, and needs some minutes to publish the data after the end, so the saved copy is
 // shown until a newer session can be read.
 import STATUS from './status.mjs';
-import { json } from './utils/fetch.mjs';
+import { openf1 } from './utils/f1-openf1.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { readCache, writeCache } from './utils/f1-update.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 
 const OPENF1 = 'https://api.openf1.org/v1';
-const CACHE_KEY = 'f1-telemetry';
+// v2: the gap along the lap was added to the saved copy
+const CACHE_KEY = 'f1-telemetry-v2';
 const CHECK_EVERY_MIN = 60; // look for a newer session at most once an hour
 const PUBLISH_DELAY_MIN = 30; // OpenF1 needs some time after the end of a session
 const MINI_SECTORS = 25;
 const TRACE_POINTS = 240;
 const MAP_POINTS = 260;
-const COLOURS = ['#38c8ff', '#ffd23f']; // cyan and yellow: readable on the red and black F1 theme
+const COLOURS = ['#38c8ff', '#ffd23f']; // without team colours: cyan and yellow
 const MAP_W = 392;
+
+// hex colour <-> hue (degrees), saturation and lightness (0..1)
+const toHsl = (hex) => {
+	const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+	const max = Math.max(r, g, b);
+	const min = Math.min(r, g, b);
+	const l = (max + min) / 2;
+	const d = max - min;
+	if (!d) return [0, 0, l];
+	const s = d / (1 - Math.abs(2 * l - 1));
+	let h;
+	if (max === r) h = ((g - b) / d) % 6;
+	else if (max === g) h = (b - r) / d + 2;
+	else h = (r - g) / d + 4;
+	return [(h * 60 + 360) % 360, s, l];
+};
+const fromHsl = ([h, s, l]) => {
+	const c = (1 - Math.abs(2 * l - 1)) * s;
+	const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+	const m = l - c / 2;
+	const [r, g, b] = [[c, x, 0], [x, c, 0], [0, c, x], [0, x, c], [x, 0, c], [c, 0, x]][Math.floor(h / 60) % 6];
+	return `#${[r, g, b].map((v) => Math.round((v + m) * 255).toString(16).padStart(2, '0')).join('')}`;
+};
+// the two drivers in their team colours, light enough to read on the dark red background (reds most of
+// all); when both colours are close (same team, or Ferrari and Audi) the second driver gets a lighter tint
+const driverColours = (drivers) => {
+	const hsl = drivers.map((d, i) => (/^#[0-9a-f]{6}$/i.test(d.teamColour ?? '') ? toHsl(d.teamColour) : toHsl(COLOURS[i])));
+	const lifted = hsl.map(([h, s, l]) => [h, s, Math.max(l, (h < 25 || h > 335) && s > 0.4 ? 0.62 : 0.55)]);
+	const hueGap = Math.min(Math.abs(lifted[0][0] - lifted[1][0]), 360 - Math.abs(lifted[0][0] - lifted[1][0]));
+	if (hueGap < 30 || (lifted[0][1] < 0.15 && lifted[1][1] < 0.15)) lifted[1] = [lifted[1][0], lifted[1][1], Math.min(0.85, lifted[1][2] + 0.22)];
+	return lifted.map(fromHsl);
+};
 const MAP_H = 278;
+// speed panel on top, gap panel under it, one distance axis at the bottom
 const CHART = {
-	w: 600, h: 262, left: 44, right: 8, top: 10, bottom: 26, min: 50, max: 350,
+	w: 600, h: 262, left: 44, right: 56, speedTop: 6, speedBottom: 158, gapTop: 178, gapBottom: 234, min: 50, max: 350,
 };
 
 const list = async (url) => {
-	const data = await json(url);
+	const data = await openf1(url);
 	return Array.isArray(data) ? data : [];
 };
 const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -136,6 +171,22 @@ const buildTelemetry = async (session) => {
 		}
 	}
 
+	// the share of the lap comes from integrating a speed sampled about 4 times a second, so it drifts:
+	// each lap is stretched piece by piece so that its sector lines (from the official sector times)
+	// fall where the fastest lap's do, and the gap at each sector line matches the sector times
+	const sectorEnds = (lap, p) => {
+		const s1 = lap.duration_sector_1;
+		const s2 = lap.duration_sector_2;
+		return Number.isFinite(s1) && Number.isFinite(s2) ? [interp(p.ts, p.fs, s1), interp(p.ts, p.fs, s1 + s2)] : null;
+	};
+	const reference = sectorEnds(top[0], profiles[0]);
+	const own = sectorEnds(top[1], profiles[1]);
+	if (reference && own && own[0] < own[1]) {
+		const from = [0, ...own, 1];
+		const to = [0, ...reference, 1];
+		profiles[1].fs = profiles[1].fs.map((f) => interp(from, to, f));
+	}
+
 	// mini-sectors: time each driver needs for the same share of the lap
 	const timeAt = (p, f) => interp(p.fs, p.ts, f);
 	const winners = [];
@@ -147,11 +198,16 @@ const buildTelemetry = async (session) => {
 		winners.push(d0 <= d1 ? 0 : 1);
 	}
 
-	// speed along the lap
+	// speed along the lap, and the gap: how much later the second driver reaches each point (s)
 	const trace = [];
 	for (let k = 0; k <= TRACE_POINTS; k += 1) {
 		const f = k / TRACE_POINTS;
-		trace.push([Math.round(f * 1000) / 1000, Math.round(interp(profiles[0].fs, profiles[0].vs, f)), Math.round(interp(profiles[1].fs, profiles[1].vs, f))]);
+		trace.push([
+			Math.round(f * 1000) / 1000,
+			Math.round(interp(profiles[0].fs, profiles[0].vs, f)),
+			Math.round(interp(profiles[1].fs, profiles[1].vs, f)),
+			Math.round((timeAt(profiles[1], f) - timeAt(profiles[0], f)) * 1000) / 1000,
+		]);
 	}
 
 	// sector lines, from the fastest lap's sector times
@@ -257,6 +313,9 @@ class F1Telemetry extends WeatherDisplay {
 			this.setStatus(STATUS.noData);
 			return;
 		}
+		// colours worked out here, so a saved copy also follows this rule
+		const colours = driverColours(this.data.drivers);
+		this.data.drivers.forEach((d, i) => { d.colour = colours[i]; });
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
 	}
@@ -288,13 +347,15 @@ class F1Telemetry extends WeatherDisplay {
 			});
 		});
 		const won = [0, 1].map((i) => data.winners.filter((w) => w === i).length);
-		this.elem.querySelector('.mini-count').innerHTML = `<span style="color:${a.colour}">${a.code} ${won[0]}</span> &nbsp; <span style="color:${b.colour}">${b.code} ${won[1]}</span> <span class="of">of ${data.winners.length}</span>`;
+		this.elem.querySelector('.mini-count').innerHTML = `<span style="color:${a.colour}">${a.code} ${won[0]}</span>   <span style="color:${b.colour}">${b.code} ${won[1]}</span>`;
+		// the mini-sectors in lap order, each in the colour of the faster driver
+		this.elem.querySelector('.mini-strip').innerHTML = data.winners.map((w) => `<span style="background:${data.drivers[w].colour}"></span>`).join('');
 		this.elem.querySelector('.track').innerHTML = this.trackSvg();
 
-		// page 2: speed along the lap
+		// page 2: speed and gap along the lap
 		this.elem.querySelector('.chart').innerHTML = this.chartSvg();
 		this.elem.querySelector('.legend').innerHTML = data.drivers
-			.map((d) => `<span style="color:${d.colour}">${d.code} ${lapTime(d.time)}, top speed ${d.topSpeed}</span>`).join('   ');
+			.map((d) => `<span class="chip" style="--driver:${d.colour}"><span class="code">${d.code}</span> ${lapTime(d.time)}</span><span class="top">top ${d.topSpeed} km/h</span>`).join('');
 
 		this.elem.querySelector('.credit').textContent = `${data.place} ${data.year}, ${data.sessionName}   Data: OpenF1`;
 		this.finishDraw();
@@ -326,19 +387,65 @@ class F1Telemetry extends WeatherDisplay {
 		const len = Math.hypot(x1 - x0, y1 - y0) || 1;
 		const nx = (-(y1 - y0) / len) * 9;
 		const ny = ((x1 - x0) / len) * 9;
-		const finish = `<line x1="${x0 - nx}" y1="${y0 - ny}" x2="${x0 + nx}" y2="${y0 + ny}" stroke="black" stroke-width="3"/>`;
-		return `<svg viewBox="0 0 ${MAP_W} ${MAP_H}" width="${MAP_W}" height="${MAP_H}">${outline}${coloured}${finish}</svg>`;
+		// start and finish line in black and white squares, and an arrow beside it in the direction of the lap
+		const finish = `<line x1="${x0 - nx}" y1="${y0 - ny}" x2="${x0 + nx}" y2="${y0 + ny}" stroke="white" stroke-width="5"/>`
+			+ `<line x1="${x0 - nx}" y1="${y0 - ny}" x2="${x0 + nx}" y2="${y0 + ny}" stroke="black" stroke-width="5" stroke-dasharray="3 3"/>`;
+		// the arrow sits on the track a little after the line, pointing along it
+		const [ax, ay] = map[Math.min(6, map.length - 1)];
+		const [bx, by] = map[Math.min(8, map.length - 1)];
+		const dl = Math.hypot(bx - ax, by - ay) || 1;
+		const [ux, uy] = [(bx - ax) / dl, (by - ay) / dl];
+		const arrow = `<polygon points="${ax + ux * 9},${ay + uy * 9} ${ax - ux * 5 - uy * 6},${ay - uy * 5 + ux * 6} ${ax - ux * 5 + uy * 6},${ay - uy * 5 - ux * 6}" fill="white" stroke="black" stroke-width="1.5"/>`;
+		// sector lines (S2, S3) across the track, at the points nearest to their share of the lap
+		const sectors = (this.data.sectorFracs ?? []).map((f, i) => {
+			let k = 0;
+			map.forEach((p, j) => { if (Math.abs(p[2] - f) < Math.abs(map[k][2] - f)) k = j; });
+			const [px, py] = map[k];
+			const [qx, qy] = map[(k + 1) % map.length];
+			const ql = Math.hypot(qx - px, qy - py) || 1;
+			const [sx, sy] = [-(qy - py) / ql, (qx - px) / ql];
+			// the label goes on the side of the track away from the middle of the box
+			const side = (px - MAP_W / 2) * sx + (py - MAP_H / 2) * sy >= 0 ? 1 : -1;
+			const [lx, ly] = [px + sx * side * 24, py + sy * side * 24 + 6];
+			return `<line x1="${px - sx * 10}" y1="${py - sy * 10}" x2="${px + sx * 10}" y2="${py + sy * 10}" stroke="black" stroke-width="6"/>`
+				+ `<line x1="${px - sx * 9}" y1="${py - sy * 9}" x2="${px + sx * 9}" y2="${py + sy * 9}" stroke="white" stroke-width="2.5"/>`
+				+ `<text x="${lx}" y="${ly}" class="sector-label" text-anchor="middle">S${i + 2}</text>`;
+		}).join('');
+		return `<svg viewBox="0 0 ${MAP_W} ${MAP_H}" width="${MAP_W}" height="${MAP_H}">${outline}${coloured}${finish}${arrow}${sectors}</svg>`;
 	}
 
 	chartSvg() {
 		const { trace, drivers, sectorFracs } = this.data;
 		const c = CHART;
 		const x = (f) => c.left + f * (c.w - c.left - c.right);
-		const y = (v) => c.top + (1 - (Math.min(Math.max(v, c.min), c.max) - c.min) / (c.max - c.min)) * (c.h - c.top - c.bottom);
-		const grid = [100, 150, 200, 250, 300].map((v) => `<line x1="${c.left}" x2="${c.w - c.right}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${c.left - 6}" y="${y(v) + 6}" class="axis" text-anchor="end">${v}</text>`).join('');
-		const sectors = sectorFracs.map((f, i) => `<line x1="${x(f)}" x2="${x(f)}" y1="${c.top}" y2="${c.h - c.bottom}" class="sector-line"/><text x="${x(f)}" y="${c.h - 6}" class="axis" text-anchor="middle">S${i + 2}</text>`).join('');
+		const y = (v) => c.speedTop + (1 - (Math.min(Math.max(v, c.min), c.max) - c.min) / (c.max - c.min)) * (c.speedBottom - c.speedTop);
+		const grid = [100, 200, 300].map((v) => `<line x1="${c.left}" x2="${c.w - c.right}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${c.left - 6}" y="${y(v) + 6}" class="axis" text-anchor="end">${v}</text>`).join('');
+		const sectors = sectorFracs.map((f, i) => `<line x1="${x(f)}" x2="${x(f)}" y1="${c.speedTop}" y2="${c.gapBottom}" class="sector-line"/><text x="${x(f) + 4}" y="${c.h - 6}" class="axis">S${i + 2}</text>`).join('');
 		const line = (k) => `<polyline points="${trace.map((p) => `${x(p[0]).toFixed(1)},${y(p[k + 1]).toFixed(1)}`).join(' ')}" fill="none" stroke="${drivers[k].colour}" stroke-width="2.5" stroke-linejoin="round"/>`;
-		return `<svg viewBox="0 0 ${c.w} ${c.h}" width="${c.w}" height="${c.h}">${grid}${sectors}<text x="${c.left}" y="${c.h - 6}" class="axis">S1</text><text x="${c.w - c.right}" y="${c.h - 6}" class="axis" text-anchor="end">km/h</text>${line(1)}${line(0)}</svg>`;
+		const speed = `${grid}<text x="${c.w - c.right + 6}" y="${c.speedTop + 14}" class="axis">km/h</text>${line(1)}${line(0)}`;
+
+		// gap along the lap: above the line the first driver is ahead, under it the second
+		let gap = '';
+		if (trace[0]?.length > 3) {
+			const most = Math.max(0.05, ...trace.map((p) => Math.abs(p[3])));
+			const range = Math.ceil(most / 0.05) * 0.05;
+			const zero = (c.gapTop + c.gapBottom) / 2;
+			const gy = (d) => zero - (d / range) * ((c.gapBottom - c.gapTop) / 2);
+			const points = trace.map((p) => `${x(p[0]).toFixed(1)},${gy(p[3]).toFixed(1)}`).join(' ');
+			const area = `${x(0)},${zero} ${points} ${x(1)},${zero}`;
+			const last = trace.at(-1)[3];
+			gap = `<clipPath id="tel-ahead-0"><rect x="0" y="0" width="${c.w}" height="${zero}"/></clipPath>`
+				+ `<clipPath id="tel-ahead-1"><rect x="0" y="${zero}" width="${c.w}" height="${c.h - zero}"/></clipPath>`
+				+ `<polygon points="${area}" fill="${drivers[0].colour}" fill-opacity="0.55" clip-path="url(#tel-ahead-0)"/>`
+				+ `<polygon points="${area}" fill="${drivers[1].colour}" fill-opacity="0.55" clip-path="url(#tel-ahead-1)"/>`
+				+ `<line x1="${c.left}" x2="${c.w - c.right}" y1="${zero}" y2="${zero}" class="zero"/>`
+				+ `<polyline points="${points}" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>`
+				+ `<text x="${c.left - 6}" y="${c.gapTop + 12}" class="axis small" text-anchor="end" fill="${drivers[0].colour}">${drivers[0].code}</text>`
+				+ `<text x="${c.left - 6}" y="${c.gapBottom}" class="axis small" text-anchor="end" fill="${drivers[1].colour}">${drivers[1].code}</text>`
+				+ `<text x="${c.w - c.right + 6}" y="${gy(last) + 6}" class="axis">${last >= 0 ? '+' : ''}${last.toFixed(3)}</text>`
+				+ `<text x="${c.w - c.right + 6}" y="${c.gapTop + 2}" class="axis small">GAP</text>`;
+		}
+		return `<svg viewBox="0 0 ${c.w} ${c.h}" width="${c.w}" height="${c.h}">${sectors}${speed}${gap}<text x="${c.left + 4}" y="${c.h - 6}" class="axis">S1</text></svg>`;
 	}
 }
 
