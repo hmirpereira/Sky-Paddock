@@ -13,7 +13,7 @@ import { registerDisplay } from './navigation.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { getPhase, getSessionResult } from './utils/f1-weekend.mjs';
 import {
-	teamsByNumber, teamId, findSession, sessionResult,
+	teamsByNumber, teamId, findSession, sessionResult, openf1,
 } from './utils/f1-openf1.mjs';
 
 const JOLPICA = 'https://api.jolpi.ca';
@@ -68,12 +68,12 @@ const alphaResults = async (season, round, code) => {
 
 // OpenF1: starting grid of a session (refused without a paid key while any session is live)
 const openf1Grid = async (season, sessionName, start) => {
-	const sessions = await json(`${OPENF1}/sessions?year=${season}&session_name=${encodeURIComponent(sessionName)}`);
+	const sessions = await openf1(`${OPENF1}/sessions?year=${season}&session_name=${encodeURIComponent(sessionName)}`);
 	const session = (Array.isArray(sessions) ? sessions : [])
 		.find((s) => Math.abs(DateTime.fromISO(s.date_start).diff(start, 'hours').hours) < 2);
 	if (!session) return null;
-	const grid = await json(`${OPENF1}/starting_grid?session_key=${session.session_key}`);
-	const drivers = await json(`${OPENF1}/drivers?session_key=${session.session_key}`);
+	const grid = await openf1(`${OPENF1}/starting_grid?session_key=${session.session_key}`);
+	const drivers = await openf1(`${OPENF1}/drivers?session_key=${session.session_key}`);
 	if (!Array.isArray(grid) || grid.length < 2) return null;
 	const byNumber = Object.fromEntries((Array.isArray(drivers) ? drivers : []).map((d) => [d.driver_number, d]));
 	return withTeams(grid.sort((a, b) => a.position - b.position).map((g) => ({

@@ -36,16 +36,37 @@ export const teamsByNumber = async () => {
 // constructorId for the icons: from the car number, else from the team name
 export const teamId = (teams, number, teamName) => teams[Number(number)] ?? TEAM_NAMES[String(teamName ?? '').toLowerCase()] ?? '';
 
+// OpenF1 refuses free requests that come too close together (429 Too Many Requests): every screen asks
+// through this queue, one request at a time and spaced, and a refused one is asked once more after a pause
+const REQUEST_GAP_MS = 700;
+const RETRY_AFTER_MS = 15_000;
+const sleep = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
+let queue = Promise.resolve();
+export const openf1 = (url) => {
+	const request = queue.then(async () => {
+		try {
+			return await json(url);
+		} catch (error) {
+			if (!/ 429 /.test(error.message)) throw error;
+			await sleep(RETRY_AFTER_MS);
+			return json(url);
+		}
+	});
+	// the next request waits for this one and the gap, whatever its result
+	queue = request.catch(() => {}).then(() => sleep(REQUEST_GAP_MS));
+	return request;
+};
+
 // the OpenF1 session with this name that starts within 2 h of the scheduled time
 export const findSession = async (season, sessionName, start) => {
 	if (!start) return null;
-	const sessions = await json(`${OPENF1}/sessions?year=${season}&session_name=${encodeURIComponent(sessionName)}`);
+	const sessions = await openf1(`${OPENF1}/sessions?year=${season}&session_name=${encodeURIComponent(sessionName)}`);
 	return (Array.isArray(sessions) ? sessions : [])
 		.find((s) => Math.abs(DateTime.fromISO(s.date_start).diff(start, 'hours').hours) < 2) ?? null;
 };
 
 const list = async (url) => {
-	const data = await json(url);
+	const data = await openf1(url);
 	return Array.isArray(data) ? data : [];
 };
 
