@@ -6,3 +6,6 @@ server/scripts/custom.js
 docs/
 server/styles/main.css
 server/styles/main.css.map
+# personal notes for Claude Code and its local settings (not published)
+CLAUDE.local.md
+.claude/settings.local.json
