@@ -316,12 +316,13 @@ body {
 	transform-origin: 0 0;
 }
 
-// version and commit date (settings: Show Version Mark), over the bottom right corner of the bottom line
+// version and commit date (settings: Show Version Mark), over the bottom right corner of the bottom line;
+// about 5% in from the edges (the TV safe area), because the TV's overscan cuts the outer few percent
 #version-mark {
 	display: none;
 	position: absolute;
-	right: 6px;
-	bottom: 3px;
+	right: 42px;
+	bottom: 24px;
 	z-index: 20;
 	font-family: 'Star4000 Small';
 	font-size: 16px;
