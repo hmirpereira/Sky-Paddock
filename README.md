@@ -121,7 +121,7 @@ Red and black.
   - **Colour fringe on text**: red and blue edges on the text, like a VHS recording, through the shared `text-shadow` mixin (`--fringe-left`, `--fringe-right`).
   - **Colour fringe on pictures**: the red and blue channels of the pictures pulled apart by an SVG filter in `index.ejs` (`#vhs-rgb`). Not on the radar, which animates.
 - **Music**: the page plays none. On the TV the Pi plays its own background music (outside this repository). The Webamp (Winamp) player of the original project was removed in 1.9.0.
-- **Version mark**: with *Show Version Mark*, the version and the date of the commit it was built from (Lisbon time) are shown small in the bottom right corner, to check that a screen runs the latest version. On by default in the TV command. The date comes from `git log` when building (`vite.config.mjs`); without git it is the build date.
+- **Version mark**: with *Show Version Mark*, the version and the date of the commit it was built from (Lisbon time) are shown small in the bottom right corner, about 5% in from the edges so the TV's overscan does not cut them, to check that a screen runs the latest version. On by default in the TV command. The date comes from `git log` when building (`vite.config.mjs`); without git it is the build date.
 
 ## Settings and the TV address
 
