@@ -11,10 +11,11 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 ## Commands
 
 - `npm ci` once, then `npm run dev` (Vite dev server at http://localhost:8080/, reloads on change)
-- `npm run lint` (ESLint, Airbnb style with tabs) and `npm run build` (Vite, into `docs/`)
+- `npm run lint` (ESLint, Airbnb style with tabs), `npm run build` (Vite, into `docs/`) and `npm test`
+  (Playwright smoke test of the build; `npx playwright install chromium` once)
 - Publishing: push to `main`. `.github/workflows/pages.yml` runs `npm ci`, lint, build, checks
-  (`docs/index.html`, assets, `docs/images/flags`, the `package.json` version inside `docs/index.html`)
-  and deploys to Pages. `docs/` is built by Actions and is not committed.
+  (`docs/index.html`, assets, `docs/images/flags`, the `package.json` version inside `docs/index.html`),
+  the smoke test, and deploys to Pages. `docs/` is built by Actions and is not committed.
 
 ## Layout
 
@@ -42,11 +43,12 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 
 ## Testing
 
-- Build, serve `docs/` on port 8080 and drive it with Playwright (Chromium) through a URL with the
-  screens wanted (`?<screen>-checkbox=true&...&kiosk=true`). Mock the Pi service by routing
-  `http://127.0.0.1:8095/*.json`, and external APIs when needed. Check for page errors and look at
-  screenshots of the screen changed, in 16:9 (`settings-wide-checkbox=true`) and 4:3.
-- Run `npm run lint` and `npm run build` before every commit.
+- `npm test` (after `npm run build`): Playwright smoke test of every screen, 16:9 and 4:3, with the external
+  sites replayed from `tests/recorded/sites.har` and the Pi service replaced by `tests/pi-fixtures.mjs`
+  (made up: never put real Pi data there). Actions runs it before publishing. `npm run test:record` records
+  the sites again (needed when a screen asks for new data); check the new `recorded.json` statuses.
+- For a screen changed, also look at screenshots (`SCREENSHOTS=1 npm test`, in `test-results/`) in 16:9 and 4:3.
+- Run `npm run lint`, `npm run build` and `npm test` before every commit.
 
 ## Rules (always)
 
