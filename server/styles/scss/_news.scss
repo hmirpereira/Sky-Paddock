@@ -36,10 +36,17 @@
 					color: c.$title-color;
 					@include u.text-shadow(2px, 1px);
 
+					// as tall as the source logo plates; the Star4000 Small letters sit low in their line,
+					// so the line is shorter than the box and the room left goes below it
 					.badge {
 						display: none;
+						vertical-align: top;
+						box-sizing: border-box;
+						height: 22px;
+						margin-top: 2px;
 						margin-right: 12px;
 						padding: 0 8px;
+						line-height: 14px;
 					}
 
 					.when {
