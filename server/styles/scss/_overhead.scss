@@ -220,15 +220,21 @@
 				}
 
 				.target {
+					// the plane picture (images/overhead-plane.png): Lufthansa in its own colours, the rest
+					// its shape painted in one colour
 					.plane {
 						position: absolute;
-						left: -5px;
-						top: -10px;
-						width: 0;
-						height: 0;
-						border-left: 5px solid transparent;
-						border-right: 5px solid transparent;
-						border-bottom: 20px solid white;
+						left: -11px;
+						top: -11px;
+						width: 22px;
+						height: 22px;
+						background: #6ec6ff;
+						mask: url(/images/overhead-plane.png) center / contain no-repeat;
+					}
+
+					.plane.lh {
+						background: url(/images/overhead-plane.png) center / contain no-repeat;
+						mask: none;
 					}
 
 					.label {
@@ -263,8 +269,8 @@
 						}
 					}
 
-					&.closest .plane {
-						border-bottom-color: av.$av-yellow;
+					&.closest .plane:not(.lh) {
+						background-color: av.$av-yellow;
 					}
 
 					&.closest .label {
@@ -370,21 +376,31 @@
 
 				.plane {
 					position: absolute;
-					left: -6px;
-					top: -9px;
-					border-left: 6px solid transparent;
-					border-right: 6px solid transparent;
-					border-bottom: 18px solid white;
+					left: -11px;
+					top: -11px;
+					width: 22px;
+					height: 22px;
+					background: #6ec6ff;
+					mask: url(/images/overhead-plane.png) center / contain no-repeat;
 				}
 
-				&.moving .plane {
-					border-bottom-color: av.$av-yellow;
+				.plane.lh {
+					background: url(/images/overhead-plane.png) center / contain no-repeat;
+					mask: none;
+				}
+
+				&.moving .plane:not(.lh) {
+					background-color: av.$av-yellow;
 				}
 
 				// transponder off: last position, in grey
 				&.parked {
 					.plane {
-						border-bottom-color: #8a93a6;
+						opacity: 0.6;
+					}
+
+					.plane:not(.lh) {
+						background-color: #8a93a6;
 					}
 
 					.label,

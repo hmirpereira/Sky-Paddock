@@ -31,6 +31,8 @@ const airlineCode = (callsign) => {
 };
 // flight number (LH1176) from the Pi service; aircraft whose callsign does not give it
 // (letters in it, like RYR10UB, or no airline known) show the callsign instead
+// Lufthansa aircraft (DLH, and CityLine as DLH) keep the plane picture in its own colours
+const isLufthansa = (ac) => airlineCode(ac.callsign) === 'DLH';
 const flightText = (ac) => ac.flight ?? ac.callsign;
 const routeText = (ac) => (ac.from?.iata && ac.to?.iata ? `${ac.from.iata}-${ac.to.iata}` : '');
 
@@ -273,7 +275,7 @@ class Overhead extends WeatherDisplay {
 			const label = spot ? `<div class="label ${side}" style="left:${spot[0] - p.x}px; top:${spot[1] - p.y}px">`
 				+ `${flightText(ac)}${where ? `<div class="where">${where}</div>` : ''}</div>` : '';
 			return `<div class="target${ac.ground ? '' : ' moving'}${ac.parked ? ' parked' : ''}" style="left:${p.x}px; top:${p.y}px">
-				<div class="plane" style="transform: rotate(${(ac.track ?? 0) + turn}deg)"></div>${label}</div>`;
+				<div class="plane${isLufthansa(ac) ? ' lh' : ''}" style="transform: rotate(${(ac.track ?? 0) + turn}deg)"></div>${label}</div>`;
 		});
 
 		const marks = [];
@@ -389,7 +391,7 @@ class Overhead extends WeatherDisplay {
 			const label = spot ? `<div class="label ${side}" style="left:${spot[0] - p.x}px; top:${spot[1] - p.y}px">${logo ? `<img class="logo" src="images/overhead-logos/${code}.png" alt="">` : ''}`
 				+ `<div class="flight">${flightText(ac)}</div>${route ? `<div class="route">${route}</div>` : ''}</div>` : '';
 			target.innerHTML = ac.ground ? '<div class="dot"></div>'
-				: `<div class="plane" style="transform: rotate(${ac.track ?? 0}deg)"></div>${label}`;
+				: `<div class="plane${isLufthansa(ac) ? ' lh' : ''}" style="transform: rotate(${ac.track ?? 0}deg)"></div>${label}`;
 			scope.append(target);
 		});
 
