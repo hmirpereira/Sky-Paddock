@@ -115,11 +115,19 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		const loaded = Object.keys(statuses).filter((screen) => statuses[screen] === 'loaded' && !MAY_HAVE_NO_PAGES.includes(screen));
 		await page.waitForFunction(() => document.querySelector('.weather-display.show'), null, { timeout: 30_000 });
 		const seen = new Set();
+		let escaped = false;
 		const first = await shownScreen(page);
 		let steps = 0;
 		for (; steps < 200; steps += 1) {
 			const screen = await shownScreen(page);
 			seen.add(screen);
+			// text from other sites is shown as text: the fixture headline has <b>x</b> and a bare < in it
+			if (screen === 'news' && !escaped) {
+				escaped = await page.evaluate(() => {
+					const news = document.querySelector('#news-html');
+					return news.innerText.includes('<b>x</b> & a < b') && !news.querySelector('.news-lines b');
+				});
+			}
 			if (process.env.SCREENSHOTS) {
 				await page.locator('#container').screenshot({ path: testInfo.outputPath(`${String(steps).padStart(3, '0')}-${screen}.png`) });
 			}
@@ -135,6 +143,7 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		expect(pageErrors, 'page errors').toEqual([]);
 		expect(Object.entries(statuses).filter(([, status]) => status === 'failed' || status === 'unknown'), 'failed screens').toEqual([]);
 		expect(loaded.filter((screen) => !seen.has(screen)), 'loaded screens never shown').toEqual([]);
+		expect(escaped, 'a news headline with < and & must be shown as text').toBe(true);
 
 		if (record) {
 			fs.writeFileSync(META, `${JSON.stringify({ time: meta.time, recorded: new Date(meta.time).toISOString(), statuses }, null, '\t')}\n`);

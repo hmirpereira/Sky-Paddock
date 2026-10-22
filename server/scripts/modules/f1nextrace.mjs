@@ -131,7 +131,7 @@ class F1NextRace extends WeatherDisplay {
 
 		this.elem.querySelector('.f1-race-page.info').style.display = page === 0 ? 'block' : 'none';
 		this.elem.querySelector('.f1-race-page.weekend').style.display = page === 1 ? 'block' : 'none';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = page === 0 ? `Round ${race.round}` : 'Weekend';
+		this.elem.querySelector('.header .title.dual .bottom').textContent = page === 0 ? `Round ${race.round}` : 'Weekend';
 
 		if (page === 0) this.drawInfo(race);
 		else this.drawWeekend(race);

@@ -468,10 +468,12 @@ class WeatherDisplay {
 			const elem = template.querySelector(`.${key}`);
 			if (!elem) return;
 
-			// fill based on type provided
+			// fill based on type provided: strings and numbers as text (much of it comes from other
+			// sites and must not be read as HTML); markup the page builds itself only as { html }
 			if (typeof value === 'string' || typeof value === 'number') {
-				// string and number fill the first found selector
-				elem.innerHTML = value;
+				elem.textContent = value;
+			} else if (typeof value?.html === 'string') {
+				elem.innerHTML = value.html;
 			} else if (value?.type === 'img') {
 				// fill the image source
 				elem.querySelector('img').src = value.src;

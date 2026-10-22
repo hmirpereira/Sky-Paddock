@@ -13,6 +13,7 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { readCache, writeCache } from './utils/f1-update.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
+import { escapeHtml } from './utils/html.mjs';
 
 const OPENF1 = 'https://api.openf1.org/v1';
 // v2: the gap along the lap was added to the saved copy
@@ -327,7 +328,7 @@ class F1Telemetry extends WeatherDisplay {
 		const main = this.elem.querySelector('.main.f1-telemetry');
 		main.classList.toggle('page-chart', onChart);
 		this.elem.querySelector('.header .title.dual .top').innerHTML = 'F1 Telemetry';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = shortName(data.sessionName);
+		this.elem.querySelector('.header .title.dual .bottom').textContent = shortName(data.sessionName);
 
 		const [a, b] = data.drivers;
 		// page 1: the two laps, then the track
@@ -347,7 +348,7 @@ class F1Telemetry extends WeatherDisplay {
 			});
 		});
 		const won = [0, 1].map((i) => data.winners.filter((w) => w === i).length);
-		this.elem.querySelector('.mini-count').innerHTML = `<span style="color:${a.colour}">${a.code} ${won[0]}</span>   <span style="color:${b.colour}">${b.code} ${won[1]}</span>`;
+		this.elem.querySelector('.mini-count').innerHTML = `<span style="color:${a.colour}">${escapeHtml(a.code)} ${won[0]}</span>   <span style="color:${b.colour}">${escapeHtml(b.code)} ${won[1]}</span>`;
 		// the mini-sectors in lap order, each in the colour of the faster driver
 		this.elem.querySelector('.mini-strip').innerHTML = data.winners.map((w) => `<span style="background:${data.drivers[w].colour}"></span>`).join('');
 		this.elem.querySelector('.track').innerHTML = this.trackSvg();
@@ -355,7 +356,7 @@ class F1Telemetry extends WeatherDisplay {
 		// page 2: speed and gap along the lap
 		this.elem.querySelector('.chart').innerHTML = this.chartSvg();
 		this.elem.querySelector('.legend').innerHTML = data.drivers
-			.map((d) => `<span class="chip" style="--driver:${d.colour}"><span class="code">${d.code}</span> ${lapTime(d.time)}</span><span class="top">top ${d.topSpeed} km/h</span>`).join('');
+			.map((d) => `<span class="chip" style="--driver:${d.colour}"><span class="code">${escapeHtml(d.code)}</span> ${lapTime(d.time)}</span><span class="top">top ${d.topSpeed} km/h</span>`).join('');
 
 		this.elem.querySelector('.credit').textContent = `${data.place} ${data.year}, ${data.sessionName}   Data: OpenF1`;
 		this.finishDraw();
@@ -440,8 +441,8 @@ class F1Telemetry extends WeatherDisplay {
 				+ `<polygon points="${area}" fill="${drivers[1].colour}" fill-opacity="0.55" clip-path="url(#tel-ahead-1)"/>`
 				+ `<line x1="${c.left}" x2="${c.w - c.right}" y1="${zero}" y2="${zero}" class="zero"/>`
 				+ `<polyline points="${points}" fill="none" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>`
-				+ `<text x="${c.left - 6}" y="${c.gapTop + 12}" class="axis small" text-anchor="end" fill="${drivers[0].colour}">${drivers[0].code}</text>`
-				+ `<text x="${c.left - 6}" y="${c.gapBottom}" class="axis small" text-anchor="end" fill="${drivers[1].colour}">${drivers[1].code}</text>`
+				+ `<text x="${c.left - 6}" y="${c.gapTop + 12}" class="axis small" text-anchor="end" fill="${drivers[0].colour}">${escapeHtml(drivers[0].code)}</text>`
+				+ `<text x="${c.left - 6}" y="${c.gapBottom}" class="axis small" text-anchor="end" fill="${drivers[1].colour}">${escapeHtml(drivers[1].code)}</text>`
 				+ `<text x="${c.w - c.right + 6}" y="${gy(last) + 6}" class="axis">${last >= 0 ? '+' : ''}${last.toFixed(3)}</text>`
 				+ `<text x="${c.w - c.right + 6}" y="${c.gapTop + 2}" class="axis small">GAP</text>`;
 		}

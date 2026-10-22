@@ -105,7 +105,7 @@ class F1Standings extends WeatherDisplay {
 		list.append(...lines);
 		list.scrollTop = 0;
 
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = this.round ? `After Round ${this.round}` : 'Standings';
+		this.elem.querySelector('.header .title.dual .bottom').textContent = this.round ? `After Round ${this.round}` : 'Standings';
 
 		this.finishDraw();
 	}

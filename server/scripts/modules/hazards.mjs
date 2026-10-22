@@ -5,6 +5,7 @@ import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { warningArea } from './utils/local-place.mjs';
+import { escapeHtml } from './utils/html.mjs';
 
 // NOTE: by the owner's choice, this screen is shown in Portuguese, the language of the IPMA
 // warning texts (the IPMA open data API has no English version of the descriptions).
@@ -90,11 +91,12 @@ class Hazards extends WeatherDisplay {
 			const period = warning.startTime > now
 				? `DE ${formatIpmaTime(warning.startTime)}<br/>ATÉ ${formatIpmaTime(warning.endTime)}`
 				: `ATÉ ${formatIpmaTime(warning.endTime)}`;
-			const description = warning.text ? `<br/><br/>${warning.text}` : '';
+			const description = warning.text ? `<br/><br/>${escapeHtml(warning.text)}` : '';
 
 			const line = this.fillTemplate('hazard', {
 				// the Star4000 fonts have no usable accented capitals, so accents are removed (ATÉ -> ATE)
-				'hazard-text': stripAccents(`AVISO ${level}<br/>${warning.awarenessTypeName}<br/>${this.area.name}<br/>${period}${description}`),
+				// line breaks are HTML; the IPMA texts in it are escaped
+				'hazard-text': { html: stripAccents(`AVISO ${level}<br/>${escapeHtml(warning.awarenessTypeName)}<br/>${escapeHtml(this.area.name)}<br/>${period}${description}`) },
 			});
 			line.classList.add(`level-${warning.awarenessLevelID}`);
 			return line;

@@ -64,7 +64,7 @@ class Metar extends WeatherDisplay {
 		list.append(...lines);
 
 		const rawElem = this.elem.querySelector('.metar-raw');
-		rawElem.innerHTML = raw;
+		rawElem.textContent = raw;
 
 		// spread the rows over the space left above the raw report
 		const main = this.elem.querySelector('.main');

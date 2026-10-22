@@ -126,7 +126,7 @@ class F1LastRace extends WeatherDisplay {
 		const { race } = this;
 
 		this.elem.querySelector('.header .title.dual .top').innerHTML = this.type === 'sprint' ? 'F1 Last Sprint' : 'F1 Last Race';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = `Round ${race.round}`;
+		this.elem.querySelector('.header .title.dual .bottom').textContent = `Round ${race.round}`;
 
 		// race name, flag and date
 		const title = this.elem.querySelector('.race-title');
