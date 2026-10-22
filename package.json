@@ -1,6 +1,6 @@
 {
 	"name": "sky-paddock",
-	"version": "1.10.3",
+	"version": "1.10.4",
 	"description": "Welcome to the WeatherStar 4000+ project page!",
 	"main": "vite.config.mjs",
 	"scripts": {
@@ -8,9 +8,10 @@
 		"start": "vite",
 		"build": "vite build",
 		"preview": "vite build && vite preview",
-		"lint": "eslint \"./server/scripts/**/*.mjs\"",
-		"lint:fix": "eslint --fix \"./server/scripts/**/*.mjs\"",
-		"test": "playwright test --project=smoke",
+		"lint": "eslint \"./server/scripts/**/*.mjs\" vite.config.mjs playwright.config.mjs \"tests/**/*.mjs\" \".claude/**/*.mjs\"",
+		"lint:fix": "eslint --fix \"./server/scripts/**/*.mjs\" vite.config.mjs playwright.config.mjs \"tests/**/*.mjs\" \".claude/**/*.mjs\"",
+		"test": "npm run test:unit && playwright test --project=smoke",
+		"test:unit": "node --test \"tests/unit/*.test.mjs\"",
 		"test:record": "playwright test --project=record"
 	},
 	"repository": {

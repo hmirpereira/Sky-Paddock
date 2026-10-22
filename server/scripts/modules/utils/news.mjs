@@ -1,6 +1,8 @@
 // Portuguese news headlines for the News screen and the bottom line, from the skypaddock-hub service
 // on the Pi (RSS feeds of RTP, Expresso, Publico, CNN Portugal and Sabado, and FlyingLapF1 and F1PT for Formula 1,
 // read there because the browser cannot read them from another site). Anywhere else the list is empty.
+import { plainText } from './text.mjs';
+
 const NEWS_URL = 'http://127.0.0.1:8095/news.json';
 const CHECK_EVERY_MS = 5 * 60 * 1000;
 
@@ -38,11 +40,6 @@ export const newsFresh = async () => {
 	pending = load();
 	return pending;
 };
-
-// the Star4000 fonts draw accented letters blank, so accents are removed (ç -> c, ã -> a)
-export const plainText = (text) => (text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '')
-	.replace(/[‘’´]/g, "'").replace(/[“”«»]/g, '"')
-	.replace(/[–—]/g, '-');
 
 // logo of each source (images/news, from the owner's files), on a plate so it shows on the blue
 // background: light for the dark or red logos, dark for the white ones, red for Sabado (the red of its own box,

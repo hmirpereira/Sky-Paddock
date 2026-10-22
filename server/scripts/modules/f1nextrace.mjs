@@ -8,10 +8,10 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
-import { getConditionText } from './utils/weather.mjs';
-import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { readCache, writeCache, isFresh } from './utils/f1-update.mjs';
 import CIRCUITS from './utils/f1-circuits.mjs';
+import { plainText } from './utils/text.mjs';
+import raceForecast from './utils/race-forecast.mjs';
 
 const NEXT_RACE_URL = 'https://api.jolpi.ca/ergast/f1/current/next/races/';
 const CACHE_KEY = 'f1-next-race-cache';
@@ -35,7 +35,6 @@ const toDateTime = (date, time) => DateTime.fromISO(`${date}T${time ?? '00:00:00
 const shortRaceName = (name) => name.replace('Grand Prix', 'GP');
 
 // the Star4000 fonts list accented letters but draw them blank (Autódromo -> Aut dromo), so accents are removed
-const stripAccents = (text) => (text ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
 const parseRace = (race) => {
 	const sessions = SESSIONS
@@ -58,31 +57,9 @@ const parseRace = (race) => {
 	};
 };
 
-// forecast for the hour the race starts, only when it is within Open-Meteo's 16 days
-const getForecast = async (race) => {
-	const start = DateTime.fromISO(race.start).toUTC();
-	if (start > DateTime.now().plus({ days: 15 }) || !race.lat) return null;
-	try {
-		const day = start.toISODate();
-		const response = await json(`https://api.open-meteo.com/v1/forecast?latitude=${race.lat}&longitude=${race.lon}&hourly=weather_code,temperature_2m,precipitation_probability,is_day&timezone=GMT&start_date=${day}&end_date=${day}`);
-		const index = response?.hourly?.time?.indexOf(start.startOf('hour').toFormat("yyyy-MM-dd'T'HH:mm"));
-		if (index === undefined || index < 0) return null;
-		const condition = getConditionText(Number(response.hourly.weather_code[index]));
-		return {
-			condition,
-			icon: getWeatherRegionalIconFromIconLink(condition, response.hourly.is_day[index]),
-			temperature: Math.round(ConversionHelpers.convertTemperatureUnits(response.hourly.temperature_2m[index])),
-			rain: response.hourly.precipitation_probability[index],
-		};
-	} catch (error) {
-		console.error('F1NextRace: unable to get the forecast', error);
-		return null;
-	}
-};
-
 class F1NextRace extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'F1 Next Race', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'F1 Next Race', defaultActive);
 
 		// two pages, 10 seconds each
 		this.timing.baseDelay = 10000;
@@ -118,7 +95,7 @@ class F1NextRace extends WeatherDisplay {
 			return;
 		}
 
-		this.forecast = await getForecast(this.race);
+		this.forecast = await raceForecast(this.race.start, this.race.lat, this.race.lon, 'F1NextRace');
 
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
@@ -172,7 +149,7 @@ class F1NextRace extends WeatherDisplay {
 		lines.forEach(([cls, text]) => {
 			const div = document.createElement('div');
 			div.className = cls;
-			div.textContent = stripAccents(text);
+			div.textContent = plainText(text);
 			// 8-bit flag after the country: images/flags/<country>.png (hidden if missing)
 			if (cls === 'place' && race.country) {
 				const flag = document.createElement('img');
@@ -180,7 +157,7 @@ class F1NextRace extends WeatherDisplay {
 				flag.alt = '';
 				flag.addEventListener('error', () => flag.remove());
 				// file name: country without accents, lower case, spaces as hyphens (Türkiye -> turkiye)
-				const slug = race.country.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, '-');
+				const slug = plainText(race.country).toLowerCase().replace(/\s+/g, '-');
 				flag.src = `images/flags/${slug}.png`;
 				div.append(flag);
 			}
@@ -226,4 +203,4 @@ class F1NextRace extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new F1NextRace(21, 'f1-next-race', true));
+registerDisplay(new F1NextRace('f1-next-race', true));

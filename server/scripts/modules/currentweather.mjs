@@ -10,8 +10,8 @@ import { getConditionText } from './utils/weather.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 
 class CurrentWeather extends WeatherDisplay {
-	constructor(navId, elemId) {
-		super(navId, elemId, 'Current Conditions', true);
+	constructor(elemId) {
+		super(elemId, 'Current Conditions', true);
 		// pre-load background image (returns promise)
 		this.backgroundImage = loadImg('images/BackGround1_1.png');
 	}
@@ -72,8 +72,7 @@ class CurrentWeather extends WeatherDisplay {
 
 	// make data available outside this class
 	// promise allows for data to be requested before it is available
-	async getCurrentWeather(stillWaiting) {
-		if (stillWaiting) this.stillWaitingCallbacks.push(stillWaiting);
+	async getCurrentWeather() {
 		return new Promise((resolve) => {
 			if (this.data) resolve(this.data);
 			// data not available, put it into the data callback queue
@@ -179,7 +178,7 @@ const parseData = (data) => {
 	return data;
 };
 
-const display = new CurrentWeather(1, 'current-weather');
+const display = new CurrentWeather('current-weather');
 registerDisplay(display);
 
 export default display.getCurrentWeather.bind(display);

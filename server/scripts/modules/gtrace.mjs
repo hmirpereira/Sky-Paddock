@@ -10,11 +10,11 @@ import { registerDisplay } from './navigation.mjs';
 // eslint-disable-next-line import/no-cycle
 import settings from './settings.mjs';
 import gtTeamLogo from './utils/gt-team-logos.mjs';
+import { plainText } from './utils/text.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/gt.json';
 const ROWS = 8;
-const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '');
-const surname = (name) => stripAccents(name).trim().split(/\s+/).slice(-1)[0] ?? '';
+const surname = (name) => plainText(name).trim().split(/\s+/).slice(-1)[0] ?? '';
 const drivers = (row) => row.drivers.map(surname).join('/');
 const gap = (row) => {
 	if (row.pos === 1) return 'Winner';
@@ -22,8 +22,8 @@ const gap = (row) => {
 };
 
 class GtRace extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'GT World Race', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'GT World Race', defaultActive);
 		this.timing.baseDelay = 12000;
 	}
 
@@ -49,8 +49,8 @@ class GtRace extends WeatherDisplay {
 		const { data } = this;
 		const race = data.races[Math.min(Math.max(this.screenIndex, 0), data.races.length - 1)];
 		this.elem.querySelector('.header .title.dual .top').innerHTML = 'GT World';
-		this.elem.querySelector('.header .title.dual .bottom').textContent = stripAccents(race.race);
-		this.elem.querySelector('.gt-event').textContent = stripAccents(`${data.event} ${data.season}${data.dates ? `   ${data.dates}` : ''}`);
+		this.elem.querySelector('.header .title.dual .bottom').textContent = plainText(race.race);
+		this.elem.querySelector('.gt-event').textContent = plainText(`${data.event} ${data.season}${data.dates ? `   ${data.dates}` : ''}`);
 
 		// first rows, with the highlighted car(s) moved into the last rows when they finished further down
 		const mine = race.results.map((r, index) => ({ r, index })).filter(({ r }) => r.highlight).slice(0, 2);
@@ -65,7 +65,7 @@ class GtRace extends WeatherDisplay {
 				pos: String(r.pos),
 				car: `#${r.car}`,
 				drivers: drivers(r),
-				team: stripAccents(r.team),
+				team: plainText(r.team),
 				gap: gap(r),
 			});
 			if (r.drivers.length > 2) row.classList.add('three');
@@ -79,7 +79,7 @@ class GtRace extends WeatherDisplay {
 				img.alt = '';
 				img.src = `images/gt-teams/${logo}`;
 				// no logo file: back to the name
-				img.addEventListener('error', () => { team.textContent = stripAccents(r.team); });
+				img.addEventListener('error', () => { team.textContent = plainText(r.team); });
 				team.textContent = '';
 				team.classList.add('logo');
 				team.append(img);
@@ -94,4 +94,4 @@ class GtRace extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new GtRace(23, 'gt-race', false));
+registerDisplay(new GtRace('gt-race', false));

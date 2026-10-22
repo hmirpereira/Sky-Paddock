@@ -12,13 +12,13 @@ import { getPhase, getSessionResult } from './utils/f1-weekend.mjs';
 import {
 	teamsByNumber, teamId, findSession, sessionResult, laps,
 } from './utils/f1-openf1.mjs';
+import { plainText } from './utils/text.mjs';
 
 const RESULT_URL = (season, round, type) => `https://api.jolpi.ca/ergast/f1/${season}/${round}/${type === 'sprint' ? 'sprint' : 'results'}/`;
 const CACHE_KEY = 'f1-last-race-cache-v2';
 const LOCAL_TZ = 'Europe/Lisbon';
 
 // the Star4000 fonts draw accented letters blank (Pérez -> P rez), so accents are removed
-const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '');
 const shortRaceName = (name) => name.replace('Grand Prix', 'GP');
 
 const parseRace = (race) => {
@@ -79,8 +79,8 @@ const openf1Race = async (season, type, start) => {
 };
 
 class F1LastRace extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'F1 Last Race', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'F1 Last Race', defaultActive);
 		this.timing.baseDelay = 12000;
 	}
 
@@ -130,11 +130,11 @@ class F1LastRace extends WeatherDisplay {
 
 		// race name, flag and date
 		const title = this.elem.querySelector('.race-title');
-		title.querySelector('.name').textContent = stripAccents(shortRaceName(race.name));
+		title.querySelector('.name').textContent = plainText(shortRaceName(race.name));
 		const flag = title.querySelector('.flag');
 		flag.style.display = '';
 		flag.onerror = () => { flag.style.display = 'none'; };
-		flag.src = `images/flags/${stripAccents(race.country).toLowerCase().replace(/\s+/g, '-')}.png`;
+		flag.src = `images/flags/${plainText(race.country).toLowerCase().replace(/\s+/g, '-')}.png`;
 		title.querySelector('.date').textContent = DateTime.fromISO(race.date, { zone: LOCAL_TZ }).toFormat('ccc d LLL');
 
 		// podium: P2 left, P1 middle, P3 right
@@ -145,13 +145,13 @@ class F1LastRace extends WeatherDisplay {
 			icon.style.visibility = 'visible';
 			icon.onerror = () => { icon.style.visibility = 'hidden'; };
 			icon.src = `images/teams/${driver.team}.png`;
-			step.querySelector('.driver').textContent = stripAccents(driver.name);
+			step.querySelector('.driver').textContent = plainText(driver.name);
 			step.querySelector('.time').textContent = driver.time;
 		});
 
 		const fastest = this.elem.querySelector('.fastest');
 		if (race.fastest) {
-			fastest.textContent = `Fastest lap: ${stripAccents(race.fastest.name)} ${race.fastest.time}${race.fastest.lap ? ` (lap ${race.fastest.lap})` : ''}`;
+			fastest.textContent = `Fastest lap: ${plainText(race.fastest.name)} ${race.fastest.time}${race.fastest.lap ? ` (lap ${race.fastest.lap})` : ''}`;
 			fastest.style.visibility = 'visible';
 		} else {
 			fastest.style.visibility = 'hidden';
@@ -162,4 +162,4 @@ class F1LastRace extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new F1LastRace(17, 'f1-last-race', true));
+registerDisplay(new F1LastRace('f1-last-race', true));

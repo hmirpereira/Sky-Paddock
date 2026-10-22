@@ -12,9 +12,9 @@ import { loadData } from '../index.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 
 class Hourly extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
+	constructor(elemId, defaultActive) {
 		// special height and width for scrolling
-		super(navId, elemId, 'Hourly Forecast', defaultActive);
+		super(elemId, 'Hourly Forecast', defaultActive);
 
 		// set up the timing
 		this.timing.baseDelay = 20;
@@ -118,8 +118,7 @@ class Hourly extends WeatherDisplay {
 
 	// make data available outside this class
 	// promise allows for data to be requested before it is available
-	async getCurrentData(stillWaiting) {
-		if (stillWaiting) this.stillWaitingCallbacks.push(stillWaiting);
+	async getCurrentData() {
 		return new Promise((resolve) => {
 			if (this.data) resolve(this.data);
 			// data not available, put it into the data callback queue
@@ -178,7 +177,7 @@ const parseForecast = (data) => {
 };
 
 // register display
-const display = new Hourly(2, 'hourly', true);
+const display = new Hourly('hourly', true);
 registerDisplay(display);
 
 export default display.getCurrentData.bind(display);

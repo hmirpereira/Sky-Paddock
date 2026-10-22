@@ -97,8 +97,8 @@ const levelFor = (value, scale) => {
 };
 
 class Pollen extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'Air & Pollen', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'Air & Pollen', defaultActive);
 
 		// set timings (seconds on screen)
 		this.timing.baseDelay = 10000;
@@ -183,4 +183,4 @@ class Pollen extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new Pollen(10, 'pollen', true));
+registerDisplay(new Pollen('pollen', true));

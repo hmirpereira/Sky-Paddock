@@ -7,8 +7,8 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 
 class Almanac extends WeatherDisplay {
-	constructor(navId, elemId) {
-		super(navId, elemId, 'Almanac', true);
+	constructor(elemId) {
+		super(elemId, 'Almanac', true);
 
 		// pre-load background images (returns promises)
 		this.backgroundImage0 = loadImg('images/BackGround3_1.png');
@@ -174,7 +174,7 @@ const imageName = (type) => {
 };
 
 // register display
-const display = new Almanac(7, 'almanac');
+const display = new Almanac('almanac');
 registerDisplay(display);
 
 export default display.getSun.bind(display);

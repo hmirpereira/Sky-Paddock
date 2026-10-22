@@ -16,10 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
 	init();
 });
 
-// @todo - absolutely gnarly, but displays must be SEQUENTIALLY LOADED & REGISTERED.
-// you CANNOT set an arbitrary display navId to "21" and expect it to work.
-// doing this will cause the logic to insert a number of nulls into the array between the
-// last known display and the "next one" (ex.[1,2,3, ...NULLx17, 21])
+// The rotation order of the screens, by elemId: a screen's position here is its navId. registerDisplay
+// gives it, so there are no numbers to keep contiguous (a hole in the numbering used to crash the
+// navigation). A new screen only needs its elemId here; the order of the imports in main.mjs does not matter.
+const DISPLAY_ORDER = [
+	'hazards', 'current-weather', 'hourly', 'hourly-graph',
+	'travel', 'regional-forecast', 'extended-forecast', 'almanac',
+	'radar', 'marine-forecast', 'pollen', 'metar',
+	'departures', 'cancellations', 'overhead', 'work-schedule',
+	'news', 'f1-last-race', 'f1-grid', 'f1-telemetry',
+	'f1-standings', 'f1-next-race', 'f1-jet', 'gt-race',
+	'gt-next-race',
+];
 const displays = [];
 let playing = false;
 let progress;
@@ -33,6 +41,8 @@ let AutoRefreshIntervalId = null;
 let AutoRefreshCountMs = 0;
 
 const init = async () => {
+	// every screen of the list must have registered, or the navigation would find a hole
+	DISPLAY_ORDER.forEach((id, i) => { if (!displays[i]) console.error(`DISPLAY_ORDER lists "${id}" but no screen registered with that elemId`); });
 	// set up resize handler
 	window.addEventListener('resize', resize);
 	resize();
@@ -137,13 +147,6 @@ const getWeather = async (latLon, haveDataCallback) => {
 	weatherParameters.forecast = aggregatedForecastData;
 	// weatherParameters.forecastGridData = point.properties.forecastGridData;
 	// weatherParameters.stations = stations.features;
-
-	// WeatherParameters that might be optional to modify
-	// or aren't obviously used anywhere for data retrieval...
-	weatherParameters.stationId = 'stationId-dont-matter-anymore';
-	weatherParameters.zoneId = 'zoneId-dont-matter';
-	weatherParameters.radarId = 'radarId-dont-matter';
-	weatherParameters.weatherOffice = 'weatherOffice-dont-matter';
 
 	// update the main process for display purposes
 	populateWeatherParameters(weatherParameters);
@@ -384,7 +387,11 @@ const resetStatuses = () => {
 
 // allow displays to register themselves
 const registerDisplay = (display) => {
-	displays[display.navId] = display;
+	const navId = DISPLAY_ORDER.indexOf(display.elemId);
+	if (navId < 0) throw new Error(`registerDisplay: "${display.elemId}" is not in DISPLAY_ORDER (navigation.mjs)`);
+	if (displays[navId]) throw new Error(`registerDisplay: "${display.elemId}" registered twice`);
+	display.navId = navId;
+	displays[navId] = display;
 
 	// generate checkboxes
 	generateCheckboxes();
@@ -442,9 +449,6 @@ const registerProgress = (_progress) => {
 const populateWeatherParameters = (params) => {
 	document.querySelector('#spanCity').textContent = `${params.city}, `;
 	document.querySelector('#spanState').textContent = params.state;
-	// document.querySelector('#spanStationId').innerHTML = params.stationId;
-	// document.querySelector('#spanRadarId').innerHTML = params.radarId;
-	// document.querySelector('#spanZoneId').innerHTML = params.zoneId;
 };
 
 const autoRefreshChange = (e) => {

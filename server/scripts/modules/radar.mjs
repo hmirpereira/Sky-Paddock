@@ -22,8 +22,8 @@ class Radar extends WeatherDisplay {
 
 	static radarIterationCount = 3;
 
-	constructor(navId, elemId) {
-		super(navId, elemId, 'Local Radar', true);
+	constructor(elemId) {
+		super(elemId, 'Local Radar', true);
 
 		this.okToDrawCurrentConditions = false;
 		this.okToDrawCurrentDateTime = false;
@@ -434,4 +434,4 @@ class Radar extends WeatherDisplay {
 	}
 }
 
-registerDisplay(new Radar(8, 'radar'));
+registerDisplay(new Radar('radar'));

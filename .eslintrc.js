@@ -1,10 +1,8 @@
 module.exports = {
+	// the page runs in the browser; the build, test and tool files below run in Node
 	env: {
 		browser: true,
-		commonjs: true,
 		es6: true,
-		node: true,
-		jquery: true,
 	},
 	extends: [
 		'airbnb-base',
@@ -12,13 +10,8 @@ module.exports = {
 	globals: {
 		Atomics: 'readonly',
 		SharedArrayBuffer: 'readonly',
-		StationInfo: 'readonly',
-		RegionalCities: 'readonly',
-		TravelCities: 'readonly',
 		NoSleep: 'readonly',
-		states: 'readonly',
 		SunCalc: 'readonly',
-
 	},
 	parserOptions: {
 		ecmaVersion: 2023,
@@ -68,6 +61,24 @@ module.exports = {
 			},
 		],
 	},
+	overrides: [
+		{
+			files: ['.eslintrc.js', 'vite.config.mjs', 'playwright.config.mjs', 'tests/**/*.mjs', '.claude/**/*.mjs'],
+			env: { node: true, browser: false },
+			rules: {
+				'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+				// the plugin does not read the exports of vite's package.json
+				'import/no-unresolved': ['error', { ignore: ['^vite$'] }],
+			},
+		},
+		{
+			// the callbacks of page.evaluate run in the browser
+			files: ['tests/**/*.mjs'],
+			env: { node: true, browser: true },
+			// the steps of the page walk are sequential by nature (click, wait, look)
+			rules: { 'no-await-in-loop': 'off' },
+		},
+	],
 	ignorePatterns: [
 		'*.min.js',
 	],

@@ -9,6 +9,7 @@ import { registerDisplay } from './navigation.mjs';
 import { placeTitle } from './utils/local-place.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
+import { plainText } from './utils/text.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/cancelled.json';
 const AIRPORT_TZ = 'Europe/Lisbon';
@@ -16,11 +17,10 @@ const ROWS_PER_PAGE = 6;
 // tail icons drawn so far (images/airlines/<IATA>.png); other airlines show none
 const TAIL_ICONS = ['LH', 'LX', 'OS', '4Y', 'SN'];
 // the Star4000 fonts draw accented letters blank (São Paulo -> S o Paulo), so accents are removed
-const stripAccents = (text) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
 class Cancellations extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'Cancellations', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'Cancellations', defaultActive);
 
 		// set timings (seconds on screen)
 		this.timing.baseDelay = 10000;
@@ -75,7 +75,7 @@ class Cancellations extends WeatherDisplay {
 			const timeText = time.hasSame(today, 'day') ? ConversionHelpers.formatTime(time) : `${time.toFormat('ccc')} ${ConversionHelpers.formatTime(time)}`;
 			const row = this.fillTemplate('cancellations-row', {
 				flight: flight.number,
-				destination: stripAccents(flight.destinationName ?? flight.destination ?? ''),
+				destination: plainText(flight.destinationName ?? flight.destination ?? ''),
 				// "?" when AeroDataBox is not sure about the cancellation
 				time: `${timeText}${flight.uncertain ? '?' : ''}`,
 			});
@@ -101,4 +101,4 @@ class Cancellations extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new Cancellations(13, 'cancellations', false));
+registerDisplay(new Cancellations('cancellations', false));

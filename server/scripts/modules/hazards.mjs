@@ -6,6 +6,7 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { warningArea } from './utils/local-place.mjs';
 import { escapeHtml } from './utils/html.mjs';
+import { plainText } from './utils/text.mjs';
 
 // NOTE: by the owner's choice, this screen is shown in Portuguese, the language of the IPMA
 // warning texts (the IPMA open data API has no English version of the descriptions).
@@ -18,8 +19,6 @@ const LEVEL_NAMES = { yellow: 'AMARELO', orange: 'LARANJA', red: 'VERMELHO' };
 
 const DAYS = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 const MONTHS = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-
-const stripAccents = (text) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
 // IPMA times are Portuguese local time without an offset ("2026-10-06T09:00:00")
 const formatIpmaTime = (value) => {
@@ -38,9 +37,9 @@ const nowInPortugal = () => {
 };
 
 class Hazards extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
+	constructor(elemId, defaultActive) {
 		// special height and width for scrolling
-		super(navId, elemId, 'Hazards', defaultActive);
+		super(elemId, 'Hazards', defaultActive);
 		this.showOnProgress = false;
 
 		// 0 screens skips this during "play"
@@ -96,7 +95,7 @@ class Hazards extends WeatherDisplay {
 			const line = this.fillTemplate('hazard', {
 				// the Star4000 fonts have no usable accented capitals, so accents are removed (ATÉ -> ATE)
 				// line breaks are HTML; the IPMA texts in it are escaped
-				'hazard-text': { html: stripAccents(`AVISO ${level}<br/>${escapeHtml(warning.awarenessTypeName)}<br/>${escapeHtml(this.area.name)}<br/>${period}${description}`) },
+				'hazard-text': { html: plainText(`AVISO ${level}<br/>${escapeHtml(warning.awarenessTypeName)}<br/>${escapeHtml(this.area.name)}<br/>${period}${description}`) },
 			});
 			line.classList.add(`level-${warning.awarenessLevelID}`);
 			return line;
@@ -161,8 +160,7 @@ class Hazards extends WeatherDisplay {
 
 	// make data available outside this class
 	// promise allows for data to be requested before it is available
-	async getCurrentData(stillWaiting) {
-		if (stillWaiting) this.stillWaitingCallbacks.push(stillWaiting);
+	async getCurrentData() {
 		return new Promise((resolve) => {
 			if (this.data) resolve(this.data);
 			// data not available, put it into the data callback queue
@@ -184,4 +182,4 @@ class Hazards extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new Hazards(0, 'hazards', false));
+registerDisplay(new Hazards('hazards', false));
