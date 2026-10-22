@@ -165,7 +165,7 @@ class F1Grid extends WeatherDisplay {
 		const { grid } = this;
 
 		this.elem.querySelector('.header .title.dual .top').innerHTML = grid.type === 'sprint' ? 'F1 Sprint Grid' : 'F1 Race Grid';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = `Round ${grid.round}`;
+		this.elem.querySelector('.header .title.dual .bottom').textContent = `Round ${grid.round}`;
 
 		const title = this.elem.querySelector('.race-title');
 		title.querySelector('.name').textContent = stripAccents(shortRaceName(grid.name));

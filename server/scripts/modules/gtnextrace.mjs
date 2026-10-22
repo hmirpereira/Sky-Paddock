@@ -108,7 +108,7 @@ class GtNextRace extends WeatherDisplay {
 		this.elem.querySelector('.f1-race-page.weekend').style.display = page === 1 ? 'block' : 'none';
 		this.elem.querySelector('.header .title.dual .top').innerHTML = 'GT World Next';
 		const round = next.round ? `Round ${next.round}` : 'Event';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = page === 0 ? round : 'Weekend';
+		this.elem.querySelector('.header .title.dual .bottom').textContent = page === 0 ? round : 'Weekend';
 
 		if (page === 0) this.drawInfo(next);
 		else this.drawWeekend(next);

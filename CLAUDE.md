@@ -13,6 +13,7 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 - `npm ci` once, then `npm run dev` (Vite dev server at http://localhost:8080/, reloads on change)
 - `npm run lint` (ESLint, Airbnb style with tabs), `npm run build` (Vite, into `docs/`) and `npm test`
   (Playwright smoke test of the build; `npx playwright install chromium` once)
+- `.claude/`: the `/publicar` skill (the steps of a release, with `bump.mjs` for the version) and a hook that lints each `.mjs` Claude edits.
 - Publishing: push to `main`. `.github/workflows/pages.yml` runs `npm ci`, lint, build, checks
   (`docs/index.html`, assets, `docs/images/flags`, the `package.json` version inside `docs/index.html`),
   the smoke test, and deploys to Pages. `docs/` is built by Actions and is not committed.
@@ -32,6 +33,7 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 
 - navIds must stay contiguous (0..24 today); a hole makes navigation crash in `findIndex`.
 - `STATUS` values are Symbols: wrap them in `String()` inside template strings.
+- Text from other sites is never HTML: `fillTemplate` fills strings with `textContent` (HTML only as `{ html }`), and hand-built markup runs outside text through `escapeHtml` (`utils/html.mjs`).
 - Templates (`.template`) are removed from the DOM at start-up and cloned by `fillTemplate`.
 - Many boxes use `white-space: pre`. The build compacts the HTML (`html-minifier-terser`,
   `collapseWhitespace`) so the line breaks of the templates do not show; keep that in `vite.config.mjs`.

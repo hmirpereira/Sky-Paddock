@@ -12,3 +12,4 @@ CLAUDE.local.md
 # Playwright results
 test-results/
 playwright-report/
+graphify-out/

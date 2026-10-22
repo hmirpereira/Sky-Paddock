@@ -49,7 +49,7 @@ class GtRace extends WeatherDisplay {
 		const { data } = this;
 		const race = data.races[Math.min(Math.max(this.screenIndex, 0), data.races.length - 1)];
 		this.elem.querySelector('.header .title.dual .top').innerHTML = 'GT World';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = stripAccents(race.race);
+		this.elem.querySelector('.header .title.dual .bottom').textContent = stripAccents(race.race);
 		this.elem.querySelector('.gt-event').textContent = stripAccents(`${data.event} ${data.season}${data.dates ? `   ${data.dates}` : ''}`);
 
 		// first rows, with the highlighted car(s) moved into the last rows when they finished further down

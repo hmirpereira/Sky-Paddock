@@ -8,6 +8,7 @@ import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
+import { escapeHtml } from './utils/html.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/f1jet.json';
@@ -84,7 +85,7 @@ class F1Jet extends WeatherDisplay {
 		const main = this.elem.querySelector('.main.f1-jet');
 		main.classList.toggle('page-map', onMap);
 		const surname = stripAccents(jet.name ?? '').split(' ').at(-1) || 'F1';
-		this.elem.querySelector('.header .title.dual .top').innerHTML = `${surname} Jet`;
+		this.elem.querySelector('.header .title.dual .top').textContent = `${surname} Jet`;
 		let bottom = 'Where It Is';
 		if (onMap) bottom = jet.airborne ? 'In Flight' : 'Last Flight';
 		this.elem.querySelector('.header .title.dual .bottom').innerHTML = bottom;
@@ -210,7 +211,7 @@ class F1Jet extends WeatherDisplay {
 			const [x, y] = px(a.lon, a.lat);
 			// the code above the dot, or below when it would leave the map
 			const ty = Number(y) < 30 ? Number(y) + 24 : Number(y) - 10;
-			return `<circle class="airport" cx="${x}" cy="${y}" r="5"/><text class="code" x="${x}" y="${ty}" text-anchor="middle">${i === 0 && ends.length === 2 && a.code === ends[1].code ? '' : a.code}</text>`;
+			return `<circle class="airport" cx="${x}" cy="${y}" r="5"/><text class="code" x="${x}" y="${ty}" text-anchor="middle">${i === 0 && ends.length === 2 && a.code === ends[1].code ? '' : escapeHtml(a.code)}</text>`;
 		});
 		let plane = '';
 		if (jet.airborne && track.length) {

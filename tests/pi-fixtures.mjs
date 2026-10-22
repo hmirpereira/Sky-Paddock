@@ -186,7 +186,7 @@ const news = (now) => {
 		ok: iso(now - 5 * MIN),
 		errors: {},
 		items: [
-			item('Test headline with accents: ação, coração e pão', 'RTP', ['RTP', 'Expresso', 'Sabado'], 20, { top: true }),
+			item('Test headline <b>x</b> & a < b, ação e pão', 'RTP', ['RTP', 'Expresso', 'Sabado'], 20, { top: true }),
 			item('Second test headline, breaking news', 'CNN Portugal', ['CNN Portugal'], 35, { breaking: true }),
 			item('Third test headline, a long one that needs more than two lines on the screen to see how it wraps there', 'Publico', ['Publico'], 50),
 			item('Fourth test headline', 'Expresso', ['Expresso'], 70),

@@ -53,7 +53,8 @@ class CurrentWeather extends WeatherDisplay {
 			dewpoint: this.data.DewPoint + String.fromCharCode(176),
 			ceiling: (this.data.Ceiling === 0 ? 'Unlimited' : this.data.Ceiling + this.data.CeilingUnit),
 			visibility: this.data.Visibility + this.data.VisibilityUnit,
-			pressure: `${this.data.Pressure}${this.data.PressureUnit}${pressureArrow}`,
+			// the arrow is an image the page adds: HTML
+			pressure: { html: `${this.data.Pressure}${this.data.PressureUnit}${pressureArrow}` },
 			cloud: this.data.CloudCover ? `${this.data.CloudCover}%` : 'N/A',
 			uv: this.data.UV ? this.data.UV : 'N/A',
 			icon: { type: 'img', src: iconImage },
