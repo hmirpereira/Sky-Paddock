@@ -1,9 +1,8 @@
 import { blob } from './fetch.mjs';
-import { rewriteUrl } from './cors.mjs';
 
 // ****************************** load images *********************************
 // load an image from a blob or url
-const loadImg = (imgData, cors = false) => new Promise((resolve) => {
+const loadImg = (imgData) => new Promise((resolve) => {
 	const img = new Image();
 	img.onload = (e) => {
 		resolve(e.target);
@@ -11,9 +10,7 @@ const loadImg = (imgData, cors = false) => new Promise((resolve) => {
 	if (imgData instanceof Blob) {
 		img.src = window.URL.createObjectURL(imgData);
 	} else {
-		let url = imgData;
-		if (cors) url = rewriteUrl(imgData);
-		img.src = url;
+		img.src = imgData;
 	}
 });
 

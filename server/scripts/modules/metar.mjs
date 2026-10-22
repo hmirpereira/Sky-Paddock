@@ -18,8 +18,8 @@ const TAF_URL = 'http://127.0.0.1:8095/taf.json';
 const LOCAL_TZ = 'Europe/Lisbon';
 
 class Metar extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'Airport METAR', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'Airport METAR', defaultActive);
 
 		// set timings (seconds on screen)
 		this.timing.baseDelay = 12000;
@@ -201,4 +201,4 @@ const buildRows = (d) => {
 };
 
 // register display
-registerDisplay(new Metar(11, 'metar', true));
+registerDisplay(new Metar('metar', true));

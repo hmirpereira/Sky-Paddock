@@ -79,8 +79,8 @@ const countdown = (from, to) => {
 };
 
 class WorkSchedule extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'Work Schedule', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'Work Schedule', defaultActive);
 
 		// two pages, 12 seconds each
 		this.timing.baseDelay = 12000;
@@ -194,4 +194,4 @@ class WorkSchedule extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub and skypaddock-horario)
-registerDisplay(new WorkSchedule(15, 'work-schedule', false));
+registerDisplay(new WorkSchedule('work-schedule', false));

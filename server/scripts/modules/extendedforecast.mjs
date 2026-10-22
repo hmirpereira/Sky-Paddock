@@ -9,8 +9,8 @@ import { getConditionText } from './utils/weather.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 
 class ExtendedForecast extends WeatherDisplay {
-	constructor(navId, elemId) {
-		super(navId, elemId, 'Extended Forecast', true);
+	constructor(elemId) {
+		super(elemId, 'Extended Forecast', true);
 
 		// set timings
 		this.timing.totalScreens = 2;
@@ -105,4 +105,4 @@ const parse = (fullForecast) => {
 };
 
 // register display
-registerDisplay(new ExtendedForecast(6, 'extended-forecast'));
+registerDisplay(new ExtendedForecast('extended-forecast'));

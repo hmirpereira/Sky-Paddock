@@ -9,8 +9,8 @@ import { DateTime } from '../vendor/auto/luxon.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 
 class HourlyGraph extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'Hourly Graph', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'Hourly Graph', defaultActive);
 
 		// move the top right data into the correct location on load
 		document.addEventListener('DOMContentLoaded', () => {
@@ -28,7 +28,7 @@ class HourlyGraph extends WeatherDisplay {
 	async getData() {
 		if (!super.getData()) return;
 
-		const data = await getHourlyData(() => this.stillWaiting());
+		const data = await getHourlyData();
 		if (data === undefined) {
 			this.setStatus(STATUS.failed);
 			return;
@@ -155,4 +155,4 @@ const drawPath = (path, ctx, options) => {
 const formatTime = (time) => time.toFormat('ha').slice(0, -1);
 
 // register display
-registerDisplay(new HourlyGraph(3, 'hourly-graph'));
+registerDisplay(new HourlyGraph('hourly-graph'));

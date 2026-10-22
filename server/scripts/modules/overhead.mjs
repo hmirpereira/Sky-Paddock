@@ -11,6 +11,7 @@ import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { escapeHtml } from './utils/html.mjs';
+import { plainText } from './utils/text.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/overhead.json';
 // everything on screen is metric; ADS-B gives feet and knots
@@ -50,7 +51,6 @@ const bearing = (a, b) => {
 	return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
 };
 const compass = (deg) => ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(deg / 45) % 8];
-const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '');
 const metres = (ac) => Math.round((ac.alt * M_PER_FT) / 10) * 10;
 const altitudeText = (ac) => (ac.ground ? 'Ground' : `${metres(ac).toLocaleString('en-US')} m`);
 const shortAltitude = (ac) => (ac.ground ? 'GND' : metres(ac).toLocaleString('en-US'));
@@ -155,8 +155,8 @@ const planProjection = (airport) => {
 };
 
 class Overhead extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'Overhead', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'Overhead', defaultActive);
 		this.timing.baseDelay = 12000;
 		this.timing.totalScreens = 2;
 	}
@@ -312,16 +312,16 @@ class Overhead extends WeatherDisplay {
 		const card = this.elem.querySelector('.overhead-page.closest');
 		card.querySelector('.where').textContent = `${ac.dist.toFixed(1)} km ${compass(ac.brg)} of home`;
 		card.querySelector('.callsign').textContent = flightText(ac);
-		card.querySelector('.airline').textContent = stripAccents(ac.airline ?? '');
+		card.querySelector('.airline').textContent = plainText(ac.airline ?? '');
 		const tail = card.querySelector('.tail');
 		tail.style.display = GROUP_ICONS.includes(ac.iataAirline) ? '' : 'none';
 		tail.src = `images/airlines/${ac.iataAirline}.png`;
 		// no route, or one that does not fit where the aircraft is (checked by the Pi service)
 		card.querySelector('.route').classList.toggle('unknown', !(ac.from?.iata && ac.to?.iata));
 		card.querySelector('.from .code').textContent = ac.from?.iata ?? '';
-		card.querySelector('.from .city').textContent = stripAccents(ac.from?.city ?? '');
+		card.querySelector('.from .city').textContent = plainText(ac.from?.city ?? '');
 		card.querySelector('.to .code').textContent = ac.to?.iata ?? '';
-		card.querySelector('.to .city').textContent = stripAccents(ac.to?.city ?? '');
+		card.querySelector('.to .city').textContent = plainText(ac.to?.city ?? '');
 		// the Star4000 fonts have no arrows: climbing or descending is a small triangle drawn in CSS
 		let trend = '';
 		if (ac.vrate > 300) trend = 'up';
@@ -408,4 +408,4 @@ class Overhead extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new Overhead(14, 'overhead', false));
+registerDisplay(new Overhead('overhead', false));

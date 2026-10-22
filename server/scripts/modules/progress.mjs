@@ -12,8 +12,10 @@ const ONE_COLUMN_MAX = 11;
 const BOX_HEIGHT = 296;
 
 class Progress extends WeatherDisplay {
-	constructor(navId, elemId) {
-		super(navId, elemId, '', false);
+	constructor(elemId) {
+		super(elemId, '', false);
+		// not in the rotation: a negative id is ignored by updateStatus
+		this.navId = -1;
 
 		// pre-load background image (returns promise)
 		this.backgroundImage = loadImg('images/BackGround1_1.png');
@@ -141,5 +143,5 @@ class Progress extends WeatherDisplay {
 }
 
 // register our own display
-const progress = new Progress(-1, 'progress');
+const progress = new Progress('progress');
 registerProgress(progress);

@@ -21,9 +21,9 @@ const TRAVEL_CITIES = [
 const SWITCH_TO_TOMORROW_HOUR = 18;
 
 class TravelForecast extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
+	constructor(elemId, defaultActive) {
 		// special height and width for scrolling
-		super(navId, elemId, 'Travel Forecast', defaultActive);
+		super(elemId, 'Travel Forecast', defaultActive);
 
 		// Remove from loading screen
 		this.showOnProgress = false;
@@ -177,4 +177,4 @@ const getTravelCitiesDayName = (cities) => cities.reduce((dayName, city) => {
 }, '');
 
 // register display, not active by default
-registerDisplay(new TravelForecast(4, 'travel', false));
+registerDisplay(new TravelForecast('travel', false));

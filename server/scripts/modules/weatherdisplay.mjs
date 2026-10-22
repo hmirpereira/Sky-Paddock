@@ -20,16 +20,15 @@ const clockTick = () => {
 };
 
 class WeatherDisplay {
-	constructor(navId, elemId, name, defaultEnabled) {
-		// navId is used in messaging and sort order
-		this.navId = navId;
+	constructor(elemId, name, defaultEnabled) {
+		// the position in the rotation, given by registerDisplay (DISPLAY_ORDER in navigation.mjs)
+		this.navId = undefined;
 		this.elemId = undefined;
 		this.data = undefined;
 		this.marineData = undefined;
 		this.loadingStatus = STATUS.loading;
 		this.name = name ?? elemId;
 		this.getDataCallbacks = [];
-		this.stillWaitingCallbacks = [];
 		this.defaultEnabled = defaultEnabled;
 		this.okToDrawCurrentConditions = true;
 		this.okToDrawCurrentDateTime = true;
@@ -481,14 +480,6 @@ class WeatherDisplay {
 		});
 
 		return template;
-	}
-
-	// still waiting for data (retries triggered)
-	stillWaiting() {
-		if (this.isEnabled) this.setStatus(STATUS.retrying);
-		// handle still waiting callbacks
-		this.stillWaitingCallbacks.forEach((callback) => callback());
-		this.stillWaitingCallbacks = [];
 	}
 }
 

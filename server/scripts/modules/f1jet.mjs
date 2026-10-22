@@ -10,6 +10,7 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { escapeHtml } from './utils/html.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
+import { plainText } from './utils/text.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/f1jet.json';
 const LOCAL_TZ = 'Europe/Lisbon';
@@ -29,9 +30,8 @@ const TYPES = {
 const MARK = '<g transform="scale(0.24) translate(-103.3 -52)" fill="#ffd23f" stroke="black" stroke-width="6" stroke-linejoin="round">'
 	+ '<polygon points="172.2,48.5 206.6,83 137.8,83"/><polygon points="34.4,48.5 68.9,83 0,83"/>'
 	+ '<polygon points="103.3,103.7 0,0.3 65.4,10.6 103.3,48.5 141.2,10.6 206.6,0.3"/></g>';
-const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '');
 const code = (airport) => airport?.iata ?? airport?.icao ?? '?';
-const city = (airport) => stripAccents(airport?.city ?? '');
+const city = (airport) => plainText(airport?.city ?? '');
 // time in Lisbon: hour today, day and hour before
 const when = (iso) => {
 	if (!iso) return '';
@@ -45,8 +45,8 @@ const duration = (from, to) => {
 };
 
 class F1Jet extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'F1 Jet', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'F1 Jet', defaultActive);
 		this.timing.baseDelay = 12000;
 		this.timing.totalScreens = 2;
 	}
@@ -84,7 +84,7 @@ class F1Jet extends WeatherDisplay {
 		const onMap = this.screenIndex === 1;
 		const main = this.elem.querySelector('.main.f1-jet');
 		main.classList.toggle('page-map', onMap);
-		const surname = stripAccents(jet.name ?? '').split(' ').at(-1) || 'F1';
+		const surname = plainText(jet.name ?? '').split(' ').at(-1) || 'F1';
 		this.elem.querySelector('.header .title.dual .top').textContent = `${surname} Jet`;
 		let bottom = 'Where It Is';
 		if (onMap) bottom = jet.airborne ? 'In Flight' : 'Last Flight';
@@ -226,4 +226,4 @@ class F1Jet extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new F1Jet(22, 'f1-jet', false));
+registerDisplay(new F1Jet('f1-jet', false));

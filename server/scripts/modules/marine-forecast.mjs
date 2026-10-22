@@ -12,8 +12,8 @@ import { aggregateWeatherForecastData } from './utils/weather.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 
 class MarineForecast extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'Marine Forecast', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'Marine Forecast', defaultActive);
 		this.backgroundImage = loadImg('images/BackGround8_1.png');
 	}
 
@@ -199,4 +199,4 @@ const parseMarineData = (weatherParameters) => {
 };
 
 // register display
-registerDisplay(new MarineForecast(9, 'marine-forecast'));
+registerDisplay(new MarineForecast('marine-forecast'));

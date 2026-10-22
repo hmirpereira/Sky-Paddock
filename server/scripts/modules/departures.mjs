@@ -26,8 +26,8 @@ const STATUS_CLASS = {
 };
 
 class Departures extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'Departures', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'Departures', defaultActive);
 
 		// set timings (seconds on screen)
 		this.timing.baseDelay = 10000;
@@ -111,4 +111,4 @@ class Departures extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new Departures(12, 'departures', false));
+registerDisplay(new Departures('departures', false));

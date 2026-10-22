@@ -6,6 +6,7 @@ import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { readCache, writeCache, isFresh } from './utils/f1-update.mjs';
+import { plainText } from './utils/text.mjs';
 
 const STANDINGS_URL = 'https://api.jolpi.ca/ergast/f1/current/driverstandings/';
 // the standings list every team a driver raced for this season, in no particular order,
@@ -20,11 +21,10 @@ const HOLD = 150; // steps (3 s) before scrolling and at the end
 const CACHE_KEY = 'f1-standings-cache-v2';
 
 // the Star4000 fonts draw accented letters blank (Pérez -> P rez), so accents are removed
-const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
 class F1Standings extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'F1 Standings', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'F1 Standings', defaultActive);
 
 		// timing is set once the number of drivers is known
 		this.timing.baseDelay = 20;
@@ -90,7 +90,7 @@ class F1Standings extends WeatherDisplay {
 		const lines = this.drivers.map((driver) => {
 			const row = this.fillTemplate('f1-row', {
 				position: driver.position,
-				driver: stripAccents(driver.name),
+				driver: plainText(driver.name),
 				points: driver.points,
 			});
 			// team icon: images/teams/<constructorId>.png (hidden if missing)
@@ -125,4 +125,4 @@ class F1Standings extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new F1Standings(20, 'f1-standings', true));
+registerDisplay(new F1Standings('f1-standings', true));

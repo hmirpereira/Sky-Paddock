@@ -9,9 +9,9 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
-import { getConditionText } from './utils/weather.mjs';
-import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import GT_CIRCUITS from './utils/gt-circuits.mjs';
+import { plainText } from './utils/text.mjs';
+import raceForecast from './utils/race-forecast.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/gt.json';
 const LOCAL_TZ = 'Europe/Lisbon';
@@ -22,48 +22,24 @@ const MAX_ROWS = 6;
 const FLAG_ALIASES = { 'great-britain': 'uk', 'united-kingdom': 'uk', england: 'uk' };
 
 // the Star4000 fonts draw accented letters blank, so accents are removed
-const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '');
-const slug = (text) => stripAccents(text).toLowerCase().trim().replace(/\s+/g, '-');
+const slug = (text) => plainText(text).toLowerCase().trim().replace(/\s+/g, '-');
 
 const findCircuit = (event) => {
-	const name = stripAccents(event).toLowerCase();
+	const name = plainText(event).toLowerCase();
 	return GT_CIRCUITS.find((c) => c.match.some((word) => name.includes(word)));
 };
 
 // shorter session names so they fit the row
-const sessionName = (name) => stripAccents(name)
+const sessionName = (name) => plainText(name)
 	.replace(/^Free Practice/i, 'Practice')
 	.replace(/\s+Combined$/i, '')
 	.replace(/^Main Race$/i, 'Race');
 
 const isRace = (name) => /race/i.test(name);
 
-// forecast for the hour the main race starts, only when it is within Open-Meteo's 16 days
-const getForecast = async (start, circuit) => {
-	if (!start || !circuit?.lat) return null;
-	const time = DateTime.fromISO(start).toUTC();
-	if (time > DateTime.now().plus({ days: 15 })) return null;
-	try {
-		const day = time.toISODate();
-		const response = await json(`https://api.open-meteo.com/v1/forecast?latitude=${circuit.lat}&longitude=${circuit.lon}&hourly=weather_code,temperature_2m,precipitation_probability,is_day&timezone=GMT&start_date=${day}&end_date=${day}`);
-		const index = response?.hourly?.time?.indexOf(time.startOf('hour').toFormat("yyyy-MM-dd'T'HH:mm"));
-		if (index === undefined || index < 0) return null;
-		const condition = getConditionText(Number(response.hourly.weather_code[index]));
-		return {
-			condition,
-			icon: getWeatherRegionalIconFromIconLink(condition, response.hourly.is_day[index]),
-			temperature: Math.round(ConversionHelpers.convertTemperatureUnits(response.hourly.temperature_2m[index])),
-			rain: response.hourly.precipitation_probability[index],
-		};
-	} catch (error) {
-		console.error('GT World Next: unable to get the forecast', error);
-		return null;
-	}
-};
-
 class GtNextRace extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'GT World Next Event', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'GT World Next Event', defaultActive);
 
 		// two pages, 10 seconds each
 		this.timing.baseDelay = 10000;
@@ -93,7 +69,7 @@ class GtNextRace extends WeatherDisplay {
 		}
 		this.next = { ...next, sessions };
 		this.circuit = findCircuit(next.event);
-		this.forecast = await getForecast(next.race, this.circuit);
+		this.forecast = await raceForecast(next.race, this.circuit?.lat, this.circuit?.lon, 'GT World Next');
 
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
@@ -160,7 +136,7 @@ class GtNextRace extends WeatherDisplay {
 		lines.forEach(([cls, text]) => {
 			const div = document.createElement('div');
 			div.className = cls;
-			div.textContent = stripAccents(text);
+			div.textContent = plainText(text);
 			// 8-bit flag after the country: images/flags/<country>.png (hidden if missing)
 			if (cls === 'place') {
 				const flag = document.createElement('img');
@@ -214,4 +190,4 @@ class GtNextRace extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new GtNextRace(24, 'gt-next-race', false));
+registerDisplay(new GtNextRace('gt-next-race', false));

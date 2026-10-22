@@ -8,9 +8,10 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import {
-	newsFresh, plainText, sourceLogo, isF1Source,
+	newsFresh, sourceLogo, isF1Source,
 } from './utils/news.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
+import { plainText } from './utils/text.mjs';
 
 const NEWS_TZ = 'Europe/Lisbon';
 const ROWS_PER_PAGE = 3;
@@ -19,8 +20,8 @@ const F1_ROWS = 3;
 const LONG_HEADLINE = 84;
 
 class News extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'News', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'News', defaultActive);
 
 		// set timings (seconds on screen)
 		this.timing.baseDelay = 12000;
@@ -96,4 +97,4 @@ class News extends WeatherDisplay {
 }
 
 // register display (off by default: it only works on the Pi running skypaddock-hub)
-registerDisplay(new News(16, 'news', false));
+registerDisplay(new News('news', false));

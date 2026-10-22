@@ -15,6 +15,7 @@ import { getPhase, getSessionResult } from './utils/f1-weekend.mjs';
 import {
 	teamsByNumber, teamId, findSession, sessionResult, openf1,
 } from './utils/f1-openf1.mjs';
+import { plainText } from './utils/text.mjs';
 
 const JOLPICA = 'https://api.jolpi.ca';
 const OPENF1 = 'https://api.openf1.org/v1';
@@ -26,7 +27,6 @@ const ROW_HEIGHT = 70; // keep in sync with _f1-grid.scss
 const VISIBLE_HEIGHT = 266;
 const HOLD = 150; // steps (3 s) before scrolling and at the end
 
-const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const shortRaceName = (name) => name.replace('Grand Prix', 'GP');
 
 // qualifying times: "1:31.156" <-> seconds
@@ -119,8 +119,8 @@ const tryEach = (...sources) => sources.reduce(
 );
 
 class F1Grid extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'F1 Grid', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'F1 Grid', defaultActive);
 		this.timing.baseDelay = 20;
 		this.timing.delay = [500];
 		this.scrollDistance = 0;
@@ -168,18 +168,18 @@ class F1Grid extends WeatherDisplay {
 		this.elem.querySelector('.header .title.dual .bottom').textContent = `Round ${grid.round}`;
 
 		const title = this.elem.querySelector('.race-title');
-		title.querySelector('.name').textContent = stripAccents(shortRaceName(grid.name));
+		title.querySelector('.name').textContent = plainText(shortRaceName(grid.name));
 		const flag = title.querySelector('.flag');
 		flag.style.display = '';
 		flag.onerror = () => { flag.style.display = 'none'; };
-		flag.src = `images/flags/${stripAccents(grid.country).toLowerCase().replace(/\s+/g, '-')}.png`;
+		flag.src = `images/flags/${plainText(grid.country).toLowerCase().replace(/\s+/g, '-')}.png`;
 		title.querySelector('.date').textContent = DateTime.fromISO(grid.start).setZone(LOCAL_TZ).toFormat('ccc HH:mm');
 
 		const pole = grid.slots[0]?.time ?? null;
 		const slots = grid.slots.map((driver, index) => {
 			const slot = this.fillTemplate('grid-slot', {
 				position: driver.position,
-				driver: stripAccents(driver.name),
+				driver: plainText(driver.name),
 				lap: timeText(driver.time ?? null, pole, index),
 			});
 			const row = Math.floor(index / 2);
@@ -215,4 +215,4 @@ class F1Grid extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new F1Grid(18, 'f1-grid', true));
+registerDisplay(new F1Grid('f1-grid', true));

@@ -20,8 +20,8 @@ const PAGE_TITLES = {
 };
 
 class RegionalForecast extends WeatherDisplay {
-	constructor(navId, elemId) {
-		super(navId, elemId, 'Regional Forecast', false);
+	constructor(elemId) {
+		super(elemId, 'Regional Forecast', false);
 		this.showOnProgress = false;
 		this.timing.baseDelay = 6000;
 		this.timing.totalScreens = REGIONAL_PAGES.length;
@@ -91,4 +91,4 @@ class RegionalForecast extends WeatherDisplay {
 	}
 }
 
-registerDisplay(new RegionalForecast(5, 'regional-forecast'));
+registerDisplay(new RegionalForecast('regional-forecast'));

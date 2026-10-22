@@ -14,6 +14,10 @@ import { registerDisplay } from './navigation.mjs';
 import { readCache, writeCache } from './utils/f1-update.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { escapeHtml } from './utils/html.mjs';
+import { plainText } from './utils/text.mjs';
+import {
+	COLOURS, driverColours, interp, lapProfile, lapTime,
+} from './utils/f1-telemetry-math.mjs';
 
 const OPENF1 = 'https://api.openf1.org/v1';
 // v2: the gap along the lap was added to the saved copy
@@ -23,40 +27,8 @@ const PUBLISH_DELAY_MIN = 30; // OpenF1 needs some time after the end of a sessi
 const MINI_SECTORS = 25;
 const TRACE_POINTS = 240;
 const MAP_POINTS = 260;
-const COLOURS = ['#38c8ff', '#ffd23f']; // without team colours: cyan and yellow
 const MAP_W = 392;
 
-// hex colour <-> hue (degrees), saturation and lightness (0..1)
-const toHsl = (hex) => {
-	const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
-	const max = Math.max(r, g, b);
-	const min = Math.min(r, g, b);
-	const l = (max + min) / 2;
-	const d = max - min;
-	if (!d) return [0, 0, l];
-	const s = d / (1 - Math.abs(2 * l - 1));
-	let h;
-	if (max === r) h = ((g - b) / d) % 6;
-	else if (max === g) h = (b - r) / d + 2;
-	else h = (r - g) / d + 4;
-	return [(h * 60 + 360) % 360, s, l];
-};
-const fromHsl = ([h, s, l]) => {
-	const c = (1 - Math.abs(2 * l - 1)) * s;
-	const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-	const m = l - c / 2;
-	const [r, g, b] = [[c, x, 0], [x, c, 0], [0, c, x], [0, x, c], [x, 0, c], [c, 0, x]][Math.floor(h / 60) % 6];
-	return `#${[r, g, b].map((v) => Math.round((v + m) * 255).toString(16).padStart(2, '0')).join('')}`;
-};
-// the two drivers in their team colours, light enough to read on the dark red background (reds most of
-// all); when both colours are close (same team, or Ferrari and Audi) the second driver gets a lighter tint
-const driverColours = (drivers) => {
-	const hsl = drivers.map((d, i) => (/^#[0-9a-f]{6}$/i.test(d.teamColour ?? '') ? toHsl(d.teamColour) : toHsl(COLOURS[i])));
-	const lifted = hsl.map(([h, s, l]) => [h, s, Math.max(l, (h < 25 || h > 335) && s > 0.4 ? 0.62 : 0.55)]);
-	const hueGap = Math.min(Math.abs(lifted[0][0] - lifted[1][0]), 360 - Math.abs(lifted[0][0] - lifted[1][0]));
-	if (hueGap < 30 || (lifted[0][1] < 0.15 && lifted[1][1] < 0.15)) lifted[1] = [lifted[1][0], lifted[1][1], Math.min(0.85, lifted[1][2] + 0.22)];
-	return lifted.map(fromHsl);
-};
 const MAP_H = 278;
 // speed panel on top, gap panel under it, one distance axis at the bottom
 const CHART = {
@@ -67,52 +39,7 @@ const list = async (url) => {
 	const data = await openf1(url);
 	return Array.isArray(data) ? data : [];
 };
-const stripAccents = (text) => String(text ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '');
-const lapTime = (s) => {
-	if (!Number.isFinite(s)) return '';
-	const m = Math.floor(s / 60);
-	const rest = (s - m * 60).toFixed(3).padStart(6, '0');
-	return m ? `${m}:${rest}` : rest;
-};
 const shortName = (name) => String(name ?? '').replace('Sprint Qualifying', 'Sprint Quali').replace('Sprint Shootout', 'Sprint Quali');
-
-// interpolate y at x in sorted arrays xs, ys
-const interp = (xs, ys, x) => {
-	if (x <= xs[0]) return ys[0];
-	const last = xs.length - 1;
-	if (x >= xs[last]) return ys[last];
-	let lo = 0;
-	let hi = last;
-	while (hi - lo > 1) {
-		const mid = Math.floor((lo + hi) / 2);
-		if (xs[mid] <= x) lo = mid; else hi = mid;
-	}
-	const span = xs[hi] - xs[lo];
-	return span ? ys[lo] + ((ys[hi] - ys[lo]) * (x - xs[lo])) / span : ys[lo];
-};
-
-// time (s from the start of the lap), speed and fraction of the lap for each car sample
-const lapProfile = (car, start, duration) => {
-	const t0 = DateTime.fromISO(start).toMillis();
-	const samples = car
-		.map((c) => ({ t: (DateTime.fromISO(c.date).toMillis() - t0) / 1000, v: Number(c.speed) }))
-		.filter((c) => c.t >= 0 && c.t <= duration && Number.isFinite(c.v))
-		.sort((a, b) => a.t - b.t);
-	if (samples.length < 20) return null;
-	// the lap starts and ends at the line: extend the first and last samples to it
-	samples.unshift({ t: 0, v: samples[0].v });
-	samples.push({ t: duration, v: samples.at(-1).v });
-	const ts = samples.map((s) => s.t);
-	const vs = samples.map((s) => s.v);
-	const ds = [0];
-	for (let i = 1; i < samples.length; i += 1) {
-		ds.push(ds[i - 1] + (((vs[i - 1] + vs[i]) / 2) / 3.6) * (ts[i] - ts[i - 1]));
-	}
-	const total = ds.at(-1);
-	return {
-		ts, vs, fs: ds.map((d) => d / total), length: total,
-	};
-};
 
 // the turn that fits the track best in the map box
 const fitTrack = (points) => {
@@ -237,8 +164,8 @@ const buildTelemetry = async (session) => {
 		return {
 			number: lap.driver_number,
 			code: d.name_acronym ?? String(lap.driver_number),
-			name: stripAccents(d.last_name ?? d.broadcast_name ?? ''),
-			team: stripAccents(d.team_name ?? ''),
+			name: plainText(d.last_name ?? d.broadcast_name ?? ''),
+			team: plainText(d.team_name ?? ''),
 			teamColour: d.team_colour ? `#${d.team_colour}` : null,
 			colour: COLOURS[index],
 			lap: lap.lap_number,
@@ -251,8 +178,8 @@ const buildTelemetry = async (session) => {
 	return {
 		sessionKey: session.session_key,
 		sessionName: session.session_name,
-		place: stripAccents(session.country_name ?? session.location ?? ''),
-		circuit: stripAccents(session.circuit_short_name ?? ''),
+		place: plainText(session.country_name ?? session.location ?? ''),
+		circuit: plainText(session.circuit_short_name ?? ''),
 		year: session.year,
 		date: session.date_start,
 		drivers: [driverInfo(top[0], 0), driverInfo(top[1], 1)],
@@ -276,8 +203,8 @@ const recentSessions = async () => {
 };
 
 class F1Telemetry extends WeatherDisplay {
-	constructor(navId, elemId, defaultActive) {
-		super(navId, elemId, 'F1 Telemetry', defaultActive);
+	constructor(elemId, defaultActive) {
+		super(elemId, 'F1 Telemetry', defaultActive);
 		this.timing.baseDelay = 15000;
 		this.timing.totalScreens = 2;
 	}
@@ -451,4 +378,4 @@ class F1Telemetry extends WeatherDisplay {
 }
 
 // register display
-registerDisplay(new F1Telemetry(19, 'f1-telemetry', false));
+registerDisplay(new F1Telemetry('f1-telemetry', false));

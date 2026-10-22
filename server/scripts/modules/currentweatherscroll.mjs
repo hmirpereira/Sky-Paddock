@@ -3,9 +3,10 @@ import getCurrentWeather from './currentweather.mjs';
 import { currentDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import piProblems from './utils/pi-health.mjs';
-import { newsNow, plainText } from './utils/news.mjs';
+import { newsNow } from './utils/news.mjs';
 // eslint-disable-next-line import/no-cycle
 import settings from './settings.mjs';
+import { plainText } from './utils/text.mjs';
 
 // constants
 const degree = String.fromCharCode(176);
