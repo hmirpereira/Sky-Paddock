@@ -1,180 +1,163 @@
-// travel forecast display
+// travel forecast display: page 1 high and low of a few cities, page 2 the current weather and local time
+// of one city chosen in the settings (utils/travel-cities.mjs). Both from Open-Meteo.
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
-import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
+import { getWeatherRegionalIconFromIconLink, getWeatherIconFromIconLink } from './icons.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
+import { directionToNSEW } from './utils/calc.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
+import settings from './settings.mjs';
+import { TRAVEL_CITIES, detailCity } from './utils/travel-cities.mjs';
 
-// cities shown on the travel forecast (Open-Meteo, any location worldwide)
-const TRAVEL_CITIES = [
-	{ Name: 'Frankfurt', lat: 50.1109, lon: 8.6821 },
-	{ Name: 'Munich', lat: 48.1351, lon: 11.5820 },
-	{ Name: 'Zurich', lat: 47.3769, lon: 8.5417 },
-	{ Name: 'Geneva', lat: 46.2044, lon: 6.1432 },
-	{ Name: 'Vienna', lat: 48.2082, lon: 16.3738 },
-];
-
-// after this local hour the forecast shown is for tomorrow
+// after this local hour the forecast shown on page 1 is for tomorrow
 const SWITCH_TO_TOMORROW_HOUR = 18;
+
+const API = 'https://api.open-meteo.com/v1/forecast';
 
 class TravelForecast extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
-		// special height and width for scrolling
 		super(elemId, 'Travel Forecast', defaultActive);
 
 		// Remove from loading screen
 		this.showOnProgress = false;
 
-		// set up the timing
-		this.timing.baseDelay = 20;
-		// page sizes are 4 cities, calculate the number of pages necessary plus overflow
-		const pagesFloat = TRAVEL_CITIES.length / 4;
-		const pages = Math.floor(pagesFloat) - 2; // first page is already displayed, last page doesn't happen
-		const extra = pages % 1;
-		const timingStep = 75 * 4;
-		this.timing.delay = [150 + timingStep];
-		// add additional pages
-		for (let i = 0; i < pages; i += 1) this.timing.delay.push(timingStep);
-		// add the extra (not exactly 4 pages portion)
-		if (extra !== 0) this.timing.delay.push(Math.round(this.extra * this.cityHeight));
-		// add the final 3 second delay
-		this.timing.delay.push(150);
+		// the pages that have data, 10 seconds each
+		this.timing.baseDelay = 10000;
+		this.pages = [];
 	}
 
 	async getData() {
 		// super checks for enabled
 		if (!super.getData()) return;
 
-		const today = DateTime.local().hour < SWITCH_TO_TOMORROW_HOUR;
-		const dayIndex = today ? 0 : 1;
+		const [list, detail] = await Promise.all([getList(), getDetail(detailCity(settings.travelCity?.value))]);
+		this.pages = [];
+		if (list) this.pages.push('list');
+		if (detail) this.pages.push('detail');
+		this.list = list;
+		this.detail = detail;
 
-		try {
-			// one request for all cities
-			const lats = TRAVEL_CITIES.map((city) => city.lat).join(',');
-			const lons = TRAVEL_CITIES.map((city) => city.lon).join(',');
-			const response = await json(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=2`);
-			const results = Array.isArray(response) ? response : [response];
-
-			this.data = TRAVEL_CITIES.map((city, index) => {
-				const daily = results[index]?.daily;
-				if (!daily) return { name: city.Name, error: true };
-				const condition = getConditionText(Number(daily.weather_code[dayIndex]));
-				return {
-					today,
-					high: ConversionHelpers.convertTemperatureUnits(daily.temperature_2m_max[dayIndex]),
-					low: ConversionHelpers.convertTemperatureUnits(daily.temperature_2m_min[dayIndex]),
-					name: city.Name,
-					icon: getWeatherRegionalIconFromIconLink(condition, 1),
-				};
-			});
-		} catch (error) {
-			console.error('GetTravelWeather failed', error);
-			this.data = TRAVEL_CITIES.map((city) => ({ name: city.Name, error: true }));
-		}
-
-		// test for some data available in at least one forecast
-		const hasData = this.data.some((forecast) => !forecast.error);
-		if (!hasData) {
+		if (!this.pages.length) {
 			this.setStatus(STATUS.noData);
 			return;
 		}
 
+		this.timing.totalScreens = this.pages.length;
+		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
-		this.drawLongCanvas();
+		if (list) this.drawList(list);
 	}
 
-	async drawLongCanvas() {
-		// get the element and populate
+	drawList(cities) {
 		const list = this.elem.querySelector('.travel-lines');
 		list.innerHTML = '';
-
-		// set up variables
-		const cities = this.data;
-
-		const lines = cities.map((city) => {
-			if (city.error) return false;
-			const fillValues = {
-				city,
-			};
-
-			// check for forecast data
-			if (city.icon) {
-				fillValues.city = city.name;
-				// get temperatures and convert if necessary
-				const { low, high } = city;
-
-				// convert to strings with no decimal
-				const lowString = Math.round(low).toString();
-				const highString = Math.round(high).toString();
-
-				fillValues.low = lowString;
-				fillValues.high = highString;
-				const { icon } = city;
-
-				fillValues.icon = { type: 'img', src: icon };
-			} else {
-				fillValues.error = 'NO TRAVEL DATA AVAILABLE';
-			}
-			return this.fillTemplate('travel-row', fillValues);
-		}).filter((d) => d);
-		list.append(...lines);
+		const rows = cities.map((city) => this.fillTemplate('travel-row', {
+			city: city.name,
+			low: Math.round(city.low).toString(),
+			high: Math.round(city.high).toString(),
+			icon: { type: 'img', src: city.icon },
+		}));
+		list.append(...rows);
 	}
 
 	async drawCanvas() {
-		// there are technically 2 canvases: the standard canvas and the extra-long canvas that contains the complete
-		// list of cities. The second canvas is copied into the standard canvas to create the scroll
 		super.drawCanvas();
 
-		// set up variables
-		const cities = this.data;
+		const page = this.pages[Math.min(Math.max(this.screenIndex, 0), this.pages.length - 1)];
+		const isList = page === 'list';
+		this.elem.querySelector('.travel-page.list').style.display = isList ? 'block' : 'none';
+		this.elem.querySelector('.travel-page.detail').style.display = isList ? 'none' : 'block';
+		// the detail page sits in the box of the background (like Current Conditions)
+		this.elem.querySelector('.main').classList.toggle('has-box', !isList);
 
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = `For ${getTravelCitiesDayName(cities)}`;
+		if (isList) {
+			this.elem.querySelector('.header .title.dual .bottom').textContent = `For ${getTravelCitiesDayName(this.list)}`;
+		} else {
+			this.drawDetail(this.detail);
+		}
 
 		this.finishDraw();
 	}
 
-	async showCanvas() {
-		// special to travel forecast to draw the remainder of the canvas
-		await this.drawCanvas();
-		super.showCanvas();
-	}
-
-	// screen index change callback just runs the base count callback
-	screenIndexChange() {
-		this.baseCountChange(this.navBaseCount);
-	}
-
-	// base count change callback
-	baseCountChange(count) {
-		// calculate scroll offset and don't go past end
-		let offsetY = Math.min(this.elem.querySelector('.travel-lines').offsetHeight - 289, (count - 150));
-
-		// don't let offset go negative
-		if (offsetY < 0) offsetY = 0;
-
-		// copy the scrolled portion of the canvas
-		this.elem.querySelector('.main').scrollTo(0, offsetY);
-	}
-
-	// necessary to get the lastest long canvas when scrolling
-	getLongCanvas() {
-		return this.longCanvas;
+	drawDetail(detail) {
+		this.elem.querySelector('.header .title.dual .bottom').textContent = detail.name;
+		const degree = String.fromCharCode(176);
+		const fill = {
+			temp: `${Math.round(detail.temperature)}${degree}`,
+			condition: detail.condition,
+			time: detail.time,
+			feels: `${Math.round(detail.feelsLike)}${degree}`,
+			humidity: `${Math.round(detail.humidity)}%`,
+			wind: `${detail.windDirection} ${Math.round(detail.windSpeed)} ${ConversionHelpers.getWindUnitText()}`,
+			pressure: `${Math.round(detail.pressure)} ${ConversionHelpers.getPressureUnitText()}`,
+		};
+		Object.entries(fill).forEach(([key, value]) => {
+			this.elem.querySelector(`.travel-page.detail .${key}`).textContent = value;
+		});
+		this.elem.querySelector('.travel-page.detail .icon img').src = detail.icon;
 	}
 }
 
-// effectively returns early on the first found date
-const getTravelCitiesDayName = (cities) => cities.reduce((dayName, city) => {
-	if (city && dayName === '') {
-		// today or tomorrow
-		const day = DateTime.local().plus({ days: (city.today) ? 0 : 1 });
-		// return the day
-		return day.toLocaleString({ weekday: 'long' });
+// high and low of the page 1 cities, in one request; null when none answered
+const getList = async () => {
+	const today = DateTime.local().hour < SWITCH_TO_TOMORROW_HOUR;
+	const dayIndex = today ? 0 : 1;
+	try {
+		const lats = TRAVEL_CITIES.map((city) => city.lat).join(',');
+		const lons = TRAVEL_CITIES.map((city) => city.lon).join(',');
+		const response = await json(`${API}?latitude=${lats}&longitude=${lons}&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=2`);
+		const results = Array.isArray(response) ? response : [response];
+
+		const cities = TRAVEL_CITIES.map((city, index) => {
+			const daily = results[index]?.daily;
+			if (!daily) return null;
+			const condition = getConditionText(Number(daily.weather_code[dayIndex]));
+			return {
+				today,
+				high: ConversionHelpers.convertTemperatureUnits(daily.temperature_2m_max[dayIndex]),
+				low: ConversionHelpers.convertTemperatureUnits(daily.temperature_2m_min[dayIndex]),
+				name: city.Name,
+				icon: getWeatherRegionalIconFromIconLink(condition, 1),
+			};
+		}).filter(Boolean);
+		return cities.length ? cities : null;
+	} catch (error) {
+		console.error('GetTravelWeather failed', error);
+		return null;
 	}
-	return dayName;
-}, '');
+};
+
+// current weather and local time of the chosen city; null when it did not answer
+const getDetail = async (city) => {
+	try {
+		const response = await json(`${API}?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,pressure_msl&timezone=auto`);
+		const { current } = response;
+		const local = DateTime.fromISO(current.time);
+		const condition = getConditionText(Number(current.weather_code));
+		return {
+			name: city.name,
+			temperature: ConversionHelpers.convertTemperatureUnits(current.temperature_2m),
+			feelsLike: ConversionHelpers.convertTemperatureUnits(current.apparent_temperature),
+			humidity: current.relative_humidity_2m,
+			windSpeed: ConversionHelpers.convertWindUnits(current.wind_speed_10m),
+			windDirection: directionToNSEW(current.wind_direction_10m),
+			pressure: ConversionHelpers.convertPressureUnits(current.pressure_msl),
+			condition,
+			icon: getWeatherIconFromIconLink(condition, response.timezone),
+			// local time in the city (Open-Meteo gives it in the time zone of the city)
+			time: local.toFormat(ConversionHelpers.getHoursFormat() === '12-hour' ? 'h:mm a' : 'HH:mm'),
+		};
+	} catch (error) {
+		console.error('GetTravelDetail failed', error);
+		return null;
+	}
+};
+
+// the day name of the first city (today or tomorrow)
+const getTravelCitiesDayName = (cities) => DateTime.local().plus({ days: cities[0].today ? 0 : 1 }).toLocaleString({ weekday: 'long' });
 
 // register display, not active by default
 registerDisplay(new TravelForecast('travel', false));

@@ -1,5 +1,6 @@
 import Setting from './utils/setting.mjs';
 import { IPMA_AREAS } from './utils/ipma-areas.mjs';
+import { DETAIL_CITIES, DEFAULT_DETAIL_CITY } from './utils/travel-cities.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
 	init();
@@ -11,6 +12,7 @@ const settings = {
 	airportIcao: { value: '' },
 	airportName: { value: '' },
 	ipmaArea: { value: 0 },
+	travelCity: { value: DEFAULT_DETAIL_CITY },
 	windUnits: { value: 2 },
 	marineWindUnits: { value: 1 },
 	marineWaveHeightUnits: { value: 1 },
@@ -38,6 +40,10 @@ const init = () => {
 		[0, 'none'],
 		...IPMA_AREAS.map(([n, , name]) => [n, name]),
 	]);
+
+	// city on the second page of the Travel Forecast (utils/travel-cities.mjs)
+	const travelCities = DETAIL_CITIES.map(([n, name, country]) => [n, `${name}, ${country}`]);
+	settings.travelCity = new Setting('travelCity', 'Travel Forecast city', 'select', DEFAULT_DETAIL_CITY, null, true, travelCities);
 
 	// Customizable measurement units
 	settings.windUnits = new Setting('windUnits', 'Wind Units', 'select', 2, windUnitsChange, true, [

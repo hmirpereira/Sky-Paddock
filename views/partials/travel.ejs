@@ -1,15 +1,31 @@
 <%- include('header.ejs', {titleDual: {top: 'Travel Forecast', bottom: 'For '} , hasTime: true }) %>
 <div class="main has-scroll travel">
-  <div class="column-headers">
-    <div class="temp low">LOW</div>
-    <div class="temp high">HIGH</div>
+  <div class="travel-page list">
+    <div class="column-headers">
+      <div class="temp low">LOW</div>
+      <div class="temp high">HIGH</div>
+    </div>
+    <div class="travel-lines">
+      <div class="travel-row template">
+        <div class="city"></div>
+        <div class="icon"><img /></div>
+        <div class="temp low"></div>
+        <div class="temp high"></div>
+      </div>
+    </div>
   </div>
-  <div class="travel-lines">
-    <div class="travel-row template">
-      <div class="city"></div>
-      <div class="icon"><img /></div>
-      <div class="temp low"></div>
-      <div class="temp high"></div>
+  <div class="travel-page detail">
+    <div class="left col">
+      <div class="temp center"></div>
+      <div class="condition center"></div>
+      <div class="icon center"><img src="" /></div>
+    </div>
+    <div class="right col">
+      <div class="row"><div class="label">Local time:</div><div class="time value"></div></div>
+      <div class="row"><div class="label">Feels like:</div><div class="feels value"></div></div>
+      <div class="row"><div class="label">Humidity:</div><div class="humidity value"></div></div>
+      <div class="row"><div class="label">Wind:</div><div class="wind value"></div></div>
+      <div class="row"><div class="label">Pressure:</div><div class="pressure value"></div></div>
     </div>
   </div>
 </div>
