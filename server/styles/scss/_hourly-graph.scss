@@ -50,41 +50,6 @@
 			position: absolute;
 		}
 
-		.x-axis {
-			bottom: 0px;
-			left: 0px;
-			width: 640px;
-			height: 20px;
-
-			.label {
-				text-align: center;
-				width: 50px;
-
-				&.l-1 {
-					left: 25px;
-				}
-
-				&.l-2 {
-					left: 158px;
-				}
-
-				&.l-3 {
-					left: 291px;
-				}
-
-				&.l-4 {
-					left: 424px;
-				}
-
-				&.l-5 {
-					left: 557px;
-				}
-			}
-
-
-
-		}
-
 		.chart {
 			top: 0px;
 			left: 50px;
@@ -110,11 +75,11 @@
 				}
 
 				&.l-2 {
-					top: 140px;
+					top: 130px;
 				}
 
 				&.l-3 {
-					bottom: 0px;
+					bottom: 12px;
 				}
 			}
 		}
