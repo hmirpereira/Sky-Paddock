@@ -162,37 +162,22 @@
 	background: rgba(0, 0, 0, 0.55);
 
 	.fill {
-		position: relative;
-		overflow: hidden;
 		height: 100%;
-		background: linear-gradient(90deg, var(--bar-from), var(--bar-mid), var(--bar-to));
+		background:
+			linear-gradient(90deg, transparent 0 40%, rgba(255, 255, 255, 0.85) 50%, transparent 60% 100%) 0 0 / 200% 100%,
+			linear-gradient(90deg, var(--bar-from), var(--bar-mid), var(--bar-to));
 		clip-path: inset(0 100% 0 0);
-
-		// the moving highlight, moved with a transform: the compositor animates it, while an animated
-		// background-position woke the page's main thread 60 times a second (measured over 40 s with the bar
-		// on screen: 16 times fewer main-thread frames, 4 times fewer paints, about 10% less CPU time).
-		// Two tiles of the bar's double width, so that when one highlight leaves on the right the next one
-		// is already coming in on the left, as the repeating background did
-		&::after {
-			content: '';
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: -200%;
-			width: 400%;
-			background: linear-gradient(90deg, transparent 0 40%, rgba(255, 255, 255, 0.85) 50%, transparent 60% 100%) 0 0 / 50% 100% repeat-x;
-			animation: countdown-glint 2s steps(16) infinite;
-		}
+		animation: countdown-glint 2s steps(16) infinite;
 	}
 }
 
 @keyframes countdown-glint {
 	from {
-		transform: translateX(-25%);
+		background-position: 100% 0, 0 0;
 	}
 
 	to {
-		transform: translateX(25%);
+		background-position: -100% 0, 0 0;
 	}
 }
 
