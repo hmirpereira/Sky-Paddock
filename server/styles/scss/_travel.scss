@@ -53,25 +53,26 @@
 
 			.col {
 				position: absolute;
-				margin-top: 10px;
-				width: 255px;
+				// the box has a soft edge: keep the text away from it on every side
+				margin-top: 34px;
+				width: 245px;
 				@include u.text-shadow();
 
 				&.left {
-					left: 0;
-					margin-top: 24px;
+					left: 15px;
+					margin-top: 44px;
 					font-family: 'Star4000 Extended';
 					font-size: 24pt;
 				}
 
 				&.right {
-					right: 0;
+					right: 15px;
 					font-family: 'Star4000 Large';
-					font-size: 18pt;
+					font-size: 16pt;
 					font-weight: bold;
 
 					.row {
-						margin-bottom: 28px;
+						margin-bottom: 26px;
 						white-space: nowrap;
 
 						.label {
