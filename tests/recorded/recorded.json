@@ -1,6 +1,6 @@
 {
-	"time": 1792352775143,
-	"recorded": "2026-10-18T19:46:15.143Z",
+	"time": 1792795665223,
+	"recorded": "2026-10-23T22:47:45.223Z",
 	"statuses": {
 		"hazards": "loaded",
 		"current-weather": "loaded",
@@ -19,7 +19,7 @@
 		"overhead": "loaded",
 		"work-schedule": "loaded",
 		"news": "loaded",
-		"f1-last-race": "loaded",
+		"f1-last-race": "no data",
 		"f1-grid": "no data",
 		"f1-telemetry": "loaded",
 		"f1-standings": "loaded",
