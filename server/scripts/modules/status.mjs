@@ -4,7 +4,6 @@ const STATUS = {
 	failed: Symbol('failed'),
 	noData: Symbol('noData'),
 	disabled: Symbol('disabled'),
-	retrying: Symbol('retrying'),
 };
 
 const calcStatusClass = (statusCode) => {
@@ -19,14 +18,12 @@ const calcStatusClass = (statusCode) => {
 			return 'no-data';
 		case STATUS.disabled:
 			return 'disabled';
-		case STATUS.retrying:
-			return 'retrying';
 		default:
 			return '';
 	}
 };
 
-const statusClasses = ['loading', 'press-here', 'failed', 'no-data', 'disabled', 'retrying'];
+const statusClasses = ['loading', 'press-here', 'failed', 'no-data', 'disabled'];
 
 export default STATUS;
 export {

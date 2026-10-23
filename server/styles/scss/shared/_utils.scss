@@ -22,8 +22,7 @@
 
 @mixin status-colors() {
 
-	.loading,
-	.retrying {
+	.loading {
 		color: #ffff00;
 	}
 

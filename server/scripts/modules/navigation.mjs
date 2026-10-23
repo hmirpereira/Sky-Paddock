@@ -192,7 +192,7 @@ const updateStatus = (value) => {
 
 	// value.id = 0 is hazards, if they fail to load hot-wire a new value.id to the current display to see if it needs to be loaded
 	// typically this plays out as current conditions loads, then hazards fails.
-	if (value.id === 0 && (value.status === STATUS.failed || value.status === STATUS.retrying)) {
+	if (value.id === 0 && value.status === STATUS.failed) {
 		value.id = firstDisplayIndex;
 		value.status = displays[firstDisplayIndex].status;
 	}
@@ -215,9 +215,7 @@ const updateStatus = (value) => {
 	AssignLastUpdate(new Date());
 };
 
-// note: a display that is "still waiting"/"retrying" is considered loaded intentionally
-// the weather.gov api has long load times for some products when you are the first
-// requester for the product after the cache expires
+// a display counts as loaded once it is no longer "loading": loaded, failed, no data and disabled are all done
 const countLoadedDisplays = () => displays.reduce((acc, display) => {
 	if (display.status !== STATUS.loading) return acc + 1;
 	return acc;
