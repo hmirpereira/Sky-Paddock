@@ -35,7 +35,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 |---|---|---|
 | Hazards | IPMA warnings for one Portuguese district (in Portuguese); skipped when there are none | [IPMA](https://api.ipma.pt) |
 | Current Conditions | Temperature, sky, wind, humidity, pressure and more | [Open-Meteo](https://open-meteo.com) |
-| Hourly Forecast, Hourly Graph | The next 24 hours, as a list and as a graph | Open-Meteo |
+| Hourly Forecast, Hourly Graph | The next 24 hours, as a list and as a graph (temperature line with its highest and lowest marked, cloud cover line, precipitation chance as bars, a yellow "now" edge and the weekday after midnight) | Open-Meteo |
 | Travel Forecast | Five European cities, high and low | Open-Meteo |
 | Regional Forecast | Portugal: district and island capitals on five maps | Open-Meteo; maps from [Natural Earth](https://www.naturalearthdata.com) |
 | Extended Forecast, Almanac | The next days; sun and moon | Open-Meteo |

@@ -28,6 +28,8 @@ class HourlyGraph extends WeatherDisplay {
 	async getData() {
 		if (!super.getData()) return;
 
+		// the canvas draws text, which needs the font loaded
+		await document.fonts.load('24px "Star4000 Small"');
 		const data = await getHourlyData();
 		if (data === undefined) {
 			this.setStatus(STATUS.failed);
@@ -52,6 +54,9 @@ class HourlyGraph extends WeatherDisplay {
 		// get available space
 		const availableWidth = 532;
 		const availableHeight = 285;
+		// the chart area ends above the hour labels
+		const baseY = availableHeight - 30;
+		const topY = 14;
 
 		this.image.width = availableWidth;
 		this.image.height = availableHeight;
@@ -63,56 +68,96 @@ class HourlyGraph extends WeatherDisplay {
 		const ctx = canvas.getContext('2d');
 		ctx.imageSmoothingEnabled = false;
 
-		// calculate time scale
-		const timeScale = calcScale(0, 5, this.data.temperature.length - 1, availableWidth);
+		const last = this.data.temperature.length - 1;
+		const timeScale = calcScale(0, 0, last, availableWidth - 2);
 		const startTime = DateTime.now().startOf('hour');
-		if (ConversionHelpers.getHoursFormat() === '12-hour') {
-			document.querySelector('.x-axis .l-1').innerHTML = formatTime(startTime);
-			document.querySelector('.x-axis .l-2').innerHTML = formatTime(startTime.plus({ hour: 6 }));
-			document.querySelector('.x-axis .l-3').innerHTML = formatTime(startTime.plus({ hour: 12 }));
-			document.querySelector('.x-axis .l-4').innerHTML = formatTime(startTime.plus({ hour: 18 }));
-			document.querySelector('.x-axis .l-5').innerHTML = formatTime(startTime.plus({ hour: 24 }));
-		} else {
-			document.querySelector('.x-axis .l-1').innerHTML = startTime.toFormat('HH');
-			document.querySelector('.x-axis .l-2').innerHTML = startTime.plus({ hour: 6 }).toFormat('HH');
-			document.querySelector('.x-axis .l-3').innerHTML = startTime.plus({ hour: 12 }).toFormat('HH');
-			document.querySelector('.x-axis .l-4').innerHTML = startTime.plus({ hour: 18 }).toFormat('HH');
-			document.querySelector('.x-axis .l-5').innerHTML = startTime.plus({ hour: 24 }).toFormat('HH');
-		}
+		const is12Hour = ConversionHelpers.getHoursFormat() === '12-hour';
 
-		// order is important last line drawn is on top
-		// clouds
-		const percentScale = calcScale(0, availableHeight - 10, 100, 10);
-		const cloud = createPath(this.data.skyCover, timeScale, percentScale);
-		drawPath(cloud, ctx, {
-			strokeStyle: 'lightgrey',
-			lineWidth: 3,
+		// temperature range in whole degrees, so the axis labels are the real scale
+		const minTemp = Math.min(...this.data.temperature);
+		const maxTemp = Math.max(...this.data.temperature);
+		const lowAxis = Math.floor(minTemp);
+		const highAxis = Math.max(Math.ceil(maxTemp), lowAxis + 1);
+		const tempScale = calcScale(lowAxis, baseY, highAxis, topY);
+		const percentScale = calcScale(0, baseY, 100, topY);
+
+		// dotted guides at the three axis values
+		ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+		ctx.lineWidth = 1;
+		ctx.setLineDash([2, 4]);
+		[lowAxis, (lowAxis + highAxis) / 2, highAxis].forEach((value) => {
+			const y = Math.round(tempScale(value)) + 0.5;
+			ctx.beginPath();
+			ctx.moveTo(0, y);
+			ctx.lineTo(availableWidth, y);
+			ctx.stroke();
 		});
 
-		// precip
-		const precip = createPath(this.data.probabilityOfPrecipitation, timeScale, percentScale);
-		drawPath(precip, ctx, {
-			strokeStyle: 'aqua',
-			lineWidth: 3,
+		// midnight separator
+		const midnight = 24 - startTime.hour;
+		if (midnight < last) {
+			const x = Math.round(timeScale(midnight)) + 0.5;
+			ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+			ctx.beginPath();
+			ctx.moveTo(x, 0);
+			ctx.lineTo(x, availableHeight - 24);
+			ctx.stroke();
+		}
+		ctx.setLineDash([]);
+
+		// "now" marker on the left edge
+		ctx.fillStyle = 'yellow';
+		ctx.fillRect(0, 0, 3, availableHeight - 24);
+
+		// order is important last line drawn is on top
+		// precipitation, as bars on its own 0 to 100 % scale
+		this.data.probabilityOfPrecipitation.forEach((value, i) => {
+			if (!value) return;
+			const height = Math.max(2, baseY - percentScale(value));
+			const x = timeScale(i);
+			ctx.fillStyle = 'black';
+			ctx.fillRect(x - 6, baseY - height, 14, height + 2);
+			ctx.fillStyle = 'aqua';
+			ctx.fillRect(x - 5, baseY - height, 12, height);
+		});
+
+		// clouds
+		drawPath(createPath(this.data.skyCover, timeScale, percentScale), ctx, {
+			strokeStyle: 'lightgrey',
+			lineWidth: 2,
 		});
 
 		// temperature
-		const minTemp = Math.min(...this.data.temperature);
-		const maxTemp = Math.max(...this.data.temperature);
-		const midTemp = Math.round((minTemp + maxTemp) / 2);
-		const tempScale = calcScale(minTemp, availableHeight - 10, maxTemp, 10);
-		const tempPath = createPath(this.data.temperature, timeScale, tempScale);
-		drawPath(tempPath, ctx, {
+		drawPath(createPath(this.data.temperature, timeScale, tempScale), ctx, {
 			strokeStyle: 'red',
 			lineWidth: 3,
 		});
 
+		// highest and lowest temperature marked on the line
+		const degree = String.fromCharCode(176);
+		[[maxTemp, 26], [minTemp, -10]].forEach(([value, offset]) => {
+			const i = this.data.temperature.indexOf(value);
+			const x = timeScale(i);
+			const y = tempScale(value);
+			ctx.fillStyle = 'white';
+			ctx.fillRect(Math.min(x, availableWidth - 5) - 3, y - 3, 7, 7);
+			drawText(ctx, `${Math.round(value)}${degree}`, Math.min(Math.max(x, 22), availableWidth - 22), y + offset, 'white');
+		});
+
+		// hour labels every 6 hours, and the weekday at the top of the midnight line
+		for (let hours = 0; hours <= last; hours += 6) {
+			const time = startTime.plus({ hours });
+			const label = is12Hour ? formatTime(time) : time.toFormat('HH');
+			drawText(ctx, label, Math.min(Math.max(timeScale(hours), 14), availableWidth - 14), availableHeight - 4, '#ffd800');
+		}
+		if (midnight < last) drawText(ctx, startTime.plus({ hours: midnight }).toFormat('ccc').toUpperCase(), timeScale(midnight) + 24, topY + 18, 'white');
+
 		// temperature axis labels
 		// limited to 3 characters, sacraficing degree character
-		const degree = String.fromCharCode(176);
-		this.elem.querySelector('.y-axis .l-1').innerHTML = (maxTemp + degree).substring(0, 3);
-		this.elem.querySelector('.y-axis .l-2').innerHTML = (midTemp + degree).substring(0, 3);
-		this.elem.querySelector('.y-axis .l-3').innerHTML = (minTemp + degree).substring(0, 3);
+		const labels = this.elem.querySelectorAll('.y-axis .label');
+		[highAxis, Math.round((lowAxis + highAxis) / 2), lowAxis].forEach((value, i) => {
+			labels[i].textContent = `${value}${degree}`.substring(0, 3);
+		});
 
 		// set the image source
 		this.image.src = canvas.toDataURL();
@@ -149,6 +194,16 @@ const drawPath = (path, ctx, options) => {
 	ctx.moveTo(path[0][0], path[0][1]);
 	path.slice(1).forEach((point) => ctx.lineTo(point[0], point[1]));
 	ctx.stroke();
+};
+
+// text with the same black shadow as the lines
+const drawText = (ctx, text, x, y, colour) => {
+	ctx.font = '24px "Star4000 Small"';
+	ctx.textAlign = 'center';
+	ctx.fillStyle = 'black';
+	ctx.fillText(text, x + 2, y + 2);
+	ctx.fillStyle = colour;
+	ctx.fillText(text, x, y);
 };
 
 // format as 1p, 12a, etc.
