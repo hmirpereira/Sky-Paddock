@@ -199,8 +199,7 @@ body:not(.kiosk) {
 	#enabledDisplays,
 	#settings {
 
-		.loading,
-		.retrying {
+		.loading {
 			color: #ffff00;
 		}
 
