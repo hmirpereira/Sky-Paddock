@@ -89,8 +89,8 @@ class F1NextRace extends WeatherDisplay {
 		}
 
 		this.race = cache?.race;
-		// season over (no next race) or the saved race has already finished: skip the screen
-		if (!this.race || DateTime.fromISO(this.race.start) < DateTime.now().minus({ hours: RACE_DURATION_HOURS })) {
+		// season over, no date for the race yet (nothing to list), or the saved race has already finished: skip the screen
+		if (!this.race?.sessions?.length || !DateTime.fromISO(this.race.start).isValid || DateTime.fromISO(this.race.start) < DateTime.now().minus({ hours: RACE_DURATION_HOURS })) {
 			this.setStatus(STATUS.noData);
 			return;
 		}
