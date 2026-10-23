@@ -62,8 +62,8 @@ class GtNextRace extends WeatherDisplay {
 			.sort((a, b) => a.start.localeCompare(b.start));
 		const last = sessions.at(-1)?.start;
 		const end = last ?? next?.race;
-		// no event announced, or the last session is over: skip the screen
-		if (!next?.event || (end && DateTime.fromISO(end) < DateTime.now().minus({ hours: RACE_DURATION_HOURS }))) {
+		// no session with a date (nothing to list), or the last one is over: skip the screen
+		if (!next?.event || !sessions.length || (end && DateTime.fromISO(end) < DateTime.now().minus({ hours: RACE_DURATION_HOURS }))) {
 			this.setStatus(STATUS.noData);
 			return;
 		}
