@@ -10,6 +10,7 @@ import { DateTime } from '../vendor/auto/luxon.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { readCache, writeCache, isFresh } from './utils/f1-update.mjs';
 import CIRCUITS from './utils/f1-circuits.mjs';
+import FACTS from './utils/circuit-facts.mjs';
 import { plainText } from './utils/text.mjs';
 import raceForecast from './utils/race-forecast.mjs';
 
@@ -55,6 +56,28 @@ const parseRace = (race) => {
 		start,
 		sessions,
 	};
+};
+
+// yellow dot on each named corner of the outline and its name beside it; replaces the ones of the previous circuit
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const drawCorners = (svg, corners) => {
+	svg.querySelector('.corners')?.remove();
+	if (!corners.length) return;
+	const group = document.createElementNS(SVG_NS, 'g');
+	group.setAttribute('class', 'corners');
+	corners.forEach(([name, x, y, labelX, labelY, side]) => {
+		const dot = document.createElementNS(SVG_NS, 'circle');
+		dot.setAttribute('cx', x);
+		dot.setAttribute('cy', y);
+		dot.setAttribute('r', 17);
+		const label = document.createElementNS(SVG_NS, 'text');
+		label.setAttribute('x', labelX);
+		label.setAttribute('y', labelY);
+		label.setAttribute('text-anchor', side === 'l' ? 'end' : 'start');
+		label.textContent = plainText(name);
+		group.append(dot, label);
+	});
+	svg.append(group);
 };
 
 class F1NextRace extends WeatherDisplay {
@@ -120,10 +143,14 @@ class F1NextRace extends WeatherDisplay {
 		// track outline
 		const svg = this.elem.querySelector('.track svg');
 		const circuit = CIRCUITS[race.circuitId];
+		const facts = FACTS[race.circuitId];
 		if (circuit) {
-			svg.setAttribute('viewBox', `-40 -40 ${circuit.w + 80} ${circuit.h + 80}`);
+			// room on both sides for the corner names
+			const margin = facts?.corners ? 300 : 40;
+			svg.setAttribute('viewBox', `${-margin} -40 ${circuit.w + 2 * margin} ${circuit.h + 80}`);
 			svg.querySelector('.outline').setAttribute('points', circuit.path);
 			svg.querySelector('.outline-shadow').setAttribute('points', circuit.path);
+			drawCorners(svg, facts?.corners ?? []);
 			svg.style.visibility = 'visible';
 		} else {
 			svg.style.visibility = 'hidden';
@@ -143,6 +170,12 @@ class F1NextRace extends WeatherDisplay {
 			['countdown', countdown],
 		];
 		if (circuit?.length) lines.splice(3, 0, ['length', `${(circuit.length / 1000).toFixed(3)} km`]);
+		// the lap record takes the place of the circuit name (the place says where it is)
+		if (facts?.record) {
+			const { time, driver, year } = facts.record;
+			lines.splice(lines.findIndex(([cls]) => cls === 'circuit'), 1);
+			lines.push(['record-title', 'TRACK RECORD'], ['record', `${time} ${driver} ${year}`]);
+		}
 
 		const info = this.elem.querySelector('.race-info');
 		info.innerHTML = '';
