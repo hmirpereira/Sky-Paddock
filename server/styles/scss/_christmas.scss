@@ -93,3 +93,12 @@
 		transform: translate3d(var(--drift, 0px), 500px, 0);
 	}
 }
+
+// no snow on the screens that scroll (Hourly, Hazards, F1 Drivers, F1 Grid): they scroll on the main thread and on the Pi
+// they already use a whole core, so the lights stay and the snow goes. The class of the screen on view is on #divTwc.
+#divTwc.hourly #christmas .snow,
+#divTwc.hazards #christmas .snow,
+#divTwc.f1-standings #christmas .snow,
+#divTwc.f1-grid #christmas .snow {
+	display: none;
+}
