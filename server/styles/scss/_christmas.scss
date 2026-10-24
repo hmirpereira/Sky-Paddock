@@ -1,7 +1,8 @@
 // Christmas effects (christmas.mjs): lights hanging along the header and snow falling over the text.
 // Hidden unless #divTwc has the class christmas. Made for the Pi, which has no GPU worth the name: nothing here is painted
-// again while it animates. The bulbs are four pictures whose opacity changes and the snow is three pictures that move with
-// transform; both run on the compositor, each in a layer of its own (will-change), and the page behind never knows.
+// again while it animates. The bulbs are four pictures whose opacity changes and the snow is 18 small flakes that move with
+// transform, in steps. Few and small on purpose: on the TV, three snow layers as tall as two pages cost 15 points of GPU,
+// and the Hourly Forecast, which scrolls on the main thread, was already using 90 % of a core without any decoration.
 #christmas {
 	display: none;
 	position: absolute;
@@ -37,7 +38,6 @@
 
 	// a group of bulbs blinks together, each group at its own pace
 	&.bulbs {
-		will-change: opacity;
 		animation: christmas-blink 1s step-end infinite;
 
 		&.g0 {
@@ -75,18 +75,13 @@
 	}
 }
 
-// the snow: each layer is as tall as two pages, with a tile of flakes that repeats down it, and falls one page (half of
-// itself) and starts again, so the fall has no seam
-#christmas .snow .flakes {
+// the snow: a few small flakes falling in steps (8 a second), each moved with transform only
+#christmas .snow i {
 	position: absolute;
-	left: -40px;
-	right: -40px;
-	top: -100%;
-	height: 200%;
-	background-size: 100% 50%;
-	background-repeat: repeat-y;
-	will-change: transform;
-	animation: christmas-fall 14s linear infinite;
+	top: -8px;
+	border-radius: 50%;
+	background: #fff;
+	animation: christmas-fall 14s steps(112) infinite;
 }
 
 @keyframes christmas-fall {
@@ -95,6 +90,6 @@
 	}
 
 	to {
-		transform: translate3d(var(--drift, 0px), 50%, 0);
+		transform: translate3d(var(--drift, 0px), 500px, 0);
 	}
 }

@@ -51,30 +51,24 @@ const lightsLayout = (width, seed = 7) => {
 	return { spans, bulbs };
 };
 
-// the snow: three layers of flakes, far (many, small and slow), middle and near (few, big and fast). Each layer is one picture
-// of flakes (positions in % of a tile that repeats down the page) that falls as a whole, so the page animates three things and
-// not dozens. Returns, for each layer, its flakes ([x %, y %, radius px]), how long a tile takes to fall, how far it drifts sideways
-// and the opacity.
-const snowLayers = (seed = 11) => {
+// the snow: a few small flakes, each in three depths (far: small, slow, faint; near: big, fast, bright). Few and small on purpose:
+// every flake is a layer of its own for the compositor and the Pi pays for the size of the layers. Returns, for each flake,
+// where it starts across the page (%), its size (px), how long it takes to fall (s), how far it drifts (px), when it starts and its opacity.
+const snowFlakes = (count = 18, seed = 11) => {
 	const rnd = random(seed);
-	return [
-		{
-			flakes: 26, size: [0.7, 1.1], fall: 24, drift: 14, opacity: 0.6,
-		},
-		{
-			flakes: 16, size: [1.1, 1.7], fall: 16, drift: -22, opacity: 0.8,
-		},
-		{
-			flakes: 8, size: [1.9, 2.8], fall: 10.5, drift: 30, opacity: 0.95,
-		},
-	].map((layer) => ({
-		...layer,
-		flakes: Array.from({ length: layer.flakes }, () => [
-			rnd() * 100, rnd() * 100, layer.size[0] + rnd() * (layer.size[1] - layer.size[0]),
-		]),
-	}));
+	return Array.from({ length: count }, (_, i) => {
+		const depth = i % 3;
+		return {
+			left: rnd() * 100,
+			size: [2, 3, 4.5][depth] + rnd() * 0.8,
+			fall: [20, 14, 9][depth] + rnd() * 3,
+			drift: (rnd() - 0.5) * 50,
+			delay: -rnd() * 20,
+			opacity: [0.55, 0.8, 0.95][depth],
+		};
+	});
 };
 
 export {
-	isChristmas, random, lightsLayout, snowLayers,
+	isChristmas, random, lightsLayout, snowFlakes,
 };
