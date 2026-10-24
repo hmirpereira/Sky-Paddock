@@ -58,24 +58,43 @@ const parseRace = (race) => {
 	};
 };
 
-// yellow dot on each named corner of the outline and its name beside it; replaces the ones of the previous circuit
+// start and finish line with an arrow after it for the way of the lap (as on the F1 Telemetry map), and a dot with the name
+// on each named corner; replaces the ones of the previous circuit. Only for circuits in utils/circuit-facts.mjs, whose outline
+// has been checked to start on the line and run the way of the race.
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const drawCorners = (svg, corners) => {
-	svg.querySelector('.corners')?.remove();
-	if (!corners.length) return;
-	const group = document.createElementNS(SVG_NS, 'g');
-	group.setAttribute('class', 'corners');
-	corners.forEach(([name, x, y, labelX, labelY, side]) => {
-		const dot = document.createElementNS(SVG_NS, 'circle');
-		dot.setAttribute('cx', x);
-		dot.setAttribute('cy', y);
-		dot.setAttribute('r', 17);
-		const label = document.createElementNS(SVG_NS, 'text');
-		label.setAttribute('x', labelX);
-		label.setAttribute('y', labelY);
-		label.setAttribute('text-anchor', side === 'l' ? 'end' : 'start');
+const svgElement = (name, attributes) => {
+	const element = document.createElementNS(SVG_NS, name);
+	Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+	return element;
+};
+const drawMarks = (svg, circuit, facts) => {
+	svg.querySelector('.marks')?.remove();
+	if (!facts) return;
+	const group = svgElement('g', { class: 'marks' });
+
+	const points = circuit.path.split(' ').map((point) => point.split(',').map(Number));
+	const [x0, y0] = points[0];
+	const [px, py] = points.at(-1)[0] === x0 && points.at(-1)[1] === y0 ? points.at(-2) : points.at(-1);
+	const length = Math.hypot(x0 - px, y0 - py) || 1;
+	const [ux, uy] = [(x0 - px) / length, (y0 - py) / length];
+	// black and white squares across the track, with the arrow on the straight before it so that it does not sit on the first corner
+	const line = {
+		x1: x0 - uy * 40, y1: y0 + ux * 40, x2: x0 + uy * 40, y2: y0 - ux * 40,
+	};
+	const [cx, cy] = [x0 - ux * 80, y0 - uy * 80];
+	group.append(
+		svgElement('line', { ...line, class: 'start-line' }),
+		svgElement('line', { ...line, class: 'start-dash' }),
+		svgElement('polygon', {
+			class: 'direction',
+			points: `${cx + ux * 36},${cy + uy * 36} ${cx - ux * 16 - uy * 30},${cy - uy * 16 + ux * 30} ${cx - ux * 16 + uy * 30},${cy - uy * 16 - ux * 30}`,
+		}),
+	);
+
+	(facts.corners ?? []).forEach(([name, x, y, labelX, labelY, side]) => {
+		const label = svgElement('text', { x: labelX, y: labelY, 'text-anchor': side === 'l' ? 'end' : 'start' });
 		label.textContent = plainText(name);
-		group.append(dot, label);
+		group.append(svgElement('circle', { cx: x, cy: y, r: 17 }), label);
 	});
 	svg.append(group);
 };
@@ -150,7 +169,7 @@ class F1NextRace extends WeatherDisplay {
 			svg.setAttribute('viewBox', `${-margin} -40 ${circuit.w + 2 * margin} ${circuit.h + 80}`);
 			svg.querySelector('.outline').setAttribute('points', circuit.path);
 			svg.querySelector('.outline-shadow').setAttribute('points', circuit.path);
-			drawCorners(svg, facts?.corners ?? []);
+			drawMarks(svg, circuit, facts);
 			svg.style.visibility = 'visible';
 		} else {
 			svg.style.visibility = 'hidden';

@@ -40,8 +40,26 @@
 					stroke-width: 18;
 				}
 
-				// corner names (drawn in the units of the outline, 0 to 1000)
-				.corners {
+				// start line, direction of the lap and corner names (drawn in the units of the outline, 0 to 1000)
+				.marks {
+					.start-line {
+						stroke: white;
+						stroke-width: 14;
+					}
+
+					.start-dash {
+						stroke: black;
+						stroke-width: 14;
+						stroke-dasharray: 10 10;
+					}
+
+					.direction {
+						fill: white;
+						stroke: black;
+						stroke-width: 6;
+						stroke-linejoin: round;
+					}
+
 					circle {
 						fill: f1.$f1-accent;
 						stroke: white;
