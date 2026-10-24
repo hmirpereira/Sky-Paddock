@@ -22,7 +22,6 @@ const PAGE_TITLES = {
 class RegionalForecast extends WeatherDisplay {
 	constructor(elemId) {
 		super(elemId, 'Regional Forecast', false);
-		this.showOnProgress = false;
 		this.timing.baseDelay = 6000;
 		this.timing.totalScreens = REGIONAL_PAGES.length;
 	}

@@ -1,5 +1,6 @@
 @use 'shared/_colors'as c;
 @use 'shared/_utils'as u;
+@use 'shared/_current-layout'as cl;
 
 .weather-display .main.travel {
 	&.main {
@@ -44,71 +45,23 @@
 			}
 		}
 
-		// page 2: current weather of one city, inside the box of the background (the main gets has-box),
-		// laid out like Current Conditions
+		// page 2: current weather of one city, inside the box of the background (the main gets has-box), laid out as
+		// Current Conditions
 		.travel-page.detail {
 			display: none;
 			position: relative;
 			height: 310px;
 
-			.col {
-				position: absolute;
-				// the box has a soft edge: keep the text away from it on every side
-				margin-top: 34px;
-				width: 245px;
-				@include u.text-shadow();
+			@include cl.current-layout;
 
-				&.left {
-					left: 15px;
-					margin-top: 44px;
-					font-family: 'Star4000 Extended';
-					font-size: 24pt;
-				}
-
-				&.right {
-					right: 15px;
-					font-family: 'Star4000 Large';
-					font-size: 16pt;
-					font-weight: bold;
-
-					.row {
-						margin-bottom: 26px;
-						white-space: nowrap;
-
-						.label {
-							display: inline-block;
-							margin-left: 20px;
-							color: c.$title-color;
-						}
-
-						.value {
-							float: right;
-							margin-right: 10px;
-						}
-					}
-				}
-			}
-
-			.center {
-				text-align: center;
-			}
-
-			.temp {
-				font-family: 'Star4000 Large';
-				font-size: 36pt;
-			}
-
-			.condition {
-				height: 70px;
-				margin-top: 8px;
-			}
-
-			.icon {
-				height: 100px;
-
-				img {
-					max-width: 126px;
-				}
+			// 24 x 16 pixel flag shown at 36 x 24, kept blocky, as on the F1 screens
+			.location .flag {
+				width: 36px;
+				height: 24px;
+				margin-left: 12px;
+				vertical-align: -4px;
+				image-rendering: pixelated;
+				outline: 2px solid black;
 			}
 		}
 
