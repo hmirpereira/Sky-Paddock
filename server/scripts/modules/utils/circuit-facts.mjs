@@ -3,6 +3,7 @@
 // Lap record: the fastest lap set in a race, as in the infobox of the Wikipedia article of the circuit; check it each season.
 // Corner names: Wikipedia and the circuit's own map. A corner is [name, x, y, labelX, labelY, side]: x and y are on the outline
 // (the same 0 to 1000 space as its path), the label sits at labelX, labelY and 'l' ends at that point, 'r' starts there.
+// The outline of a listed circuit has been checked to start on the start line and run the way of the race (it gets the line and the arrow).
 // Circuits without an entry keep the plain outline.
 const FACTS = {
 	spa: {
