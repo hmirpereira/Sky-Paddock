@@ -1,6 +1,7 @@
 // Christmas effects (christmas.mjs): lights hanging along the header and snow falling over the text.
-// Hidden unless #divTwc has the class christmas. Animated with transform and opacity only, in steps, so that the page
-// is not redrawn on every frame.
+// Hidden unless #divTwc has the class christmas. Made for the Pi, which has no GPU worth the name: nothing here is painted
+// again while it animates. The bulbs are four pictures whose opacity changes and the snow is three pictures that move with
+// transform; both run on the compositor, each in a layer of its own (will-change), and the page behind never knows.
 #christmas {
 	display: none;
 	position: absolute;
@@ -34,7 +35,9 @@
 		opacity: 0.28;
 	}
 
-	.bulb {
+	// a group of bulbs blinks together, each group at its own pace
+	&.bulbs {
+		will-change: opacity;
 		animation: christmas-blink 1s step-end infinite;
 
 		&.g0 {
@@ -43,19 +46,22 @@
 
 		&.g1 {
 			animation-duration: 1.3s;
+			animation-delay: -0.4s;
 		}
 
 		&.g2 {
 			animation-duration: 1.7s;
+			animation-delay: -1.1s;
 		}
 
 		&.g3 {
 			animation-duration: 2.3s;
+			animation-delay: -0.7s;
 		}
 	}
 }
 
-// bright then dim, a bulb at a time
+// bright then dim
 @keyframes christmas-blink {
 
 	0%,
@@ -69,13 +75,18 @@
 	}
 }
 
-#christmas .snow i {
+// the snow: each layer is as tall as two pages, with a tile of flakes that repeats down it, and falls one page (half of
+// itself) and starts again, so the fall has no seam
+#christmas .snow .flakes {
 	position: absolute;
-	top: -8px;
-	border-radius: 50%;
-	background: #fff;
-	box-shadow: 0 0 2px rgb(255 255 255 / 70%);
-	animation: christmas-fall 14s steps(48) infinite;
+	left: -40px;
+	right: -40px;
+	top: -100%;
+	height: 200%;
+	background-size: 100% 50%;
+	background-repeat: repeat-y;
+	will-change: transform;
+	animation: christmas-fall 14s linear infinite;
 }
 
 @keyframes christmas-fall {
@@ -84,6 +95,6 @@
 	}
 
 	to {
-		transform: translate3d(var(--drift, 0), 500px, 0);
+		transform: translate3d(var(--drift, 0px), 50%, 0);
 	}
 }

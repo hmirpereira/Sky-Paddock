@@ -77,18 +77,12 @@ body.color-fringe {
 // Colour fringe on the pictures, its own setting (Enable Colour Fringe on Pictures): weather icons,
 // team and airline icons, logos, maps; the red and blue channels pulled apart by an SVG filter in
 // index.ejs, so edges inside the pictures get the fringe too. Not on the radar, which animates:
-// the filter would be worked out again for every frame.
-body.image-fringe #container img:not(#radar-html img) {
+// the filter would be worked out again for every frame (the same goes for the bats and spiders of Halloween, which move).
+body.image-fringe #container img:not(#radar-html img, #halloween .bat img, #halloween .walker img) {
   filter: url(#vhs-rgb);
 }
 
 // The Christmas and Halloween decorations (z-index 30) are part of the picture, so the scan lines and the vignette (40) go
-// over them too. Their pictures get the colour fringe on pictures through the rule above (they are img inside #container);
-// the lights and the snow, which are not pictures, get the same red and blue edges here.
-body.image-fringe #christmas .lights {
-  filter: url(#vhs-rgb);
-}
-
-body.color-fringe #christmas .snow i {
-  box-shadow: -1.5px 0 0 rgba(255, 40, 40, 0.75), 1.5px 0 0 rgba(40, 170, 255, 0.75);
-}
+// over them too. The pictures of Halloween get the colour fringe on pictures through the rule above (they are img inside
+// #container); the lights and the snow do not: a filter or a shadow on things that blink and fall would be worked out
+// again on every frame, which the Pi cannot do.
