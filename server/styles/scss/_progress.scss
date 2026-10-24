@@ -62,7 +62,7 @@
 				top: 0px;
 
 				>div {
-					background-color: c.$blue-box;
+					background-color: var(--blue-box, #{c.$blue-box});
 					display: none;
 					padding-left: 4px;
 				}
