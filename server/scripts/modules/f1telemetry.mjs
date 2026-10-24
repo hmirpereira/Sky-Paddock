@@ -15,7 +15,6 @@ import { readCache, writeCache } from './utils/f1-update.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { escapeHtml } from './utils/html.mjs';
 import {
-	isStale,
 	COLOURS, driverColours, interp, isStale, lapProfile, lapTime,
 } from './utils/f1-telemetry-math.mjs';
 import { plainText } from './utils/text.mjs';
