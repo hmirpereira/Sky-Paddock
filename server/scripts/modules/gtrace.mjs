@@ -8,7 +8,6 @@ import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 // eslint-disable-next-line import/no-cycle
-import settings from './settings.mjs';
 import gtTeamLogo from './utils/gt-team-logos.mjs';
 import { plainText } from './utils/text.mjs';
 
@@ -59,7 +58,6 @@ class GtRace extends WeatherDisplay {
 		while (outside(moved) > moved) moved += 1;
 		const below = mine.filter(({ index }) => index >= ROWS - moved);
 		const list = [...race.results.slice(0, ROWS - moved).map((r, index) => ({ r, index })), ...below];
-		const useLogos = settings.gtTeamLogos?.value ?? true;
 		const rows = list.map(({ r, index }, i) => {
 			const row = this.fillTemplate('gt-row', {
 				pos: String(r.pos),
@@ -72,7 +70,7 @@ class GtRace extends WeatherDisplay {
 			if (r.highlight) row.classList.add('highlight');
 			// gap line where positions are skipped (a car pulled up from below)
 			if (i > 0 && index > list[i - 1].index + 1) row.classList.add('jump');
-			const logo = useLogos && gtTeamLogo(r.team);
+			const logo = gtTeamLogo(r.team);
 			if (logo) {
 				const team = row.querySelector('.team');
 				const img = document.createElement('img');

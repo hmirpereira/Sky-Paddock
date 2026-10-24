@@ -1,0 +1,189 @@
+// Halloween effects (halloween.mjs): bats flying, spiders walking across every screen, and a jack-o'-lantern now and then
+// in the side bands of the widescreen page. Hidden unless #divTwc has the class halloween. transform and opacity
+// animations only, in steps where they are not smooth.
+#halloween {
+	display: none;
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 30;
+}
+
+#divTwc.halloween #halloween {
+	display: block;
+}
+
+#halloween .bat {
+	position: absolute;
+	left: 0;
+	animation: halloween-cross 14s linear infinite;
+
+	img {
+		display: block;
+		height: auto;
+		image-rendering: pixelated;
+		animation: halloween-bob 2.4s ease-in-out infinite alternate, halloween-flap var(--flap, 0.5s) steps(2) infinite;
+	}
+
+	&.back {
+		animation-direction: reverse;
+	}
+}
+
+// across the page
+@keyframes halloween-cross {
+	from {
+		transform: translateX(-80px);
+	}
+
+	to {
+		transform: translateX(940px);
+	}
+}
+
+// a little higher and lower on the way
+@keyframes halloween-bob {
+	from {
+		translate: 0 calc(var(--wave, 12px) * -1);
+	}
+
+	to {
+		translate: 0 var(--wave, 12px);
+	}
+}
+
+// the wings beat: the picture is squashed from the top a little and back
+@keyframes halloween-flap {
+
+	0%,
+	49% {
+		transform: scaleY(1);
+	}
+
+	50%,
+	100% {
+		transform: scaleY(0.82);
+	}
+}
+
+#halloween .walker {
+	position: absolute;
+	left: 0;
+	animation: halloween-walk 50s linear infinite;
+
+	// the picture looks down: turned so that the head goes the way the spider walks, with a quick side to side scuttle
+	img {
+		display: block;
+		height: auto;
+		image-rendering: pixelated;
+		transform: rotate(-90deg);
+		animation: halloween-scuttle 0.5s steps(2) infinite, halloween-wobble 3.1s ease-in-out infinite alternate;
+	}
+
+	// walking the other way
+	&.back {
+		animation-direction: reverse;
+
+		img {
+			transform: rotate(90deg);
+		}
+	}
+}
+
+@keyframes halloween-walk {
+	from {
+		transform: translateX(-60px);
+	}
+
+	to {
+		transform: translateX(920px);
+	}
+}
+
+// a little to one side and the other, as a spider does on the way
+@keyframes halloween-wobble {
+	from {
+		translate: 0 calc(var(--wobble, 4px) * -1);
+	}
+
+	to {
+		translate: 0 var(--wobble, 4px);
+	}
+}
+
+// the legs seem to move: a small step forward and back
+@keyframes halloween-scuttle {
+	from {
+		margin-left: -1px;
+	}
+
+	to {
+		margin-left: 1px;
+	}
+}
+
+// the jack-o'-lanterns sit on the line above the bottom line, in the side bands, and only when the page is widescreen
+#halloween .pumpkin {
+	display: none;
+	position: absolute;
+	top: 397px;
+	opacity: 0;
+	animation: halloween-appear 70s linear infinite;
+
+	img {
+		display: block;
+		width: 100%;
+		height: auto;
+		transform: translateY(-100%);
+		image-rendering: pixelated;
+		animation: halloween-flicker 1.3s steps(3) infinite;
+	}
+
+	&.left {
+		left: 8px;
+	}
+
+	&.right {
+		right: 8px;
+	}
+}
+
+.wide #halloween .pumpkin {
+	display: block;
+}
+
+// out of sight, a slow fade in, a while on view with a flicker of the light, and a quick fade out
+@keyframes halloween-appear {
+
+	0%,
+	2% {
+		opacity: 0;
+	}
+
+	8%,
+	30% {
+		opacity: 1;
+	}
+
+	36%,
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes halloween-flicker {
+
+	0%,
+	100% {
+		opacity: 1;
+	}
+
+	33% {
+		opacity: 0.75;
+	}
+
+	66% {
+		opacity: 0.9;
+	}
+}

@@ -1,0 +1,89 @@
+// Christmas effects (christmas.mjs): lights hanging along the header and snow falling over the text.
+// Hidden unless #divTwc has the class christmas. Animated with transform and opacity only, in steps, so that the page
+// is not redrawn on every frame.
+#christmas {
+	display: none;
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 30;
+}
+
+#divTwc.christmas #christmas {
+	display: block;
+}
+
+#christmas .lights {
+	position: absolute;
+	left: 0;
+	top: 0;
+
+	.wire {
+		fill: none;
+		stroke: #141414;
+		stroke-width: 1.3;
+	}
+
+	.cord {
+		stroke: #141414;
+		stroke-width: 1;
+	}
+
+	.glow {
+		opacity: 0.28;
+	}
+
+	.bulb {
+		animation: christmas-blink 1s step-end infinite;
+
+		&.g0 {
+			animation-duration: 0.9s;
+		}
+
+		&.g1 {
+			animation-duration: 1.3s;
+		}
+
+		&.g2 {
+			animation-duration: 1.7s;
+		}
+
+		&.g3 {
+			animation-duration: 2.3s;
+		}
+	}
+}
+
+// bright then dim, a bulb at a time
+@keyframes christmas-blink {
+
+	0%,
+	55% {
+		opacity: 1;
+	}
+
+	56%,
+	100% {
+		opacity: 0.3;
+	}
+}
+
+#christmas .snow i {
+	position: absolute;
+	top: -8px;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 0 2px rgb(255 255 255 / 70%);
+	animation: christmas-fall 14s steps(48) infinite;
+}
+
+@keyframes christmas-fall {
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+
+	to {
+		transform: translate3d(var(--drift, 0), 500px, 0);
+	}
+}
