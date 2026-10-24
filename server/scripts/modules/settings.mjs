@@ -1,6 +1,6 @@
 import Setting from './utils/setting.mjs';
 import { IPMA_AREAS } from './utils/ipma-areas.mjs';
-import { DETAIL_CITIES, DEFAULT_DETAIL_CITY } from './utils/travel-cities.mjs';
+import { DEFAULT_DETAIL_CITY, detailCityChoices } from './utils/travel-cities.mjs';
 import { setDarkMode } from './darkmode.mjs';
 import setChristmas from './christmas.mjs';
 import setHalloween from './halloween.mjs';
@@ -48,8 +48,7 @@ const init = () => {
 	]);
 
 	// city on the second page of the Travel Forecast (utils/travel-cities.mjs)
-	const travelCities = DETAIL_CITIES.map(([n, name, country]) => [n, `${name}, ${country}`]);
-	settings.travelCity = new Setting('travelCity', 'Travel Forecast city', 'select', DEFAULT_DETAIL_CITY, null, true, travelCities);
+	settings.travelCity = new Setting('travelCity', 'Travel Forecast city', 'select', DEFAULT_DETAIL_CITY, null, true, detailCityChoices());
 
 	// Customizable measurement units
 	settings.windUnits = new Setting('windUnits', 'Wind Units', 'select', 2, windUnitsChange, true, [
@@ -100,7 +99,7 @@ const init = () => {
 	settings.darkMode = new Setting('darkMode', 'Dark Mode', 'select', OFF, setDarkMode, true, [
 		[OFF, 'Off'],
 		[ON, 'On'],
-		[AUTOMATIC, 'Automatic (sun)'],
+		[AUTOMATIC, 'Auto'],
 	]);
 	// lights and snow over every screen: Auto (1 to 25 December), On or Off
 	settings.christmas = new Setting('christmas', 'Christmas Effects', 'select', AUTOMATIC, setChristmas, true, [

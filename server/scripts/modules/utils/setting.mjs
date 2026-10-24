@@ -66,12 +66,20 @@ class Setting {
 		select.name = `settings-${this.shortName}-select`;
 		select.addEventListener('change', (e) => this.selectChange(e));
 
+		// a row with no value is the title of the group of rows that follow it ([null, '-- Europe --'])
+		let parent = select;
 		this.values.forEach(([value, text]) => {
+			if (value === null) {
+				parent = document.createElement('optgroup');
+				parent.label = text;
+				select.append(parent);
+				return;
+			}
 			const option = document.createElement('option');
 			option.value = value.toFixed(2);
 
 			option.innerHTML = text;
-			select.append(option);
+			parent.append(option);
 		});
 		label.append(select);
 
