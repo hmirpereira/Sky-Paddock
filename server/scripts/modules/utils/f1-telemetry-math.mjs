@@ -80,6 +80,11 @@ const lapProfile = (car, start, duration) => {
 	};
 };
 
+// the telemetry is only worth showing for a few days after an event: true when the last session of the event
+// (the race, usually) ended more than `days` before `now` (both as times in ms)
+const isStale = (eventEnd, now, days = 3) => !Number.isFinite(eventEnd) || now - eventEnd > days * 24 * 3600 * 1000;
+
 export {
+	isStale,
 	COLOURS, driverColours, interp, lapProfile, lapTime,
 };
