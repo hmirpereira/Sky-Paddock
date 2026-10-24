@@ -188,6 +188,8 @@ body:not(.kiosk) {
 		}
 
 		select {
+			width: auto;
+			max-width: 100%;
 			font-family: 'Star4000';
 			color: white;
 			background: $site-bg;

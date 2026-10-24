@@ -2,6 +2,8 @@ import Setting from './utils/setting.mjs';
 import { IPMA_AREAS } from './utils/ipma-areas.mjs';
 import { DETAIL_CITIES, DEFAULT_DETAIL_CITY } from './utils/travel-cities.mjs';
 import { setDarkMode } from './darkmode.mjs';
+import setChristmas from './christmas.mjs';
+import setHalloween from './halloween.mjs';
 import { OFF, ON, AUTOMATIC } from './utils/dark-mode.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -24,14 +26,15 @@ const settings = {
 	hoursFormat: { value: 2 },
 	speed: { value: 1.0 },
 	kiosk: { value: false },
+	versionMark: { value: false },
 	scanLines: { value: false },
 	vignette: { value: false },
 	colorFringe: { value: false },
 	imageFringe: { value: false },
 	newsTicker: { value: false },
-	gtTeamLogos: { value: true },
-	versionMark: { value: false },
 	darkMode: { value: OFF },
+	christmas: { value: AUTOMATIC },
+	halloween: { value: AUTOMATIC },
 };
 
 const init = () => {
@@ -97,7 +100,19 @@ const init = () => {
 	settings.darkMode = new Setting('darkMode', 'Dark Mode', 'select', OFF, setDarkMode, true, [
 		[OFF, 'Off'],
 		[ON, 'On'],
-		[AUTOMATIC, 'Automatic (from 10 min after sunset to 10 min after sunrise)'],
+		[AUTOMATIC, 'Automatic (sun)'],
+	]);
+	// lights and snow over every screen: Auto (1 to 25 December), On or Off
+	settings.christmas = new Setting('christmas', 'Christmas Effects', 'select', AUTOMATIC, setChristmas, true, [
+		[AUTOMATIC, 'Auto'],
+		[ON, 'On'],
+		[OFF, 'Off'],
+	]);
+	// bats, spiders and jack-o'-lanterns over every screen: Auto (30 and 31 October), On or Off
+	settings.halloween = new Setting('halloween', 'Halloween Effects', 'select', AUTOMATIC, setHalloween, true, [
+		[AUTOMATIC, 'Auto'],
+		[ON, 'On'],
+		[OFF, 'Off'],
 	]);
 	settings.scanLines = new Setting('scanLines', 'Enable Scan Lines', 'checkbox', false, scanLinesChange, true);
 	// analogue look (_scan-lines.scss): darker corners like a picture tube, red and blue fringe on the text like VHS
@@ -107,15 +122,15 @@ const init = () => {
 
 	// Portuguese breaking news crawling in the bottom line, between the weather lines (Pi only, utils/news.mjs)
 	settings.newsTicker = new Setting('newsTicker', 'Show Breaking News in the Bottom Line', 'checkbox', false, null, true);
-	// version and commit date in the bottom right corner, to see which version a screen is running (on the TV)
-	settings.versionMark = new Setting('versionMark', 'Show Version Mark', 'checkbox', false, (value) => document.body.classList.toggle('version-mark', !!value), true);
-	// GT World: owner-supplied team logos instead of the team name (utils/gt-team-logos.mjs)
-	settings.gtTeamLogos = new Setting('gtTeamLogos', 'GT World: Team Logos Instead of Names', 'checkbox', true, null, true);
 	settings.wide = new Setting('wide', 'Widescreen', 'checkbox', false, wideScreenChange, true);
 	settings.kiosk = new Setting('kiosk', 'Kiosk', 'checkbox', false, kioskChange, false);
+	// last of the list: version and commit date in the bottom right corner, to see which version a screen is running (on the TV)
+	settings.versionMark = new Setting('versionMark', 'Show Version Mark', 'checkbox', false, (value) => document.body.classList.toggle('version-mark', !!value), true);
 
 	// generate html objects
-	const settingHtml = Object.values(settings).map((d) => d.generate());
+	// the version mark is always the last of the list
+	const { versionMark, ...others } = settings;
+	const settingHtml = [...Object.values(others), versionMark].map((d) => d.generate());
 
 	// write to page
 	const settingsSection = document.querySelector('#settings');
