@@ -53,7 +53,7 @@ class HourlyGraph extends WeatherDisplay {
 
 		// get available space
 		const availableWidth = 532;
-		const availableHeight = 285;
+		const availableHeight = 309;
 		// the chart area ends above the hour labels
 		const baseY = availableHeight - 30;
 		const topY = 14;

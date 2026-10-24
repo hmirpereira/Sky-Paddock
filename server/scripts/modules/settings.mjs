@@ -32,6 +32,7 @@ const settings = {
 	colorFringe: { value: false },
 	imageFringe: { value: false },
 	newsTicker: { value: false },
+	personalSchedule: { value: ON },
 	darkMode: { value: OFF },
 	christmas: { value: AUTOMATIC },
 	halloween: { value: AUTOMATIC },
@@ -94,6 +95,11 @@ const init = () => {
 		[1.0, 'Normal'],
 		[1.25, 'Slow'],
 		[1.5, 'Very Slow'],
+	]);
+	// Work Schedule: the (R) schedule of each day in small under the shift (On), or the big text only (Off)
+	settings.personalSchedule = new Setting('personalSchedule', 'Personal Schedule', 'select', ON, null, true, [
+		[ON, 'On'],
+		[OFF, 'Off'],
 	]);
 	// dark weather screens: Off, On, or Automatic (10 minutes after the sunset until 10 minutes after the sunrise)
 	settings.darkMode = new Setting('darkMode', 'Dark Mode', 'select', OFF, setDarkMode, true, [

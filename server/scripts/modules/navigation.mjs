@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
 const DISPLAY_ORDER = [
 	'hazards', 'current-weather', 'hourly', 'hourly-graph',
 	'travel', 'regional-forecast', 'extended-forecast', 'almanac',
-	'radar', 'marine-forecast', 'pollen', 'metar',
-	'departures', 'cancellations', 'overhead', 'work-schedule',
+	'radar', 'marine-forecast', 'pollen', 'work-schedule',
+	'metar', 'departures', 'cancellations', 'overhead',
 	'news', 'f1-last-race', 'f1-grid', 'f1-telemetry',
 	'f1-standings', 'f1-next-race', 'f1-jet', 'gt-race',
 	'gt-next-race',
@@ -398,8 +398,8 @@ const registerDisplay = (display) => {
 // screens grouped on the page (in rotation order inside each group); anything not listed is weather
 const DISPLAY_GROUPS = [
 	{ title: 'Weather', ids: null },
-	{ title: 'Aviation', ids: ['metar', 'departures', 'cancellations', 'overhead'] },
 	{ title: 'Personal', ids: ['work-schedule'] },
+	{ title: 'Aviation', ids: ['metar', 'departures', 'cancellations', 'overhead'] },
 	{ title: 'News', ids: ['news'] },
 	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-grid', 'f1-telemetry', 'f1-standings', 'f1-next-race', 'f1-jet'] },
 	{ title: 'GT World', ids: ['gt-race', 'gt-next-race'] },
