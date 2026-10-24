@@ -7,7 +7,7 @@
 		overflow-y: hidden;
 
 		.column-headers {
-			background-color: c.$column-header;
+			background-color: var(--column-header, #{c.$column-header});
 			height: 20px;
 			position: absolute;
 			width: 100%;
@@ -70,10 +70,10 @@
 			min-height: 279px;
 			padding-top: 10px;
 
-			background: repeating-linear-gradient(0deg, c.$gradient-main-background-2 0px,
-					c.$gradient-main-background-1 136px,
-					c.$gradient-main-background-1 202px,
-					c.$gradient-main-background-2 338px,
+			background: repeating-linear-gradient(0deg, var(--rows-2, #{c.$gradient-main-background-2}) 0px,
+					var(--rows-1, #{c.$gradient-main-background-1}) 136px,
+					var(--rows-1, #{c.$gradient-main-background-1}) 202px,
+					var(--rows-2, #{c.$gradient-main-background-2}) 338px,
 				);
 
 			.travel-row {

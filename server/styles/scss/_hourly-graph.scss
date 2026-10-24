@@ -2,7 +2,7 @@
 @use 'shared/_utils'as u;
 
 #hourly-graph-html {
-	background-image: url(/images/BackGround1_1_Chart.png);
+	background-image: var(--bg-chart, url(/images/BackGround1_1_Chart.png));
 
 	.header {
 		.right {
@@ -85,7 +85,7 @@
 		}
 
 		.column-headers {
-			background-color: c.$column-header;
+			background-color: var(--column-header, #{c.$column-header});
 			height: 20px;
 			position: absolute;
 			width: 100%;

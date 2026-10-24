@@ -1,6 +1,8 @@
 import Setting from './utils/setting.mjs';
 import { IPMA_AREAS } from './utils/ipma-areas.mjs';
 import { DETAIL_CITIES, DEFAULT_DETAIL_CITY } from './utils/travel-cities.mjs';
+import { setDarkMode } from './darkmode.mjs';
+import { OFF, ON, AUTOMATIC } from './utils/dark-mode.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
 	init();
@@ -29,6 +31,7 @@ const settings = {
 	newsTicker: { value: false },
 	gtTeamLogos: { value: true },
 	versionMark: { value: false },
+	darkMode: { value: OFF },
 };
 
 const init = () => {
@@ -89,6 +92,12 @@ const init = () => {
 		[1.0, 'Normal'],
 		[1.25, 'Slow'],
 		[1.5, 'Very Slow'],
+	]);
+	// dark weather screens: Off, On, or Automatic (10 minutes after the sunset until 10 minutes after the sunrise)
+	settings.darkMode = new Setting('darkMode', 'Dark Mode', 'select', OFF, setDarkMode, true, [
+		[OFF, 'Off'],
+		[ON, 'On'],
+		[AUTOMATIC, 'Automatic (from 10 min after sunset to 10 min after sunrise)'],
 	]);
 	settings.scanLines = new Setting('scanLines', 'Enable Scan Lines', 'checkbox', false, scanLinesChange, true);
 	// analogue look (_scan-lines.scss): darker corners like a picture tube, red and blue fringe on the text like VHS

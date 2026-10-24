@@ -3,6 +3,7 @@ import autocomplete from './modules/utils/autocomplete.mjs';
 import noSleep from './modules/utils/nosleep.mjs';
 import { round2 } from './modules/utils/units.mjs';
 import { parseQueryString } from './modules/share.mjs';
+import { setDarkModePlace } from './modules/darkmode.mjs';
 import {
 	message as navMessage, hideAllCanvases, isPlaying, resize, resetStatuses, latLonReceived, stopAutoRefreshTimer, registerRefreshData,
 } from './modules/navigation.mjs';
@@ -251,6 +252,8 @@ const loadData = (_latLon, haveDataCallback) => {
 	const { latLon } = loadData;
 	// if there's no data stop
 	if (!latLon) return;
+	// the automatic dark mode follows the sun at this place
+	setDarkModePlace(latLon);
 
 	document.querySelector(TXT_ADDRESS_SELECTOR).blur();
 	stopAutoRefreshTimer();

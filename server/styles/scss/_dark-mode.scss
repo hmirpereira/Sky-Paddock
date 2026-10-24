@@ -1,0 +1,17 @@
+// dark mode of the weather screens (setting Dark Mode, darkmode.mjs): darker backgrounds (tools: recolor_theme.py dark)
+// and darker blue boxes. The screens with their own theme (aviation, F1, GT) are dark already and do not use these.
+#divTwc.dark-mode {
+	--bg-main: url(/images/BackGround1_1_dark.png);
+	--bg-main-wide: url(/images/BackGround1_1_wide_dark.png);
+	--bg-almanac: url('/images/BackGround3_1_dark.png');
+	--bg-extended: url('/images/BackGround2_1_dark.png');
+	--bg-marine: url('/images/BackGround8_1_dark.png');
+	--bg-radar: url('/images/BackGround4_1_dark.png');
+	--bg-radar-wide: url(/images/BackGround4_1_wide_dark.png);
+	--bg-regional: url('/images/BackGround5_1_dark.png');
+	--bg-chart: url(/images/BackGround1_1_Chart_dark.png);
+	--rows-1: #1c2438;
+	--rows-2: #05070f;
+	--column-header: #12131f;
+	--blue-box: #151a2c;
+}
