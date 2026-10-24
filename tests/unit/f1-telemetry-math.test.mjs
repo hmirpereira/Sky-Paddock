@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-	driverColours, interp, lapProfile, lapTime,
+	driverColours, interp, isStale, lapProfile, lapTime,
 } from '../../server/scripts/modules/utils/f1-telemetry-math.mjs';
 
 test('lapTime', () => {
@@ -60,4 +60,14 @@ test('driverColours: without team colours, two different colours', () => {
 	assert.match(a, /^#[0-9a-f]{6}$/);
 	assert.match(b, /^#[0-9a-f]{6}$/);
 	assert.notEqual(a, b);
+});
+
+test('isStale: three days after the end of the weekend', () => {
+	const end = Date.UTC(2026, 9, 25, 16, 0);
+	const hours = (h) => end + h * 3600 * 1000;
+	assert.equal(isStale(end, hours(1)), false);
+	assert.equal(isStale(end, hours(72)), false);
+	assert.equal(isStale(end, hours(72) + 1), true);
+	assert.equal(isStale(Number.NaN, hours(1)), true);
+	assert.equal(isStale(end, hours(24), 1), false);
 });

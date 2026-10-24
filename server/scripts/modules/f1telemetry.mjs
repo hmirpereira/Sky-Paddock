@@ -14,10 +14,11 @@ import { registerDisplay } from './navigation.mjs';
 import { readCache, writeCache } from './utils/f1-update.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { escapeHtml } from './utils/html.mjs';
-import { plainText } from './utils/text.mjs';
 import {
-	COLOURS, driverColours, interp, lapProfile, lapTime,
+	isStale,
+	COLOURS, driverColours, interp, isStale, lapProfile, lapTime,
 } from './utils/f1-telemetry-math.mjs';
+import { plainText } from './utils/text.mjs';
 
 const OPENF1 = 'https://api.openf1.org/v1';
 // v2: the gap along the lap was added to the saved copy
@@ -182,6 +183,8 @@ const buildTelemetry = async (session) => {
 		circuit: plainText(session.circuit_short_name ?? ''),
 		year: session.year,
 		date: session.date_start,
+		// when the last session of the weekend (the race) ended: the screen is skipped three days after it
+		eventEnd: session.eventEnd,
 		drivers: [driverInfo(top[0], 0), driverInfo(top[1], 1)],
 		lapLength: Math.round(profiles[0].length),
 		winners,
@@ -199,7 +202,15 @@ const recentSessions = async () => {
 	const ended = (s) => ['Practice', 'Qualifying'].includes(s.session_type)
 		&& DateTime.fromISO(s.date_end).plus({ minutes: PUBLISH_DELAY_MIN }) < now;
 	if (!sessions.some(ended)) sessions = await list(`${OPENF1}/sessions?year=${year - 1}`);
-	return sessions.filter(ended).sort((a, b) => DateTime.fromISO(b.date_start) - DateTime.fromISO(a.date_start));
+	// each session knows when its weekend ended: the end of the latest session of the same meeting
+	const weekendEnd = {};
+	sessions.forEach((s) => {
+		const end = DateTime.fromISO(s.date_end).toMillis();
+		if (!(end <= (weekendEnd[s.meeting_key] ?? 0))) weekendEnd[s.meeting_key] = end;
+	});
+	return sessions.filter(ended)
+		.map((s) => ({ ...s, eventEnd: weekendEnd[s.meeting_key] }))
+		.sort((a, b) => DateTime.fromISO(b.date_start) - DateTime.fromISO(a.date_start));
 };
 
 class F1Telemetry extends WeatherDisplay {
@@ -237,7 +248,9 @@ class F1Telemetry extends WeatherDisplay {
 			}
 		}
 		this.data = cache?.data;
-		if (!this.data?.drivers?.length) {
+		// three days after the weekend there is nothing new to show (an older saved copy only has the start of the session)
+		const weekendEnd = this.data?.eventEnd ?? DateTime.fromISO(this.data?.date ?? '').plus({ days: 3 }).toMillis();
+		if (!this.data?.drivers?.length || isStale(weekendEnd, Date.now())) {
 			this.setStatus(STATUS.noData);
 			return;
 		}

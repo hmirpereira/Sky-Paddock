@@ -171,9 +171,9 @@ const drawCondition = (text, warning = false, news = null) => {
 		layers.forEach((layer) => {
 			layer.classList.remove('active');
 			layer.classList.add('exit');
-			layer.addEventListener('transitionend', () => {
-				layer.remove();
-			}, { once: true });
+			// not on transitionend: on a screen that is not being shown no transition runs, and the old lines piled up
+			// there (and showed over the new one when the screen came back)
+			setTimeout(() => layer.remove(), 1000);
 		});
 
 		// Create new layer with wrapped content
