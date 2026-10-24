@@ -40,7 +40,6 @@ class Hazards extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		// special height and width for scrolling
 		super(elemId, 'Hazards', defaultActive);
-		this.showOnProgress = false;
 
 		// 0 screens skips this during "play"
 		this.timing.totalScreens = 0;

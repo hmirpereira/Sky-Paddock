@@ -249,6 +249,26 @@ const aggregateWeatherForecastData = (getPointResponse) => {
 	return dailyAverages;
 };
 
+// shorter condition text for places with little room ("Light Freezing Rain" -> "L Frz Rn")
+const shortConditions = (_condition) => {
+	let condition = _condition;
+	condition = condition.replace(/Light/g, 'L');
+	condition = condition.replace(/Heavy/g, 'H');
+	condition = condition.replace(/Partly/g, 'P');
+	condition = condition.replace(/Mostly/g, 'M');
+	condition = condition.replace(/Few/g, 'F');
+	condition = condition.replace(/Thunderstorm/g, 'T\'storm');
+	condition = condition.replace(/ in /g, '');
+	condition = condition.replace(/Vicinity/g, '');
+	condition = condition.replace(/ and /g, ' ');
+	condition = condition.replace(/Freezing Rain/g, 'Frz Rn');
+	condition = condition.replace(/Freezing/g, 'Frz');
+	condition = condition.replace(/Unknown Precip/g, '');
+	condition = condition.replace(/L Snow Fog/g, 'L Snw/Fog');
+	condition = condition.replace(/ with /g, '/');
+	return condition;
+};
+
 export {
 	// eslint-disable-next-line import/prefer-default-export
 	getPoint,
@@ -256,4 +276,5 @@ export {
 	getGeocoding,
 	aggregateWeatherForecastData,
 	getConditionText,
+	shortConditions,
 };

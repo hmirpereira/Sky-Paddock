@@ -1,8 +1,9 @@
 // Travel Forecast: the city list of page 2 and its choice
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {
-	TRAVEL_CITIES, DETAIL_CITIES, DEFAULT_DETAIL_CITY, detailCity,
+	TRAVEL_CITIES, DETAIL_CITIES, DEFAULT_DETAIL_CITY, detailCity, flagFile,
 } from '../../server/scripts/modules/utils/travel-cities.mjs';
 
 test('the page 2 cities have unique numbers and names, valid positions and none is on page 1', () => {
@@ -21,4 +22,11 @@ test('Montreal is the default and an unknown number falls back to it', () => {
 	assert.equal(detailCity(1).name, 'London');
 	assert.equal(detailCity(999).name, 'Montreal');
 	assert.equal(detailCity(undefined).name, 'Montreal');
+});
+
+test('every country of the page 2 cities has its flag picture', () => {
+	DETAIL_CITIES.forEach(([, name, country]) => {
+		const file = `server/images/flags/${flagFile(country)}.png`;
+		assert.ok(fs.existsSync(file), `${name}: no flag ${file}`);
+	});
 });

@@ -5,7 +5,7 @@ import { directionToNSEW } from './utils/calc.mjs';
 import { getWeatherIconFromIconLink } from './icons.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
-import { getConditionText } from './utils/weather.mjs';
+import { getConditionText, shortConditions } from './utils/weather.mjs';
 
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 
@@ -86,25 +86,6 @@ const getPressureArrow = (data) => {
 	if (data.PressureDirection === 'rising') arrow = '<img class="pressure-arrow" src=\'images/pressure-arrow.png\'></img>';
 	if (data.PressureDirection === 'falling') arrow = '<img class="pressure-arrow invert-pressure-arrow" src=\'images/pressure-arrow.png\'></img>';
 	return arrow;
-};
-
-const shortConditions = (_condition) => {
-	let condition = _condition;
-	condition = condition.replace(/Light/g, 'L');
-	condition = condition.replace(/Heavy/g, 'H');
-	condition = condition.replace(/Partly/g, 'P');
-	condition = condition.replace(/Mostly/g, 'M');
-	condition = condition.replace(/Few/g, 'F');
-	condition = condition.replace(/Thunderstorm/g, 'T\'storm');
-	condition = condition.replace(/ in /g, '');
-	condition = condition.replace(/Vicinity/g, '');
-	condition = condition.replace(/ and /g, ' ');
-	condition = condition.replace(/Freezing Rain/g, 'Frz Rn');
-	condition = condition.replace(/Freezing/g, 'Frz');
-	condition = condition.replace(/Unknown Precip/g, '');
-	condition = condition.replace(/L Snow Fog/g, 'L Snw/Fog');
-	condition = condition.replace(/ with /g, '/');
-	return condition;
 };
 
 const getCurrentWeatherByHourFromTime = (data) => {

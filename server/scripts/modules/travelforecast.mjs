@@ -6,11 +6,11 @@ import { getWeatherRegionalIconFromIconLink, getWeatherIconFromIconLink } from '
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
-import { getConditionText } from './utils/weather.mjs';
+import { getConditionText, shortConditions } from './utils/weather.mjs';
 import { directionToNSEW } from './utils/calc.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import settings from './settings.mjs';
-import { TRAVEL_CITIES, detailCity } from './utils/travel-cities.mjs';
+import { TRAVEL_CITIES, detailCity, flagFile } from './utils/travel-cities.mjs';
 
 // after this local hour the forecast shown on page 1 is for tomorrow
 const SWITCH_TO_TOMORROW_HOUR = 18;
@@ -20,9 +20,6 @@ const API = 'https://api.open-meteo.com/v1/forecast';
 class TravelForecast extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'Travel Forecast', defaultActive);
-
-		// Remove from loading screen
-		this.showOnProgress = false;
 
 		// the pages that have data, 10 seconds each
 		this.timing.baseDelay = 10000;
@@ -83,21 +80,40 @@ class TravelForecast extends WeatherDisplay {
 	}
 
 	drawDetail(detail) {
-		this.elem.querySelector('.header .title.dual .bottom').textContent = detail.name;
+		// like Current Conditions: the city is in the list on the right, the title only says what the page is
+		this.elem.querySelector('.header .title.dual .bottom').textContent = 'Conditions';
 		const degree = String.fromCharCode(176);
 		const fill = {
 			temp: `${Math.round(detail.temperature)}${degree}`,
-			condition: detail.condition,
+			condition: detail.condition.length > 15 ? shortConditions(detail.condition) : detail.condition,
+			wind: detail.windDirection.padEnd(3, '') + detail.windSpeed.toString().padStart(3, ' '),
+			'wind-gusts': `Gusts to ${detail.windGust}`,
+			city: detail.name,
 			time: detail.time,
 			feels: `${Math.round(detail.feelsLike)}${degree}`,
 			humidity: `${Math.round(detail.humidity)}%`,
-			wind: `${detail.windDirection} ${Math.round(detail.windSpeed)} ${ConversionHelpers.getWindUnitText()}`,
-			pressure: `${Math.round(detail.pressure)} ${ConversionHelpers.getPressureUnitText()}`,
+			dewpoint: `${detail.dewPoint}${degree}`,
+			visibility: `${detail.visibility}${detail.distanceUnit}`,
+			pressure: `${detail.pressure}${detail.pressureUnit}`,
+			cloud: `${Math.round(detail.cloudCover)}%`,
 		};
+		const page = this.elem.querySelector('.travel-page.detail');
 		Object.entries(fill).forEach(([key, value]) => {
-			this.elem.querySelector(`.travel-page.detail .${key}`).textContent = value;
+			page.querySelector(`.${key}`).textContent = value;
 		});
-		this.elem.querySelector('.travel-page.detail .icon img').src = detail.icon;
+		// the arrow of a rising or falling pressure, as in Current Conditions
+		if (detail.pressureTrend !== 'steady') {
+			const arrow = document.createElement('img');
+			arrow.className = `pressure-arrow${detail.pressureTrend === 'falling' ? ' invert-pressure-arrow' : ''}`;
+			arrow.src = 'images/pressure-arrow.png';
+			page.querySelector('.pressure').append(arrow);
+		}
+		// the 8-bit flag of the country beside the city, as on the F1 screens (hidden if the picture is missing)
+		const flag = page.querySelector('.location .flag');
+		flag.style.display = '';
+		flag.onerror = () => { flag.style.display = 'none'; };
+		flag.src = `images/flags/${detail.flag}.png`;
+		page.querySelector('.icon img').src = detail.icon;
 	}
 }
 
@@ -133,18 +149,32 @@ const getList = async () => {
 // current weather and local time of the chosen city; null when it did not answer
 const getDetail = async (city) => {
 	try {
-		const response = await json(`${API}?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,pressure_msl&timezone=auto`);
+		// the last 3 hours of pressure give its trend
+		const response = await json(`${API}?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,dew_point_2m,weather_code,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl&hourly=pressure_msl&past_hours=3&forecast_hours=1&timezone=auto`);
 		const { current } = response;
 		const local = DateTime.fromISO(current.time);
 		const condition = getConditionText(Number(current.weather_code));
+		// raw pressure is in hPa
+		const change = current.pressure_msl - response.hourly.pressure_msl[0];
+		let pressureTrend = 'steady';
+		if (change > 0.5) pressureTrend = 'rising';
+		if (change < -0.5) pressureTrend = 'falling';
 		return {
 			name: city.name,
+			flag: flagFile(city.country),
 			temperature: ConversionHelpers.convertTemperatureUnits(current.temperature_2m),
 			feelsLike: ConversionHelpers.convertTemperatureUnits(current.apparent_temperature),
+			dewPoint: ConversionHelpers.convertTemperatureUnits(current.dew_point_2m),
 			humidity: current.relative_humidity_2m,
+			cloudCover: current.cloud_cover,
+			visibility: ConversionHelpers.convertDistanceUnits(current.visibility / 1000),
+			distanceUnit: ConversionHelpers.getDistanceUnitText(),
 			windSpeed: ConversionHelpers.convertWindUnits(current.wind_speed_10m),
+			windGust: ConversionHelpers.convertWindUnits(current.wind_gusts_10m),
 			windDirection: directionToNSEW(current.wind_direction_10m),
 			pressure: ConversionHelpers.convertPressureUnits(current.pressure_msl),
+			pressureUnit: ConversionHelpers.getPressureUnitText(),
+			pressureTrend,
 			condition,
 			icon: getWeatherIconFromIconLink(condition, response.timezone),
 			// local time in the city (Open-Meteo gives it in the time zone of the city)

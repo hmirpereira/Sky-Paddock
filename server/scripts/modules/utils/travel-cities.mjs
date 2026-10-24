@@ -55,6 +55,9 @@ const detailCity = (number) => {
 	};
 };
 
+// file of the 8-bit flag of a country, in images/flags (the name of the country in lower case with hyphens)
+const flagFile = (country) => (country === 'United Kingdom' ? 'uk' : country.toLowerCase().replace(/\s+/g, '-'));
+
 export {
-	TRAVEL_CITIES, DETAIL_CITIES, DEFAULT_DETAIL_CITY, detailCity,
+	TRAVEL_CITIES, DETAIL_CITIES, DEFAULT_DETAIL_CITY, detailCity, flagFile,
 };
