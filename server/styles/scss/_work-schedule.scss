@@ -44,6 +44,52 @@
 		}
 
 		.schedule-lines {
+			// the (R) schedule of the day in small under shift, start and end: the main text gets smaller and moves up
+			// so that the small line sits under its own day and a clear gap is left before the next one
+			&.has-r .schedule-row {
+				>.day,
+				>.shift,
+				>.start,
+				>.end {
+					top: 0;
+					font-size: 14pt;
+				}
+
+				>.r-shift,
+				>.r-start,
+				>.r-end {
+					top: 18px;
+					font-family: 'Star4000 Small';
+					font-size: 11px;
+					line-height: 11px;
+					color: #9fc4ff;
+				}
+
+				>.r-shift {
+					left: 170px;
+				}
+
+				>.r-start {
+					left: 315px;
+				}
+
+				>.r-end {
+					left: 425px;
+				}
+			}
+
+			.schedule-row>.r-shift,
+			.schedule-row>.r-start,
+			.schedule-row>.r-end {
+				display: none;
+			}
+
+			&.has-r .schedule-row>.r-shift,
+			&.has-r .schedule-row>.r-start,
+			&.has-r .schedule-row>.r-end {
+				display: block;
+			}
+
 			height: 280px;
 			background: repeating-linear-gradient(0deg, c.$gradient-main-background-2 0px,
 					c.$gradient-main-background-1 136px,

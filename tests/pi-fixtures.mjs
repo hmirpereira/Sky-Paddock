@@ -110,11 +110,17 @@ const schedule = (now) => ({
 	generated: iso(now - HOUR),
 	days: Array.from({ length: 8 }, (_, i) => {
 		const date = lisbonDate(now + i * 24 * HOUR);
-		if (i % 4 === 3) return { date, off: true };
-		return i % 2 ? {
-			date, code: 'N', start: '22:00', end: '06:00', off: false,
+		// the other schedule of the same day (R): a shift on some days, a day off on others
+		const r = i % 3 ? {
+			code: 'M', start: '07:00', end: '15:00', off: false,
 		} : {
-			date, code: 'M', start: '07:00', end: '15:00', off: false,
+			code: '', off: true, start: null, end: null,
+		};
+		if (i % 4 === 3) return { date, off: true, r };
+		return i % 2 ? {
+			date, code: 'N', start: '22:00', end: '06:00', off: false, r,
+		} : {
+			date, code: 'M', start: '07:00', end: '15:00', off: false, r,
 		};
 	}),
 });
