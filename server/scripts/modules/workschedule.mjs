@@ -24,6 +24,17 @@ const shiftTimes = (day) => {
 	return { start, end };
 };
 
+// the (R) schedule of a day, to show in small under the main one (the Pi adds it as day.r; nothing without it)
+const rSchedule = (day) => {
+	if (!day.r) return {};
+	const times = shiftTimes({ ...day.r, date: day.date });
+	return {
+		'r-shift': day.r.off ? 'Day off' : day.r.code,
+		'r-start': times ? ConversionHelpers.formatTime(times.start) : '',
+		'r-end': times ? ConversionHelpers.formatTime(times.end) : '',
+	};
+};
+
 // hourly forecast at the location, 8 days, keyed by local hour ("2026-10-09T03:00");
 // kept for an hour, so the 10-minute data refresh does not ask Open-Meteo again each time
 const FORECAST_CACHE_MINUTES = 60;
@@ -139,6 +150,7 @@ class WorkSchedule extends WeatherDisplay {
 				start: times ? ConversionHelpers.formatTime(times.start) : '',
 				end: times ? ConversionHelpers.formatTime(times.end) : '',
 				temp: '',
+				...rSchedule(day),
 			});
 			// weather at the start of the shift: icon and temperature (hidden on days off or beyond the forecast)
 			const weather = times ? weatherAt(this.forecast, times.start) : null;
@@ -156,6 +168,8 @@ class WorkSchedule extends WeatherDisplay {
 		const list = this.elem.querySelector('.schedule-lines');
 		list.innerHTML = '';
 		list.append(...lines);
+		// with the (R) schedule the rows are laid out for a second, small line under each value
+		list.classList.toggle('has-r', days.some((day) => day.r));
 	}
 
 	drawNext() {
