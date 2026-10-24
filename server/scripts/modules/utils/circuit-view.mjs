@@ -49,6 +49,31 @@ const circuitView = (width, height, corners = []) => {
 	return { ...box, u, labels };
 };
 
+// the outline as a lap in the way of the race (reverse: it is drawn the other way round): lap.at(distance) is the point
+// `distance` outline units from its first point, with the unit vector of the way it is going there; the lap closes on itself
+const lapOf = (path, reverse = false) => {
+	const points = path.split(' ').map((point) => point.split(',').map(Number));
+	if (reverse) points.reverse();
+	const lengths = [0];
+	for (let i = 1; i < points.length; i += 1) {
+		lengths.push(lengths[i - 1] + Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]));
+	}
+	const total = lengths.at(-1);
+	const at = (distance) => {
+		const d = ((distance % total) + total) % total;
+		let i = lengths.findIndex((length) => length >= d);
+		if (i <= 0) i = 1;
+		const [ax, ay] = points[i - 1];
+		const [bx, by] = points[i];
+		const segment = lengths[i] - lengths[i - 1] || 1;
+		const share = (d - lengths[i - 1]) / segment;
+		return {
+			x: ax + (bx - ax) * share, y: ay + (by - ay) * share, ux: (bx - ax) / segment, uy: (by - ay) / segment,
+		};
+	};
+	return { at, total };
+};
+
 export {
-	circuitView, DOT_RADIUS, LETTER_WIDTH, TEXT_ABOVE, TEXT_BELOW,
+	circuitView, lapOf, DOT_RADIUS, LETTER_WIDTH, TEXT_ABOVE, TEXT_BELOW,
 };
