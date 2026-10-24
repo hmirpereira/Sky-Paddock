@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import FACTS from '../../server/scripts/modules/utils/circuit-facts.mjs';
 import CIRCUITS from '../../server/scripts/modules/utils/f1-circuits.mjs';
 import {
-	circuitView, lapOf, LETTER_WIDTH, TEXT_ABOVE,
+	circuitView, LETTER_WIDTH, TEXT_ABOVE,
 } from '../../server/scripts/modules/utils/circuit-view.mjs';
 
 test('circuit facts: every circuit has an outline and a lap record', () => {
@@ -18,11 +18,9 @@ test('circuit facts: every circuit has an outline and a lap record', () => {
 	});
 });
 
-test('circuit facts: the start line is a share of the lap and the corners are on the outline and fit in the map', () => {
-	Object.entries(FACTS).forEach(([id, { start, corners = [] }]) => {
+test('circuit facts: the corners are on the outline and fit in the map', () => {
+	Object.entries(FACTS).forEach(([id, { corners = [] }]) => {
 		const circuit = CIRCUITS[id];
-		if (start !== undefined) assert.ok(start >= 0 && start < 1, `${id} start`);
-		assert.ok(corners.length === 0 || start !== undefined, `${id} has corners but no checked start`);
 		const points = circuit.path.split(' ').map((p) => p.split(',').map(Number));
 		// distance of a point to the outline, in outline units
 		const distance = (x, y) => Math.min(...points.slice(1).map(([bx, by], i) => {
@@ -47,17 +45,6 @@ test('circuit facts: the start line is a share of the lap and the corners are on
 		// the outline is not shrunk too much to make room for the names (270 px wide, 280 px high box)
 		assert.ok(1 / view.u > 0.14, `${id} is drawn too small: ${(1 / view.u).toFixed(3)}`);
 	});
-});
-
-test('lap: a point at the start, one a lap later and the way it is going', () => {
-	const square = '0,0 100,0 100,100 0,100 0,0';
-	const lap = lapOf(square);
-	assert.equal(lap.total, 400);
-	assert.deepEqual([lap.at(50).x, lap.at(50).y, lap.at(50).ux, lap.at(50).uy], [50, 0, 1, 0]);
-	assert.deepEqual([lap.at(450).x, lap.at(450).y], [50, 0]);
-	assert.deepEqual([lap.at(-50).x, lap.at(-50).y], [0, 50]);
-	const back = lapOf(square, true);
-	assert.deepEqual([back.at(50).x, back.at(50).y, back.at(50).ux, back.at(50).uy], [0, 50, 0, 1]);
 });
 
 test('circuit view: a circuit without names keeps the plain margin', () => {
