@@ -11,7 +11,7 @@ import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { readCache, writeCache, isFresh } from './utils/f1-update.mjs';
 import CIRCUITS from './utils/f1-circuits.mjs';
 import FACTS from './utils/circuit-facts.mjs';
-import { circuitView, lapOf, DOT_RADIUS } from './utils/circuit-view.mjs';
+import { circuitView, DOT_RADIUS } from './utils/circuit-view.mjs';
 import { plainText } from './utils/text.mjs';
 import raceForecast from './utils/race-forecast.mjs';
 
@@ -59,9 +59,8 @@ const parseRace = (race) => {
 	};
 };
 
-// start line (a black line across the track) with an arrow on the straight before it for the way of the lap, and a dot with the name
-// on each named corner; replaces the ones of the previous circuit. Only what utils/circuit-facts.mjs has for the circuit is drawn:
-// start (where the start line is) and corners; reverse: true when the outline runs against the way of the race.
+// a dot with the name on each named corner of the outline; replaces the ones of the previous circuit. Only what
+// utils/circuit-facts.mjs has for the circuit is drawn (nothing for a circuit with no named corner).
 // u is the number of outline units in one px of the screen, so that everything drawn here has the same size on every circuit.
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const svgElement = (name, attributes) => {
@@ -69,32 +68,10 @@ const svgElement = (name, attributes) => {
 	Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
 	return element;
 };
-const drawMarks = (svg, circuit, facts, { u, labels }) => {
+const drawMarks = (svg, facts, { u, labels }) => {
 	svg.querySelector('.marks')?.remove();
-	if (!facts) return;
+	if (!facts?.corners) return;
 	const group = svgElement('g', { class: 'marks', style: `--u: ${u}` });
-
-	if (facts.start !== undefined) {
-		// the line across the track where the real start line is (a share of the lap from the first point of the outline),
-		// then a slim arrow 19 px before it
-		const lap = lapOf(circuit.path, facts.reverse);
-		const line = lap.at(facts.start * lap.total);
-		const arrow = lap.at(facts.start * lap.total - 19 * u);
-		const half = 9 * u;
-		const tip = 7.5 * u;
-		const back = 3.5 * u;
-		const wing = 4.5 * u;
-		const { ux, uy } = arrow;
-		group.append(
-			svgElement('line', {
-				class: 'start-line', x1: line.x - line.uy * half, y1: line.y + line.ux * half, x2: line.x + line.uy * half, y2: line.y - line.ux * half,
-			}),
-			svgElement('polygon', {
-				class: 'direction',
-				points: `${arrow.x + ux * tip},${arrow.y + uy * tip} ${arrow.x - ux * back - uy * wing},${arrow.y - uy * back + ux * wing} ${arrow.x - ux * back + uy * wing},${arrow.y - uy * back - ux * wing}`,
-			}),
-		);
-	}
 
 	(facts.corners ?? []).forEach(([name, x, y], index) => {
 		const { x: labelX, y: labelY, side } = labels[index];
@@ -175,7 +152,7 @@ class F1NextRace extends WeatherDisplay {
 			svg.setAttribute('viewBox', `${view.x} ${view.y} ${view.width} ${view.height}`);
 			svg.querySelector('.outline').setAttribute('points', circuit.path);
 			svg.querySelector('.outline-shadow').setAttribute('points', circuit.path);
-			drawMarks(svg, circuit, facts, view);
+			drawMarks(svg, facts, view);
 			svg.style.visibility = 'visible';
 		} else {
 			svg.style.visibility = 'hidden';

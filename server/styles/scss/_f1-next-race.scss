@@ -40,21 +40,9 @@
 					stroke-width: 18;
 				}
 
-				// start line, direction of the lap and corner names; they are drawn in outline units, and --u (set by
+				// corner names; they are drawn in outline units, and --u (set by
 				// f1nextrace.mjs) is the number of units in one px, so everything has the same size on every circuit
 				.marks {
-					.start-line {
-						stroke: black;
-						stroke-width: calc(var(--u) * 3.2px);
-					}
-
-					.direction {
-						fill: white;
-						stroke: black;
-						stroke-width: calc(var(--u) * 1.2px);
-						stroke-linejoin: round;
-					}
-
 					circle {
 						fill: f1.$f1-accent;
 						stroke: white;
