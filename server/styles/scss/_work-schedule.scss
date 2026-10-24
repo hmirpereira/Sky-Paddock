@@ -44,25 +44,40 @@
 		}
 
 		.schedule-lines {
-			// the (R) schedule of the day in small under shift, start and end: the main text gets smaller and moves up
-			// so that the small line sits under its own day and a clear gap is left before the next one
+			// the (R) schedule of the day in small under shift, start and end. The main text is 16 pt: in the 40 px of a row it
+			// leaves the small line right under it and a clear gap before the next day (at 18 pt the small line was as close to
+			// the next day as to its own); every other row has a lighter band, so that the small line
+			// belongs to its own day at a glance and the rows need no empty space between them
 			&.has-r .schedule-row {
-				>.day,
+				&:nth-child(odd) {
+					background-color: rgba(255, 255, 255, 0.07);
+				}
+
+				&.today {
+					background-color: rgba(255, 255, 255, 0.16);
+				}
+
+				// the day column has nothing under it: a bigger text than the others (20 pt), centred in the height of the row
+				>.day {
+					top: 6px;
+					font-size: 20pt;
+				}
+
 				>.shift,
 				>.start,
 				>.end {
-					top: 0;
-					font-size: 14pt;
+					top: 4px;
+					font-size: 16pt;
 				}
 
 				>.r-shift,
 				>.r-start,
 				>.r-end {
-					top: 18px;
+					top: 22px;
 					font-family: 'Star4000 Small';
-					font-size: 11px;
-					line-height: 11px;
-					color: #9fc4ff;
+					font-size: 13px;
+					line-height: 13px;
+					color: #b5d0ff;
 				}
 
 				>.r-shift {

@@ -11,6 +11,8 @@ import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
+import settings from './settings.mjs';
+import { ON } from './utils/dark-mode.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/schedule.json';
 const LOCAL_TZ = 'Europe/Lisbon';
@@ -141,6 +143,8 @@ class WorkSchedule extends WeatherDisplay {
 		const days = this.days
 			.filter((day) => !(day.date === today && shiftTimes(day) && shiftTimes(day).end <= now))
 			.slice(0, 7);
+		// the (R) schedule under each day only when the setting Personal Schedule is On
+		const showR = Number(settings.personalSchedule?.value) === ON;
 		const lines = days.map((day) => {
 			const date = DateTime.fromISO(day.date, { zone: LOCAL_TZ });
 			const times = shiftTimes(day);
@@ -150,7 +154,7 @@ class WorkSchedule extends WeatherDisplay {
 				start: times ? ConversionHelpers.formatTime(times.start) : '',
 				end: times ? ConversionHelpers.formatTime(times.end) : '',
 				temp: '',
-				...rSchedule(day),
+				...(showR ? rSchedule(day) : {}),
 			});
 			// weather at the start of the shift: icon and temperature (hidden on days off or beyond the forecast)
 			const weather = times ? weatherAt(this.forecast, times.start) : null;
@@ -169,7 +173,7 @@ class WorkSchedule extends WeatherDisplay {
 		list.innerHTML = '';
 		list.append(...lines);
 		// with the (R) schedule the rows are laid out for a second, small line under each value
-		list.classList.toggle('has-r', days.some((day) => day.r));
+		list.classList.toggle('has-r', showR && days.some((day) => day.r));
 	}
 
 	drawNext() {
