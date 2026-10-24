@@ -1,216 +1,230 @@
 // What the F1 Next Race map adds to the outline of a circuit (utils/f1-circuits.mjs), keyed by the same Jolpica circuitId:
-// the lap record and the named corners. Written by hand, no accents (the Star4000 fonts cannot draw them).
+// the lap record, where the start line is and the named corners. Written by hand, no accents (the Star4000 fonts cannot draw them).
 // - record: the fastest lap set in a race, as in the infobox of the Wikipedia article of the circuit; check it each season.
-// - corners: a corner is [name, x, y, side, dx, dy]. x and y are a point of the outline (its path, 0 to 1000); the name starts
-//   ('r'), ends ('l') or is centred ('m') dx and dy px from the dot. Names are the ones of the Wikipedia article of the circuit; where there is
-//   no well known name the number of the corner (T1) is used. Which corner sits at which point of the outline was worked out by
-//   hand from the shape and the distance along the lap, so it is a good guess and not an official map: check it on the screen.
-// - reverse: the outline of the circuit runs against the way of the race (utils/circuit-view.mjs and f1nextrace.mjs flip it).
-// The outline of every circuit here starts on the start line (and runs the way of the race, apart from the reversed ones).
+// - reverse: the outline runs against the way of the race (it is drawn from its first point the other way round).
+// - start: where the start line is, as a share of the lap from the first point of the outline (in the way of the race).
+//   The outline does not start on the line: its first point is anywhere on the lap.
+// - corners: [name, x, y, side, dx, dy]. x and y are a point of the outline (0 to 1000); the name starts ('r'), ends ('l')
+//   or is centred ('m') dx and dy px from the dot. Where a corner has no well known name its number is used (T1).
+// The start line, the way of the race and each corner were checked against the real positions of the circuit (the outlines
+// agree with them to 2 to 9 m); a circuit with no start has not been checked and only gets its lap record.
 const FACTS = {
 	albert_park: {
 		record: { time: '1:19.813', driver: 'Leclerc', year: 2024 },
+		start: 0.0244,
 		corners: [
-			['T1', 192, 599, 'm', 0, 17],
+			['T1', 185, 509, 'r', 9, 5],
 		],
 	},
 	americas: {
 		record: { time: '1:36.169', driver: 'Leclerc', year: 2019 },
+		start: 0.9422,
 		corners: [
-			['T1', 348, 573, 'm', 0, 17],
-			['T11', 999, 5, 'm', 0, -9],
+			['T1', 352, 569, 'm', 0, 17],
+			['T11', 992, 2, 'm', 0, -9],
 			['T12', 359, 134, 'm', 0, -9],
-			['T20', 0, 306, 'm', 0, 17],
+			['T20', 1, 305, 'm', 0, -9],
 		],
 	},
 	baku: {
 		record: { time: '1:43.009', driver: 'Leclerc', year: 2019 },
+		reverse: true,
+		start: 0.5484,
 		corners: [
-			['T1', 1000, 144, 'm', 0, -9],
+			['T1', 311, 489, 'r', 9, 12],
 		],
 	},
 	catalunya: {
 		record: { time: '1:15.743', driver: 'Piastri', year: 2025 },
+		start: 0.9714,
 		corners: [
-			['T1', 333, 942, 'm', 0, 17],
+			['T1', 316, 955, 'm', 0, 17],
 		],
 	},
 	hungaroring: {
 		record: { time: '1:16.627', driver: 'Hamilton', year: 2020 },
+		start: 0.8950,
 		corners: [
-			['T1', 4, 554, 'm', 0, 17],
+			['T1', 111, 666, 'l', -9, 5],
 		],
 	},
 	interlagos: {
 		record: { time: '1:10.540', driver: 'Bottas', year: 2018 },
+		start: 0.9854,
 		corners: [
-			['Senna S', 149, 996, 'l', -9, 5],
+			['Senna S', 228, 955, 'l', -9, 5],
 		],
 	},
 	jeddah: {
 		record: { time: '1:30.734', driver: 'Hamilton', year: 2021 },
+		start: 0.1629,
 		corners: [
-			['T1', 87, 621, 'm', 0, 17],
+			['T1', 30, 283, 'm', 0, -9],
 		],
 	},
 	losail: {
 		record: { time: '1:22.384', driver: 'Norris', year: 2024 },
+		start: 0.1720,
 		corners: [
-			['T1', 0, 325, 'm', 0, -9],
+			['T1', 455, 132, 'm', 0, -9],
 		],
 	},
 	madring: {
 		record: { time: '1:35.587', driver: 'Russell', year: 2026 },
-		corners: [
-			['T1', 283, 990, 'm', 0, 17],
-		],
 	},
 	marina_bay: {
 		record: { time: '1:33.808', driver: 'Hamilton', year: 2025 },
 		reverse: true,
+		start: 0.9051,
 		corners: [
-			['T1', 950, 41, 'm', 0, -9],
+			['T1', 980, 265, 'm', 0, -9],
 		],
 	},
 	miami: {
 		record: { time: '1:29.708', driver: 'Verstappen', year: 2023 },
+		reverse: true,
+		start: 0.0103,
 		corners: [
-			['T1', 632, 203, 'm', 0, 17],
+			['T1', 185, 61, 'm', 0, -9],
 		],
 	},
 	monaco: {
 		record: { time: '1:12.909', driver: 'Hamilton', year: 2021 },
+		reverse: true,
+		start: 0.7063,
 		corners: [
-			['Sainte Devote', 618, 3, 'l', -9, -6],
-			['Grand Hotel', 326, 472, 'r', 9, -8],
-			['Portier', 79, 502, 'l', -9, 18],
-			['Chicane', 100, 810, 'l', -9, 5],
-			['Tabac', 188, 978, 'r', 9, 5],
-			['Swimming Pool', 110, 999, 'l', -9, 5],
-			['Rascasse', 21, 477, 'l', -9, -8],
+			['Ste Devote', 723, 223, 'r', 9, 5],
+			['Hairpin', 405, 377, 'r', 9, -8],
+			['Portier', 328, 408, 'l', -9, 5],
+			['Chicane', 64, 919, 'l', -9, 5],
+			['Tabac', 111, 904, 'r', 9, 5],
+			['Piscine', 89, 721, 'l', -9, 5],
+			['Rascasse', 200, 479, 'l', -9, 5],
 		],
 	},
 	monza: {
 		record: { time: '1:20.901', driver: 'Norris', year: 2025 },
+		start: 0.9646,
 		corners: [
-			['Rettifilo', 47, 349, 'l', -9, 5],
-			['Curva Grande', 71, 152, 'l', -9, 5],
-			['Roggia', 386, 57, 'l', -9, -10],
-			['Lesmo 1', 558, 9, 'r', 9, 5],
-			['Lesmo 2', 578, 148, 'r', 9, 5],
-			['Ascari', 185, 489, 'l', -9, 5],
-			['Parabolica', 44, 992, 'l', -9, 5],
+			['Rettifilo', 59, 320, 'l', -9, 5],
+			['Curva Grande', 97, 120, 'l', -9, 5],
+			['Roggia', 419, 37, 'l', -9, -6],
+			['Lesmo 1', 570, 46, 'r', 9, -6],
+			['Lesmo 2', 553, 166, 'r', 9, 5],
+			['Ascari', 185, 488, 'l', -9, 5],
+			['Parabolica', 35, 986, 'l', -9, 5],
 		],
 	},
 	red_bull_ring: {
 		record: { time: '1:07.924', driver: 'Piastri', year: 2025 },
+		start: 0.9766,
 		corners: [
-			['T1', 415, 631, 'm', 0, 17],
-			['T3', 635, 70, 'm', 0, -9],
+			['T1', 400, 611, 'm', 0, 17],
+			['T3', 23, 7, 'm', 0, -9],
 		],
 	},
 	rodriguez: {
 		record: { time: '1:17.774', driver: 'Bottas', year: 2021 },
+		start: 0.9252,
 		corners: [
-			['T1', 976, 136, 'm', 0, -9],
-			['Foro Sol', 107, 81, 'l', -6, 22],
-			['Peraltada', 3, 65, 'l', -9, -2],
+			['T1', 800, 96, 'm', 0, -9],
+			['Foro Sol', 184, 211, 'l', -9, 5],
+			['Peraltada', 123, 96, 'l', -9, -12],
 		],
 	},
 	sepang: {
 		record: { time: '1:34.080', driver: 'Vettel', year: 2017 },
-		corners: [
-			['T1', 23, 463, 'm', 0, 17],
-		],
 	},
 	shanghai: {
 		record: { time: '1:32.238', driver: 'Schumacher', year: 2004 },
+		start: 0.9296,
 		corners: [
-			['T1', 122, 788, 'm', 0, 17],
-			['T6', 4, 299, 'm', 0, -9],
-			['T14', 1000, 871, 'm', 0, 17],
+			['T1', 112, 777, 'm', 0, 17],
+			['T6', 20, 298, 'm', 0, -9],
+			['T14', 987, 876, 'm', 0, 17],
 		],
 	},
 	silverstone: {
 		record: { time: '1:27.097', driver: 'Verstappen', year: 2020 },
+		start: 0.5050,
 		corners: [
-			['Abbey', 520, 26, 'r', 9, 5],
-			['Village', 598, 508, 'r', 9, 5],
-			['Brooklands', 244, 996, 'l', -9, 5],
-			['Luffield', 83, 803, 'l', -9, 5],
-			['Copse', 189, 496, 'l', -9, 5],
-			['Chapel', 475, 487, 'l', -6, 20],
-			['Stowe', 205, 115, 'r', 9, -4],
-			['Club', 106, 164, 'l', -9, 5],
+			['Abbey', 161, 526, 'l', -9, 5],
+			['Village', 408, 432, 'r', 9, 5],
+			['Brooklands', 221, 120, 'l', -9, 5],
+			['Luffield', 149, 202, 'l', -9, 5],
+			['Copse', 465, 0, 'r', 9, 5],
+			['Chapel', 563, 562, 'r', 9, 5],
+			['Stowe', 292, 988, 'l', -9, 5],
+			['Club', 82, 804, 'l', -9, 5],
 		],
 	},
 	spa: {
 		record: { time: '1:44.701', driver: 'Perez', year: 2024 },
+		start: 0.9957,
 		corners: [
-			['La Source', 133, 2, 'l', -9, 5],
-			['Eau Rouge', 410, 226, 'r', 9, 5],
-			['Les Combes', 594, 823, 'r', 9, 5],
-			['Malmedy', 597, 903, 'r', 9, 5],
-			['Rivage', 440, 993, 'l', -9, 14],
-			['Pouhon', 382, 647, 'r', 10, -8],
-			['Fagnes', 162, 840, 'l', -9, 5],
-			['Stavelot', 15, 901, 'l', -9, 5],
-			['Blanchimont', 258, 599, 'l', -9, 5],
-			['Bus Stop', 261, 251, 'l', -9, 5],
+			['La Source', 135, 1, 'l', -9, 5],
+			['Eau Rouge', 364, 191, 'r', 9, 5],
+			['Les Combes', 616, 803, 'r', 9, 5],
+			['Malmedy', 599, 892, 'r', 9, 5],
+			['Rivage', 496, 924, 'l', -9, 16],
+			['Pouhon', 416, 650, 'r', 9, 5],
+			['Fagnes', 234, 852, 'r', 9, 16],
+			['Stavelot', 170, 838, 'l', -9, -6],
+			['Blanchimont', 284, 539, 'l', -9, 5],
+			['Bus Stop', 245, 251, 'l', -9, 5],
 		],
 	},
 	suzuka: {
 		record: { time: '1:30.965', driver: 'Antonelli', year: 2025 },
+		start: 0.9707,
 		corners: [
-			['Dunlop', 714, 332, 'r', 9, 14],
-			['Hairpin', 424, 297, 'l', -9, 5],
-			['Spoon', 7, 15, 'l', -9, 5],
-			['130R', 603, 140, 'r', 9, -8],
+			['Dunlop', 695, 209, 'r', 9, -8],
+			['Hairpin', 376, 85, 'l', -9, 5],
+			['Spoon', 45, 2, 'l', -9, 5],
+			['130R', 461, 247, 'l', -9, 14],
 		],
 	},
 	vegas: {
 		record: { time: '1:33.365', driver: 'Verstappen', year: 2025 },
+		start: 0.9850,
 		corners: [
-			['T1', 580, 821, 'm', 0, 17],
+			['T1', 554, 816, 'r', 9, 5],
 		],
 	},
 	villeneuve: {
 		record: { time: '1:13.078', driver: 'Bottas', year: 2019 },
+		start: 0.9259,
 		corners: [
-			['Wall of Champions', 251, 609, 'r', 9, 5],
+			['Wall of Champions', 210, 336, 'r', 9, 5],
 		],
 	},
 	yas_marina: {
 		record: { time: '1:25.637', driver: 'Magnussen', year: 2024 },
+		start: 0.4014,
 		corners: [
-			['T1', 381, 533, 'm', 0, 17],
+			['T1', 2, 656, 'm', 0, 17],
 		],
 	},
 	zandvoort: {
 		record: { time: '1:11.097', driver: 'Hamilton', year: 2021 },
+		start: 0.0904,
 		corners: [
-			['Tarzan', 327, 3, 'l', -9, -8],
-			['Hugenholtz', 189, 417, 'l', -9, -14],
-			['Luyendyk', 63, 832, 'l', -9, 5],
+			['Tarzan', 281, 310, 'l', -9, 5],
+			['Hugenholtz', 491, 398, 'l', -9, 5],
+			['Luyendyk', 78, 496, 'l', -9, 5],
 		],
 	},
 	portimao: {
 		record: { time: '1:18.750', driver: 'Hamilton', year: 2020 },
-		corners: [
-			['T1', 12, 70, 'm', 0, -9],
-		],
 	},
 	istanbul: {
 		record: { time: '1:24.770', driver: 'Montoya', year: 2005 },
-		corners: [
-			['T1', 519, 783, 'm', 0, 17],
-			['T8', 1000, 108, 'm', 0, -9],
-		],
 	},
 	bahrain: {
 		record: { time: '1:31.447', driver: 'De la Rosa', year: 2005 },
+		start: 0.7365,
 		corners: [
-			['T1', 40, 1, 'm', 0, -9],
+			['T1', 53, 996, 'm', 0, 17],
 		],
 	},
 };

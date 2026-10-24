@@ -11,7 +11,7 @@ import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { readCache, writeCache, isFresh } from './utils/f1-update.mjs';
 import CIRCUITS from './utils/f1-circuits.mjs';
 import FACTS from './utils/circuit-facts.mjs';
-import { circuitView, DOT_RADIUS } from './utils/circuit-view.mjs';
+import { circuitView, lapOf, DOT_RADIUS } from './utils/circuit-view.mjs';
 import { plainText } from './utils/text.mjs';
 import raceForecast from './utils/race-forecast.mjs';
 
@@ -60,8 +60,8 @@ const parseRace = (race) => {
 };
 
 // start line (a black line across the track) with an arrow on the straight before it for the way of the lap, and a dot with the name
-// on each named corner; replaces the ones of the previous circuit. Only for circuits in utils/circuit-facts.mjs, whose outline
-// has been checked to run the way of the race from the start line (reverse: true when it runs the other way).
+// on each named corner; replaces the ones of the previous circuit. Only what utils/circuit-facts.mjs has for the circuit is drawn:
+// start (where the start line is) and corners; reverse: true when the outline runs against the way of the race.
 // u is the number of outline units in one px of the screen, so that everything drawn here has the same size on every circuit.
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const svgElement = (name, attributes) => {
@@ -74,27 +74,27 @@ const drawMarks = (svg, circuit, facts, { u, labels }) => {
 	if (!facts) return;
 	const group = svgElement('g', { class: 'marks', style: `--u: ${u}` });
 
-	const points = circuit.path.split(' ').map((point) => point.split(',').map(Number));
-	if (facts.reverse) points.reverse();
-	const [x0, y0] = points[0];
-	const [px, py] = points.at(-1)[0] === x0 && points.at(-1)[1] === y0 ? points.at(-2) : points.at(-1);
-	const length = Math.hypot(x0 - px, y0 - py) || 1;
-	const [ux, uy] = [(x0 - px) / length, (y0 - py) / length];
-	// the line across the track, then a slim arrow 19 px before it
-	const half = 9 * u;
-	const [cx, cy] = [x0 - ux * 19 * u, y0 - uy * 19 * u];
-	const tip = 7.5 * u;
-	const back = 3.5 * u;
-	const wing = 4.5 * u;
-	group.append(
-		svgElement('line', {
-			class: 'start-line', x1: x0 - uy * half, y1: y0 + ux * half, x2: x0 + uy * half, y2: y0 - ux * half,
-		}),
-		svgElement('polygon', {
-			class: 'direction',
-			points: `${cx + ux * tip},${cy + uy * tip} ${cx - ux * back - uy * wing},${cy - uy * back + ux * wing} ${cx - ux * back + uy * wing},${cy - uy * back - ux * wing}`,
-		}),
-	);
+	if (facts.start !== undefined) {
+		// the line across the track where the real start line is (a share of the lap from the first point of the outline),
+		// then a slim arrow 19 px before it
+		const lap = lapOf(circuit.path, facts.reverse);
+		const line = lap.at(facts.start * lap.total);
+		const arrow = lap.at(facts.start * lap.total - 19 * u);
+		const half = 9 * u;
+		const tip = 7.5 * u;
+		const back = 3.5 * u;
+		const wing = 4.5 * u;
+		const { ux, uy } = arrow;
+		group.append(
+			svgElement('line', {
+				class: 'start-line', x1: line.x - line.uy * half, y1: line.y + line.ux * half, x2: line.x + line.uy * half, y2: line.y - line.ux * half,
+			}),
+			svgElement('polygon', {
+				class: 'direction',
+				points: `${arrow.x + ux * tip},${arrow.y + uy * tip} ${arrow.x - ux * back - uy * wing},${arrow.y - uy * back + ux * wing} ${arrow.x - ux * back + uy * wing},${arrow.y - uy * back - ux * wing}`,
+			}),
+		);
+	}
 
 	(facts.corners ?? []).forEach(([name, x, y], index) => {
 		const { x: labelX, y: labelY, side } = labels[index];
