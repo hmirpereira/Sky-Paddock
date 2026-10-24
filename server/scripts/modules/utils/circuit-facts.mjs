@@ -5,48 +5,30 @@
 // - start: where the start line is, as a share of the lap from the first point of the outline (in the way of the race).
 //   The outline does not start on the line: its first point is anywhere on the lap.
 // - corners: [name, x, y, side, dx, dy]. x and y are a point of the outline (0 to 1000); the name starts ('r'), ends ('l')
-//   or is centred ('m') dx and dy px from the dot. Where a corner has no well known name its number is used (T1).
+//   or is centred ('m') dx and dy px from the dot. Only corners and sections that have a name are marked, never a bare number.
 // The start line, the way of the race and each corner were checked against the real positions of the circuit (the outlines
 // agree with them to 2 to 9 m); a circuit with no start has not been checked and only gets its lap record.
 const FACTS = {
 	albert_park: {
 		record: { time: '1:19.813', driver: 'Leclerc', year: 2024 },
 		start: 0.0244,
-		corners: [
-			['T1', 185, 509, 'r', 9, 5],
-		],
 	},
 	americas: {
 		record: { time: '1:36.169', driver: 'Leclerc', year: 2019 },
 		start: 0.9422,
-		corners: [
-			['T1', 352, 569, 'm', 0, 17],
-			['T11', 992, 2, 'm', 0, -9],
-			['T12', 359, 134, 'm', 0, -9],
-			['T20', 1, 305, 'm', 0, -9],
-		],
 	},
 	baku: {
 		record: { time: '1:43.009', driver: 'Leclerc', year: 2019 },
 		reverse: true,
 		start: 0.5484,
-		corners: [
-			['T1', 311, 489, 'r', 9, 12],
-		],
 	},
 	catalunya: {
 		record: { time: '1:15.743', driver: 'Piastri', year: 2025 },
 		start: 0.9714,
-		corners: [
-			['T1', 316, 955, 'm', 0, 17],
-		],
 	},
 	hungaroring: {
 		record: { time: '1:16.627', driver: 'Hamilton', year: 2020 },
 		start: 0.8950,
-		corners: [
-			['T1', 111, 666, 'l', -9, 5],
-		],
 	},
 	interlagos: {
 		record: { time: '1:10.540', driver: 'Bottas', year: 2018 },
@@ -58,16 +40,10 @@ const FACTS = {
 	jeddah: {
 		record: { time: '1:30.734', driver: 'Hamilton', year: 2021 },
 		start: 0.1629,
-		corners: [
-			['T1', 30, 283, 'm', 0, -9],
-		],
 	},
 	losail: {
 		record: { time: '1:22.384', driver: 'Norris', year: 2024 },
 		start: 0.1720,
-		corners: [
-			['T1', 455, 132, 'm', 0, -9],
-		],
 	},
 	madring: {
 		record: { time: '1:35.587', driver: 'Russell', year: 2026 },
@@ -76,17 +52,11 @@ const FACTS = {
 		record: { time: '1:33.808', driver: 'Hamilton', year: 2025 },
 		reverse: true,
 		start: 0.9051,
-		corners: [
-			['T1', 980, 265, 'm', 0, -9],
-		],
 	},
 	miami: {
 		record: { time: '1:29.708', driver: 'Verstappen', year: 2023 },
 		reverse: true,
 		start: 0.0103,
-		corners: [
-			['T1', 185, 61, 'm', 0, -9],
-		],
 	},
 	monaco: {
 		record: { time: '1:12.909', driver: 'Hamilton', year: 2021 },
@@ -118,16 +88,11 @@ const FACTS = {
 	red_bull_ring: {
 		record: { time: '1:07.924', driver: 'Piastri', year: 2025 },
 		start: 0.9766,
-		corners: [
-			['T1', 400, 611, 'm', 0, 17],
-			['T3', 23, 7, 'm', 0, -9],
-		],
 	},
 	rodriguez: {
 		record: { time: '1:17.774', driver: 'Bottas', year: 2021 },
 		start: 0.9252,
 		corners: [
-			['T1', 800, 96, 'm', 0, -9],
 			['Foro Sol', 184, 211, 'l', -9, 5],
 			['Peraltada', 123, 96, 'l', -9, -12],
 		],
@@ -138,11 +103,6 @@ const FACTS = {
 	shanghai: {
 		record: { time: '1:32.238', driver: 'Schumacher', year: 2004 },
 		start: 0.9296,
-		corners: [
-			['T1', 112, 777, 'm', 0, 17],
-			['T6', 20, 298, 'm', 0, -9],
-			['T14', 987, 876, 'm', 0, 17],
-		],
 	},
 	silverstone: {
 		record: { time: '1:27.097', driver: 'Verstappen', year: 2020 },
@@ -187,9 +147,6 @@ const FACTS = {
 	vegas: {
 		record: { time: '1:33.365', driver: 'Verstappen', year: 2025 },
 		start: 0.9850,
-		corners: [
-			['T1', 554, 816, 'r', 9, 5],
-		],
 	},
 	villeneuve: {
 		record: { time: '1:13.078', driver: 'Bottas', year: 2019 },
@@ -201,9 +158,6 @@ const FACTS = {
 	yas_marina: {
 		record: { time: '1:25.637', driver: 'Magnussen', year: 2024 },
 		start: 0.4014,
-		corners: [
-			['T1', 2, 656, 'm', 0, 17],
-		],
 	},
 	zandvoort: {
 		record: { time: '1:11.097', driver: 'Hamilton', year: 2021 },
@@ -223,9 +177,6 @@ const FACTS = {
 	bahrain: {
 		record: { time: '1:31.447', driver: 'De la Rosa', year: 2005 },
 		start: 0.7365,
-		corners: [
-			['T1', 53, 996, 'm', 0, 17],
-		],
 	},
 };
 
