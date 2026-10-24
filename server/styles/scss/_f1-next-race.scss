@@ -39,6 +39,25 @@
 					stroke: white;
 					stroke-width: 18;
 				}
+
+				// corner names (drawn in the units of the outline, 0 to 1000)
+				.corners {
+					circle {
+						fill: f1.$f1-accent;
+						stroke: white;
+						stroke-width: 5;
+					}
+
+					text {
+						font-family: 'Star4000 Small';
+						font-size: 52px;
+						fill: white;
+						stroke: black;
+						stroke-width: 9px;
+						paint-order: stroke;
+						stroke-linejoin: round;
+					}
+				}
 			}
 		}
 
@@ -66,6 +85,14 @@
 			}
 
 			.countdown {
+				color: f1.$f1-accent;
+			}
+
+			// small caption above the lap record
+			.record-title {
+				font-family: 'Star4000 Small';
+				font-size: 15pt;
+				line-height: 24px;
 				color: f1.$f1-accent;
 			}
 
