@@ -1,8 +1,8 @@
 // Christmas effects over every screen: lights hanging along the header and snow falling over the text.
 // The setting Christmas Effects is Auto (1 to 25 December), On or Off. Everything is animated with CSS (_christmas.scss) and
 // on as few layers as possible, because the Pi has no GPU worth the name: the wire is one picture, the bulbs are four
-// pictures that blink (one animation each) and the snow is three pictures that fall.
-import { isChristmas, lightsLayout, snowLayers } from './utils/christmas.mjs';
+// pictures that blink (one animation each) and the snow is a few small flakes.
+import { isChristmas, lightsLayout, snowFlakes } from './utils/christmas.mjs';
 import { OFF } from './utils/dark-mode.mjs';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -24,11 +24,6 @@ const svg = (name, attributes) => {
 const picture = (className) => svg('svg', {
 	class: className, viewBox: `0 0 ${WIDTH} 70`, width: WIDTH, height: 70,
 });
-
-// the picture of the flakes of a layer: a white dot with a soft edge for each one, in a tile that repeats down the page
-const flakesBackground = (flakes) => flakes
-	.map(([x, y, r]) => `radial-gradient(circle ${(r + 0.7).toFixed(1)}px at ${x.toFixed(1)}% ${y.toFixed(1)}%, #fff ${r.toFixed(1)}px, transparent ${(r + 0.7).toFixed(1)}px)`)
-	.join(',');
 
 const build = () => {
 	const overlay = document.querySelector('#christmas');
@@ -57,12 +52,11 @@ const build = () => {
 
 	const snow = document.createElement('div');
 	snow.className = 'snow';
-	snowLayers().forEach((layer) => {
-		const element = document.createElement('div');
-		element.className = 'flakes';
-		element.style.cssText = `background-image:${flakesBackground(layer.flakes)};opacity:${layer.opacity};`
-			+ `animation-duration:${layer.fall}s;animation-timing-function:steps(${Math.round(layer.fall * 8)});--drift:${layer.drift}px`;
-		snow.append(element);
+	snowFlakes().forEach((f) => {
+		const flake = document.createElement('i');
+		flake.style.cssText = `left:${f.left.toFixed(1)}%;width:${f.size.toFixed(1)}px;height:${f.size.toFixed(1)}px;opacity:${f.opacity};`
+			+ `animation-duration:${f.fall.toFixed(1)}s;animation-delay:${f.delay.toFixed(1)}s;--drift:${f.drift.toFixed(0)}px`;
+		snow.append(flake);
 	});
 	overlay.append(wire, ...groups, snow);
 };

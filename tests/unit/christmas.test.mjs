@@ -1,7 +1,7 @@
 // Christmas effects: the dates of the automatic mode and the layout of the lights and the snow
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isChristmas, lightsLayout, snowLayers } from '../../server/scripts/modules/utils/christmas.mjs';
+import { isChristmas, lightsLayout, snowFlakes } from '../../server/scripts/modules/utils/christmas.mjs';
 import { OFF, ON, AUTOMATIC } from '../../server/scripts/modules/utils/dark-mode.mjs';
 
 test('Automatic is on from 1 to 25 December only, On always and Off never', () => {
@@ -24,16 +24,13 @@ test('the lights cover the width, hang near the top of the header and are the sa
 	assert.ok(new Set(bulbs.map((b) => b.colour)).size > 3);
 });
 
-test('the snow is three layers, far to near: fewer, bigger, faster and more opaque flakes', () => {
-	const layers = snowLayers();
-	assert.equal(layers.length, 3);
-	layers.forEach((layer, i) => {
-		assert.ok(layer.flakes.every(([x, y, r]) => x >= 0 && x <= 100 && y >= 0 && y <= 100 && r > 0.5 && r < 3));
-		if (i) {
-			assert.ok(layer.flakes.length < layers[i - 1].flakes.length);
-			assert.ok(layer.fall < layers[i - 1].fall);
-			assert.ok(layer.opacity > layers[i - 1].opacity);
-		}
-	});
-	assert.deepEqual(snowLayers(), layers);
+test('the snow is a few small flakes in three depths, the near ones bigger, faster and brighter', () => {
+	const flakes = snowFlakes();
+	assert.ok(flakes.length <= 20);
+	assert.ok(flakes.every((f) => f.left >= 0 && f.left <= 100 && f.size >= 2 && f.size < 6 && f.delay <= 0));
+	const far = flakes.filter((_, i) => i % 3 === 0);
+	const near = flakes.filter((_, i) => i % 3 === 2);
+	assert.ok(Math.min(...near.map((f) => f.size)) > Math.max(...far.map((f) => f.size)));
+	assert.ok(Math.max(...near.map((f) => f.fall)) < Math.min(...far.map((f) => f.fall)));
+	assert.deepEqual(snowFlakes(), flakes);
 });
