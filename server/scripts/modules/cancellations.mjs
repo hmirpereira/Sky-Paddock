@@ -9,6 +9,7 @@ import { registerDisplay } from './navigation.mjs';
 import { placeTitle } from './utils/local-place.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
+import fillFooter from './utils/footer.mjs';
 import { plainText } from './utils/text.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/cancelled.json';
@@ -90,11 +91,7 @@ class Cancellations extends WeatherDisplay {
 		list.innerHTML = '';
 		list.append(...lines);
 
-		const parts = [];
-		if (this.lastUpdate) parts.push(`Updated ${ConversionHelpers.formatTime(this.lastUpdate)}`);
-		if (this.pages.length > 1) parts.push(`Page ${pageIndex + 1}/${this.pages.length}`);
-		parts.push('Data: AeroDataBox');
-		this.elem.querySelector('.cancellations-footer').innerHTML = parts.join(' &nbsp; ');
+		fillFooter(this.elem, ['AeroDataBox', ...(this.lastUpdate ? [`Updated ${ConversionHelpers.formatTime(this.lastUpdate)}`] : [])], pageIndex, this.pages.length);
 
 		this.finishDraw();
 	}

@@ -139,35 +139,8 @@
 			}
 		}
 
-		.news-footer {
-			height: 28px;
-			line-height: 28px;
-			padding: 0 24px;
-			font-family: 'Star4000 Small';
-			font-size: 18pt;
-			color: white;
-			background-color: var(--column-header, #{c.$column-header});
-			white-space: pre;
-			overflow: hidden;
-			display: flex;
-			justify-content: space-between;
-			@include u.text-shadow(2px, 1px);
-
-			.sources {
-				display: flex;
-				gap: 10px;
-				align-items: center;
-			}
-
-			// between the general and the Formula 1 sources
-			.sources-divider {
-				width: 2px;
-				height: 18px;
-				margin: 0 2px;
-				background: rgba(255, 255, 255, 0.7);
-				box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
-			}
-
+		// logos in the bottom bar (_source-footer.scss) are smaller than in the rows
+		.source-footer {
 			.source-logo {
 				height: 18px;
 				margin-top: 0;

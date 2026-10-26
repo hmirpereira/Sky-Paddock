@@ -8,6 +8,7 @@ import decodeTaf from './utils/taf-decoder.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { airport, placeTitle } from './utils/local-place.mjs';
+import fillFooter from './utils/footer.mjs';
 
 // metar.vatsim.net mirrors real-world METARs and allows browser (CORS) requests without a key
 const METAR_URL = (icao) => `https://metar.vatsim.net/${icao}`;
@@ -68,16 +69,16 @@ class Metar extends WeatherDisplay {
 
 		// spread the rows over the space left above the raw report
 		const main = this.elem.querySelector('.main');
-		const available = main.clientHeight - rawElem.offsetHeight - 24;
+		const available = main.clientHeight - rawElem.offsetHeight - this.elem.querySelector('.source-footer').offsetHeight - 24;
 		// TAF pages with only a few rows keep them together at the top instead of spreading them out
 		const height = kind === 'TAF' ? Math.min(available, rows.length * ROW_PITCH) : available;
 		list.style.height = `${Math.max(height, 0)}px`;
 
 		// page numbers count METAR and TAF pages separately
 		const same = this.pages.filter((page) => page.kind === kind);
-		const pageText = same.length > 1 ? ` ${same.indexOf(this.pages[pageIndex]) + 1}/${same.length}` : '';
 		this.elem.querySelector('.header .title.dual .top').innerHTML = placeTitle('Airport');
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = `${airport().icao} ${kind}${pageText}`;
+		this.elem.querySelector('.header .title.dual .bottom').innerHTML = `${airport().icao} ${kind}`;
+		fillFooter(this.elem, [kind === 'TAF' ? 'aviationweather.gov' : 'VATSIM'], same.indexOf(this.pages[pageIndex]), same.length);
 
 		this.finishDraw();
 	}

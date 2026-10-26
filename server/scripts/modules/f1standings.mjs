@@ -103,7 +103,7 @@ class F1Standings extends WeatherDisplay {
 		const list = this.elem.querySelector('.f1-lines');
 		list.innerHTML = '';
 		list.append(...lines);
-		list.scrollTop = 0;
+		this.elem.querySelector('.main').scrollTo(0, 0);
 
 		this.elem.querySelector('.header .title.dual .bottom').textContent = this.round ? `After Round ${this.round}` : 'Standings';
 
@@ -119,8 +119,7 @@ class F1Standings extends WeatherDisplay {
 	// called on every step: scroll the list after the initial hold, stop at the end
 	baseCountChange(count) {
 		const offset = Math.min(Math.max(count - HOLD, 0), this.scrollDistance);
-		const list = this.elem.querySelector('.f1-lines');
-		if (list) list.scrollTop = offset;
+		this.elem.querySelector('.main')?.scrollTo(0, offset);
 	}
 }
 

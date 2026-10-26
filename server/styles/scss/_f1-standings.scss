@@ -10,7 +10,9 @@
 		.column-headers {
 			background-color: f1.$f1-column-header;
 			height: 30px;
-			position: relative;
+			position: sticky;
+			top: 0;
+			z-index: 5;
 
 			div {
 				position: absolute;
@@ -34,10 +36,9 @@
 			}
 		}
 
-		// scrollTop is set in f1standings.mjs
+		// the whole box scrolls (scrollTo in f1standings.mjs), so the stripes move with the rows, as in the Hourly Forecast
 		.f1-lines {
-			height: 280px;
-			overflow: hidden;
+			min-height: 280px;
 			@include f1.f1-rows-background;
 
 			.f1-row {

@@ -2,7 +2,7 @@
 @use 'shared/_utils'as u;
 @use 'gt-theme'as gt;
 
-// 310px = event 30 + 8 rows of 30 with 7px above + credit 26
+// 310px = event 30 + 8 rows of 30 with 7px above + bottom bar 28
 .weather-display .main.gt-race {
 	&.main {
 		overflow: hidden;
@@ -120,23 +120,6 @@
 			border-top: 2px dashed gt.$gt-muted;
 			height: 28px;
 			line-height: 28px;
-		}
-
-		.credit {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 26px;
-			line-height: 26px;
-			padding: 0 20px;
-			font-family: 'Star4000 Small';
-			font-size: 16pt;
-			color: gt.$gt-muted;
-			background-color: gt.$gt-charcoal;
-			white-space: pre;
-			overflow: hidden;
-			@include u.text-shadow(2px, 1px);
 		}
 	}
 }
