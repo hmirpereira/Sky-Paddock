@@ -1,7 +1,7 @@
 @use 'shared/_utils'as u;
 @use 'f1-theme'as f1;
 
-// 310px = page 286 + credit 24
+// 310px = page 282 + bottom bar 28
 .weather-display .main.f1-telemetry {
 	&.main {
 		overflow: hidden;
@@ -11,7 +11,7 @@
 
 		.tel-page {
 			position: relative;
-			height: 286px;
+			height: 282px;
 			overflow: hidden;
 		}
 
@@ -216,21 +216,5 @@
 			}
 		}
 
-		.credit {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 24px;
-			line-height: 24px;
-			padding: 0 20px;
-			background: f1.$f1-column-header;
-			font-family: 'Star4000 Small';
-			font-size: 16pt;
-			color: #d0d0d0;
-			white-space: pre;
-			overflow: hidden;
-			@include u.text-shadow(2px, 1px);
-		}
 	}
 }

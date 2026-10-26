@@ -5,13 +5,15 @@
 .weather-display .main.f1-grid {
 	&.main {
 		overflow: hidden;
-		@include f1.f1-rows-background;
 		color: white;
 		font-family: 'Star4000';
 		@include u.text-shadow();
 
 		.race-title {
-			position: relative;
+			position: sticky;
+			top: 0;
+			z-index: 5;
+			background-color: f1.$f1-row-2;
 			height: 44px;
 			padding: 6px 20px 0;
 			white-space: nowrap;
@@ -39,11 +41,11 @@
 			}
 		}
 
-		// scrollTop is set in f1grid.mjs
+		// the whole box scrolls (scrollTo in f1grid.mjs), so the stripes move with the grid, as in the Hourly Forecast
 		.grid-area {
-			height: 266px;
-			overflow: hidden;
+			min-height: 266px;
 			position: relative;
+			@include f1.f1-rows-background;
 		}
 
 		.grid-lines {

@@ -10,6 +10,7 @@ import { registerDisplay } from './navigation.mjs';
 // eslint-disable-next-line import/no-cycle
 import gtTeamLogo from './utils/gt-team-logos.mjs';
 import { plainText } from './utils/text.mjs';
+import fillFooter from './utils/footer.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/gt.json';
 const ROWS = 8;
@@ -87,6 +88,7 @@ class GtRace extends WeatherDisplay {
 		const lines = this.elem.querySelector('.gt-lines');
 		lines.innerHTML = '';
 		lines.append(...rows);
+		fillFooter(this.elem, ['gt-world-challenge-europe.com'], data.races.indexOf(race), data.races.length);
 		this.finishDraw();
 	}
 }

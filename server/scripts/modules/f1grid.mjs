@@ -197,7 +197,7 @@ class F1Grid extends WeatherDisplay {
 		lines.innerHTML = '';
 		lines.append(...slots);
 		lines.style.height = `${Math.ceil(slots.length / 2) * ROW_HEIGHT + ROW_HEIGHT / 2 + 8}px`;
-		area.scrollTop = 0;
+		this.elem.querySelector('.main').scrollTo(0, 0);
 
 		this.finishDraw();
 	}
@@ -209,8 +209,7 @@ class F1Grid extends WeatherDisplay {
 
 	baseCountChange(count) {
 		const offset = Math.min(Math.max(count - HOLD, 0), this.scrollDistance);
-		const area = this.elem.querySelector('.grid-area');
-		if (area) area.scrollTop = offset;
+		this.elem.querySelector('.main')?.scrollTo(0, offset);
 	}
 }
 

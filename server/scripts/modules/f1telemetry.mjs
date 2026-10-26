@@ -18,6 +18,7 @@ import {
 	COLOURS, driverColours, interp, isStale, lapProfile, lapTime,
 } from './utils/f1-telemetry-math.mjs';
 import { plainText } from './utils/text.mjs';
+import fillFooter from './utils/footer.mjs';
 
 const OPENF1 = 'https://api.openf1.org/v1';
 // v2: the gap along the lap was added to the saved copy
@@ -297,7 +298,9 @@ class F1Telemetry extends WeatherDisplay {
 		this.elem.querySelector('.legend').innerHTML = data.drivers
 			.map((d) => `<span class="chip" style="--driver:${d.colour}"><span class="code">${escapeHtml(d.code)}</span> ${lapTime(d.time)}</span><span class="top">top ${d.topSpeed} km/h</span>`).join('');
 
-		this.elem.querySelector('.credit').textContent = `${data.place} ${data.year}, ${data.sessionName}   Data: OpenF1`;
+		const divider = document.createElement('span');
+		divider.className = 'sources-divider';
+		fillFooter(this.elem, [`${data.place} ${data.year}, ${data.sessionName}`, divider, 'OpenF1'], this.screenIndex, this.timing.totalScreens);
 		this.finishDraw();
 	}
 

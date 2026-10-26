@@ -12,6 +12,7 @@ import {
 } from './utils/news.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { plainText } from './utils/text.mjs';
+import fillFooter from './utils/footer.mjs';
 
 const NEWS_TZ = 'Europe/Lisbon';
 const ROWS_PER_PAGE = 3;
@@ -83,14 +84,12 @@ class News extends WeatherDisplay {
 		list.innerHTML = '';
 		list.append(...rows);
 
-		const footer = this.elem.querySelector('.news-footer');
 		// general sources | Formula 1 sources
 		const general = this.sources.filter((source) => !isF1Source(source)).map(sourceLogo);
 		const f1Sources = this.sources.filter(isF1Source).map(sourceLogo);
 		const divider = document.createElement('span');
 		divider.className = 'sources-divider';
-		footer.querySelector('.sources').replaceChildren(...general, ...(general.length && f1Sources.length ? [divider] : []), ...f1Sources);
-		footer.querySelector('.page').textContent = this.pages.length > 1 ? `${pageIndex + 1}/${this.pages.length}` : '';
+		fillFooter(this.elem, [...general, ...(general.length && f1Sources.length ? [divider] : []), ...f1Sources], pageIndex, this.pages.length);
 
 		this.finishDraw();
 	}

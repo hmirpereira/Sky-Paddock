@@ -11,11 +11,12 @@ import { registerDisplay } from './navigation.mjs';
 import { escapeHtml } from './utils/html.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { plainText } from './utils/text.mjs';
+import fillFooter from './utils/footer.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/f1jet.json';
 const LOCAL_TZ = 'Europe/Lisbon';
 const MAP_W = 640;
-const MAP_H = 286;
+const MAP_H = 282;
 const TYPES = {
 	FA8X: 'Dassault Falcon 8X',
 	F2TH: 'Dassault Falcon 2000',
@@ -91,6 +92,7 @@ class F1Jet extends WeatherDisplay {
 		this.elem.querySelector('.header .title.dual .bottom').innerHTML = bottom;
 		if (onMap) this.drawMap();
 		else this.drawNow();
+		fillFooter(this.elem, ['adsb.lol', 'OpenSky', 'OurAirports', 'Natural Earth'], this.screenIndex, this.timing.totalScreens);
 		this.finishDraw();
 	}
 
