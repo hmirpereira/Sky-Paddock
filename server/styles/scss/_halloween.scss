@@ -140,13 +140,7 @@
 		animation: halloween-flicker 1.3s steps(3) infinite;
 	}
 
-	&.left {
-		left: 8px;
-	}
-
-	&.right {
-		right: 8px;
-	}
+	// how far from the edge: set by halloween.mjs (pumpkinsLayout), clear of the TV's overscan
 }
 
 .wide #halloween .pumpkin {

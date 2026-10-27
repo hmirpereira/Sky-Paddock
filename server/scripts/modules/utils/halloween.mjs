@@ -38,20 +38,24 @@ const spidersLayout = (count = 3, seed = 5) => {
 	}));
 };
 
-// the jack-o'-lanterns: which side, size, how long a round lasts and when it starts. They show in the side bands of the
-// widescreen page, on the line above the bottom line, one side at a time
+// the TV's overscan cuts about 25 px of the page at the sides
+const OVERSCAN = 25;
+// the jack-o'-lanterns: which side, how far from the edge of the page, size, how long a round lasts and when it starts. They
+// show in the side bands of the widescreen page, on the line above the bottom line, one side at a time, clear of the
+// overscan of the TV (they may go over the edge of the boxes)
 const pumpkinsLayout = (seed = 3) => {
 	const rnd = random(seed);
+	const edge = OVERSCAN + 5;
 	return [
 		{
-			side: 'left', size: 88 + rnd() * 4, round: 70, delay: -50,
+			side: 'left', edge, size: 88 + rnd() * 4, round: 70, delay: -50,
 		},
 		{
-			side: 'right', size: 80 + rnd() * 4, round: 70, delay: -15,
+			side: 'right', edge, size: 80 + rnd() * 4, round: 70, delay: -15,
 		},
 	];
 };
 
 export {
-	isHalloween, batsLayout, spidersLayout, pumpkinsLayout,
+	isHalloween, batsLayout, spidersLayout, pumpkinsLayout, OVERSCAN,
 };
