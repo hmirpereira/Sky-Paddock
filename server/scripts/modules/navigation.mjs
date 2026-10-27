@@ -24,7 +24,7 @@ const DISPLAY_ORDER = [
 	'travel', 'regional-forecast', 'extended-forecast', 'almanac',
 	'radar', 'marine-forecast', 'pollen', 'work-schedule',
 	'metar', 'departures', 'cancellations', 'overhead',
-	'news', 'f1-last-race', 'f1-grid', 'f1-telemetry',
+	'news', 'plex', 'f1-last-race', 'f1-grid', 'f1-telemetry',
 	'f1-standings', 'f1-next-race', 'f1-jet', 'gt-race',
 	'gt-next-race',
 ];
@@ -363,19 +363,29 @@ const getDisplay = (index) => displays[index];
 // resize the container on a page resize
 const resize = () => {
 	const targetWidth = settings.wide.value ? 640 + 107 + 107 : 640;
-	const widthZoomPercent = (document.querySelector('#divTwcBottom').getBoundingClientRect().width) / targetWidth;
-	const heightZoomPercent = (window.innerHeight) / 480;
-
-	const scale = Math.min(widthZoomPercent, heightZoomPercent);
 	const container = document.querySelector('#container');
-	if (scale < 1.0 || document.fullscreenElement || settings.kiosk) {
-		container.style.transform = `scale(${scale})`;
-	} else {
-		container.style.transform = 'unset';
+	const twc = document.querySelector('#divTwc');
+
+	// full screen and kiosk: the screen fills the window
+	if (document.fullscreenElement || settings.kiosk?.value) {
+		const widthZoomPercent = (document.querySelector('#divTwcBottom').getBoundingClientRect().width) / targetWidth;
+		container.style.transform = `scale(${Math.min(widthZoomPercent, window.innerHeight / 480)})`;
+		container.style.marginBottom = '';
+		twc.style.width = '';
+		return;
 	}
-	// on a small page the scaled screen still takes its full height: remove the empty space under it
-	const shrunk = scale < 1.0 && !document.fullscreenElement && !settings.kiosk?.value;
-	container.style.marginBottom = shrunk ? `${-480 * (1 - scale)}px` : '';
+
+	// on the page: as wide as its place (the layout is in _site.scss), larger than its 640 or 854 px when there is room, and, when
+	// the window is tall enough to show it, not taller than the window leaves under the header and over the control bar
+	twc.style.width = '';
+	const place = twc.clientWidth;
+	const chrome = (document.querySelector('.site-header')?.offsetHeight ?? 0) + document.querySelector('#divTwcBottom').offsetHeight + 60;
+	const heightZoomPercent = window.innerHeight >= 600 ? (window.innerHeight - chrome) / 480 : Infinity;
+	const scale = Math.max(0.2, Math.min(place / targetWidth, heightZoomPercent));
+	container.style.transform = `scale(${scale})`;
+	// the scaled screen keeps its 480 px in the layout: take or give the difference
+	container.style.marginBottom = `${480 * (scale - 1)}px`;
+	twc.style.width = `${Math.round(targetWidth * scale)}px`;
 };
 
 // reset all statuses to loading on all displays, used to keep the progress bar accurate during refresh
@@ -401,11 +411,12 @@ const DISPLAY_GROUPS = [
 	{ title: 'Personal', ids: ['work-schedule'] },
 	{ title: 'Aviation', ids: ['metar', 'departures', 'cancellations', 'overhead'] },
 	{ title: 'News', ids: ['news'] },
+	{ title: 'Media', ids: ['plex'] },
 	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-grid', 'f1-telemetry', 'f1-standings', 'f1-next-race', 'f1-jet'] },
 	{ title: 'GT World', ids: ['gt-race', 'gt-next-race'] },
 ];
 // screens that read data served by the Raspberry Pi (skipped anywhere else)
-const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule', 'f1-jet', 'news', 'gt-race', 'gt-next-race'];
+const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule', 'f1-jet', 'news', 'plex', 'gt-race', 'gt-next-race'];
 
 const generateCheckboxes = () => {
 	const availableDisplays = document.querySelector('#enabledDisplays');

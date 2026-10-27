@@ -52,6 +52,7 @@
     <%- version %>
   </div>
 
+  <main class="page-layout">
   <div id="divTwc">
     <div id="container">
       <div id="loading" width="640" height="480">
@@ -138,6 +139,9 @@
       </div>
       <div id="news-html" class="weather-display">
         <%- include('partials/news.ejs') %>
+      </div>
+      <div id="plex-html" class="weather-display">
+        <%- include('partials/plex.ejs') %>
       </div>
       <!-- version and commit date in the bottom right corner (settings: Show Version Mark) -->
       <!-- Christmas effects, filled by christmas.mjs (setting Christmas Effects) -->
@@ -234,6 +238,7 @@
       </div>
     </section>
   </div>
+  </main>
 
   <script>
     (function () {

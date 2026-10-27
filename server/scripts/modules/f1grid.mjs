@@ -8,7 +8,7 @@
 // Team icons come from the car number.
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
-import WeatherDisplay from './weatherdisplay.mjs';
+import ScrollWeatherDisplay from './scrollweatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { getPhase, getSessionResult } from './utils/f1-weekend.mjs';
@@ -16,16 +16,16 @@ import {
 	teamsByNumber, teamId, findSession, sessionResult, openf1,
 } from './utils/f1-openf1.mjs';
 import { plainText } from './utils/text.mjs';
+import f1Title from './utils/f1-title.mjs';
 
 const JOLPICA = 'https://api.jolpi.ca';
 const OPENF1 = 'https://api.openf1.org/v1';
 // v3: with qualifying lap times
 const CACHE_KEY = 'f1-grid-cache-v3';
 const LOCAL_TZ = 'Europe/Lisbon';
-// scrolling: one step = one pixel per baseDelay (20 ms)
+// the box scrolls (scrollweatherdisplay.mjs)
 const ROW_HEIGHT = 70; // keep in sync with _f1-grid.scss
 const VISIBLE_HEIGHT = 266;
-const HOLD = 150; // steps (3 s) before scrolling and at the end
 
 const shortRaceName = (name) => name.replace('Grand Prix', 'GP');
 
@@ -118,12 +118,9 @@ const tryEach = (...sources) => sources.reduce(
 	Promise.resolve(null),
 );
 
-class F1Grid extends WeatherDisplay {
+class F1Grid extends ScrollWeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'F1 Grid', defaultActive);
-		this.timing.baseDelay = 20;
-		this.timing.delay = [500];
-		this.scrollDistance = 0;
 	}
 
 	async getData(_weatherParameters) {
@@ -154,9 +151,7 @@ class F1Grid extends WeatherDisplay {
 		}
 
 		const rows = Math.ceil(this.grid.slots.length / 2);
-		this.scrollDistance = Math.max(0, rows * ROW_HEIGHT + ROW_HEIGHT / 2 + 8 - VISIBLE_HEIGHT);
-		this.timing.delay = [HOLD + this.scrollDistance + HOLD];
-		this.calcNavTiming();
+		this.setScrollDistance(rows * ROW_HEIGHT + ROW_HEIGHT / 2 + 8 - VISIBLE_HEIGHT);
 		this.setStatus(STATUS.loaded);
 	}
 
@@ -164,7 +159,7 @@ class F1Grid extends WeatherDisplay {
 		super.drawCanvas();
 		const { grid } = this;
 
-		this.elem.querySelector('.header .title.dual .top').innerHTML = grid.type === 'sprint' ? 'F1 Sprint Grid' : 'F1 Race Grid';
+		this.elem.querySelector('.header .title.dual .top').innerHTML = f1Title(grid.type === 'sprint' ? 'Sprint Grid' : 'Race Grid');
 		this.elem.querySelector('.header .title.dual .bottom').textContent = `Round ${grid.round}`;
 
 		const title = this.elem.querySelector('.race-title');
@@ -204,12 +199,7 @@ class F1Grid extends WeatherDisplay {
 
 	async screenIndexChange() {
 		await this.drawCanvas();
-		this.baseCountChange(this.navBaseCount);
-	}
-
-	baseCountChange(count) {
-		const offset = Math.min(Math.max(count - HOLD, 0), this.scrollDistance);
-		this.elem.querySelector('.main')?.scrollTo(0, offset);
+		super.screenIndexChange();
 	}
 }
 

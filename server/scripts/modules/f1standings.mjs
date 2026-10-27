@@ -3,7 +3,7 @@
 // Source: Jolpica F1 API (successor of Ergast), no key, CORS enabled.
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
-import WeatherDisplay from './weatherdisplay.mjs';
+import ScrollWeatherDisplay from './scrollweatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { readCache, writeCache, isFresh } from './utils/f1-update.mjs';
 import { plainText } from './utils/text.mjs';
@@ -12,24 +12,18 @@ const STANDINGS_URL = 'https://api.jolpi.ca/ergast/f1/current/driverstandings/';
 // the standings list every team a driver raced for this season, in no particular order,
 // so each driver's current team is taken from the latest race
 const LAST_RACE_URL = 'https://api.jolpi.ca/ergast/f1/current/last/results/';
-// scrolling: one step = one pixel per baseDelay (20 ms, i.e. 50 px/s at normal speed)
+// the box scrolls (scrollweatherdisplay.mjs)
 const ROW_HEIGHT = 40; // keep in sync with _f1-standings.scss
 const VISIBLE_HEIGHT = 280; // 7 rows
-const HOLD = 150; // steps (3 s) before scrolling and at the end
 
 // v2: the team now comes from the latest race (older copies may show the wrong team)
 const CACHE_KEY = 'f1-standings-cache-v2';
 
 // the Star4000 fonts draw accented letters blank (Pérez -> P rez), so accents are removed
 
-class F1Standings extends WeatherDisplay {
+class F1Standings extends ScrollWeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'F1 Standings', defaultActive);
-
-		// timing is set once the number of drivers is known
-		this.timing.baseDelay = 20;
-		this.timing.delay = [500];
-		this.scrollDistance = 0;
 	}
 
 	async getData(_weatherParameters) {
@@ -77,10 +71,7 @@ class F1Standings extends WeatherDisplay {
 		}
 
 		// hold, scroll to the last driver, hold
-		this.scrollDistance = Math.max(0, this.drivers.length * ROW_HEIGHT - VISIBLE_HEIGHT);
-		this.timing.delay = [HOLD + this.scrollDistance + HOLD];
-
-		this.calcNavTiming();
+		this.setScrollDistance(this.drivers.length * ROW_HEIGHT - VISIBLE_HEIGHT);
 		this.setStatus(STATUS.loaded);
 	}
 
@@ -113,13 +104,7 @@ class F1Standings extends WeatherDisplay {
 	// a screenIndexChange method replaces the default drawCanvas call, so draw here
 	async screenIndexChange() {
 		await this.drawCanvas();
-		this.baseCountChange(this.navBaseCount);
-	}
-
-	// called on every step: scroll the list after the initial hold, stop at the end
-	baseCountChange(count) {
-		const offset = Math.min(Math.max(count - HOLD, 0), this.scrollDistance);
-		this.elem.querySelector('.main')?.scrollTo(0, offset);
+		super.screenIndexChange();
 	}
 }
 

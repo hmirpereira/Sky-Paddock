@@ -13,6 +13,7 @@ import {
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { plainText } from './utils/text.mjs';
 import fillFooter from './utils/footer.mjs';
+import f1Title from './utils/f1-title.mjs';
 
 const NEWS_TZ = 'Europe/Lisbon';
 const ROWS_PER_PAGE = 3;
@@ -61,7 +62,11 @@ class News extends WeatherDisplay {
 		const today = DateTime.now().setZone(NEWS_TZ);
 
 		const page = this.pages[pageIndex];
-		this.elem.querySelector('.header .title.dual .bottom').textContent = page.f1 ? 'F1 News' : 'News';
+		// "Latest News", or "F1 News" in one line with the red F1 logo
+		const title = this.elem.querySelector('.header .title.dual');
+		title.classList.toggle('one-line', !!page.f1);
+		title.querySelector('.top').innerHTML = page.f1 ? f1Title('News', true) : 'Latest';
+		title.querySelector('.bottom').innerHTML = page.f1 ? '' : 'News';
 		const rows = page.items.map((item) => {
 			const time = DateTime.fromISO(item.time).setZone(NEWS_TZ);
 			const when = time.hasSame(today, 'day') ? ConversionHelpers.formatTime(time) : `${time.toFormat('ccc')} ${ConversionHelpers.formatTime(time)}`;

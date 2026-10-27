@@ -2,7 +2,7 @@
 
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
-import WeatherDisplay from './weatherdisplay.mjs';
+import ScrollWeatherDisplay from './scrollweatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { warningArea } from './utils/local-place.mjs';
 import { escapeHtml } from './utils/html.mjs';
@@ -36,9 +36,8 @@ const nowInPortugal = () => {
 	return `${parts.year}-${parts.month}-${parts.day}T${parts.hour === '24' ? '00' : parts.hour}:${parts.minute}:${parts.second}`;
 };
 
-class Hazards extends WeatherDisplay {
+class Hazards extends ScrollWeatherDisplay {
 	constructor(elemId, defaultActive) {
-		// special height and width for scrolling
 		super(elemId, 'Hazards', defaultActive);
 
 		// 0 screens skips this during "play"
@@ -114,18 +113,7 @@ class Hazards extends WeatherDisplay {
 			return;
 		}
 
-		// update timing
-		// set up the timing
-		this.timing.baseDelay = 20;
-		// 24 hours = 6 pages
-		const pages = Math.max(Math.ceil(list.scrollHeight / 400) - 3, 1);
-		const timingStep = 400;
-		this.timing.delay = [150 + timingStep];
-		// add additional pages
-		for (let i = 0; i < pages; i += 1) this.timing.delay.push(timingStep);
-		// add the final 3 second delay
-		this.timing.delay.push(250);
-		this.calcNavTiming();
+		this.setScrollDistance(this.measureScrollDistance());
 		this.setStatus(STATUS.loaded);
 	}
 
@@ -138,23 +126,6 @@ class Hazards extends WeatherDisplay {
 		// special to hourly to draw the remainder of the canvas
 		this.drawCanvas();
 		super.showCanvas();
-	}
-
-	// screen index change callback just runs the base count callback
-	screenIndexChange() {
-		this.baseCountChange(this.navBaseCount);
-	}
-
-	// base count change callback
-	baseCountChange(count) {
-		// calculate scroll offset and don't go past end
-		let offsetY = Math.min(this.elem.querySelector('.hazard-lines').getBoundingClientRect().height - 390, (count - 150));
-
-		// don't let offset go negative
-		if (offsetY < 0) offsetY = 0;
-
-		// copy the scrolled portion of the canvas
-		this.elem.querySelector('.main').scrollTo(0, offsetY);
 	}
 
 	// make data available outside this class

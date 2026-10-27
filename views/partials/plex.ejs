@@ -1,0 +1,15 @@
+<%- include('header.ejs', {titleDual:{ top: '<img class="plex-logo" src="images/plex/plex-logo.svg" alt="Plex" /><span class="recommends">Recommends</span>' , bottom: '' }, hasTime: true, noaaLogo: false}) %>
+	<div class="main has-scroll plex">
+		<div class="plex-poster"><img class="poster" alt="" /></div>
+		<div class="plex-info">
+			<div class="title"></div>
+			<div class="facts"><span class="year"></span><span class="runtime"></span></div>
+			<div class="scores">
+				<span class="score critics"><img class="icon" alt="Tomatometer" /><span class="value"></span></span>
+				<span class="score audience"><img class="icon" alt="Audience score" /><span class="value"></span></span>
+			</div>
+			<div class="summary"></div>
+		</div>
+		<%- include('footer.ejs') %>
+	</div>
+	<%- include('scroll.ejs') %>

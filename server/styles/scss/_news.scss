@@ -161,3 +161,8 @@
 		}
 	}
 }
+
+// the F1 News page: "F1 News" in one line, in the middle of the header band (news.mjs)
+#news-html .header .title.dual.one-line .top {
+	top: 11px;
+}

@@ -1,7 +1,11 @@
 @use 'shared/_utils'as u;
 
 // Sky Paddock page around the screen (not shown on the TV, which runs in kiosk mode):
-// dark navy page, screen centred, settings in panels. Colours follow the aviation and F1 screens.
+// dark navy page, screen and settings in panels. Colours follow the aviation and F1 screens.
+// The layout follows the window (breakpoints at the end of the block): on a phone everything in one column; from 700 px the
+// panels in two columns under the screen; from 1100 px the screen on the left, as big as the window allows (navigation.mjs
+// resize), and the panels in a column of their own on the right, which scrolls by itself, so the options are in view; from
+// 1600 px that column has two columns of panels.
 $site-bg: #060a1a;
 $site-panel: #0d1530;
 $site-border: #24335f;
@@ -21,12 +25,11 @@ body:not(.kiosk) {
 	}
 
 	.site-header {
-		max-width: 854px;
-		margin: 0 auto 14px;
+		margin: 0 0 14px;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: 6px 16px;
+		gap: 6px 24px;
 
 		.site-title {
 			font-family: 'Star4000 Large';
@@ -45,7 +48,7 @@ body:not(.kiosk) {
 
 	#divQuery {
 		flex: 1 1 100%;
-		max-width: none;
+		max-width: 640px;
 		display: flex;
 		gap: 8px;
 
@@ -90,8 +93,18 @@ body:not(.kiosk) {
 		}
 	}
 
+	.page-layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: auto;
+		gap: 16px;
+		align-items: start;
+	}
+
+	// the width is set by resize() in navigation.mjs: the screen as big as its place allows, not above 640 or 854 px as before
 	#divTwc {
 		margin: 0 auto;
+		max-width: none;
 		border: 1px solid $site-border;
 		overflow: hidden;
 	}
@@ -101,12 +114,12 @@ body:not(.kiosk) {
 	}
 
 	.page-panels {
-		max-width: 854px;
-		margin: 16px auto 0;
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 14px;
 		align-items: start;
+		scrollbar-width: thin;
+		scrollbar-color: $site-border transparent;
 	}
 
 	.panel {
@@ -278,6 +291,58 @@ body:not(.kiosk) {
 	}
 }
 
+// from a tablet up: the panels side by side (the screens list and the About on the whole width)
+@media (min-width: 700px) {
+	body:not(.kiosk) .page-panels {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+// from a laptop up: screen on the left, panels in a column of their own on the right; the page does not scroll, the column does
+@media (min-width: 1100px) {
+	body:not(.kiosk) {
+		height: 100vh;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+
+		.page-layout {
+			flex: 1;
+			min-height: 0;
+			grid-template-columns: minmax(0, 1fr) 440px;
+			grid-template-rows: minmax(0, 1fr);
+			gap: 20px;
+		}
+
+		#divTwc {
+			align-self: start;
+			justify-self: center;
+			width: 100%;
+		}
+
+		.page-panels {
+			grid-template-columns: minmax(0, 1fr);
+			max-height: 100%;
+			overflow-y: auto;
+			padding-right: 4px;
+		}
+	}
+}
+
+// a wide desktop: the column of panels has two columns, and the screen still gets most of the width
+@media (min-width: 1600px) {
+	body:not(.kiosk) {
+		.page-layout {
+			grid-template-columns: minmax(0, 1fr) 880px;
+		}
+
+		.page-panels {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+}
+
 // small screens: control bar on one line
 @media (max-width: 520px) {
 	body:not(.kiosk) {
@@ -305,6 +370,11 @@ body:not(.kiosk) {
 	.site-header,
 	.page-panels {
 		display: none;
+	}
+
+	// the layout around the screen does nothing on the TV
+	.page-layout {
+		display: block;
 	}
 }
 

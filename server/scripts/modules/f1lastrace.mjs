@@ -13,6 +13,7 @@ import {
 	teamsByNumber, teamId, findSession, sessionResult, laps,
 } from './utils/f1-openf1.mjs';
 import { plainText } from './utils/text.mjs';
+import f1Title from './utils/f1-title.mjs';
 
 const RESULT_URL = (season, round, type) => `https://api.jolpi.ca/ergast/f1/${season}/${round}/${type === 'sprint' ? 'sprint' : 'results'}/`;
 const CACHE_KEY = 'f1-last-race-cache-v2';
@@ -125,7 +126,7 @@ class F1LastRace extends WeatherDisplay {
 		super.drawCanvas();
 		const { race } = this;
 
-		this.elem.querySelector('.header .title.dual .top').innerHTML = this.type === 'sprint' ? 'F1 Last Sprint' : 'F1 Last Race';
+		this.elem.querySelector('.header .title.dual .top').innerHTML = f1Title(this.type === 'sprint' ? 'Last Sprint' : 'Last Race');
 		this.elem.querySelector('.header .title.dual .bottom').textContent = `Round ${race.round}`;
 
 		// race name, flag and date

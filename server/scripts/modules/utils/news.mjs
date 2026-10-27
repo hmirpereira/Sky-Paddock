@@ -52,6 +52,7 @@ const LOGOS = {
 	Sabado: { file: 'sabado.png', plate: 'red' },
 	FlyingLapF1: { file: 'flyinglapf1.png', plate: 'dark', f1: true },
 	F1PT: { file: 'f1pt.png', plate: 'dark', f1: true },
+	PlanetF1: { file: 'planetf1.png', plate: 'dark', f1: true },
 };
 
 // a Formula 1 source (F1 News page)

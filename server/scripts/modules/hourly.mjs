@@ -4,28 +4,16 @@ import STATUS from './status.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { directionToNSEW } from './utils/calc.mjs';
-import WeatherDisplay from './weatherdisplay.mjs';
+import ScrollWeatherDisplay from './scrollweatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import { loadData } from '../index.mjs';
 
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 
-class Hourly extends WeatherDisplay {
+class Hourly extends ScrollWeatherDisplay {
 	constructor(elemId, defaultActive) {
-		// special height and width for scrolling
 		super(elemId, 'Hourly Forecast', defaultActive);
-
-		// set up the timing
-		this.timing.baseDelay = 20;
-		// 24 hours = 6 pages
-		const pages = 4; // first page is already displayed, last page doesn't happen
-		const timingStep = 75 * 4;
-		this.timing.delay = [150 + timingStep];
-		// add additional pages
-		for (let i = 0; i < pages; i += 1) this.timing.delay.push(timingStep);
-		// add the final 3 second delay
-		this.timing.delay.push(150);
 	}
 
 	async getData(weatherParameters) {
@@ -86,6 +74,7 @@ class Hourly extends WeatherDisplay {
 		});
 
 		list.append(...lines);
+		this.setScrollDistance(this.measureScrollDistance());
 	}
 
 	drawCanvas() {
@@ -97,23 +86,6 @@ class Hourly extends WeatherDisplay {
 		// special to hourly to draw the remainder of the canvas
 		this.drawCanvas();
 		super.showCanvas();
-	}
-
-	// screen index change callback just runs the base count callback
-	screenIndexChange() {
-		this.baseCountChange(this.navBaseCount);
-	}
-
-	// base count change callback
-	baseCountChange(count) {
-		// calculate scroll offset and don't go past end
-		let offsetY = Math.min(this.elem.querySelector('.hourly-lines').offsetHeight - 289, (count - 150));
-
-		// don't let offset go negative
-		if (offsetY < 0) offsetY = 0;
-
-		// copy the scrolled portion of the canvas
-		this.elem.querySelector('.main').scrollTo(0, offsetY);
 	}
 
 	// make data available outside this class
