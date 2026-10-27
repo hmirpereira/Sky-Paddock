@@ -24,9 +24,9 @@ const DISPLAY_ORDER = [
 	'travel', 'regional-forecast', 'extended-forecast', 'almanac',
 	'radar', 'marine-forecast', 'pollen', 'work-schedule',
 	'metar', 'departures', 'cancellations', 'overhead',
-	'news', 'plex', 'f1-last-race', 'f1-grid', 'f1-telemetry',
+	'news', 'f1-last-race', 'f1-grid', 'f1-telemetry',
 	'f1-standings', 'f1-next-race', 'f1-jet', 'gt-race',
-	'gt-next-race',
+	'gt-next-race', 'plex',
 ];
 const displays = [];
 let playing = false;
