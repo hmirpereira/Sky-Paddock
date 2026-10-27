@@ -53,7 +53,7 @@ const build = () => {
 	pumpkinsLayout().forEach((p) => {
 		const holder = document.createElement('div');
 		holder.className = `pumpkin ${p.side}`;
-		holder.style.cssText = `width:${p.size.toFixed(0)}px;animation-duration:${p.round}s;animation-delay:${p.delay}s`;
+		holder.style.cssText = `${p.side}:${p.edge}px;width:${p.size.toFixed(0)}px;animation-duration:${p.round}s;animation-delay:${p.delay}s`;
 		const picture = document.createElement('img');
 		picture.src = PUMPKIN_PICTURE;
 		picture.alt = '';

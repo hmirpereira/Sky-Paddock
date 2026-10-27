@@ -27,9 +27,22 @@ body #divTwc.scan-lines #container {
   @include scan-lines;
 }
 
+// The lines in real pixels: one dark line of one device pixel every two, even at any scale. --scan-px is one device pixel in
+// CSS pixels (1px on the TV, 0.8px on a screen at 125 %), set by resize() in navigation.mjs.
+@mixin real-pixel-lines {
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.22) 0,
+    rgba(0, 0, 0, 0.22) var(--scan-px, 1px),
+    transparent var(--scan-px, 1px),
+    transparent calc(var(--scan-px, 1px) * 2)
+  );
+}
+
 // On the TV (kiosk) the 640 x 480 screen is scaled about 2.25 times, so lines drawn inside it
 // come out 2 or 3 real pixels thick, unevenly. There the lines go over the whole window instead,
-// in real pixels: one dark line every two (540 lines on a 1080p TV), even at any scale.
+// in real pixels (540 lines on a 1080p TV).
 body.kiosk.scan-lines {
   #divTwc.scan-lines #container::after {
     display: none;
@@ -39,15 +52,30 @@ body.kiosk.scan-lines {
     content: '';
     position: fixed;
     inset: 0;
-    pointer-events: none;
     z-index: 2147483647;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.22) 0,
-      rgba(0, 0, 0, 0.22) 1px,
-      transparent 1px,
-      transparent 2px
-    );
+    @include real-pixel-lines;
+  }
+}
+
+// On the page the screen is scaled too (1.5 times or more on a desktop, less on a phone), with the same uneven lines (2, 3 and
+// 4 pixels apart at 1.54). There the lines go over the screen in real pixels like on the TV, as high as the scaled screen
+// (--screen-height, set by resize()), so the control bar under it has none.
+body:not(.kiosk) #divTwc.scan-lines {
+  position: relative;
+
+  #container::after {
+    display: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: var(--screen-height, 100%);
+    z-index: 40;
+    @include real-pixel-lines;
   }
 }
 

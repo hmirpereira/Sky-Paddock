@@ -365,6 +365,8 @@ const resize = () => {
 	const targetWidth = settings.wide.value ? 640 + 107 + 107 : 640;
 	const container = document.querySelector('#container');
 	const twc = document.querySelector('#divTwc');
+	// one device pixel in CSS pixels, for the scan lines (_scan-lines.scss)
+	document.body.style.setProperty('--scan-px', `${1 / (window.devicePixelRatio || 1)}px`);
 
 	// full screen and kiosk: the screen fills the window
 	if (document.fullscreenElement || settings.kiosk?.value) {
@@ -372,6 +374,7 @@ const resize = () => {
 		container.style.transform = `scale(${Math.min(widthZoomPercent, window.innerHeight / 480)})`;
 		container.style.marginBottom = '';
 		twc.style.width = '';
+		twc.style.removeProperty('--screen-height');
 		return;
 	}
 
@@ -386,6 +389,7 @@ const resize = () => {
 	// the scaled screen keeps its 480 px in the layout: take or give the difference
 	container.style.marginBottom = `${480 * (scale - 1)}px`;
 	twc.style.width = `${Math.round(targetWidth * scale)}px`;
+	twc.style.setProperty('--screen-height', `${480 * scale}px`);
 };
 
 // reset all statuses to loading on all displays, used to keep the progress bar accurate during refresh
