@@ -19,6 +19,7 @@ import {
 } from './utils/f1-telemetry-math.mjs';
 import { plainText } from './utils/text.mjs';
 import fillFooter from './utils/footer.mjs';
+import f1Title from './utils/f1-title.mjs';
 
 const OPENF1 = 'https://api.openf1.org/v1';
 // v2: the gap along the lap was added to the saved copy
@@ -267,7 +268,7 @@ class F1Telemetry extends WeatherDisplay {
 		const onChart = this.screenIndex === 1;
 		const main = this.elem.querySelector('.main.f1-telemetry');
 		main.classList.toggle('page-chart', onChart);
-		this.elem.querySelector('.header .title.dual .top').innerHTML = 'F1 Telemetry';
+		this.elem.querySelector('.header .title.dual .top').innerHTML = f1Title('Telemetry');
 		this.elem.querySelector('.header .title.dual .bottom').textContent = shortName(data.sessionName);
 
 		const [a, b] = data.drivers;

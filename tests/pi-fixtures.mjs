@@ -202,10 +202,24 @@ const news = (now) => {
 		f1: [
 			item('First Formula 1 test headline', 'F1PT', ['F1PT'], 300),
 			item('Second Formula 1 test headline', 'FlyingLapF1', ['FlyingLapF1'], 600),
+			item('Third Formula 1 test headline', 'PlanetF1', ['PlanetF1'], 700),
 		],
-		sources: ['RTP', 'Expresso', 'Publico', 'CNN Portugal', 'Sabado', 'FlyingLapF1', 'F1PT'],
+		sources: ['RTP', 'Expresso', 'Publico', 'CNN Portugal', 'Sabado', 'FlyingLapF1', 'F1PT', 'PlanetF1'],
 	};
 };
+
+// Plex Recommends: made-up movies, with no poster (the screen hides the empty picture)
+const plex = (now) => ({
+	generated: iso(now),
+	ok: iso(now - 5 * MIN),
+	error: null,
+	latest: {
+		key: '1', title: 'Test Movie One', year: 2026, rating: 87, ripe: true, audience: 64, upright: true, runtime: 121, summary: 'A made up synopsis for the test, long enough to need more than one line of the box beside the poster. Nothing in it is real.', poster: null,
+	},
+	random: {
+		key: '2', title: 'Another Made Up Movie With A Rather Long Title', year: 1999, rating: 31, ripe: false, audience: 45, upright: false, runtime: 95, summary: 'Some more made up words. '.repeat(30), poster: null,
+	},
+});
 
 const health = (now) => ({ generated: iso(now), problems: [] });
 
@@ -219,6 +233,7 @@ const piResponses = (now) => ({
 	'/f1jet.json': f1jet(now),
 	'/gt.json': gt(now),
 	'/news.json': news(now),
+	'/plex.json': plex(now),
 	'/health.json': health(now),
 	'/beat': { ok: true },
 });

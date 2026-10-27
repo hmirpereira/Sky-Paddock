@@ -37,3 +37,21 @@ $f1-text: white;
 .wide.f1-telemetry #container {
 	background: url(/images/BackGround1_1_wide_f1.png);
 }
+
+// the Formula 1 logo in place of the word F1 in the titles (utils/f1-title.mjs), on the baseline of the words after it
+.header .title .f1-logo {
+	height: 21px;
+	margin-right: 10px;
+	vertical-align: baseline;
+}
+
+#f1-standings-html,
+#f1-last-race-html,
+#f1-grid-html,
+#f1-next-race-html,
+#f1-telemetry-html,
+#news-html {
+	.header .title.dual>div {
+		white-space: nowrap;
+	}
+}

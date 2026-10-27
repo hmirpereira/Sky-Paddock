@@ -1,0 +1,171 @@
+@use 'shared/_colors'as c;
+@use 'shared/_utils'as u;
+
+// Plex Recommends (plex.mjs): the poster on the left, title, year, runtime, the two Rotten Tomatoes scores and synopsis beside it.
+// Looks like a cinema: red velvet where the WeatherStar orange was and on the header band (recolor_theme.py cinema), a dark
+// auditorium for the box, a row of marquee bulbs (still: nothing here is animated, for the Pi), gold and cream letters.
+// 310px: the box of the page; the bottom 28 are the bar with the page counter (_source-footer.scss)
+$cinema-gold: #ffd56a;
+$cinema-frame: #d4a640;
+$cinema-cream: #f3e6c8;
+
+#plex-html {
+	background-image: url(/images/BackGround1_1_cinema.png);
+
+	.header .title {
+		color: $cinema-gold;
+	}
+
+	// "Plex Recommends" in one line, in the middle of the band: the Plex logo (supplied by the owner, its black parts made
+	// white to show on the velvet) in place of the word, then "Recommends"
+	.header .title.dual {
+		width: auto;
+
+		.top {
+			top: 4px;
+			display: flex;
+			align-items: flex-end;
+			gap: 10px;
+			white-space: nowrap;
+		}
+
+		// the letters of the logo on the same line as the word (only the p goes below it)
+		.plex-logo {
+			display: block;
+			height: 38px;
+			position: relative;
+			top: 5px;
+		}
+
+		.recommends {
+			font-size: 22pt;
+			line-height: 30px;
+		}
+	}
+
+	.countdown-bar {
+		--bar-from: #fff1c1;
+		--bar-mid: #e8b440;
+		--bar-to: #b0122a;
+	}
+}
+
+.wide.plex #container {
+	background: url(/images/BackGround1_1_wide_cinema.png);
+}
+
+.weather-display .main.plex {
+	&.main {
+		overflow: hidden;
+		height: 310px;
+		// the auditorium: lit a little from the screen above
+		background: radial-gradient(ellipse 85% 75% at 50% 0%, #3a0c16 0%, #1a0509 55%, #0c0204 100%);
+
+		// marquee bulbs along the top of the box
+		&::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			height: 6px;
+			background: radial-gradient(circle, #fff3c4 0 1.6px, #e8b440 2.2px, transparent 2.8px) 4px 0 / 14px 6px repeat-x;
+		}
+
+		.plex-poster {
+			position: absolute;
+			left: 22px;
+			top: 10px;
+			width: 180px;
+			height: 270px;
+			box-sizing: border-box;
+			border: 2px solid $cinema-frame;
+			background: black;
+
+			.poster {
+				display: block;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+		}
+
+		// beside the poster, from the top to the bottom bar
+		.plex-info {
+			position: absolute;
+			left: 220px;
+			right: 22px;
+			// clear of the marquee bulbs
+			top: 18px;
+			bottom: 34px;
+			display: flex;
+			flex-direction: column;
+			@include u.text-shadow();
+
+			// two lines at most; the line is taller than the letters (24pt is 32px), or their tops are cut. A longer title gets
+			// smaller letters (plex.mjs)
+			.title {
+				flex: none;
+				max-height: 68px;
+				overflow: hidden;
+				font-family: 'Star4000 Large';
+				font-size: 24pt;
+				line-height: 34px;
+				color: $cinema-gold;
+			}
+
+			// right under the title
+			.facts {
+				flex: none;
+				font-family: 'Star4000 Small';
+				font-size: 20pt;
+				line-height: 24px;
+				color: $cinema-cream;
+
+				span + span {
+					margin-left: 22px;
+				}
+			}
+
+			// Tomatometer and audience score: the picture of the verdict and the percentage
+			.scores {
+				flex: none;
+				display: flex;
+				align-items: center;
+				gap: 28px;
+				height: 36px;
+				margin-top: 2px;
+
+				.score {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					font-family: 'Star4000 Small';
+					font-size: 20pt;
+					color: $cinema-cream;
+
+					&[hidden] {
+						display: none;
+					}
+				}
+
+				.icon {
+					display: block;
+					width: 30px;
+					height: 30px;
+				}
+			}
+
+			.summary {
+				flex: 1 1 0;
+				min-height: 0;
+				margin-top: 8px;
+				overflow: hidden;
+				font-family: 'Star4000';
+				font-size: 15pt;
+				line-height: 20px;
+				color: $cinema-cream;
+			}
+		}
+	}
+}
