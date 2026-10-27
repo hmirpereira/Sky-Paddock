@@ -102,15 +102,13 @@ $cinema-cream: #f3e6c8;
 			flex-direction: column;
 			@include u.text-shadow();
 
-			// two lines at most; the line is taller than the letters (24pt is 32px), or their tops are cut. A longer title gets
-			// smaller letters (plex.mjs)
+			// two lines at most (plex.mjs makes the letters smaller for a long title). The line is taller than the letters
+			// (24pt is 32px) and the box does not clip, so the tops and the descenders are not cut
 			.title {
 				flex: none;
-				max-height: 68px;
-				overflow: hidden;
 				font-family: 'Star4000 Large';
 				font-size: 24pt;
-				line-height: 34px;
+				line-height: 40px;
 				color: $cinema-gold;
 			}
 

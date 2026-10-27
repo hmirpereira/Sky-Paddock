@@ -59,7 +59,8 @@ class Plex extends WeatherDisplay {
 		const titleBox = this.elem.querySelector('.plex-info .title');
 		titleBox.textContent = plainText(movie.title);
 		titleBox.style.fontSize = '';
-		for (let size = 22; size >= 14 && titleBox.scrollHeight > titleBox.clientHeight; size -= 2) titleBox.style.fontSize = `${size}pt`;
+		const line = parseFloat(getComputedStyle(titleBox).lineHeight);
+		for (let size = 22; size >= 14 && titleBox.offsetHeight > 2 * line; size -= 2) titleBox.style.fontSize = `${size}pt`;
 		this.elem.querySelector('.year').textContent = movie.year ?? '';
 		this.elem.querySelector('.runtime').textContent = runtimeText(movie.runtime);
 		SCORES.forEach(([kind, value, good, goodPicture, badPicture]) => {
