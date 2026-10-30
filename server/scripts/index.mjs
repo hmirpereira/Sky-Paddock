@@ -95,7 +95,13 @@ const init = () => {
 	if (query && latLon && !fromGPS) {
 		const txtAddress = document.querySelector(TXT_ADDRESS_SELECTOR);
 		txtAddress.value = query;
-		loadData(JSON.parse(latLon));
+		let location = null;
+		try {
+			location = JSON.parse(latLon);
+		} catch {
+			// a location in the address that is not JSON: start without it
+		}
+		if (location) loadData(location);
 	}
 	if (fromGPS) {
 		btnGetGpsClick();

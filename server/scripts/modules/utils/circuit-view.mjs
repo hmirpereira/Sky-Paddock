@@ -50,5 +50,5 @@ const circuitView = (width, height, corners = []) => {
 };
 
 export {
-	circuitView, DOT_RADIUS, LETTER_WIDTH, TEXT_ABOVE, TEXT_BELOW,
+	circuitView, DOT_RADIUS, LETTER_WIDTH, TEXT_ABOVE,
 };

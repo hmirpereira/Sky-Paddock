@@ -4,6 +4,7 @@
 // pictures that blink (one animation each) and the snow is a few small flakes.
 import { isChristmas, lightsLayout, snowFlakes } from './utils/christmas.mjs';
 import { OFF } from './utils/dark-mode.mjs';
+import autoTimer from './utils/auto-timer.mjs';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const COLOURS = ['#ff3b3b', '#4dff7a', '#ffd83b', '#4da6ff', '#ff6fd8'];
@@ -70,8 +71,7 @@ const apply = () => {
 // the setting changed (1 Off, 2 On, 3 Automatic); the automatic one looks at the date once a minute
 const setChristmas = (value) => {
 	mode = Number(value) || OFF;
-	clearInterval(timer);
-	timer = mode === 3 ? setInterval(apply, 60 * 1000) : null;
+	timer = autoTimer(timer, mode, apply);
 	apply();
 };
 

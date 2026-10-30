@@ -3,6 +3,7 @@
 import {
 	OFF, LABELS, isDark,
 } from './utils/dark-mode.mjs';
+import autoTimer from './utils/auto-timer.mjs';
 
 let mode = OFF;
 let place = null;
@@ -30,8 +31,7 @@ const apply = () => {
 // the setting changed (1 Off, 2 On, 3 Automatic); the automatic one looks at the sun once a minute
 const setDarkMode = (value) => {
 	mode = Number(value) || OFF;
-	clearInterval(timer);
-	timer = mode === 3 ? setInterval(apply, 60 * 1000) : null;
+	timer = autoTimer(timer, mode, apply);
 	apply();
 };
 
