@@ -1,4 +1,5 @@
-// Christmas effects (christmas.mjs): the string of lights along the top of the page. Hidden unless #divTwc has the class christmas.
+// Christmas effects (christmas.mjs): a string of lights along the top of the page and a pile of snow along the bottom, both still
+// pictures. Hidden unless #divTwc has the class christmas.
 #christmas {
 	display: none;
 	position: absolute;
@@ -12,8 +13,8 @@
 	display: block;
 }
 
-// the picture is 1920 x 144 (a 1080p screen wide); it is put in from the edges and down from the top, because the TV's overscan
-// cuts about 25 px of the page at the sides and some at the top, and it would hide the first and last bulbs and the hooks
+// the pictures are 1920 px wide (a 1080p screen); the lights are put in from the edges and down from the top, because the TV's
+// overscan cuts about 25 px of the page at the sides and some at the top, and it would hide the first and last bulbs and the hooks
 #christmas .lights {
 	display: block;
 	position: absolute;
@@ -21,4 +22,25 @@
 	left: 25px;
 	width: calc(100% - 50px);
 	height: auto;
+}
+
+// the snow lies along the bottom edge, edge to edge: the overscan cutting a little of it does no harm
+#christmas .snow {
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: auto;
+}
+
+// the pictures lie over the background, but the text (header, boxes, bottom text) lies over the pictures: those parts get a
+// layer of their own above the overlay (the .weather-display is not a stacking context, so they reach over it)
+#divTwc.christmas .weather-display {
+	.header,
+	.main,
+	.scroll {
+		position: relative;
+		z-index: 31;
+	}
 }

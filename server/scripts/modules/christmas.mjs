@@ -1,4 +1,4 @@
-// Christmas effects over every screen: a string of lights along the top of the page (the owner's animated picture).
+// Christmas effects over every screen: a string of lights along the top of the page and a pile of snow along the bottom (the owner's pictures).
 // The setting Christmas Effects is Off, On or Automatic (1 to 25 December).
 import isChristmas from './utils/christmas.mjs';
 import { OFF } from './utils/dark-mode.mjs';
@@ -12,11 +12,13 @@ const build = () => {
 	const overlay = document.querySelector('#christmas');
 	if (!overlay || built) return;
 	built = true;
-	const lights = document.createElement('img');
-	lights.className = 'lights';
-	lights.src = 'images/christmas/luzes.gif';
-	lights.alt = '';
-	overlay.append(lights);
+	[['lights', 'luzes'], ['snow', 'neve']].forEach(([className, name]) => {
+		const picture = document.createElement('img');
+		picture.className = className;
+		picture.src = `images/christmas/${name}.png`;
+		picture.alt = '';
+		overlay.append(picture);
+	});
 };
 
 const apply = () => {
