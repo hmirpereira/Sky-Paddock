@@ -34,13 +34,16 @@
 	height: auto;
 }
 
-// the pictures lie over the background, but the text (header, boxes, bottom text) lies over the pictures: those parts get a
-// layer of their own above the overlay (the .weather-display is not a stacking context, so they reach over it)
+// the pictures lie over the background and over the boxes, but the text of the header, the bottom text and the countdown bar lie over
+// the pictures: those parts get a layer above the overlay (the .weather-display is not a stacking context, so they reach over it)
 #divTwc.christmas .weather-display {
 	.header,
-	.main,
 	.scroll {
 		position: relative;
+		z-index: 31;
+	}
+
+	.countdown-bar {
 		z-index: 31;
 	}
 }
