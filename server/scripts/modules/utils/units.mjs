@@ -6,6 +6,7 @@ const round2 = (value, decimals) => Math.trunc(value * 10 ** decimals) / 10 ** d
 const kphToKnots = (Kph) => Math.round((Kph * 0.539957) * 100) / 100; // 2 decimal places
 const kphToMs = (Kph) => Math.round((Kph / 3.6) * 100) / 100;		// 2 decimal places
 const kphToMph = (Kph) => Math.round(Kph / 1.609_34);
+const KM_PER_NM = 1.852; // one nautical mile in km
 const kphToBft = (Kph) => [1, 6, 12, 20, 29, 39, 50, 62, 75, 89, 103, 118, Infinity].findIndex((b) => Kph < b);
 const knotsToMs = (Knots) => {
 	const result = Math.round((Knots * 0.514_444) * 100) / 100; // 2 decimal places
@@ -18,18 +19,15 @@ const celsiusToKelvin = (Celsius) => Math.round(Celsius + 273.15);
 const fahrenheitToCelsius = (Fahrenheit) => Math.round((Fahrenheit - 32) * 5 / 9);
 
 // Distance conversions
-const kilometersToMiles = (Kilometers) => Math.round(Kilometers / 1.609_34);
+const kilometersToMiles = kphToMph; // the same factor for km and km/h
 const kilometersToFeet = (Kilometers) => Math.round(Kilometers * 3280.84);
 const kilometersToMeters = (Kilometers) => Math.round(Kilometers * 1000);
 const KilometersToBananas = (Kilometers) => Math.round(Kilometers * 1000 / 0.18); // 1 banana = 0.18 km
 const metersToFeet = (Meters) => Math.round(Meters / 0.3048);
-const mphtoKph = (Mph) => Math.round(Mph * 1.609_34);
-const milesToKm = (Miles) => Math.round(Miles * 1.609_34);
 
 // Pressure conversions
 const pascalToInHg = (Pascal) => round2((Pascal * 100) * 0.000_295_3, 2);
 const pascalToMmHg = (Pascal) => round2((Pascal * 100) * 0.007_500_62, 2);
-const inHgToHectopascal = (InHg) => round2(InHg * 33.863_9, 2);
 
 export {
 	round2,
@@ -37,11 +35,9 @@ export {
 	kphToKnots,
 	kphToMs,
 	kphToMph,
+	KM_PER_NM,
 	kphToBft,
 	knotsToMs,
-
-	mphtoKph,
-	milesToKm,
 
 	celsiusToFahrenheit,
 	celsiusToKelvin,
@@ -55,5 +51,4 @@ export {
 
 	pascalToInHg,
 	pascalToMmHg,
-	inHgToHectopascal,
 };

@@ -97,5 +97,4 @@ const getSessionResult = async (key, id, fetcher) => {
 export {
 	getPhase,
 	getSessionResult,
-	weekendTimes,
 };

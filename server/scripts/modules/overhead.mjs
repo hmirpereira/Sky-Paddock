@@ -12,11 +12,11 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { escapeHtml } from './utils/html.mjs';
 import { plainText } from './utils/text.mjs';
+import { KM_PER_NM } from './utils/units.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/overhead.json';
 // everything on screen is metric; ADS-B gives feet and knots
 const RANGE_KM = 50;
-const KM_PER_NM = 1.852;
 const M_PER_FT = 0.3048;
 const RADAR_RADIUS = 140; // px, keep in sync with _overhead.scss
 const GROUP_ICONS = ['LH', 'LX', 'OS', '4Y', 'SN'];

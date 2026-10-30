@@ -22,5 +22,5 @@ const isDark = (mode, now, times) => {
 };
 
 export {
-	OFF, ON, AUTOMATIC, LABELS, DELAY_MINUTES, isDark,
+	OFF, ON, AUTOMATIC, LABELS, isDark,
 };

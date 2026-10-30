@@ -11,6 +11,7 @@ import { registerDisplay } from './navigation.mjs';
 import { escapeHtml } from './utils/html.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { plainText } from './utils/text.mjs';
+import { KM_PER_NM } from './utils/units.mjs';
 import fillFooter from './utils/footer.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/f1jet.json';
@@ -128,7 +129,7 @@ class F1Jet extends WeatherDisplay {
 		where.classList.toggle('airborne', !!jet.airborne);
 		if (jet.airborne) {
 			const alt = jet.position?.altitudeFt ? `${(Math.round((jet.position.altitudeFt * 0.3048) / 10) * 10).toLocaleString('en-US')} m` : '';
-			const speed = jet.position?.speedKt ? `${Math.round(jet.position.speedKt * 1.852)} km/h` : '';
+			const speed = jet.position?.speedKt ? `${Math.round(jet.position.speedKt * KM_PER_NM)} km/h` : '';
 			where.textContent = [`To ${city(flight.to) || code(flight.to)}`, alt, speed].filter(Boolean).join('   ');
 		} else {
 			const place = city(flight.to) || code(flight.to);

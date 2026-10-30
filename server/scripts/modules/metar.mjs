@@ -76,7 +76,7 @@ class Metar extends WeatherDisplay {
 
 		// page numbers count METAR and TAF pages separately
 		const same = this.pages.filter((page) => page.kind === kind);
-		this.elem.querySelector('.header .title.dual .top').innerHTML = placeTitle('Airport');
+		this.elem.querySelector('.header .title.dual .top').textContent = placeTitle('Airport');
 		this.elem.querySelector('.header .title.dual .bottom').innerHTML = `${airport().icao} ${kind}`;
 		fillFooter(this.elem, [kind === 'TAF' ? 'aviationweather.gov' : 'VATSIM'], same.indexOf(this.pages[pageIndex]), same.length);
 

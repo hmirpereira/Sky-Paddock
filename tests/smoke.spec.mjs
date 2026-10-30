@@ -152,3 +152,32 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		}
 	});
 });
+
+// a link edited by hand: the airport name is shown as text (no script runs), and a location that is not JSON
+// does not stop the page from starting
+test('a link with odd settings shows the airport name as text', async ({ page }) => {
+	const pageErrors = [];
+	page.on('pageerror', (error) => pageErrors.push(error.message));
+	await page.routeFromHAR(HAR, { url: SITES, notFound: 'fallback' });
+	// a location that is not JSON: the page still starts (and asks for a location)
+	await page.goto('./?latLonQuery=x&latLon=abc', { waitUntil: 'domcontentloaded' });
+	await expect(page.locator('#divTwc')).toBeVisible();
+	const params = new URLSearchParams({
+		'metar-checkbox': 'true',
+		latLonQuery: LOCATION.query,
+		latLon: JSON.stringify(LOCATION.latLon),
+		'settings-airportIcao-text': LOCATION.airportIcao,
+		'settings-airportName-text': '<img src="x" onerror="window.injected = true">',
+	});
+	await page.goto(`./?${params}`, { waitUntil: 'domcontentloaded' });
+	// the other screens that are on by default come first: go on until the Airport METAR is shown
+	for (let steps = 0; steps < 100 && !(await page.evaluate(() => document.querySelector('.weather-display.show')?.id === 'metar-html')); steps += 1) {
+		await page.evaluate(() => document.querySelector('#NavigateNext').click());
+		await page.waitForTimeout(300);
+	}
+	// the title is drawn (as text, or as the element that a script would make)
+	await page.waitForFunction(() => window.injected || document.querySelector('#metar-html .title.dual .top')?.textContent.includes('<img'), null, { timeout: 60_000 });
+	expect(await page.evaluate(() => window.injected ?? false)).toBe(false);
+	expect(await page.locator('img[src="x"]').count()).toBe(0);
+	expect(pageErrors, 'page errors').toEqual([]);
+});

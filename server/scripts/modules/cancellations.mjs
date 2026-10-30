@@ -65,7 +65,7 @@ class Cancellations extends WeatherDisplay {
 
 	async drawCanvas() {
 		super.drawCanvas();
-		this.elem.querySelector('.header .title.dual .top').innerHTML = placeTitle('Departures');
+		this.elem.querySelector('.header .title.dual .top').textContent = placeTitle('Departures');
 
 		const pageIndex = Math.min(Math.max(this.screenIndex, 0), this.pages.length - 1);
 		const today = DateTime.now().setZone(AIRPORT_TZ);
