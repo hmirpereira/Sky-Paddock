@@ -1,6 +1,7 @@
-// Halloween effects (halloween.mjs): bats flying, spiders walking across every screen, and a jack-o'-lantern now and then
-// in the side bands of the widescreen page. Hidden unless #divTwc has the class halloween. transform and opacity
-// animations only (nothing that makes the browser lay the page out again), in steps where they are not smooth.
+// Halloween effects (halloween.mjs): a cobweb in each top corner of the page (still pictures) and, now and then, a
+// jack-o'-lantern at each side, on the widescreen and on the 4:3 page (over the content, where there are no side bands).
+// Hidden unless #divTwc has the class halloween. The only animations are the ones of the
+// jack-o'-lanterns (transform and opacity): the bats and spiders that crossed the page made the Hourly Forecast crawl on the Pi.
 #halloween {
 	display: none;
 	position: absolute;
@@ -14,131 +15,39 @@
 	display: block;
 }
 
-#halloween .bat {
+// the webs hang from the top corners (the TV's overscan cuts a little of the corner itself); on the widescreen page they sit in
+// the side bands and cover no text, on the 4:3 page they cover part of the header; the left one is a web of a sheet of the
+// owner's, the right one a web with a spider
+#halloween .web {
+	display: block;
 	position: absolute;
+	top: 0;
+	height: auto;
+}
+
+// smaller on the 4:3 page, where they cover content, than on the widescreen one, where the side bands have room
+#halloween .web.left {
 	left: 0;
-	animation: halloween-cross 14s linear infinite;
-
-	img {
-		display: block;
-		height: auto;
-		image-rendering: pixelated;
-		animation: halloween-bob 2.4s ease-in-out infinite alternate, halloween-flap var(--flap, 0.5s) steps(2) infinite;
-	}
-
-	&.back {
-		animation-direction: reverse;
-	}
+	width: 90px;
 }
 
-// across the page
-@keyframes halloween-cross {
-	from {
-		transform: translateX(-80px);
-	}
-
-	to {
-		transform: translateX(940px);
-	}
+#halloween .web.right {
+	right: 0;
+	width: 130px;
 }
 
-// a little higher and lower on the way
-@keyframes halloween-bob {
-	from {
-		translate: 0 calc(var(--wave, 12px) * -1);
-	}
-
-	to {
-		translate: 0 var(--wave, 12px);
-	}
+.wide #halloween .web.left {
+	width: 130px;
 }
 
-// the wings beat: the picture is squashed from the top a little and back
-@keyframes halloween-flap {
-
-	0%,
-	49% {
-		transform: scaleY(1);
-	}
-
-	50%,
-	100% {
-		transform: scaleY(0.82);
-	}
+.wide #halloween .web.right {
+	width: 190px;
 }
 
-#halloween .walker {
-	position: absolute;
-	left: 0;
-	animation: halloween-walk 50s linear infinite;
-
-	// the picture looks down: turned so that the head goes the way the spider walks, with a quick side to side scuttle
-	img {
-		display: block;
-		height: auto;
-		image-rendering: pixelated;
-		transform: rotate(-90deg);
-		animation: halloween-scuttle 0.5s steps(2) infinite, halloween-wobble 3.1s ease-in-out infinite alternate;
-	}
-
-	// walking the other way
-	&.back {
-		animation-direction: reverse;
-
-		img {
-			transform: rotate(90deg);
-			animation-name: halloween-scuttle-back, halloween-wobble;
-		}
-	}
-}
-
-@keyframes halloween-walk {
-	from {
-		transform: translateX(-60px);
-	}
-
-	to {
-		transform: translateX(920px);
-	}
-}
-
-// a little to one side and the other, as a spider does on the way
-@keyframes halloween-wobble {
-	from {
-		translate: 0 calc(var(--wobble, 4px) * -1);
-	}
-
-	to {
-		translate: 0 var(--wobble, 4px);
-	}
-}
-
-// the legs seem to move: a small step forward and back. A transform, not a margin: the browser animates a margin on the main
-// thread and redraws the page at every frame for as long as it runs, which made the Hourly Forecast crawl on the Pi; the
-// translateX comes first so that the step is along the page, as the margin was, and not along the turned picture
-@keyframes halloween-scuttle {
-	from {
-		transform: translateX(-1px) rotate(-90deg);
-	}
-
-	to {
-		transform: translateX(1px) rotate(-90deg);
-	}
-}
-
-@keyframes halloween-scuttle-back {
-	from {
-		transform: translateX(-1px) rotate(90deg);
-	}
-
-	to {
-		transform: translateX(1px) rotate(90deg);
-	}
-}
-
-// the jack-o'-lanterns sit on the line above the bottom line, in the side bands, and only when the page is widescreen
+// the jack-o'-lanterns sit on the line above the bottom line, at the sides: in the side bands of the widescreen page, over the
+// edge of the boxes on the 4:3 page
 #halloween .pumpkin {
-	display: none;
+	display: block;
 	position: absolute;
 	top: 397px;
 	opacity: 0;
@@ -154,10 +63,6 @@
 	}
 
 	// how far from the edge: set by halloween.mjs (pumpkinsLayout), clear of the TV's overscan
-}
-
-.wide #halloween .pumpkin {
-	display: block;
 }
 
 // out of sight, a slow fade in, a while on view with a flicker of the light, and a quick fade out
