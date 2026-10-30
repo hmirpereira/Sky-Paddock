@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-	OFF, ON, AUTOMATIC, LABELS, isDark,
+	OFF, ON, AUTOMATIC, isDark,
 } from '../../server/scripts/modules/utils/dark-mode.mjs';
 
 const at = (time) => new Date(`2026-10-24T${time}:00`);
@@ -11,7 +11,6 @@ const times = { sunrise: at('07:55'), sunset: at('18:48') };
 test('Off is never dark and On is always dark', () => {
 	assert.equal(isDark(OFF, at('23:00'), times), false);
 	assert.equal(isDark(ON, at('12:00'), times), true);
-	assert.deepEqual(LABELS, { 1: 'Off', 2: 'On', 3: 'Auto' });
 });
 
 test('Automatic turns dark 10 minutes after the sunset and normal 10 minutes after the sunrise', () => {

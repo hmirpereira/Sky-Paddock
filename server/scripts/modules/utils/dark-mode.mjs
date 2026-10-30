@@ -3,7 +3,6 @@
 const OFF = 1;
 const ON = 2;
 const AUTOMATIC = 3;
-const LABELS = { [OFF]: 'Off', [ON]: 'On', [AUTOMATIC]: 'Auto' };
 
 // the automatic mode turns dark this long after the sunset and normal this long after the sunrise
 const DELAY_MINUTES = 10;
@@ -22,5 +21,5 @@ const isDark = (mode, now, times) => {
 };
 
 export {
-	OFF, ON, AUTOMATIC, LABELS, isDark,
+	OFF, ON, AUTOMATIC, isDark,
 };

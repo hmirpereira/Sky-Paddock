@@ -133,7 +133,7 @@ Red and black.
   - **Colour fringe on text**: red and blue edges on the text, like a VHS recording, through the shared `text-shadow` mixin (`--fringe-left`, `--fringe-right`).
   - **Colour fringe on pictures**: the red and blue channels of the pictures pulled apart by an SVG filter in `index.ejs` (`#vhs-rgb`). Not on the radar, which animates.
 - **Music**: the page plays none. On the TV the Pi plays its own background music (outside this repository). The Webamp (Winamp) player of the original project was removed in 1.9.0.
-- **Version mark**: with *Show Version Mark*, the version and the date of the commit it was built from (Lisbon time) are shown small in the bottom right corner, a little in from the edges so the TV's overscan does not cut them, to check that a screen runs the latest version. On by default in the TV command. The date comes from `git log` when building (`vite.config.mjs`); without git it is the build date. It also says the state of the dark mode: DARK OFF, DARK ON or DARK AUTO.
+- **Version mark**: with *Show Version Mark*, the version and the date of the commit it was built from (Lisbon time) are shown small in the bottom right corner, a little in from the edges so the TV's overscan does not cut them, to check that a screen runs the latest version. On by default in the TV command. The date comes from `git log` when building (`vite.config.mjs`); without git it is the build date.
 
 ## Settings and the TV address
 
@@ -154,7 +154,7 @@ Every choice on the page goes into the address, so a whole setup is one link. **
 
 The Pi-only screens read their data from services on the Pi that are not in this repository, because they hold private keys, the home position and personal data:
 
-- `skypaddock-hub` (the Pi's data service, called `skypaddock-voos` until 1.5.0) serves `http://127.0.0.1:8095/`: `flights.json` and `cancelled.json` (AeroDataBox), `taf.json` (aviationweather.gov), `overhead.json` (ADS-B receiver, adsb.lol, OpenSky for the aircraft on the ground at the airport, adsbdb, airport plan), `f1jet.json` (adsb.lol, OurAirports), `news.json` (Portuguese RSS feeds), `schedule.json`, `health.json`, and `beat` and `kiosk.json` for the kiosk watchdog.
+- `skypaddock-hub` (the Pi's data service, called `skypaddock-voos` until 1.5.0; one core file plus `hub_*.py` modules for the news, Plex, GT World and airport data since 30 October 2026) serves `http://127.0.0.1:8095/`: `flights.json` and `cancelled.json` (AeroDataBox), `taf.json` (aviationweather.gov), `overhead.json` (ADS-B receiver, adsb.lol, OpenSky for the aircraft on the ground at the airport, adsbdb, airport plan), `f1jet.json` (adsb.lol, OurAirports), `news.json` (Portuguese RSS feeds), `schedule.json`, `health.json`, and `beat` and `kiosk.json` for the kiosk watchdog.
 - `skypaddock-horario` turns the private schedule spreadsheet into JSON for the Work Schedule screen.
 
 Chromium on the Pi lets the public site read the local service through the `LocalNetworkAccessAllowedForUrls` and `LoopbackNetworkAllowedForUrls` policies. Anywhere else those requests fail and the screens are skipped.
