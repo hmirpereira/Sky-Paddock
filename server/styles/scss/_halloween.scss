@@ -1,6 +1,6 @@
 // Halloween effects (halloween.mjs): bats flying, spiders walking across every screen, and a jack-o'-lantern now and then
 // in the side bands of the widescreen page. Hidden unless #divTwc has the class halloween. transform and opacity
-// animations only, in steps where they are not smooth.
+// animations only (nothing that makes the browser lay the page out again), in steps where they are not smooth.
 #halloween {
 	display: none;
 	position: absolute;
@@ -87,6 +87,7 @@
 
 		img {
 			transform: rotate(90deg);
+			animation-name: halloween-scuttle-back, halloween-wobble;
 		}
 	}
 }
@@ -112,14 +113,26 @@
 	}
 }
 
-// the legs seem to move: a small step forward and back
+// the legs seem to move: a small step forward and back. A transform, not a margin: the browser animates a margin on the main
+// thread and redraws the page at every frame for as long as it runs, which made the Hourly Forecast crawl on the Pi; the
+// translateX comes first so that the step is along the page, as the margin was, and not along the turned picture
 @keyframes halloween-scuttle {
 	from {
-		margin-left: -1px;
+		transform: translateX(-1px) rotate(-90deg);
 	}
 
 	to {
-		margin-left: 1px;
+		transform: translateX(1px) rotate(-90deg);
+	}
+}
+
+@keyframes halloween-scuttle-back {
+	from {
+		transform: translateX(-1px) rotate(90deg);
+	}
+
+	to {
+		transform: translateX(1px) rotate(90deg);
 	}
 }
 
