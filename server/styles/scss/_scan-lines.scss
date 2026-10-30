@@ -105,8 +105,8 @@ body.color-fringe {
 // Colour fringe on the pictures, its own setting (Enable Colour Fringe on Pictures): weather icons,
 // team and airline icons, logos, maps; the red and blue channels pulled apart by an SVG filter in
 // index.ejs, so edges inside the pictures get the fringe too. Not on the radar, which animates:
-// the filter would be worked out again for every frame (the same goes for the bats and spiders of Halloween, which move).
-body.image-fringe #container img:not(#radar-html img, #halloween .bat img, #halloween .walker img) {
+// the filter would be worked out again for every frame.
+body.image-fringe #container img:not(#radar-html img) {
   filter: url(#vhs-rgb);
 }
 

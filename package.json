@@ -1,6 +1,6 @@
 {
 	"name": "sky-paddock",
-	"version": "1.18.6",
+	"version": "1.19.0",
 	"description": "Welcome to the WeatherStar 4000+ project page!",
 	"main": "vite.config.mjs",
 	"scripts": {

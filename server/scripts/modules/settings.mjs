@@ -113,7 +113,7 @@ const init = () => {
 		[ON, 'On'],
 		[OFF, 'Off'],
 	]);
-	// bats, spiders and jack-o'-lanterns over every screen: Auto (30 and 31 October), On or Off
+	// cobwebs in the top corners and jack-o'-lanterns over every screen: Auto (30 and 31 October), On or Off
 	settings.halloween = new Setting('halloween', 'Halloween Effects', 'select', AUTOMATIC, setHalloween, true, [
 		[AUTOMATIC, 'Auto'],
 		[ON, 'On'],
