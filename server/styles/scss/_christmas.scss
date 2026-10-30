@@ -1,8 +1,4 @@
-// Christmas effects (christmas.mjs): lights hanging along the header and snow falling over the text.
-// Hidden unless #divTwc has the class christmas. Made for the Pi, which has no GPU worth the name: nothing here is painted
-// again while it animates. The bulbs are four pictures whose opacity changes and the snow is 18 small flakes that move with
-// transform, in steps. Few and small on purpose: on the TV, three snow layers as tall as two pages cost 15 points of GPU,
-// and the Hourly Forecast, which scrolls on the main thread, was already using 90 % of a core without any decoration.
+// Christmas effects (christmas.mjs): the string of lights along the top of the page. Hidden unless #divTwc has the class christmas.
 #christmas {
 	display: none;
 	position: absolute;
@@ -16,89 +12,13 @@
 	display: block;
 }
 
+// the picture is 1920 x 144 (a 1080p screen wide); it is put in from the edges and down from the top, because the TV's overscan
+// cuts about 25 px of the page at the sides and some at the top, and it would hide the first and last bulbs and the hooks
 #christmas .lights {
+	display: block;
 	position: absolute;
-	left: 0;
-	top: 0;
-
-	.wire {
-		fill: none;
-		stroke: #141414;
-		stroke-width: 1.3;
-	}
-
-	.cord {
-		stroke: #141414;
-		stroke-width: 1;
-	}
-
-	.glow {
-		opacity: 0.28;
-	}
-
-	// a group of bulbs blinks together, each group at its own pace
-	&.bulbs {
-		animation: christmas-blink 1s step-end infinite;
-
-		&.g0 {
-			animation-duration: 0.9s;
-		}
-
-		&.g1 {
-			animation-duration: 1.3s;
-			animation-delay: -0.4s;
-		}
-
-		&.g2 {
-			animation-duration: 1.7s;
-			animation-delay: -1.1s;
-		}
-
-		&.g3 {
-			animation-duration: 2.3s;
-			animation-delay: -0.7s;
-		}
-	}
-}
-
-// bright then dim
-@keyframes christmas-blink {
-
-	0%,
-	55% {
-		opacity: 1;
-	}
-
-	56%,
-	100% {
-		opacity: 0.3;
-	}
-}
-
-// the snow: a few small flakes falling in steps (8 a second), each moved with transform only
-#christmas .snow i {
-	position: absolute;
-	top: -8px;
-	border-radius: 50%;
-	background: #fff;
-	animation: christmas-fall 14s steps(112) infinite;
-}
-
-@keyframes christmas-fall {
-	from {
-		transform: translate3d(0, 0, 0);
-	}
-
-	to {
-		transform: translate3d(var(--drift, 0px), 500px, 0);
-	}
-}
-
-// no snow on the screens that scroll (Hourly, Hazards, F1 Drivers, F1 Grid): they scroll on the main thread and on the Pi
-// they already use a whole core, so the lights stay and the snow goes. The class of the screen on view is on #divTwc.
-#divTwc.hourly #christmas .snow,
-#divTwc.hazards #christmas .snow,
-#divTwc.f1-standings #christmas .snow,
-#divTwc.f1-grid #christmas .snow {
-	display: none;
+	top: 10px;
+	left: 25px;
+	width: calc(100% - 50px);
+	height: auto;
 }

@@ -110,7 +110,5 @@ body.image-fringe #container img:not(#radar-html img) {
   filter: url(#vhs-rgb);
 }
 
-// The Christmas and Halloween decorations (z-index 30) are part of the picture, so the scan lines and the vignette (40) go
-// over them too. The pictures of Halloween get the colour fringe on pictures through the rule above (they are img inside
-// #container); the lights and the snow do not: a filter or a shadow on things that blink and fall would be worked out
-// again on every frame, which the Pi cannot do.
+// The Halloween decorations (z-index 30) are part of the picture, so the scan lines and the vignette (40) go over them too,
+// and the pictures get the colour fringe on pictures through the rule above (they are img inside #container).
