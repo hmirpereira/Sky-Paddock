@@ -43,6 +43,9 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 - The countdown bar (`scroll.ejs`, `syncCountdown` in `weatherdisplay.mjs`) is hidden on screens that
   scroll (those with `baseCountChange`).
 - Keep the Pi light: avoid per-frame animations and constant DOM updates (it has no GPU worth using).
+- Seasonal decorations (`halloween.mjs`, `christmas.mjs`) are still pictures: anything that moves across the page made the Hourly Forecast
+  crawl on the Pi (measured); only opacity and `transform` animations, and measure on the Pi before adding one. Under `.christmas`,
+  `.header` and `.scroll` are lifted above the overlay (z-index 31) so the text stays over the pictures; the boxes and the countdown bar stay under.
 
 ## Testing
 
