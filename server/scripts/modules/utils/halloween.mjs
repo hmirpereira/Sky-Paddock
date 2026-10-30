@@ -1,7 +1,16 @@
 // Halloween effects (a cobweb in each top corner, a jack-o'-lantern now and then at the sides):
 // Off, On, or Automatic on 30 and 31 October, the days of the [Halloween] songs
 import { ON, AUTOMATIC } from './dark-mode.mjs';
-import { random } from './christmas.mjs';
+
+// a small seeded random generator, so that the jack-o'-lanterns are laid out the same way on every start
+const random = (seed) => {
+	let state = seed;
+	// a linear congruential generator: the product stays below 2^53, so the arithmetic is exact
+	return () => {
+		state = (state * 1664525 + 1013904223) % 4294967296;
+		return state / 4294967296;
+	};
+};
 
 const isHalloween = (mode, now) => {
 	if (Number(mode) === ON) return true;

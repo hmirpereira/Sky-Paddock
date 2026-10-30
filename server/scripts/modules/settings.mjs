@@ -107,7 +107,7 @@ const init = () => {
 		[ON, 'On'],
 		[AUTOMATIC, 'Auto'],
 	]);
-	// lights and snow over every screen: Auto (1 to 25 December), On or Off
+	// string of lights along the top of every screen: Auto (1 to 25 December), On or Off
 	settings.christmas = new Setting('christmas', 'Christmas Effects', 'select', AUTOMATIC, setChristmas, true, [
 		[AUTOMATIC, 'Auto'],
 		[ON, 'On'],

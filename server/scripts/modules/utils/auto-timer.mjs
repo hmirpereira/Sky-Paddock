@@ -1,4 +1,4 @@
-// the Automatic setting of the Christmas, Halloween and Dark Mode screens (mode 3): looks again once a minute
+// the Automatic setting of the Halloween and Dark Mode effects (mode 3): looks again once a minute
 // and returns the new timer; any old one is cleared first
 const autoTimer = (timer, mode, apply) => {
 	clearInterval(timer);

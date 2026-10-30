@@ -1,6 +1,6 @@
 // Halloween effects over every screen: a cobweb in each top corner (still) and a jack-o'-lantern now and then at the sides.
 // The setting Halloween Effects is Off, On or Automatic (30 and 31 October). The only animations are the jack-o'-lanterns'
-// (_halloween.scss): the bats and spiders that crossed the page made the Hourly Forecast crawl on the Pi.
+// (_halloween.scss); anything that moves across the page makes the Hourly Forecast crawl on the Pi.
 import { isHalloween, pumpkinsLayout } from './utils/halloween.mjs';
 import { OFF } from './utils/dark-mode.mjs';
 import autoTimer from './utils/auto-timer.mjs';
@@ -9,7 +9,7 @@ let mode = OFF;
 let timer = null;
 let built = false;
 
-// the pictures supplied by the owner, in images/halloween (the webs are cut from his sheets by ferramentas/mkhalloween.py)
+// the pictures supplied by the owner, in images/halloween (the webs are cut from his sheets)
 const PUMPKIN_PICTURE = 'images/halloween/jackolantern.png';
 const WEB_PICTURES = [['left', 'images/halloween/teia.png'], ['right', 'images/halloween/aranha.png']];
 
