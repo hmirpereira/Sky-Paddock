@@ -159,6 +159,8 @@ test('a link with odd settings shows the airport name as text', async ({ page })
 	const pageErrors = [];
 	page.on('pageerror', (error) => pageErrors.push(error.message));
 	await page.routeFromHAR(HAR, { url: SITES, notFound: 'fallback' });
+	// the time of the recording, like the other tests: with the real date the recorded forecast stops covering today
+	await page.clock.install({ time: readMeta().time });
 	// a location that is not JSON: the page still starts (and asks for a location)
 	await page.goto('./?latLonQuery=x&latLon=abc', { waitUntil: 'domcontentloaded' });
 	await expect(page.locator('#divTwc')).toBeVisible();
