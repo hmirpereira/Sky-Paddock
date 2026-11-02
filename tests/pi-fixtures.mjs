@@ -133,8 +133,12 @@ const f1jet = (now) => ({
 	position: {},
 	flight: {
 		callsign: 'XRO1071',
-		from: { iata: 'NCE', icao: 'LFMN', city: 'Nice' },
-		to: { iata: 'FAO', icao: 'LPFR', city: 'Faro' },
+		from: {
+			iata: 'NCE', icao: 'LFMN', city: 'Nice', lat: 43.658, lon: 7.216,
+		},
+		to: {
+			iata: 'FAO', icao: 'LPFR', city: 'Faro', lat: 37.014, lon: -7.966,
+		},
 		departed: iso(now - 14 * HOUR),
 		landed: iso(now - 11.5 * HOUR),
 	},

@@ -1,5 +1,5 @@
 // aircraft around the chosen location, served by the skypaddock-hub service on the Pi
-// (the owner's ADS-B receiver first, completed by the adsb.lol network; routes from adsbdb.com).
+// (the owner's ADS-B receiver first, completed by the adsb.fi network, with adsb.lol as backup; routes from adsbdb.com).
 // Page 1: the closest aircraft in the air (flight, airline, route, altitude, speed, type).
 // Page 2: radar of everything within 50 km, and a list sorted by distance.
 // Page 3 (only with aircraft on the ground): airport plan with the aircraft on it, and in grey the

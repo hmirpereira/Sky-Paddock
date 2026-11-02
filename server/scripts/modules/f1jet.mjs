@@ -1,5 +1,5 @@
 // Max Verstappen's private jet (PH-UTL, ICAO address 4867E6), followed by the skypaddock-hub
-// service on the Pi: where it is from airplanes.live, then adsb.fi, then OpenSky (adsb.lol refuses the Pi since
+// service on the Pi: where it is from adsb.fi, then airplanes.live, then OpenSky (adsb.lol refuses the Pi since
 // 2 November 2026), once an hour and every 5 minutes while flying; finds the airports at both ends (OurAirports)
 // and serves /f1jet.json; anywhere else the screen is skipped. Until 1.3 the data came from
 // F1 Jet Tracker, which now lets only its own site read its files.
@@ -93,7 +93,7 @@ class F1Jet extends WeatherDisplay {
 		this.elem.querySelector('.header .title.dual .bottom').innerHTML = bottom;
 		if (onMap) this.drawMap();
 		else this.drawNow();
-		fillFooter(this.elem, ['airplanes.live', 'adsb.fi', 'OpenSky', 'OurAirports'], this.screenIndex, this.timing.totalScreens);
+		fillFooter(this.elem, ['adsb.fi', 'airplanes.live', 'OpenSky', 'OurAirports'], this.screenIndex, this.timing.totalScreens);
 		this.finishDraw();
 	}
 
