@@ -93,7 +93,7 @@ class F1Jet extends WeatherDisplay {
 		this.elem.querySelector('.header .title.dual .bottom').innerHTML = bottom;
 		if (onMap) this.drawMap();
 		else this.drawNow();
-		fillFooter(this.elem, ['adsb.fi', 'OpenSky', 'OurAirports'], this.screenIndex, this.timing.totalScreens);
+		fillFooter(this.elem, ['adsb.fi', 'OpenSky'], this.screenIndex, this.timing.totalScreens);
 		this.finishDraw();
 	}
 

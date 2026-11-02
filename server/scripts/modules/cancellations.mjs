@@ -91,7 +91,7 @@ class Cancellations extends WeatherDisplay {
 		list.innerHTML = '';
 		list.append(...lines);
 
-		fillFooter(this.elem, ['AeroDataBox', ...(this.lastUpdate ? [`Updated ${ConversionHelpers.formatTime(this.lastUpdate)}`] : [])], pageIndex, this.pages.length);
+		fillFooter(this.elem, [...(this.lastUpdate ? [`Updated ${ConversionHelpers.formatTime(this.lastUpdate)}`] : [])], pageIndex, this.pages.length);
 
 		this.finishDraw();
 	}

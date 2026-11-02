@@ -1,4 +1,4 @@
-// Debug: the track playing on the Pi (skypaddock-hub /musica.json), shown under the version mark. Polled every 15 s
+// Debug: the track playing on the Pi (skypaddock-hub /musica.json), shown beside the version mark. Polled every 15 s
 // while the setting is on; anywhere but the Pi the request fails and the line stays empty.
 import { json } from './fetch.mjs';
 import { plainText } from './text.mjs';
