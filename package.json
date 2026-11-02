@@ -16,14 +16,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/mwood77/ws4kp-international.git"
+		"url": "git+https://github.com/hmirpereira/Sky-Paddock.git"
 	},
 	"author": "Matt Walsh",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/mwood77/ws4kp-international/issues"
+		"url": "https://github.com/hmirpereira/Sky-Paddock/issues"
 	},
-	"homepage": "https://github.com/mwood77/ws4kp-international#readme",
+	"homepage": "https://github.com/hmirpereira/Sky-Paddock#readme",
 	"dependencies": {
 		"nosleep.js": "^0.12.0",
 		"suncalc": "^1.8.0",
