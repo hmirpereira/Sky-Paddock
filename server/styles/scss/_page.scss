@@ -317,7 +317,8 @@ body {
 }
 
 // version and commit date (settings: Show Version Mark), over the bottom right corner of the bottom line;
-// a little in from the edges, because the TV's overscan cuts about 10 px at the bottom and 25 px at the right
+// a little in from the edges, because the TV's overscan cuts about 10 px at the bottom and 25 px at the right.
+// Debug: the track playing on the Pi (settings: Show Music Track Name) is the line under it.
 #version-mark {
 	display: none;
 	position: absolute;
@@ -330,9 +331,21 @@ body {
 	text-shadow: 1px 1px black;
 	pointer-events: none;
 	white-space: nowrap;
+	text-align: right;
+
+	.version,
+	.music {
+		display: none;
+	}
 }
 
-.version-mark #version-mark {
+.version-mark #version-mark,
+.music-name #version-mark {
+	display: block;
+}
+
+.version-mark #version-mark .version,
+.music-name #version-mark .music {
 	display: block;
 }
 

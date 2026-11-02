@@ -23,6 +23,7 @@ const TV_SETTINGS = {
 	'settings-wide-checkbox': true,
 	'settings-scanLines-checkbox': true,
 	'settings-versionMark-checkbox': true,
+	'settings-musicName-checkbox': true,
 };
 
 const createLink = async (e) => {

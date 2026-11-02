@@ -4,6 +4,7 @@ import { DEFAULT_DETAIL_CITY, detailCityChoices } from './utils/travel-cities.mj
 import { setDarkMode } from './darkmode.mjs';
 import setChristmas from './christmas.mjs';
 import setHalloween from './halloween.mjs';
+import setMusicName from './utils/music-name.mjs';
 import { OFF, ON, AUTOMATIC } from './utils/dark-mode.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -129,6 +130,8 @@ const init = () => {
 	settings.newsTicker = new Setting('newsTicker', 'Show Breaking News in the Bottom Line', 'checkbox', false, null, true);
 	settings.wide = new Setting('wide', 'Widescreen', 'checkbox', false, wideScreenChange, true);
 	settings.kiosk = new Setting('kiosk', 'Kiosk', 'checkbox', false, kioskChange, false);
+	// debug: the track playing on the Pi, under the version mark (utils/music-name.mjs)
+	settings.musicName = new Setting('musicName', 'Show Music Track Name (debug)', 'checkbox', false, setMusicName, true);
 	// last of the list: version and commit date in the bottom right corner, to see which version a screen is running (on the TV)
 	settings.versionMark = new Setting('versionMark', 'Show Version Mark', 'checkbox', false, (value) => document.body.classList.toggle('version-mark', !!value), true);
 
