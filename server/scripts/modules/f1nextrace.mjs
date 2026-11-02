@@ -3,6 +3,7 @@
 // Sources: Jolpica F1 (schedule), bacinger/f1-circuits (outlines, see utils/f1-circuits.mjs),
 // Open-Meteo (forecast at the circuit, up to 16 days ahead)
 import STATUS from './status.mjs';
+import racingGap from './utils/racing-gap-events.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
@@ -93,6 +94,10 @@ class F1NextRace extends WeatherDisplay {
 
 	async getData(_weatherParameters) {
 		if (!super.getData(_weatherParameters)) return;
+		if (await racingGap()) {
+			this.setStatus(STATUS.noData);
+			return;
+		}
 
 		let cache = readCache(CACHE_KEY);
 		const raceOver = cache?.race && DateTime.fromISO(cache.race.start) < DateTime.now().minus({ hours: RACE_DURATION_HOURS });

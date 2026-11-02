@@ -7,6 +7,7 @@
 // (sprint qualifying); OpenF1 as a backup for both while Jolpica has not published them.
 // Team icons come from the car number.
 import STATUS from './status.mjs';
+import racingGap from './utils/racing-gap-events.mjs';
 import { json } from './utils/fetch.mjs';
 import ScrollWeatherDisplay from './scrollweatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
@@ -125,6 +126,10 @@ class F1Grid extends ScrollWeatherDisplay {
 
 	async getData(_weatherParameters) {
 		if (!super.getData(_weatherParameters)) return;
+		if (await racingGap()) {
+			this.setStatus(STATUS.noData);
+			return;
+		}
 
 		const {
 			phase, season, round, race, times,

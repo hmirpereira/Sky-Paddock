@@ -4,6 +4,7 @@
 // Between those, the F1 Grid screen takes its place. Source: Jolpica F1; OpenF1 while Jolpica
 // has not published the result yet.
 import STATUS from './status.mjs';
+import racingGap from './utils/racing-gap-events.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
@@ -87,6 +88,10 @@ class F1LastRace extends WeatherDisplay {
 
 	async getData(_weatherParameters) {
 		if (!super.getData(_weatherParameters)) return;
+		if (await racingGap()) {
+			this.setStatus(STATUS.noData);
+			return;
+		}
 
 		// only after a race or a sprint; the rest of the weekend belongs to the grid
 		const {

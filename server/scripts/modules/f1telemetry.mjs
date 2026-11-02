@@ -8,6 +8,7 @@
 // session is live, and needs some minutes to publish the data after the end, so the saved copy is
 // shown until a newer session can be read.
 import STATUS from './status.mjs';
+import racingGap from './utils/racing-gap-events.mjs';
 import { openf1 } from './utils/f1-openf1.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
@@ -223,6 +224,10 @@ class F1Telemetry extends WeatherDisplay {
 
 	async getData(weatherParameters) {
 		if (!super.getData(weatherParameters)) return;
+		if (await racingGap()) {
+			this.setStatus(STATUS.noData);
+			return;
+		}
 
 		let cache = readCache(CACHE_KEY);
 		const checked = cache?.checked ? DateTime.fromISO(cache.checked) : null;

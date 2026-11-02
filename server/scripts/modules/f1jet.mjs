@@ -48,7 +48,7 @@ const duration = (from, to) => {
 
 class F1Jet extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
-		super(elemId, 'F1 Jet', defaultActive);
+		super(elemId, 'Verstappen Jet', defaultActive);
 		this.timing.baseDelay = 12000;
 		this.timing.totalScreens = 2;
 	}

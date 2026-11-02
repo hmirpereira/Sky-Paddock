@@ -4,6 +4,7 @@
 // The skypaddock-hub service on the Pi reads the event page of the official site and serves it in /gt.json
 // ('next'); anywhere else this screen is skipped. Outlines and positions: utils/gt-circuits.mjs.
 import STATUS from './status.mjs';
+import racingGap from './utils/racing-gap-events.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
@@ -48,6 +49,10 @@ class GtNextRace extends WeatherDisplay {
 
 	async getData(weatherParameters) {
 		if (!super.getData(weatherParameters)) return;
+		if (await racingGap()) {
+			this.setStatus(STATUS.noData);
+			return;
+		}
 		let data = null;
 		try {
 			data = await json(SERVICE_URL, { signal: AbortSignal.timeout(5000) });

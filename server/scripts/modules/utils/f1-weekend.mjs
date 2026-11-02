@@ -94,7 +94,18 @@ const getSessionResult = async (key, id, fetcher) => {
 	return null;
 };
 
+// every race of the season as { start, end }: from the first session of its weekend to four hours after the race;
+// null when there is no schedule at all (nothing is decided on it)
+const f1Events = async () => {
+	const races = await getSchedule();
+	if (!races.length) return null;
+	return races
+		.map((race) => ({ start: weekendTimes(race).first, end: at({ date: race.date, time: race.time })?.plus({ hours: 4 }) }))
+		.filter((e) => e.start && e.end);
+};
+
 export {
+	f1Events,
 	getPhase,
 	getSessionResult,
 };
