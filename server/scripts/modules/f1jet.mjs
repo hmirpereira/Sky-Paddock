@@ -130,7 +130,9 @@ class F1Jet extends WeatherDisplay {
 		if (jet.airborne) {
 			const alt = jet.position?.altitudeFt ? `${(Math.round((jet.position.altitudeFt * 0.3048) / 10) * 10).toLocaleString('en-US')} m` : '';
 			const speed = jet.position?.speedKt ? `${Math.round(jet.position.speedKt * KM_PER_NM)} km/h` : '';
-			where.textContent = [flight.to ? `To ${city(flight.to) || code(flight.to)}` : '', alt, speed].filter(Boolean).join('   ');
+			// the destination is rarely known in flight: say where it took off from instead
+			const route = flight.to ? `To ${city(flight.to) || code(flight.to)}` : (flight.from && `Took off from ${code(flight.from)}`);
+			where.textContent = [route, alt, speed].filter(Boolean).join('   ');
 		} else {
 			const place = city(flight.to) || code(flight.to);
 			const since = flight.landed ? DateTime.now().diff(DateTime.fromISO(flight.landed), 'hours').hours : null;
