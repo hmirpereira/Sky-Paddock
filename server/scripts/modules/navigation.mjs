@@ -20,13 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // gives it, so there are no numbers to keep contiguous (a hole in the numbering used to crash the
 // navigation). A new screen only needs its elemId here; the order of the imports in main.mjs does not matter.
 const DISPLAY_ORDER = [
-	'hazards', 'current-weather', 'hourly', 'hourly-graph',
+	'hazards', 'status', 'current-weather', 'hourly', 'hourly-graph',
 	'travel', 'regional-forecast', 'extended-forecast', 'almanac',
 	'radar', 'marine-forecast', 'pollen', 'work-schedule',
 	'metar', 'departures', 'cancellations', 'overhead',
 	'news', 'f1-last-race', 'f1-grid', 'f1-telemetry',
 	'f1-standings', 'f1-next-race', 'f1-jet', 'gt-race',
-	'gt-next-race', 'plex', 'status',
+	'gt-next-race', 'plex',
 ];
 const displays = [];
 let playing = false;

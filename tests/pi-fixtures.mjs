@@ -229,8 +229,8 @@ const plex = (now) => ({
 const sources = (now) => ({
 	generated: iso(now),
 	rows: [
-		['Flights', 5, '90 units left', 720], ['ADS-B network', 1, '', 15], ['OpenSky', 2, '6738 credits', 30], ['TAF', 40, '', 360],
-		['Jet', 50, '', 30], ['News', 4, '', 30], ['GT World', 120, '', 480], ['Plex', 20, '', 720], ['Schedule', 30, '', 360], ['TV page', null, '', 5],
+		['Flights', 5, '90 units left', 720], ['ADS-B network', 1, '', 15], ['OpenSky', 2, '6738 credits', 30], ['METAR', 40, '', 360],
+		['Verstappen Jet', 50, '', 30], ['News', 4, '', 30], ['GT World', 120, '', 480], ['Plex', 20, '', 720], ['Schedule', 30, '', 360], ['TV page', null, '', 5],
 	].map(([name, minutes, note, limit]) => ({
 		name, ok: minutes === null ? null : iso(now - minutes * MIN), note, limit,
 	})),
