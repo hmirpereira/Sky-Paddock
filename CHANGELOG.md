@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.24.1** (2026-11-03): Status: the TV page card is gone (its sign of life is a line of the Raspberry Pi card, now four rows, with free disk, Wi-Fi signal and the service uptime); Verstappen Jet: the map line starts at the departure airport again
 - **1.24.0** (2026-11-03): the Airport name option is gone: the city in the titles of Airport METAR, Departures and Cancellations comes from the ICAO code (Pi service, OurAirports)
 - **1.23.8** (2026-11-03): Latest News title in one line; white outline on the red F1 logo of F1 News; smaller second line in the F1 titles; "Weekend Schedule"; Verstappen Jet subtitle "Tracker"
 - **1.23.7** (2026-11-03): README: missing airports of the Verstappen Jet also come from the Celebplanes flight list (once a day) and from AeroDataBox (departure); Pi service only

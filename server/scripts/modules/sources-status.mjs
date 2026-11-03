@@ -59,16 +59,22 @@ const modeText = (value, active) => {
 	return `Auto, ${active ? 'on' : 'off'} now`;
 };
 
-const piCard = (display, pi, track) => {
+// tv: the row of the TV page itself (the page's own heartbeat), shown in this card instead of one of its own
+const piCard = (display, pi, track, tv) => {
+	const tvMinutes = tv?.ok ? minutesSince(tv.ok) : null;
 	const card = display.fillTemplate('status-pi', {
 		'pi-load': pi.load === null ? 'load ?' : `load ${pi.load.toFixed(2)}`,
 		'pi-temp': pi.temp === null ? '? C' : `${pi.temp} C`,
 		'pi-mem': pi.memFreeMb === null ? '? MB free' : `${pi.memFreeMb} MB free`,
-		'pi-up': pi.uptimeMin === null ? '?' : ago(pi.uptimeMin),
+		'pi-disk': pi.diskFreeGb == null ? '?' : `${pi.diskFreeGb} GB free`,
+		'pi-wifi': pi.wifiDbm == null ? 'no Wi-Fi' : `${pi.wifiDbm} dBm`,
+		'pi-up': pi.uptimeMin === null ? '?' : `${ago(pi.uptimeMin)}, service ${ago(pi.hubMin)}`,
+		'pi-tv': tvMinutes === null ? 'no signal' : `signal ${ago(tvMinutes)} ago`,
 		'pi-music': plainText(track).slice(0, MUSIC_MAX) || 'none',
 		'pi-dark': modeText(settings.darkMode.value, document.querySelector('#divTwc')?.classList.contains('dark-mode')),
 	});
 	if (pi.temp !== null) card.querySelector('.pi-temp').classList.add(tempClass(pi.temp));
+	if (tv) card.querySelector('.pi-tv').classList.add(level(tvMinutes, tv.limit));
 	card.classList.add(pi.temp === null ? 'ok' : piLevel(pi));
 	return card;
 };
@@ -118,7 +124,7 @@ class SourcesStatus extends WeatherDisplay {
 		super.drawCanvas();
 		// the ages are read when the screen shows; the answer from the start would be hours old (the last one is kept if this fails)
 		await this.fetchSources(REFRESH_TIMEOUT_MS);
-		const cards = this.rows.map((row) => {
+		const cards = this.rows.filter((row) => row.name !== 'TV page').map((row) => {
 			const minutes = row.ok ? minutesSince(row.ok) : null;
 			const card = this.fillTemplate('status-card', {
 				name: plainText(row.name),
@@ -130,7 +136,7 @@ class SourcesStatus extends WeatherDisplay {
 		});
 		if (this.pi) {
 			const track = await json(MUSIC_URL, { signal: AbortSignal.timeout(3000) }).then((d) => d.track ?? '', () => '');
-			cards.push(piCard(this, this.pi, track));
+			cards.push(piCard(this, this.pi, track, this.rows.find((row) => row.name === 'TV page')));
 		}
 		const grid = this.elem.querySelector('.status-grid');
 		grid.innerHTML = '';
