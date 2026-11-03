@@ -211,7 +211,15 @@ class F1Jet extends WeatherDisplay {
 				if (inView) land.push(`<polygon class="land" points="${ring.map(([lon, lat]) => px(lon + shift, lat).join(',')).join(' ')}"/>`);
 			});
 		});
-		const line = `<polyline class="track" points="${track.map(([lon, lat]) => px(lon, lat).join(',')).join(' ')}"/>`;
+		// where the receivers saw nothing (a jump of more than 3 degrees) the line is dashed, not drawn as if it were a track
+		const runs = [];
+		track.forEach((p, i) => {
+			const jump = i > 0 && Math.hypot(p[0] - track[i - 1][0], p[1] - track[i - 1][1]) > 3;
+			if (jump) runs.push({ gap: true, pts: [track[i - 1], p] });
+			if (i === 0 || jump) runs.push({ gap: false, pts: [] });
+			runs.at(-1).pts.push(p);
+		});
+		const line = runs.map((run) => `<polyline class="track${run.gap ? ' gap' : ''}" points="${run.pts.map(([lon, lat]) => px(lon, lat).join(',')).join(' ')}"/>`).join('');
 		const marks = ends.map((a, i) => {
 			const [x, y] = px(a.lon, a.lat);
 			// the code above the dot, or below when it would leave the map

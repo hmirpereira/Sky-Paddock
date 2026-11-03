@@ -225,6 +225,12 @@
 					stroke: #ffd23f;
 					stroke-width: 3;
 					stroke-linejoin: round;
+
+					&.gap {
+						stroke-width: 2;
+						stroke-dasharray: 6 6;
+						opacity: 0.6;
+					}
 				}
 
 				.airport {
