@@ -254,6 +254,7 @@ const piResponses = (now) => ({
 	'/plex.json': plex(now),
 	'/health.json': health(now),
 	'/sources.json': sources(now),
+	'/musica.json': { track: 'Departure Lounge, 89F' },
 	'/beat': { ok: true },
 });
 

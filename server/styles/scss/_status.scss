@@ -62,13 +62,13 @@
 			}
 		}
 
-		// the double-height card (last two rows of the right column, beside the last two cards of the left one): the Pi itself
+		// the triple-height card (last three rows of the right column, beside the last three cards of the left one): the Pi itself
 		&.status-pi {
 			grid-column: 2;
-			grid-row: 6 / span 2;
+			grid-row: 5 / span 3;
 			grid-template-columns: 14px auto 1fr;
-			grid-template-rows: repeat(4, 1fr);
-			padding: 4px 10px;
+			grid-template-rows: auto repeat(5, 1fr);
+			padding: 3px 10px;
 
 			.dot {
 				grid-row: 1;
@@ -78,17 +78,24 @@
 				grid-column: 2 / 4;
 			}
 
-			.label, .pi-temp, .pi-mem, .pi-up {
-				font-size: 13px;
+			.label, .pi-temp, .pi-mem, .pi-up, .pi-music, .pi-dark {
+				font-size: 11px;
 				white-space: nowrap;
 			}
+
+			// the colours of the DietPi banner
+			.temp-cool { color: #4dd0e1; }
+			.temp-optimal { color: #3ddc84; }
+			.temp-warm { color: #ffd93d; }
+			.temp-hot { color: #ff7a2f; }
+			.temp-critical { color: #ff5a4d; }
 
 			.label {
 				grid-column: 2;
 				color: #8b9bbd;
 			}
 
-			.pi-temp, .pi-mem, .pi-up {
+			.pi-temp, .pi-mem, .pi-up, .pi-music, .pi-dark {
 				grid-column: 3;
 				text-align: right;
 			}
@@ -103,7 +110,6 @@
 		}
 
 		&.bad .age,
-		&.status-pi.bad .pi-temp,
 		&.status-pi.bad .pi-mem {
 			color: #ff8a7e;
 		}

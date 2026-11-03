@@ -7,9 +7,12 @@ import { registerDisplay } from './navigation.mjs';
 import settings from './settings.mjs';
 import { plainText } from './utils/text.mjs';
 import fillFooter from './utils/footer.mjs';
+import { OFF, ON } from './utils/dark-mode.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/sources.json';
+const MUSIC_URL = 'http://127.0.0.1:8095/musica.json';
 const NOTE_MAX = 40;
+const MUSIC_MAX = 34;
 
 const minutesSince = (iso) => Math.round((Date.now() - Date.parse(iso)) / 60000);
 
@@ -28,18 +31,39 @@ const level = (minutes, limit) => {
 	return minutes < 2 * limit ? 'warn' : 'bad';
 };
 
-// the Pi's own health: the dot follows the worse of the temperature (the Pi 3 throttles from 80 C) and the free memory
-const piLevel = ({ temp, memFreeMb }) => {
-	if (temp >= 80 || memFreeMb < 50) return 'bad';
-	return temp >= 70 || memFreeMb < 100 ? 'warn' : 'ok';
+// the temperature colours of the DietPi banner (G_OBTAIN_CPU_TEMP in dietpi-globals): 70 red, 60 orange, 50 yellow,
+// 40 green, 30 cyan, below that cyan too
+const tempClass = (temp) => {
+	if (temp >= 70) return 'temp-critical';
+	if (temp >= 60) return 'temp-hot';
+	if (temp >= 50) return 'temp-warm';
+	if (temp >= 40) return 'temp-optimal';
+	return 'temp-cool';
 };
 
-const piCard = (display, pi) => {
+// the Pi's own health: the dot follows the worse of the temperature (same limits as DietPi: 60 "hot", 70 "reducing the life
+// of your device") and the free memory
+const piLevel = ({ temp, memFreeMb }) => {
+	if (temp >= 70 || memFreeMb < 50) return 'bad';
+	return temp >= 60 || memFreeMb < 100 ? 'warn' : 'ok';
+};
+
+// "Off", "On" or "Auto" with what Auto is doing right now
+const modeText = (value, active) => {
+	if (Number(value) === OFF) return 'Off';
+	if (Number(value) === ON) return 'On';
+	return `Auto, ${active ? 'on' : 'off'} now`;
+};
+
+const piCard = (display, pi, track) => {
 	const card = display.fillTemplate('status-pi', {
 		'pi-temp': pi.temp === null ? '? C' : `${pi.temp} C`,
 		'pi-mem': pi.memFreeMb === null ? '? MB free' : `${pi.memFreeMb} MB free`,
 		'pi-up': pi.uptimeMin === null ? '?' : ago(pi.uptimeMin),
+		'pi-music': plainText(track).slice(0, MUSIC_MAX) || 'none',
+		'pi-dark': modeText(settings.darkMode.value, document.querySelector('#divTwc')?.classList.contains('dark-mode')),
 	});
+	if (pi.temp !== null) card.querySelector('.pi-temp').classList.add(tempClass(pi.temp));
 	card.classList.add(pi.temp === null ? 'ok' : piLevel(pi));
 	return card;
 };
@@ -88,7 +112,10 @@ class SourcesStatus extends WeatherDisplay {
 			card.classList.add(level(minutes, row.limit));
 			return card;
 		});
-		if (this.pi) cards.push(piCard(this, this.pi));
+		if (this.pi) {
+			const track = await json(MUSIC_URL, { signal: AbortSignal.timeout(3000) }).then((d) => d.track ?? '', () => '');
+			cards.push(piCard(this, this.pi, track));
+		}
 		const grid = this.elem.querySelector('.status-grid');
 		grid.innerHTML = '';
 		grid.append(...cards);
