@@ -40,6 +40,7 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
   `collapseWhitespace`) so the line breaks of the templates do not show; keep that in `vite.config.mjs`.
 - The Star4000 fonts have no accented letters: pass text through `plainText` (`utils/news.mjs`).
 - The page is 640x480, scaled; widescreen (`.wide`) widens the background and the bottom line to 854.
+- The Verstappen Jet map draws a jump of more than 3 degrees between two positions dashed (no receiver saw the jet there), never as a solid track.
 - The countdown bar (`scroll.ejs`, `syncCountdown` in `weatherdisplay.mjs`) is hidden on screens that
   scroll (those with `baseCountChange`).
 - Keep the Pi light: avoid per-frame animations and constant DOM updates (it has no GPU worth using).
@@ -67,5 +68,6 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 - Do not scrape flightradar24. Do not spoof `Referer`/`Origin` or otherwise get round a site's
   protection (F1 Jet Tracker and Swiss Timing refuse such requests: that is accepted).
 - Do not redistribute MultiViewer data.
+- The AvioADSB key (`AVIOADSB_KEY`) lives only in the Pi's configuration; AvioADSB data is CC BY-NC 4.0 and is credited in the Jet footer.
 - Logos and marks: only image files supplied by the owner, used as given (cropping or resizing is fine).
 - Ask before deleting any of the owner's files.
