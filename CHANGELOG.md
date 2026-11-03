@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.23.5** (2026-11-03): Status is the last screen of the rotation again (the rotation no longer waits for it)
 - **1.23.4** (2026-11-03): debug beacon of 1.23.3 testing removed
 - **1.23.3** (2026-11-03): Status no longer reads Debug mode as off at start-up (the change event ran inside the setting's constructor)
 - **1.23.2** (2026-11-03): Status asks the Pi service with a longer limit at start, again every minute if it failed, and again each time it shows
