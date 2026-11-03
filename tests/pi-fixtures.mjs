@@ -228,6 +228,9 @@ const plex = (now) => ({
 // the Status screen (Debug mode): one row per source, one of them that never answered
 const sources = (now) => ({
 	generated: iso(now),
+	pi: {
+		temp: 57, memFreeMb: 303, uptimeMin: 283, hubMin: 95,
+	},
 	rows: [
 		['Flights', 5, '90 units left', 720], ['ADS-B network', 1, '', 15], ['OpenSky', 2, '6738 credits', 30], ['METAR', 40, '', 360],
 		['Verstappen Jet', 50, '', 30], ['News', 4, '', 30], ['GT World', 120, '', 480], ['Plex', 20, '', 720], ['Schedule', 30, '', 360], ['TV page', null, '', 5],

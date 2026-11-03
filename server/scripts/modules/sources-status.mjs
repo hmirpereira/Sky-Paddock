@@ -28,6 +28,22 @@ const level = (minutes, limit) => {
 	return minutes < 2 * limit ? 'warn' : 'bad';
 };
 
+// the Pi's own health: the dot follows the worse of the temperature (the Pi 3 throttles from 80 C) and the free memory
+const piLevel = ({ temp, memFreeMb }) => {
+	if (temp >= 80 || memFreeMb < 50) return 'bad';
+	return temp >= 70 || memFreeMb < 100 ? 'warn' : 'ok';
+};
+
+const piCard = (display, pi) => {
+	const card = display.fillTemplate('status-pi', {
+		'pi-temp': pi.temp === null ? '? C' : `${pi.temp} C`,
+		'pi-mem': pi.memFreeMb === null ? '? MB free' : `${pi.memFreeMb} MB free`,
+		'pi-up': `up ${pi.uptimeMin === null ? '?' : ago(pi.uptimeMin)}`,
+	});
+	card.classList.add(pi.temp === null ? 'ok' : piLevel(pi));
+	return card;
+};
+
 class SourcesStatus extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'Status', defaultActive);
@@ -54,6 +70,7 @@ class SourcesStatus extends WeatherDisplay {
 			return;
 		}
 		this.rows = rows;
+		this.pi = data.pi;
 		this.timing.totalScreens = 1;
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
@@ -71,6 +88,7 @@ class SourcesStatus extends WeatherDisplay {
 			card.classList.add(level(minutes, row.limit));
 			return card;
 		});
+		if (this.pi) cards.push(piCard(this, this.pi));
 		const grid = this.elem.querySelector('.status-grid');
 		grid.innerHTML = '';
 		grid.append(...cards);
