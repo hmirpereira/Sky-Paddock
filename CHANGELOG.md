@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.24.4** (2026-11-03): Verstappen Jet: AvioADSB (with the owner's key) is a third source of the jet's position, asked only when adsb.fi and airplanes.live do not see it; credited in the footer
 - **1.24.3** (2026-11-03): Verstappen Jet map: stretches with no positions (more than 3 degrees apart) are dashed instead of looking like a flown track
 - **1.24.2** (2026-11-03): Status: the TV page signal line is gone from the Raspberry Pi card
 - **1.24.1** (2026-11-03): Status: the TV page card is gone and the Raspberry Pi card is now four rows, with free disk, Wi-Fi signal and the service uptime; Verstappen Jet: the map line starts at the departure airport again
