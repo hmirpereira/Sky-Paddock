@@ -138,16 +138,27 @@
 				}
 			}
 		}
-	}
-}
 
-// eight source names in the bottom line: smaller, and clear of the page counter
-#news-html .source-footer {
-	font-size: 14pt;
+		// logos in the bottom bar (_source-footer.scss) are smaller than in the rows
+		.source-footer {
+			.source-logo {
+				height: 18px;
+				margin-top: 0;
+				padding: 2px 5px;
 
-	.sources {
-		gap: 8px;
-		padding-right: 36px;
+				img {
+					height: 14px;
+				}
+
+				&.plate-none {
+					padding: 0;
+
+					img {
+						height: 18px;
+					}
+				}
+			}
+		}
 	}
 }
 

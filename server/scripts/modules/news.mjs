@@ -88,9 +88,8 @@ class News extends WeatherDisplay {
 		list.append(...rows);
 
 		// general sources | Formula 1 sources
-		const named = (source) => Object.assign(document.createElement('span'), { textContent: plainText(source).replace(' Portugal', '') });
-		const general = this.sources.filter((source) => !isF1Source(source)).map(named);
-		const f1Sources = this.sources.filter(isF1Source).map(named);
+		const general = this.sources.filter((source) => !isF1Source(source)).map(sourceLogo);
+		const f1Sources = this.sources.filter(isF1Source).map(sourceLogo);
 		const divider = document.createElement('span');
 		divider.className = 'sources-divider';
 		fillFooter(this.elem, [...general, ...(general.length && f1Sources.length ? [divider] : []), ...f1Sources], pageIndex, this.pages.length);

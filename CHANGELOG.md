@@ -2,7 +2,8 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
-- **1.24.5** (2026-11-03): News: the sources in the bottom line are text on the screen background, like on every other screen (no bar, no logos); Verstappen Jet: Celebplanes is asked before AeroDataBox for a missing airport, to spare the AeroDataBox quota
+- **1.24.6** (2026-11-03): News looks as it did in 1.24.4 again (logos on a bar in the bottom line): the text-only version of 1.24.5 is undone
+- **1.24.5** (2026-11-03): Verstappen Jet: Celebplanes is asked before AeroDataBox for a missing airport, to spare the AeroDataBox quota (the News bottom line of this version was undone in 1.24.6)
 - **1.24.4** (2026-11-03): Verstappen Jet: AvioADSB (with the owner's key) is a third source of the jet's position, asked only when adsb.fi and airplanes.live do not see it; credited in the footer
 - **1.24.3** (2026-11-03): Verstappen Jet map: stretches with no positions (more than 3 degrees apart) are dashed instead of looking like a flown track
 - **1.24.2** (2026-11-03): Status: the TV page signal line is gone from the Raspberry Pi card
