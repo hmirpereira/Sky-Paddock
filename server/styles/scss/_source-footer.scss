@@ -1,9 +1,7 @@
-@use 'shared/_colors'as c;
 @use 'shared/_utils'as u;
 
 // The bottom bar of a screen (views/partials/footer.ejs, filled by utils/footer.mjs): where the data comes from, always still,
-// centred, on the background of the screen and at half opacity, with the page counter (1/3) at the right. The News screen,
-// whose sources are logos, keeps a bar of its own colour with the logos on the left (.with-logos).
+// centred, on the background of the screen and at half opacity, with the page counter (1/3) at the right.
 .weather-display .main .source-footer {
 	position: absolute;
 	bottom: 0;
@@ -32,22 +30,6 @@
 		position: absolute;
 		right: 24px;
 		top: 0;
-	}
-
-	&.with-logos {
-		position: static;
-		display: flex;
-		justify-content: space-between;
-		background-color: var(--column-header, #{c.$column-header});
-
-		.sources {
-			justify-content: flex-start;
-			opacity: 1;
-		}
-
-		.page {
-			position: static;
-		}
 	}
 
 	// between the general and the Formula 1 sources
