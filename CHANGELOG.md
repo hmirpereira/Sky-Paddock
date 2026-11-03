@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.23.7** (2026-11-03): README: missing airports of the Verstappen Jet also come from the Celebplanes flight list (once a day) and from AeroDataBox (departure); Pi service only
 - **1.23.6** (2026-11-03): the Status screen title is just Status
 - **1.23.5** (2026-11-03): Status is the last screen of the rotation again (the rotation no longer waits for it)
 - **1.23.4** (2026-11-03): debug beacon of 1.23.3 testing removed
