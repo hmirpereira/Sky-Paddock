@@ -148,7 +148,8 @@ const init = () => {
 const setDebugMode = (value) => {
 	document.body.classList.toggle('debug-mode', !!value);
 	setMusicName(value);
-	window.dispatchEvent(new Event('debug-mode'));
+	// later: on start-up this runs inside the constructor of the setting, and settings.debugMode is still the default one
+	setTimeout(() => window.dispatchEvent(new Event('debug-mode')), 0);
 };
 
 const temperatureChangeUnits = (value) => {
