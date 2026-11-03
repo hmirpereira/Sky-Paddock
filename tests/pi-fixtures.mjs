@@ -225,6 +225,15 @@ const plex = (now) => ({
 	},
 });
 
+// the Status screen (Debug mode): one row per source, one of them that never answered
+const sources = (now) => ({
+	generated: iso(now),
+	rows: [
+		['Flights', 5, '90 units left'], ['ADS-B network', 1, ''], ['OpenSky', 2, '6738 credits'], ['TAF', 40, ''],
+		['Jet', 3, ''], ['News', 4, ''], ['GT World', 120, ''], ['Plex', 20, ''], ['Schedule', 30, ''], ['TV page', null, ''],
+	].map(([name, minutes, note]) => ({ name, ok: minutes === null ? null : iso(now - minutes * MIN), note })),
+});
+
 const health = (now) => ({ generated: iso(now), problems: [] });
 
 // path on the Pi service -> answer
@@ -239,6 +248,7 @@ const piResponses = (now) => ({
 	'/news.json': news(now),
 	'/plex.json': plex(now),
 	'/health.json': health(now),
+	'/sources.json': sources(now),
 	'/beat': { ok: true },
 });
 

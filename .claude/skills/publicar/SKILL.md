@@ -22,7 +22,8 @@ read it, do not copy them here: this repository is public). Reply to the owner i
 1. `node .claude/skills/publicar/bump.mjs patch` (or `minor`, or an exact `x.y.z`). It changes `package.json` and both
    version fields of `package-lock.json` and prints the new version.
 2. `README.md`: update what the change affects (it describes every screen and option). English.
-3. `LOGBOOK.md` in the project folder: a new entry at the top of `## Histórico`, in Portuguese:
+3. `CHANGELOG.md`: a new line at the top, `- **<x.y.z>** (<date>): <summary>`, the same as the commit subject.
+4. `LOGBOOK.md` in the project folder: a new entry at the top of `## Histórico`, in Portuguese:
    `- **<today>:** versão <x.y.z>. <what changed, why, what was tested>`; update the "última atualização" date near the top.
 
 ## 3. Check

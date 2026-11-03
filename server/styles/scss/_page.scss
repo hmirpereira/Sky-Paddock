@@ -316,9 +316,9 @@ body {
 	transform-origin: 0 0;
 }
 
-// version and commit date (settings: Show Version Mark), over the bottom right corner of the bottom line;
+// version and commit date (settings: Debug mode), over the bottom right corner of the bottom line;
 // a little in from the edges, because the TV's overscan cuts about 10 px at the bottom and 25 px at the right.
-// Debug: the track playing on the Pi (settings: Show Music Track Name) goes on the same line, after it.
+// Debug mode (settings): the track playing on the Pi goes on the same line, after it.
 #version-mark {
 	display: none;
 	position: absolute;
@@ -339,17 +339,16 @@ body {
 	}
 }
 
-.version-mark #version-mark,
-.music-name #version-mark {
+.debug-mode #version-mark {
 	display: block;
 }
 
-.version-mark #version-mark .version,
-.music-name #version-mark .music {
+.debug-mode #version-mark .version,
+.debug-mode #version-mark .music {
 	display: inline;
 }
 
-.music-name #version-mark .version + .music {
+.debug-mode #version-mark .version + .music {
 	margin-left: 8px;
 }
 

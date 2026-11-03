@@ -14,7 +14,6 @@ const show = async () => {
 };
 
 const setMusicName = (value) => {
-	document.body.classList.toggle('music-name', !!value);
 	clearInterval(timer);
 	timer = null;
 	if (value) {

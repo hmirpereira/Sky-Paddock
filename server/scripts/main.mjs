@@ -21,6 +21,7 @@ import './modules/overhead.mjs';
 import './modules/workschedule.mjs';
 import './modules/news.mjs';
 import './modules/plex.mjs';
+import './modules/sources-status.mjs';
 import './modules/f1lastrace.mjs';
 import './modules/f1grid.mjs';
 import './modules/f1telemetry.mjs';

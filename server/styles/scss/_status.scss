@@ -1,0 +1,80 @@
+@use 'shared/_colors'as c;
+@use 'shared/_utils'as u;
+
+// Status (status.mjs, Debug mode only): one row per source of the Pi service, same layout as Cancellations
+.weather-display .main.status {
+	&.main {
+		overflow: hidden;
+
+		.column-headers {
+			background-color: c.$column-header;
+			height: 30px;
+			position: relative;
+
+			div {
+				position: absolute;
+				top: -4px;
+				font-family: 'Star4000 Small';
+				font-size: 24pt;
+				color: c.$column-header-text;
+				@include u.text-shadow();
+			}
+
+			.name {
+				left: 20px;
+			}
+
+			.age {
+				left: 250px;
+			}
+
+			.note {
+				left: 380px;
+			}
+		}
+
+		// 6 rows of 41px, as in Cancellations (the bottom bar is on the lower part)
+		.status-lines {
+			height: 280px;
+			background: repeating-linear-gradient(0deg, c.$gradient-main-background-2 0px,
+					c.$gradient-main-background-1 136px,
+					c.$gradient-main-background-1 202px,
+					c.$gradient-main-background-2 338px,
+				);
+
+			.status-row {
+				position: relative;
+				height: 41px;
+				font-family: 'Star4000 Large';
+				font-size: 24pt;
+				color: white;
+				@include u.text-shadow();
+
+				>div {
+					position: absolute;
+					top: 4px;
+					white-space: pre;
+				}
+
+				.name {
+					left: 20px;
+				}
+
+				.age {
+					left: 250px;
+				}
+
+				.note {
+					left: 380px;
+					font-family: 'Star4000 Small';
+					font-size: 20pt;
+				}
+
+				// a source that has never answered
+				&.silent .age {
+					color: #ff6b5a;
+				}
+			}
+		}
+	}
+}

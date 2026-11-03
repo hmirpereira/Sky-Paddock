@@ -143,7 +143,10 @@
       <div id="plex-html" class="weather-display">
         <%- include('partials/plex.ejs') %>
       </div>
-      <!-- version and commit date in the bottom right corner (settings: Show Version Mark) -->
+      <div id="status-html" class="weather-display">
+        <%- include('partials/status.ejs') %>
+      </div>
+      <!-- version and commit date in the bottom right corner (settings: Debug mode) -->
       <!-- Christmas effects, filled by christmas.mjs (setting Christmas Effects) -->
       <div id="christmas" aria-hidden="true"></div>
       <!-- Halloween effects, filled by halloween.mjs (setting Halloween Effects) -->

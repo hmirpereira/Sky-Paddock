@@ -1,0 +1,74 @@
+# Changelog
+
+One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
+
+- **1.23.0** (2026-11-03): Debug mode joins the version mark and the music name into one setting and adds a Status screen with the last answer of every source of the Pi service; CHANGELOG.md
+- **1.22.5** (2026-11-02): music track on the same line as the version mark; aviation footers keep only the credits a source asks for; airplanes.live in the README
+- **1.22.4** (2026-11-02): jet in flight with no known destination says "Took off from XXX"
+- **1.22.3** (2026-11-02): airplanes.live off; no "To ?" in flight when the destination is unknown
+- **1.22.2** (2026-11-02): adsb.fi as the main ADS-B source (Overhead network, Verstappen Jet), airport codes in the map fixture
+- **1.22.1** (2026-11-02): Verstappen Jet arrival when lost in the air; airplanes.live, adsb.fi and OpenSky for its position
+- **1.22.0** (2026-11-02): debug option to show the music track name under the version mark
+- **1.21.2** (2026-11-02): skip the F1 and GT screens in the racing gap, Verstappen Jet name
+- **1.20.8** (2026-10-31): README for the Christmas list of the Plex page
+- **1.20.7** (2026-10-31): README for the Rotten Tomatoes Halloween list of the Plex page
+- **1.20.6** (2026-10-31): README for the Halloween Plex picks, smoke test pinned to the recorded clock
+- **1.20.5** (2026-10-30): version mark no longer shows the dark mode setting, docs and history reviewed
+- **1.20.4** (2026-10-30): new Christmas lights picture
+- **1.20.3** (2026-10-30): countdown bar back under the Christmas snow
+- **1.20.2** (2026-10-30): Christmas pictures over the boxes, only header, bottom text and countdown bar above them
+- **1.20.1** (2026-10-30): Christmas lights and snow as still pictures under the text, animated GIF removed
+- **1.20.0** (2026-10-30): Christmas effects replaced by the owner's string of lights (GIF), CSS lights and snow removed
+- **1.19.0** (2026-10-30): Halloween decorations remodelled: still cobwebs in the top corners, no moving bats and spiders
+- **1.18.6** (2026-10-30): spider scuttle animated with transform instead of margin-left (Halloween effects crawled the Pi)
+- **1.18.5** (2026-10-30): link settings shown as text, bad location no longer stops the page, tidy code from the audit
+- **1.18.4** (2026-10-29): README, the F1 Jet arrival from AeroDataBox when OpenSky loses the jet
+- **1.18.3** (2026-10-27): Plex Recommends last in the rotation, title lines not cut
+- **1.18.2** (2026-10-27): README GIF redone from the current rotation, without Work Schedule and the Lufthansa departures
+- **1.18.1** (2026-10-27): scan lines in real pixels on the page, jack-o'-lanterns clear of the TV overscan
+- **1.18.0** (2026-10-27): Plex Recommends, PlanetF1, F1 logo in the titles, a page that follows the window, retried requests and one way to scroll
+- **1.17.2** (2026-10-26): one way to scroll (the whole box, stripes move with the text), page counter at the bottom right, and a common bottom bar for sources
+- **1.17.1** (2026-10-24): Hourly Graph box down to the bottom line, Work Schedule first of the aviation screens, Personal Schedule option and a tighter layout
+- **1.17.0** (2026-10-24): Work Schedule shows the (R) schedule of each day in small under the shift, start and end
+- **1.16.6** (2026-10-24): no snow on the screens that scroll, only the lights
+- **1.16.5** (2026-10-24): Christmas snow as 18 small flakes instead of three page-sized layers (GPU cost on the Pi)
+- **1.16.4** (2026-10-24): lighter Christmas effects for the Pi (three snow layers, four blinking light groups, no filters)
+- **1.16.3** (2026-10-24): fix duplicate import in the F1 Telemetry module, Travel Forecast city grouped by continent, Dark Mode Auto label
+- **1.16.2** (2026-10-24): F1 Telemetry skipped three days after the weekend, retro effects over the decorations, new README GIF
+- **1.16.0** (2026-10-24): Christmas and Halloween effects (Auto, On, Off), settings tidied, GT logos option removed
+- **1.15.0** (2026-10-24): Dark Mode setting (Off, On, Automatic from 10 min after sunset to 10 min after sunrise), shown in the version mark
+- **1.14.0** (2026-10-24): Travel Forecast page 2 laid out as Current Conditions with the country flag, every screen on the loading list
+- **1.13.3** (2026-10-24): F1 Next Race map without start line and arrow, only the record and the named corners
+- **1.13.2** (2026-10-24): F1 Next Race map marks only corners that have a name, no bare numbers
+- **1.13.1** (2026-10-24): F1 Next Race start lines and corners checked against the real circuits, wrong ones corrected
+- **1.13.0** (2026-10-24): F1 Next Race map with start line, lap direction, track record and corner names for every circuit
+- **1.12.1** (2026-10-24): F1 Next Race map shows the start line and the direction of the lap
+- **1.12.0** (2026-10-24): F1 Next Race shows corner names and the track record, Spa first
+- **1.11.1** (2026-10-24): Travel Forecast page 2 keeps its text away from the edges of the box
+- **1.11.0** (2026-10-23): Travel Forecast in two pages, page 2 with the current weather and local time of a chosen city
+- **1.10.8** (2026-10-23): Hourly Graph redesigned (rain bars, min and max marked, now edge, weekday at midnight)
+- **1.10.7** (2026-10-23): countdown highlight back to background-position (weather and almanac screens lost their backgrounds on the TV)
+- **1.10.6** (2026-10-23): skip the F1 and GT Next Race screens when no session has a date
+- **1.10.5** (2026-10-23): retrying status removed, F1 Jet interval in the README
+- **1.10.4** (2026-10-22): technical audit fixes, unit tests, one list for the rotation
+- **1.10.3** (2026-10-22): text from other sites is no longer read as HTML
+- **1.10.2** (2026-10-20): plane picture for aircraft on Overhead
+- **1.10.1** (2026-10-18): Local Forecast removed
+- **1.10.0** (2026-10-18): F1 Telemetry redesign, OpenF1 request queue
+- **1.9.2** (2026-10-18): version mark nearer the edges, labels centred
+- **1.9.1** (2026-10-18): version mark inside the TV safe area
+- **1.9.0** (2026-10-18): Webamp removed, version mark
+- **1.8.3** (2026-10-18): smoke test of every screen before publishing
+- **1.8.2** (2026-10-18): lint every script file, CLAUDE.md
+- **1.8.1** (2026-10-17): F1PT as a second F1 news source
+- **1.8.0** (2026-10-17): source logos and F1 news on the News screen, compact HTML again
+- **1.8.0** (2026-10-17): source logos and F1 news on the News screen, compact HTML again
+- **1.8.0** (2026-10-17): source logos and F1 news on the News screen, compact HTML again
+- **1.7.0** (2026-10-17): Air & Pollen screen, wide bottom line, lighter page, unused code and files removed
+- **1.6.0** (2026-10-17): build with Vite instead of gulp and webpack
+- **1.5.4** (2026-10-17): remove jQuery
+- **1.5.3** (2026-10-17): publish with GitHub Actions
+- **1.5.1** (2026-10-16): GT World Next hides Qualifying Combined when Q1-Q3 are listed
+- **1.5.0** (2026-10-16): GT World results and next event, team logos, GT colours
+- **1.5.0** (2026-10-16): GT World race results and next event screens, GT colour theme
+- **12.1.0 build attach** (2026-05-27): 

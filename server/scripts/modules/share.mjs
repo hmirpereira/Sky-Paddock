@@ -22,8 +22,7 @@ const TV_SETTINGS = {
 	'settings-kiosk-checkbox': true,
 	'settings-wide-checkbox': true,
 	'settings-scanLines-checkbox': true,
-	'settings-versionMark-checkbox': true,
-	'settings-musicName-checkbox': true,
+	'settings-debugMode-checkbox': true,
 };
 
 const createLink = async (e) => {

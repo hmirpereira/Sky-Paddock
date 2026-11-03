@@ -99,7 +99,7 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		// as on the TV (TV_SETTINGS in share.mjs)
 		params.set('kiosk', 'true');
 		params.set('settings-scanLines-checkbox', 'true');
-		params.set('settings-versionMark-checkbox', 'true');
+		params.set('settings-debugMode-checkbox', 'true');
 		await page.goto(`./?${params}`, { waitUntil: 'domcontentloaded' });
 
 		// every screen has finished loading (loaded, no data, or failed)

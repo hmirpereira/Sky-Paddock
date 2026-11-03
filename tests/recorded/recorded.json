@@ -8,6 +8,7 @@
 		"hourly-graph": "loaded",
 		"travel": "loaded",
 		"regional-forecast": "loaded",
+		"status": "loaded",
 		"extended-forecast": "loaded",
 		"almanac": "loaded",
 		"radar": "loaded",

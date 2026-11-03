@@ -27,7 +27,7 @@ const settings = {
 	hoursFormat: { value: 2 },
 	speed: { value: 1.0 },
 	kiosk: { value: false },
-	versionMark: { value: false },
+	debugMode: { value: false },
 	scanLines: { value: false },
 	vignette: { value: false },
 	colorFringe: { value: false },
@@ -130,20 +130,25 @@ const init = () => {
 	settings.newsTicker = new Setting('newsTicker', 'Show Breaking News in the Bottom Line', 'checkbox', false, null, true);
 	settings.wide = new Setting('wide', 'Widescreen', 'checkbox', false, wideScreenChange, true);
 	settings.kiosk = new Setting('kiosk', 'Kiosk', 'checkbox', false, kioskChange, false);
-	// debug: the track playing on the Pi, under the version mark (utils/music-name.mjs)
-	settings.musicName = new Setting('musicName', 'Show Music Track Name (debug)', 'checkbox', false, setMusicName, true);
-	// last of the list: version and commit date in the bottom right corner, to see which version a screen is running (on the TV)
-	settings.versionMark = new Setting('versionMark', 'Show Version Mark', 'checkbox', false, (value) => document.body.classList.toggle('version-mark', !!value), true);
+	// last of the list, for the owner only: version, commit date and the track playing on the Pi in the bottom right corner
+	// (utils/music-name.mjs), and the Status screen with the last answer of every source of the Pi service
+	settings.debugMode = new Setting('debugMode', 'Debug mode', 'checkbox', false, setDebugMode, true);
 
 	// generate html objects
-	// the version mark is always the last of the list
-	const { versionMark, ...others } = settings;
-	const settingHtml = [...Object.values(others), versionMark].map((d) => d.generate());
+	// the Debug mode is always the last of the list
+	const { debugMode, ...others } = settings;
+	const settingHtml = [...Object.values(others), debugMode].map((d) => d.generate());
 
 	// write to page
 	const settingsSection = document.querySelector('#settings');
 	settingsSection.innerHTML = '';
 	settingsSection.append(...settingHtml);
+};
+
+const setDebugMode = (value) => {
+	document.body.classList.toggle('debug-mode', !!value);
+	setMusicName(value);
+	window.dispatchEvent(new Event('debug-mode'));
 };
 
 const temperatureChangeUnits = (value) => {
