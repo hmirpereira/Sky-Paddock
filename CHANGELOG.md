@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.23.2** (2026-11-03): Status asks the Pi service with a longer limit at start, again every minute if it failed, and again each time it shows
 - **1.23.1** (2026-11-03): the rotation waits for the Status screen before it starts, so Status is the first screen after Hazards; Status card of the Pi with load, music and Dark mode
 - **1.23.0** (2026-11-03): Debug mode joins the version mark and the music name into one setting and adds a Status screen with the last answer of every source of the Pi service; CHANGELOG.md
 - **1.22.5** (2026-11-02): music track on the same line as the version mark; aviation footers keep only the credits a source asks for; airplanes.live in the README

@@ -13,6 +13,10 @@ const SERVICE_URL = 'http://127.0.0.1:8095/sources.json';
 const MUSIC_URL = 'http://127.0.0.1:8095/musica.json';
 const NOTE_MAX = 40;
 const MUSIC_MAX = 34;
+// the Pi 3 is slow while the page starts: the first request gets a long time, the later ones (when the screen shows) a short one
+const START_TIMEOUT_MS = 30000;
+const REFRESH_TIMEOUT_MS = 5000;
+const RETRY_MS = 60000;
 
 const minutesSince = (iso) => Math.round((Date.now() - Date.parse(iso)) / 60000);
 
@@ -83,26 +87,37 @@ class SourcesStatus extends WeatherDisplay {
 			this.setStatus(STATUS.noData);
 			return;
 		}
-		let data = null;
-		try {
-			data = await json(SERVICE_URL, { signal: AbortSignal.timeout(5000) });
-		} catch (error) {
-			console.warn('Status: no data from the Pi', error.message);
-		}
-		const rows = data?.rows ?? [];
-		if (rows.length === 0) {
+		const data = await this.fetchSources(START_TIMEOUT_MS);
+		if (!data) {
 			this.setStatus(STATUS.noData);
+			// not on the Pi, or the Pi did not answer in time: ask again now and then (a no-op for this screen when it works)
+			clearTimeout(this.retry);
+			this.retry = setTimeout(() => this.getData(), RETRY_MS);
 			return;
 		}
-		this.rows = rows;
-		this.pi = data.pi;
 		this.timing.totalScreens = 1;
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
 	}
 
+	// the answer of the Pi service, or null; it is kept for the screen
+	async fetchSources(timeout) {
+		try {
+			const data = await json(SERVICE_URL, { signal: AbortSignal.timeout(timeout) });
+			if (!data?.rows?.length) return null;
+			this.rows = data.rows;
+			this.pi = data.pi;
+			return data;
+		} catch (error) {
+			console.warn('Status: no data from the Pi', error.message);
+			return null;
+		}
+	}
+
 	async drawCanvas() {
 		super.drawCanvas();
+		// the ages are read when the screen shows; the answer from the start would be hours old (the last one is kept if this fails)
+		await this.fetchSources(REFRESH_TIMEOUT_MS);
 		const cards = this.rows.map((row) => {
 			const minutes = row.ok ? minutesSince(row.ok) : null;
 			const card = this.fillTemplate('status-card', {
