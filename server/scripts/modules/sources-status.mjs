@@ -38,7 +38,7 @@ const piCard = (display, pi) => {
 	const card = display.fillTemplate('status-pi', {
 		'pi-temp': pi.temp === null ? '? C' : `${pi.temp} C`,
 		'pi-mem': pi.memFreeMb === null ? '? MB free' : `${pi.memFreeMb} MB free`,
-		'pi-up': `up ${pi.uptimeMin === null ? '?' : ago(pi.uptimeMin)}`,
+		'pi-up': pi.uptimeMin === null ? '?' : ago(pi.uptimeMin),
 	});
 	card.classList.add(pi.temp === null ? 'ok' : piLevel(pi));
 	return card;
