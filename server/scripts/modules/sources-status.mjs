@@ -57,6 +57,7 @@ const modeText = (value, active) => {
 
 const piCard = (display, pi, track) => {
 	const card = display.fillTemplate('status-pi', {
+		'pi-load': pi.load === null ? 'load ?' : `load ${pi.load.toFixed(2)}`,
 		'pi-temp': pi.temp === null ? '? C' : `${pi.temp} C`,
 		'pi-mem': pi.memFreeMb === null ? '? MB free' : `${pi.memFreeMb} MB free`,
 		'pi-up': pi.uptimeMin === null ? '?' : ago(pi.uptimeMin),

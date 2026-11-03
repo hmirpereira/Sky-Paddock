@@ -78,7 +78,7 @@
 				grid-column: 2 / 4;
 			}
 
-			.label, .pi-temp, .pi-mem, .pi-up, .pi-music, .pi-dark {
+			.label, .pi-cpu, .pi-mem, .pi-up, .pi-music, .pi-dark {
 				font-size: 11px;
 				white-space: nowrap;
 			}
@@ -95,7 +95,12 @@
 				color: #8b9bbd;
 			}
 
-			.pi-temp, .pi-mem, .pi-up, .pi-music, .pi-dark {
+			.pi-load {
+				margin-right: 8px;
+				color: #8b9bbd;
+			}
+
+			.pi-cpu, .pi-mem, .pi-up, .pi-music, .pi-dark {
 				grid-column: 3;
 				text-align: right;
 			}

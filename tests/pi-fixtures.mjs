@@ -229,7 +229,7 @@ const plex = (now) => ({
 const sources = (now) => ({
 	generated: iso(now),
 	pi: {
-		temp: 57, memFreeMb: 303, uptimeMin: 283, hubMin: 95,
+		load: 0.42, temp: 57, memFreeMb: 303, uptimeMin: 283, hubMin: 95,
 	},
 	rows: [
 		['Flights', 5, '90 units left', 720], ['ADS-B receiver', 1, '', 15], ['ADS-B network', 1, '', 15], ['OpenSky', 2, '6738 credits', 30], ['METAR', 40, '', 360],
