@@ -82,7 +82,6 @@ class SourcesStatus extends WeatherDisplay {
 	}
 
 	async getData(weatherParameters) {
-		fetch(`http://127.0.0.1:8095/beat?screen=dbg-g-${this.isEnabled}-${settings.debugMode?.value}-${this.navId}`).catch(() => {}); // TEMP
 		if (!super.getData(weatherParameters)) return;
 		if (!settings.debugMode?.value) {
 			this.setStatus(STATUS.noData);
