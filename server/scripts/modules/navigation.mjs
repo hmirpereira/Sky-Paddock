@@ -29,6 +29,7 @@ const DISPLAY_ORDER = [
 	'gt-next-race', 'plex',
 ];
 const displays = [];
+const STATUS_NAV_ID = DISPLAY_ORDER.indexOf('status');
 let playing = false;
 let progress;
 const weatherParameters = {};
@@ -184,8 +185,9 @@ const updateStatus = (value) => {
 	if (!progress) return;
 	progress.drawCanvas(displays, countLoadedDisplays());
 
-	// first display is hazards and it must load before evaluating the first display
-	if (displays[0].status === STATUS.loading) return;
+	// the first displays are hazards and the status (Debug mode): they must load before evaluating the first display, or the
+	// rotation starts at the first screen loaded and the status is never reached (each lap ends in a page reload)
+	if (displays[0].status === STATUS.loading || displays[STATUS_NAV_ID].status === STATUS.loading) return;
 
 	// calculate first enabled display
 	const firstDisplayIndex = displays.findIndex((display) => display.enabled && display.timing.totalScreens > 0);
@@ -199,6 +201,12 @@ const updateStatus = (value) => {
 
 	// if hazards data arrives after the firstDisplayIndex loads, then we need to hot wire this to the first display
 	if (value.id === 0 && value.status === STATUS.loaded && displays[0].timing.totalScreens === 0) {
+		value.id = firstDisplayIndex;
+		value.status = displays[firstDisplayIndex].status;
+	}
+
+	// the status is the last one to be waited for: whatever it ends as, the first display can start now
+	if (value.id === STATUS_NAV_ID && value.id !== firstDisplayIndex) {
 		value.id = firstDisplayIndex;
 		value.status = displays[firstDisplayIndex].status;
 	}
