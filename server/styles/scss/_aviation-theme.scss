@@ -29,6 +29,15 @@ $av-yellow: #ffad00;
 	}
 }
 
+// "Porto Departures" in one line (placeTitle in utils/local-place.mjs keeps it short enough for the space before the clock)
+#metar-html,
+#departures-html,
+#cancellations-html {
+	.header .title.dual>div {
+		white-space: nowrap;
+	}
+}
+
 .wide.metar #container,
 .wide.departures #container,
 .wide.cancellations #container,

@@ -7,7 +7,7 @@ import decodeMetar from './utils/metar-decoder.mjs';
 import decodeTaf from './utils/taf-decoder.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
-import { airport, placeTitle } from './utils/local-place.mjs';
+import { airport, loadAirportCity, placeTitle } from './utils/local-place.mjs';
 import fillFooter from './utils/footer.mjs';
 
 // metar.vatsim.net mirrors real-world METARs and allows browser (CORS) requests without a key
@@ -35,7 +35,7 @@ class Metar extends WeatherDisplay {
 			this.setStatus(STATUS.noData);
 			return;
 		}
-		const [metar, taf] = await Promise.all([getMetar(icao), getTaf(icao)]);
+		const [metar, taf] = await Promise.all([getMetar(icao), getTaf(icao), loadAirportCity()]);
 		if (!metar && !taf) {
 			this.setStatus(STATUS.failed);
 			return;

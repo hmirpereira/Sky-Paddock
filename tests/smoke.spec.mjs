@@ -21,7 +21,7 @@ const SITES = /^https:\/\//;
 
 // a public place, not anyone's home
 const LOCATION = {
-	query: 'Lisbon, PRT', latLon: { lat: 38.7223, lon: -9.1393 }, airportIcao: 'LPPT', airportName: 'Lisbon', ipmaArea: '11',
+	query: 'Lisbon, PRT', latLon: { lat: 38.7223, lon: -9.1393 }, airportIcao: 'LPPT', ipmaArea: '11',
 };
 // screens that load without pages of their own when there is nothing to show (Hazards: no warnings)
 const MAY_HAVE_NO_PAGES = ['hazards'];
@@ -93,7 +93,6 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		params.set('latLonQuery', LOCATION.query);
 		params.set('latLon', JSON.stringify(LOCATION.latLon));
 		params.set('settings-airportIcao-text', LOCATION.airportIcao);
-		params.set('settings-airportName-text', LOCATION.airportName);
 		params.set('settings-ipmaArea-select', LOCATION.ipmaArea);
 		params.set('settings-wide-checkbox', String(wide));
 		// as on the TV (TV_SETTINGS in share.mjs)
@@ -153,15 +152,18 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 	});
 });
 
-// a link edited by hand: the airport name is shown as text (no script runs), and a location that is not JSON
+// the city of the airport comes from the Pi service and is shown as text (no script runs); a link edited by hand with a location that is not JSON
 // does not stop the page from starting
-test('a link with odd settings shows the airport name as text', async ({ page }) => {
+test('a link with odd settings shows the airport city as text', async ({ page }) => {
 	const pageErrors = [];
 	page.on('pageerror', (error) => pageErrors.push(error.message));
 	await page.routeFromHAR(HAR, { url: SITES, notFound: 'fallback' });
 	// the time of the recording, like the other tests: with the real date the recorded forecast stops covering today
 	await page.clock.install({ time: readMeta().time });
 	// a location that is not JSON: the page still starts (and asks for a location)
+	await page.route('http://127.0.0.1:8095/airport.json*', (route) => route.fulfill({
+		status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify({ icao: 'LPPT', city: '<b>x</b>' }),
+	}));
 	await page.goto('./?latLonQuery=x&latLon=abc', { waitUntil: 'domcontentloaded' });
 	await expect(page.locator('#divTwc')).toBeVisible();
 	const params = new URLSearchParams({
@@ -169,7 +171,6 @@ test('a link with odd settings shows the airport name as text', async ({ page })
 		latLonQuery: LOCATION.query,
 		latLon: JSON.stringify(LOCATION.latLon),
 		'settings-airportIcao-text': LOCATION.airportIcao,
-		'settings-airportName-text': '<img src="x" onerror="window.injected = true">',
 	});
 	await page.goto(`./?${params}`, { waitUntil: 'domcontentloaded' });
 	// the other screens that are on by default come first: go on until the Airport METAR is shown
@@ -177,9 +178,8 @@ test('a link with odd settings shows the airport name as text', async ({ page })
 		await page.evaluate(() => document.querySelector('#NavigateNext').click());
 		await page.waitForTimeout(300);
 	}
-	// the title is drawn (as text, or as the element that a script would make)
-	await page.waitForFunction(() => window.injected || document.querySelector('#metar-html .title.dual .top')?.textContent.includes('<img'), null, { timeout: 60_000 });
-	expect(await page.evaluate(() => window.injected ?? false)).toBe(false);
-	expect(await page.locator('img[src="x"]').count()).toBe(0);
+	// the title is drawn as text (the tags are visible), not as the element they would make
+	await page.waitForFunction(() => document.querySelector('#metar-html .title.dual .top')?.textContent.includes('<b>'), null, { timeout: 60_000 });
+	expect(await page.locator('#metar-html .title.dual .top b').count()).toBe(0);
 	expect(pageErrors, 'page errors').toEqual([]);
 });

@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
 const settings = {
 	// shown first on the page
 	airportIcao: { value: '' },
-	airportName: { value: '' },
 	ipmaArea: { value: 0 },
 	travelCity: { value: DEFAULT_DETAIL_CITY },
 	windUnits: { value: 2 },
@@ -43,7 +42,6 @@ const init = () => {
 	// local airport (Airport METAR, Departures and Cancellations titles) and IPMA warning area (Hazards);
 	// nothing is set by default, so the code has no place in it: the Pi's address sets them
 	settings.airportIcao = new Setting('airportIcao', 'Airport ICAO code', 'text', '', null, true, { placeholder: 'e.g. EDDF', maxLength: 4 });
-	settings.airportName = new Setting('airportName', 'Airport name', 'text', '', null, true, { placeholder: 'e.g. Frankfurt', maxLength: 16 });
 	settings.ipmaArea = new Setting('ipmaArea', 'IPMA warning area', 'select', 0, null, true, [
 		[0, 'none'],
 		...IPMA_AREAS.map(([n, , name]) => [n, name]),

@@ -6,7 +6,7 @@ import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
-import { placeTitle } from './utils/local-place.mjs';
+import { loadAirportCity, placeTitle } from './utils/local-place.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import fillFooter from './utils/footer.mjs';
@@ -46,6 +46,8 @@ class Departures extends WeatherDisplay {
 			this.setStatus(STATUS.noData);
 			return;
 		}
+
+		await loadAirportCity();
 
 		const now = Date.now();
 		this.flights = (response.flights ?? [])

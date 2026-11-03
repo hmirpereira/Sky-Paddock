@@ -255,6 +255,7 @@ const piResponses = (now) => ({
 	'/health.json': health(now),
 	'/sources.json': sources(now),
 	'/musica.json': { track: 'Departure Lounge, 89F' },
+	'/airport.json': { icao: 'LPPT', iata: 'LIS', city: 'Lisbon' },
 	'/beat': { ok: true },
 });
 
