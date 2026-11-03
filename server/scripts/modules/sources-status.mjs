@@ -9,22 +9,29 @@ import { plainText } from './utils/text.mjs';
 import fillFooter from './utils/footer.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/sources.json';
-const ROWS_PER_PAGE = 6;
-const NOTE_MAX = 18;
+const NOTE_MAX = 40;
 
-// "now", "5 min", "3 h" or "2 d" since the time of the last answer
-const ago = (iso) => {
-	const minutes = Math.round((Date.now() - Date.parse(iso)) / 60000);
+const minutesSince = (iso) => Math.round((Date.now() - Date.parse(iso)) / 60000);
+
+// "now", "5 min", "3 h" or "2 d"
+const ago = (minutes) => {
 	if (minutes < 1) return 'now';
 	if (minutes < 60) return `${minutes} min`;
 	if (minutes < 48 * 60) return `${Math.round(minutes / 60)} h`;
 	return `${Math.round(minutes / 1440)} d`;
 };
 
+// ok until the limit of the source (set by the Pi service), warn until twice that, then bad; never answered is bad
+const level = (minutes, limit) => {
+	if (minutes === null) return 'bad';
+	if (!limit || minutes < limit) return 'ok';
+	return minutes < 2 * limit ? 'warn' : 'bad';
+};
+
 class SourcesStatus extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'Status', defaultActive);
-		this.timing.baseDelay = 10000;
+		this.timing.baseDelay = 12000;
 		// the Debug mode setting switches the screen on and off while the page is open
 		window.addEventListener('debug-mode', () => this.getData());
 	}
@@ -46,31 +53,28 @@ class SourcesStatus extends WeatherDisplay {
 			this.setStatus(STATUS.noData);
 			return;
 		}
-		this.pages = [];
-		const pageCount = Math.ceil(rows.length / ROWS_PER_PAGE);
-		const perPage = Math.ceil(rows.length / pageCount);
-		for (let i = 0; i < rows.length; i += perPage) this.pages.push(rows.slice(i, i + perPage));
-		this.timing.totalScreens = this.pages.length;
+		this.rows = rows;
+		this.timing.totalScreens = 1;
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
 	}
 
 	async drawCanvas() {
 		super.drawCanvas();
-		const pageIndex = Math.min(Math.max(this.screenIndex, 0), this.pages.length - 1);
-		const lines = this.pages[pageIndex].map((row) => {
-			const line = this.fillTemplate('status-row', {
+		const cards = this.rows.map((row) => {
+			const minutes = row.ok ? minutesSince(row.ok) : null;
+			const card = this.fillTemplate('status-card', {
 				name: plainText(row.name),
-				age: row.ok ? ago(row.ok) : 'no signal',
+				age: minutes === null ? 'no signal' : ago(minutes),
 				note: plainText(row.note ?? '').slice(0, NOTE_MAX),
 			});
-			line.classList.toggle('silent', !row.ok);
-			return line;
+			card.classList.add(level(minutes, row.limit));
+			return card;
 		});
-		const list = this.elem.querySelector('.status-lines');
-		list.innerHTML = '';
-		list.append(...lines);
-		fillFooter(this.elem, [], pageIndex, this.pages.length);
+		const grid = this.elem.querySelector('.status-grid');
+		grid.innerHTML = '';
+		grid.append(...cards);
+		fillFooter(this.elem, [], 0, 1);
 		this.finishDraw();
 	}
 }

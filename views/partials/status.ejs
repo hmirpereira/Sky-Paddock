@@ -1,15 +1,11 @@
 <%- include('header.ejs', {titleDual:{ top: 'Sources' , bottom: 'Status' }, hasTime: true, noaaLogo: false}) %>
 	<div class="main has-scroll status">
-		<div class="column-headers">
-			<div class="name">SOURCE</div>
-			<div class="age">LAST</div>
-			<div class="note">NOTE</div>
-		</div>
-		<div class="status-lines">
-			<div class="status-row template">
-				<div class="name"></div>
-				<div class="age"></div>
-				<div class="note"></div>
+		<div class="status-grid">
+			<div class="status-card template">
+				<span class="dot"></span>
+				<span class="name"></span>
+				<span class="age"></span>
+				<span class="note"></span>
 			</div>
 		</div>
 		<%- include('footer.ejs') %>
