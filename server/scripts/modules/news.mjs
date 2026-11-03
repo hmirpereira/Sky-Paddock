@@ -62,11 +62,9 @@ class News extends WeatherDisplay {
 		const today = DateTime.now().setZone(NEWS_TZ);
 
 		const page = this.pages[pageIndex];
-		// "Latest News", or "F1 News" in one line with the red F1 logo
+		// "Latest News", or "F1 News" with the red F1 logo, in one line
 		const title = this.elem.querySelector('.header .title.dual');
-		title.classList.toggle('one-line', !!page.f1);
-		title.querySelector('.top').innerHTML = page.f1 ? f1Title('News', true) : 'Latest';
-		title.querySelector('.bottom').innerHTML = page.f1 ? '' : 'News';
+		title.querySelector('.top').innerHTML = page.f1 ? f1Title('News', true) : 'Latest News';
 		const rows = page.items.map((item) => {
 			const time = DateTime.fromISO(item.time).setZone(NEWS_TZ);
 			const when = time.hasSame(today, 'day') ? ConversionHelpers.formatTime(time) : `${time.toFormat('ccc')} ${ConversionHelpers.formatTime(time)}`;

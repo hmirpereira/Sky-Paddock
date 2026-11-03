@@ -88,8 +88,8 @@ class F1Jet extends WeatherDisplay {
 		main.classList.toggle('page-map', onMap);
 		const surname = plainText(jet.name ?? '').split(' ').at(-1) || 'F1';
 		this.elem.querySelector('.header .title.dual .top').textContent = `${surname} Jet`;
-		let bottom = 'Where It Is';
-		if (onMap) bottom = jet.airborne ? 'In Flight' : 'Last Flight';
+		let bottom = 'Tracker';
+		if (onMap) bottom = jet.airborne ? 'In Flight' : 'Tracker';
 		this.elem.querySelector('.header .title.dual .bottom').innerHTML = bottom;
 		if (onMap) this.drawMap();
 		else this.drawNow();

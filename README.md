@@ -84,7 +84,7 @@ Navy and silver, with yellow flight numbers. Apart from the METAR, they read the
 
 ## Formula 1 screens
 
-- **Titles**: the word F1 in the titles (F1 Drivers, F1 Next Race, F1 Telemetry, F1 Race and Sprint Grid, F1 Last Race and Last Sprint, and the F1 News page) is the Formula 1 logo, supplied by the owner, without the TM mark: white on the F1 screens (`images/f1-logo.svg`), in its own red on the F1 News page, whose title is just "F1 News" in one line (`images/f1-logo-red.svg`; `utils/f1-title.mjs`).
+- **Titles**: the word F1 in the titles (F1 Drivers, F1 Next Race, F1 Telemetry, F1 Race and Sprint Grid, F1 Last Race and Last Sprint, and the F1 News page) is the Formula 1 logo, supplied by the owner, without the TM mark: white on the F1 screens (`images/f1-logo.svg`), in its own red, with a thin white outline, on the F1 News page, whose title is just "F1 News" in one line (like "Latest News"; the second line of the F1 screens' titles, such as "Round 19", is set a little smaller, and the Verstappen Jet's says "Tracker") (`images/f1-logo-red.svg`; `utils/f1-title.mjs`).
 Red and black.
 
 - **F1 Last Race**: the latest Grand Prix or sprint ("F1 Last Sprint") with flag and date, a podium with team icons, the winner's time and the gaps for 2nd and 3rd, and the fastest lap.

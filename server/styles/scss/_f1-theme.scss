@@ -45,6 +45,22 @@ $f1-text: white;
 	vertical-align: baseline;
 }
 
+// a thin white outline for the red logo of the F1 News page, to read better on the red band (the file is used as given)
+#news-html .header .title .f1-logo {
+	filter: drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff);
+}
+
+// the subtitle (second line of the title) a little smaller than the title itself
+#f1-standings-html,
+#f1-last-race-html,
+#f1-next-race-html,
+#f1-telemetry-html,
+#f1-jet-html {
+	.header .title.dual .bottom {
+		font-size: 20pt;
+	}
+}
+
 #f1-standings-html,
 #f1-last-race-html,
 #f1-grid-html,
