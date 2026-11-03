@@ -67,7 +67,7 @@
 			grid-column: 2;
 			grid-row: 4 / span 4;
 			grid-template-columns: 14px auto 1fr;
-			grid-template-rows: auto repeat(8, 1fr);
+			grid-template-rows: auto repeat(7, 1fr);
 			padding: 3px 10px;
 
 			.dot {
@@ -78,7 +78,7 @@
 				grid-column: 2 / 4;
 			}
 
-			.label, .pi-cpu, .pi-mem, .pi-disk, .pi-wifi, .pi-up, .pi-tv, .pi-music, .pi-dark {
+			.label, .pi-cpu, .pi-mem, .pi-disk, .pi-wifi, .pi-up, .pi-music, .pi-dark {
 				font-size: 11px;
 				white-space: nowrap;
 			}
@@ -100,7 +100,7 @@
 				color: #8b9bbd;
 			}
 
-			.pi-cpu, .pi-mem, .pi-disk, .pi-wifi, .pi-up, .pi-tv, .pi-music, .pi-dark {
+			.pi-cpu, .pi-mem, .pi-disk, .pi-wifi, .pi-up, .pi-music, .pi-dark {
 				grid-column: 3;
 				text-align: right;
 			}
@@ -115,13 +115,8 @@
 		}
 
 		&.bad .age,
-		&.status-pi.bad .pi-mem,
-		.pi-tv.bad {
+		&.status-pi.bad .pi-mem {
 			color: #ff8a7e;
-		}
-
-		.pi-tv.warn {
-			color: #ffd93d;
 		}
 	}
 }
