@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.24.7** (2026-11-04): Status stays 20 seconds on screen (was 12); Verstappen Jet: a failure of AvioADSB (the reserve source) is no longer an error of the jet, and a 429 or a 5xx pauses a source for 10 minutes
 - **1.24.6** (2026-11-03): News looks as it did in 1.24.4 again (logos on a bar in the bottom line): the text-only version of 1.24.5 is undone
 - **1.24.5** (2026-11-03): Verstappen Jet: Celebplanes is asked before AeroDataBox for a missing airport, to spare the AeroDataBox quota (the News bottom line of this version was undone in 1.24.6)
 - **1.24.4** (2026-11-03): Verstappen Jet: AvioADSB (with the owner's key) is a third source of the jet's position, asked only when adsb.fi and airplanes.live do not see it; credited in the footer

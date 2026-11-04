@@ -78,7 +78,7 @@ const piCard = (display, pi, track) => {
 class SourcesStatus extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'Status', defaultActive);
-		this.timing.baseDelay = 12000;
+		this.timing.baseDelay = 20000;
 		// the Debug mode setting switches the screen on and off while the page is open
 		window.addEventListener('debug-mode', () => this.getData());
 	}
