@@ -239,6 +239,16 @@ const sources = (now) => ({
 	})),
 });
 
+// F1 photo of the day: a made-up title with a long tail to test the two lines of the caption (the picture itself is made up in smoke.spec.mjs)
+const f1photo = (now) => ({
+	title: 'A made up photo of a made up car going round a made up corner at sunset, with a rather long title',
+	image: '/f1photo.jpg?v=test',
+	day: '2026-10-24',
+	link: null,
+	ok: iso(now - 5 * MIN),
+	error: null,
+});
+
 const health = (now) => ({ generated: iso(now), problems: [] });
 
 // path on the Pi service -> answer
@@ -252,6 +262,7 @@ const piResponses = (now) => ({
 	'/gt.json': gt(now),
 	'/news.json': news(now),
 	'/plex.json': plex(now),
+	'/f1photo.json': f1photo(now),
 	'/health.json': health(now),
 	'/sources.json': sources(now),
 	'/musica.json': { track: 'Departure Lounge, 89F' },

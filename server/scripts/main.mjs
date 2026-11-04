@@ -28,6 +28,7 @@ import './modules/f1telemetry.mjs';
 import './modules/f1standings.mjs';
 import './modules/f1nextrace.mjs';
 import './modules/f1jet.mjs';
+import './modules/f1photo.mjs';
 import './modules/gtrace.mjs';
 import './modules/gtnextrace.mjs';
 import './modules/progress.mjs';

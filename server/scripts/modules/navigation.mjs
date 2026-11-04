@@ -24,7 +24,7 @@ const DISPLAY_ORDER = [
 	'travel', 'regional-forecast', 'extended-forecast', 'almanac',
 	'radar', 'marine-forecast', 'pollen', 'work-schedule',
 	'metar', 'departures', 'cancellations', 'overhead',
-	'news', 'f1-last-race', 'f1-grid', 'f1-telemetry',
+	'news', 'f1-last-race', 'f1-photo', 'f1-grid', 'f1-telemetry',
 	'f1-standings', 'f1-next-race', 'f1-jet', 'gt-race',
 	'gt-next-race', 'plex', 'status',
 ];
@@ -416,12 +416,12 @@ const DISPLAY_GROUPS = [
 	{ title: 'Aviation', ids: ['metar', 'departures', 'cancellations', 'overhead'] },
 	{ title: 'News', ids: ['news'] },
 	{ title: 'Media', ids: ['plex'] },
-	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-grid', 'f1-telemetry', 'f1-standings', 'f1-next-race', 'f1-jet'] },
+	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-photo', 'f1-grid', 'f1-telemetry', 'f1-standings', 'f1-next-race', 'f1-jet'] },
 	{ title: 'GT World', ids: ['gt-race', 'gt-next-race'] },
 	{ title: 'Debug', ids: ['status'] },
 ];
 // screens that read data served by the Raspberry Pi (skipped anywhere else)
-const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule', 'f1-jet', 'news', 'plex', 'gt-race', 'gt-next-race', 'status'];
+const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule', 'f1-jet', 'f1-photo', 'news', 'plex', 'gt-race', 'gt-next-race', 'status'];
 
 const generateCheckboxes = () => {
 	const availableDisplays = document.querySelector('#enabledDisplays');

@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.25.0** (2026-11-04): new Pi screen F1 Photo of the Day: a random picture of the week or month top of r/F1Porn, one per day, with the title of the post under it (new `hub_f1photo.py`; add `f1-photo-checkbox=true` to the page address)
 - **1.24.7** (2026-11-04): Status stays 20 seconds on screen (was 12); Verstappen Jet: a failure of AvioADSB (the reserve source) is no longer an error of the jet, and a 429 or a 5xx pauses a source for 10 minutes
 - **1.24.6** (2026-11-03): News looks as it did in 1.24.4 again (logos on a bar in the bottom line): the text-only version of 1.24.5 is undone
 - **1.24.5** (2026-11-03): Verstappen Jet: Celebplanes is asked before AeroDataBox for a missing airport, to spare the AeroDataBox quota (the News bottom line of this version was undone in 1.24.6)

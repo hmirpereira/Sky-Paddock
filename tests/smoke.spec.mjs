@@ -18,6 +18,7 @@ const HAR = path.join(RECORDED, 'sites.har');
 const META = path.join(RECORDED, 'recorded.json');
 // what is recorded and replayed: every https site
 const SITES = /^https:\/\//;
+const PHOTO = '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600"><rect width="900" height="600" fill="#222"/><circle cx="450" cy="300" r="200" fill="#e10600"/></svg>';
 
 // a public place, not anyone's home
 const LOCATION = {
@@ -67,6 +68,12 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		}
 		await page.route('http://127.0.0.1:8095/**', (route) => {
 			const answer = pi[new URL(route.request().url()).pathname];
+			// the photo of the day is a picture, not JSON: a made-up one (3:2, red and black)
+			if (new URL(route.request().url()).pathname === '/f1photo.jpg') {
+				return route.fulfill({
+					status: 200, contentType: 'image/svg+xml', headers: { 'Access-Control-Allow-Origin': '*' }, body: PHOTO,
+				});
+			}
 			if (!answer) return route.fulfill({ status: 404, body: '' });
 			return route.fulfill({
 				status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(answer),

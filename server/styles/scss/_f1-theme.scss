@@ -18,6 +18,7 @@ $f1-text: white;
 // frame and header band: recoloured copies of the WeatherStar backgrounds
 #f1-standings-html,
 #f1-last-race-html,
+#f1-photo-html,
 #f1-grid-html,
 #f1-next-race-html,
 #f1-jet-html,
@@ -31,6 +32,7 @@ $f1-text: white;
 
 .wide.f1-standings #container,
 .wide.f1-last-race #container,
+.wide.f1-photo #container,
 .wide.f1-grid #container,
 .wide.f1-next-race #container,
 .wide.f1-jet #container,
@@ -53,6 +55,7 @@ $f1-text: white;
 // the subtitle (second line of the title) a little smaller than the title itself
 #f1-standings-html,
 #f1-last-race-html,
+#f1-photo-html,
 #f1-next-race-html,
 #f1-telemetry-html,
 #f1-jet-html {
@@ -63,6 +66,7 @@ $f1-text: white;
 
 #f1-standings-html,
 #f1-last-race-html,
+#f1-photo-html,
 #f1-grid-html,
 #f1-next-race-html,
 #f1-telemetry-html,

@@ -1,0 +1,39 @@
+@use 'shared/_utils'as u;
+@use 'f1-theme'as f1;
+
+// 310px: picture 260 + caption 50
+.weather-display .main.f1-photo {
+	&.main {
+		overflow: hidden;
+		@include f1.f1-rows-background;
+		color: white;
+		font-family: 'Star4000';
+		@include u.text-shadow();
+
+		.frame {
+			height: 260px;
+			padding-top: 6px;
+			box-sizing: border-box;
+			text-align: center;
+
+			.picture {
+				max-width: 600px;
+				max-height: 250px;
+				outline: 2px solid f1.$f1-red;
+				background: black;
+			}
+		}
+
+		.caption {
+			height: 50px;
+			padding: 0 24px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			font-size: 14pt;
+			line-height: 20px;
+			overflow: hidden;
+		}
+	}
+}
