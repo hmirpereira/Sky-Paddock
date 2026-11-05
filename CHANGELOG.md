@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.25.2** (2026-11-05): tests: the Jolpica F1 answers of the smoke test are made up (tests/f1-fixtures.mjs), so the F1 screens no longer depend on the day the sites were recorded; no change to the site
 - **1.25.1** (2026-11-05): F1 Photo of the Day: more margin above the picture
 - **1.25.0** (2026-11-04): new Pi screen F1 Photo of the Day: a random picture of the week or month top of r/F1Porn, one per day, with the title of the post under it (new `hub_f1photo.py`; add `f1-photo-checkbox=true` to the page address)
 - **1.24.7** (2026-11-04): Status stays 20 seconds on screen (was 12); Verstappen Jet: a failure of AvioADSB (the reserve source) is no longer an error of the jet, and a 429 or a 5xx pauses a source for 10 minutes

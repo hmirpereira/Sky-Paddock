@@ -10,6 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { test as base, expect } from '@playwright/test';
 import piResponses from './pi-fixtures.mjs';
+import jolpicaResponses from './f1-fixtures.mjs';
 
 const test = base.extend({ record: [false, { option: true }] });
 
@@ -88,6 +89,15 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 			await page.routeFromHAR(HAR, { url: SITES, notFound: 'fallback' });
 			await page.clock.install({ time: meta.time });
 		}
+		// Jolpica F1 is made up too (registered after the recording, so it wins over it) (tests/f1-fixtures.mjs), so the F1 screens do not depend on the day the sites were recorded
+		const jolpica = jolpicaResponses(meta.time);
+		await page.route('https://api.jolpi.ca/**', (route) => {
+			const answer = jolpica[new URL(route.request().url()).pathname];
+			if (!answer) return route.fulfill({ status: 404, body: '' });
+			return route.fulfill({
+				status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(answer),
+			});
+		});
 
 		// the list of screens comes from the page, so new screens are tested too
 		await page.goto('./', { waitUntil: 'domcontentloaded' });

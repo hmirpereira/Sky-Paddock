@@ -54,7 +54,7 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
   does not need the page goes in modules without DOM imports, so it can be tested there.
 - `npm test` (after `npm run build`): unit tests, then the Playwright smoke test of every screen, 16:9 and 4:3, with the external
   sites replayed from `tests/recorded/sites.har` and the Pi service replaced by `tests/pi-fixtures.mjs`
-  (made up: never put real Pi data there). Actions runs it before publishing. `npm run test:record` records
+  (made up: never put real Pi data there) and the Jolpica F1 answers by `tests/f1-fixtures.mjs` (made up, built from the test time, so the F1 screens end the same way whatever day the sites were recorded; OpenF1 stays in the recording). Actions runs it before publishing. `npm run test:record` records
   the sites again (needed when a screen asks for new data); check the new `recorded.json` statuses.
 - For a screen changed, also look at screenshots (`SCREENSHOTS=1 npm test`, in `test-results/`) in 16:9 and 4:3.
 - Run `npm run lint`, `npm run build` and `npm test` before every commit.
