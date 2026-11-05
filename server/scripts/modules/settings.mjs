@@ -132,15 +132,28 @@ const init = () => {
 	// (utils/music-name.mjs), and the Status screen with the last answer of every source of the Pi service
 	settings.debugMode = new Setting('debugMode', 'Debug mode', 'checkbox', false, setDebugMode, true);
 
-	// generate html objects
-	// the Debug mode is always the last of the list
-	const { debugMode, ...others } = settings;
-	const settingHtml = [...Object.values(others), debugMode].map((d) => d.generate());
+	// generate html objects, in groups with a title (a setting not named here is not shown); Debug mode is last of the page
+	const GROUPS = [
+		['Location', ['airportIcao', 'ipmaArea', 'travelCity']],
+		['Units', ['windUnits', 'marineWindUnits', 'marineWaveHeightUnits', 'temperatureUnits', 'distanceUnits', 'pressureUnits', 'hoursFormat']],
+		['Screens', ['speed', 'personalSchedule', 'newsTicker']],
+		['Look', ['darkMode', 'wide', 'scanLines', 'vignette', 'colorFringe', 'imageFringe', 'christmas', 'halloween']],
+		['Advanced', ['kiosk', 'debugMode']],
+	];
+	const groupHtml = GROUPS.map(([title, keys]) => {
+		const box = document.createElement('div');
+		box.className = 'display-group';
+		const heading = document.createElement('div');
+		heading.className = 'display-group-title';
+		heading.textContent = title;
+		box.append(heading, ...keys.map((key) => settings[key].generate()).filter((el) => el));
+		return box;
+	});
 
 	// write to page
 	const settingsSection = document.querySelector('#settings');
 	settingsSection.innerHTML = '';
-	settingsSection.append(...settingHtml);
+	settingsSection.append(...groupHtml);
 };
 
 const setDebugMode = (value) => {

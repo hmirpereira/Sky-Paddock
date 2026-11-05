@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.25.3** (2026-11-05): page redesign: tabs (Screens, Settings, TV and link, About), screens in two columns, settings grouped (Location, Units, Screens, Look, Advanced), location and last update always in view; no change to the TV screens
 - **1.25.2** (2026-11-05): tests: the Jolpica F1 answers of the smoke test are made up (tests/f1-fixtures.mjs), so the F1 screens no longer depend on the day the sites were recorded; no change to the site
 - **1.25.1** (2026-11-05): F1 Photo of the Day: more margin above the picture
 - **1.25.0** (2026-11-04): new Pi screen F1 Photo of the Day: a random picture of the week or month top of r/F1Porn, one per day, with the title of the post under it (new `hub_f1photo.py`; add `f1-photo-checkbox=true` to the page address)

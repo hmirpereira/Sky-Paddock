@@ -173,28 +173,36 @@
   </div>
 
   <div class="page-panels">
-    <section class="panel panel-displays">
+    <div class="panel panel-info">
+      <div id="divInfo">
+        Location: <span id="spanCity"></span> <span id="spanState"></span>
+      </div>
+      <div id="divRefresh">
+        <span>Last update: <span id="spanLastRefresh">(None)</span></span>
+        <span><input id="chkAutoRefresh" name="chkAutoRefresh" type="checkbox" /><label id="lblRefreshCountDown" for="chkAutoRefresh">Auto refresh: <span id="spanRefreshCountDown">--:--</span></label></span>
+      </div>
+    </div>
+
+    <nav class="panel-tabs" role="tablist" aria-label="Page sections">
+      <button type="button" role="tab" data-tab="screens">Screens</button>
+      <button type="button" role="tab" data-tab="settings">Settings</button>
+      <button type="button" role="tab" data-tab="tv">TV and link</button>
+      <button type="button" role="tab" data-tab="about">About</button>
+    </nav>
+
+    <section class="panel panel-displays" data-tab-panel="screens">
       <div class="heading">Screens</div>
       <div class="panel-note">In rotation order. Screens marked <span class="pi-only">Pi</span> only work on the Raspberry Pi; anywhere else they are skipped.</div>
       <div id='enabledDisplays'>
       </div>
     </section>
 
-    <section class="panel panel-settings">
-      <div class="heading">Settings</div>
+    <section class="panel panel-settings" data-tab-panel="settings">
       <div id='settings'>
       </div>
     </section>
 
-    <section class="panel panel-status">
-      <div class="heading">Forecast</div>
-      <div id="divInfo">
-        Location: <span id="spanCity"></span> <span id="spanState"></span><br />
-      </div>
-      <div id="divRefresh">
-        Last update: <span id="spanLastRefresh">(None)</span><br />
-        <input id="chkAutoRefresh" name="chkAutoRefresh" type="checkbox" /><label id="lblRefreshCountDown" for="chkAutoRefresh">Auto refresh: <span id="spanRefreshCountDown">--:--</span></label>
-      </div>
+    <section class="panel panel-status" data-tab-panel="tv">
       <div class="heading">TV</div>
       <div class='info'>
         <a href='' id='tv-link'>Copy TV command</a> <span id="tv-link-copied">Copied!</span>
@@ -211,7 +219,7 @@
       </div>
     </section>
 
-    <section class="panel panel-about">
+    <section class="panel panel-about" data-tab-panel="about">
       <div class="heading">About</div>
       <p>Sky Paddock is a personal fork of <a href="https://github.com/mwood77/ws4kp-international" target="_blank">WeatherStar 4000+ International</a> by @mwood77, itself based on <a href="https://github.com/netbymatt/ws4kp" target="_blank">ws4kp</a> by @netbymatt: a simulation of The Weather Channel's WeatherStar 4000. Not affiliated with The Weather Channel, Formula 1, the FIA, the Lufthansa Group or any team or airline.</p>
       <p><a href="https://github.com/hmirpereira/Sky-Paddock" target="_blank">Source code and README</a></p>

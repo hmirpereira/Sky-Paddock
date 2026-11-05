@@ -146,9 +146,51 @@ body:not(.kiosk) {
 		}
 	}
 
-	.panel-displays,
-	.panel-about {
-		grid-column: 1 / -1;
+	[data-tab-panel][hidden] {
+		display: none;
+	}
+
+	// location and last update, always in view above the tabs
+	.panel-info {
+		padding: 8px 14px;
+
+		#divInfo,
+		#divRefresh {
+			margin: 0;
+		}
+
+		#divRefresh {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0 16px;
+			color: $site-muted;
+		}
+	}
+
+	.panel-tabs {
+		display: flex;
+		border-bottom: 1px solid $site-border;
+
+		button {
+			flex: 1;
+			padding: 6px 4px;
+			font-family: 'Star4000 Large';
+			font-size: 16px;
+			color: $site-muted;
+			background: none;
+			border: 0;
+			border-bottom: 3px solid transparent;
+			cursor: pointer;
+
+			&:hover {
+				color: white;
+			}
+
+			&.active {
+				color: white;
+				border-bottom-color: $site-accent;
+			}
+		}
 	}
 
 	.panel-note {
@@ -157,11 +199,27 @@ body:not(.kiosk) {
 		margin-bottom: 10px;
 	}
 
-	#enabledDisplays {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-		gap: 12px 18px;
+	// groups flow in columns, so a short group does not leave a gap next to a tall one
+	#enabledDisplays,
+	#settings {
+		column-gap: 18px;
 		margin-bottom: 0;
+
+		.display-group {
+			break-inside: avoid;
+			margin-bottom: 12px;
+		}
+	}
+
+	#enabledDisplays {
+		column-count: 2;
+	}
+
+	#settings {
+		column-count: 1;
+	}
+
+	#enabledDisplays {
 
 		label {
 			max-width: none;
@@ -291,13 +349,6 @@ body:not(.kiosk) {
 	}
 }
 
-// from a tablet up: the panels side by side (the screens list and the About on the whole width)
-@media (min-width: 700px) {
-	body:not(.kiosk) .page-panels {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-}
-
 // from a laptop up: screen on the left, panels in a column of their own on the right; the page does not scroll, the column does
 @media (min-width: 1100px) {
 	body:not(.kiosk) {
@@ -330,15 +381,15 @@ body:not(.kiosk) {
 	}
 }
 
-// a wide desktop: the column of panels has two columns, and the screen still gets most of the width
+// a wide desktop: a wider column, so the lists of screens and settings have two columns
 @media (min-width: 1600px) {
 	body:not(.kiosk) {
 		.page-layout {
-			grid-template-columns: minmax(0, 1fr) 880px;
+			grid-template-columns: minmax(0, 1fr) 640px;
 		}
 
-		.page-panels {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
+		#settings {
+			column-count: 2;
 		}
 	}
 }
@@ -348,8 +399,8 @@ body:not(.kiosk) {
 	body:not(.kiosk) {
 		padding: 10px;
 
-		.page-panels {
-			grid-template-columns: 1fr;
+		.panel-tabs button {
+			font-size: 14px;
 		}
 
 		#divTwcBottom img {
