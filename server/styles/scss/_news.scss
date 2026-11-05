@@ -17,6 +17,7 @@
 				);
 
 			.news-item {
+				position: relative;
 				height: 94px;
 				overflow: hidden;
 				box-sizing: border-box;
@@ -57,6 +58,28 @@
 					.count {
 						float: right;
 						color: #9fd0ff;
+					}
+				}
+
+				// a small picture of the news on the left of the row, when the source gives one
+				.thumb {
+					display: none;
+					position: absolute;
+					top: 6px;
+					right: 0;
+					width: 96px;
+					height: 72px;
+					object-fit: cover;
+					border: 2px solid rgba(255, 255, 255, 0.8);
+					box-sizing: border-box;
+					box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+				}
+
+				&.has-thumb {
+					padding-right: 110px;
+
+					.thumb {
+						display: block;
 					}
 				}
 

@@ -187,6 +187,10 @@ const gt = (now) => {
 	};
 };
 
+// made-up news pictures (a sky with a sun, hills, a plane), as the thumbnails beside the headlines
+const picture = (sky, ground, extra = '') => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120"><rect width="160" height="120" fill="${sky}"/><circle cx="120" cy="35" r="16" fill="#ffd34d"/><path d="M0 90 Q40 60 80 85 T160 80 V120 H0Z" fill="${ground}"/>${extra}</svg>`)}`;
+const PLANE = '<path d="M30 50 L110 42 L118 46 L110 50 L30 54Z M70 46 L58 26 L66 26 L86 46Z M70 50 L58 70 L66 70 L86 50Z" fill="white"/>';
+
 const news = (now) => {
 	const item = (title, source, sources, minutesAgo, flags = {}) => ({
 		title, source, sources, time: iso(now - minutesAgo * MIN), first: iso(now - minutesAgo * MIN), breaking: false, top: false, ...flags,
@@ -196,19 +200,19 @@ const news = (now) => {
 		ok: iso(now - 5 * MIN),
 		errors: {},
 		items: [
-			item('Test headline <b>x</b> & a < b, ação e pão', 'RTP', ['RTP', 'Expresso', 'Publico'], 20, { top: true }),
-			item('Second test headline, breaking news', 'CNN Portugal', ['CNN Portugal'], 35, { breaking: true }),
+			item('Test headline <b>x</b> & a < b, ação e pão', 'RTP', ['RTP', 'Expresso', 'Publico'], 20, { top: true, image: picture('#5aa0e6', '#3c8c46') }),
+			item('Second test headline, breaking news', 'CNN Portugal', ['CNN Portugal'], 35, { breaking: true, image: picture('#8a4a8c', '#5a3a2a') }),
 			item('Third test headline, a long one that needs more than two lines on the screen to see how it wraps there', 'Publico', ['Publico'], 50),
 			item('Fourth test headline', 'Expresso', ['Expresso'], 70),
 			item('Fifth test headline', 'Publico', ['Publico'], 90),
 			item('Sixth test headline', 'RTP', ['RTP'], 110),
 		],
 		aviation: [
-			item('First aviation test headline', 'Aviacao TV', ['Aviacao TV'], 200),
+			item('First aviation test headline', 'Aviacao TV', ['Aviacao TV'], 200, { image: picture('#4a90d8', '#7a8a96', PLANE) }),
 			item('Second aviation test headline', 'Aviacao TV', ['Aviacao TV'], 900),
 		],
 		f1: [
-			item('First Formula 1 test headline', 'F1PT', ['F1PT'], 300),
+			item('First Formula 1 test headline', 'F1PT', ['F1PT'], 300, { image: picture('#d8d8e0', '#c03030') }),
 			item('Second Formula 1 test headline', 'FlyingLapF1', ['FlyingLapF1'], 600),
 			item('Third Formula 1 test headline', 'PlanetF1', ['PlanetF1'], 700),
 		],

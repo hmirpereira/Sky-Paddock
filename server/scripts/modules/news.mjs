@@ -80,6 +80,13 @@ class News extends WeatherDisplay {
 			// more than two lines at the usual size
 			if (plainText(item.title).length > LONG_HEADLINE) row.classList.add('long');
 			row.querySelector('.source').replaceWith(sourceLogo(item.source));
+			// a small picture beside the headline, when the source gives one (only https; a picture that fails is left out)
+			const thumb = row.querySelector('.thumb');
+			if (/^https:\/\//.test(item.image ?? '') || /^data:image\//.test(item.image ?? '')) {
+				thumb.src = item.image;
+				thumb.addEventListener('error', () => row.classList.remove('has-thumb'), { once: true });
+				row.classList.add('has-thumb');
+			}
 			if (item.breaking) row.classList.add('breaking');
 			else if (item.top) row.classList.add('top');
 			return row;
