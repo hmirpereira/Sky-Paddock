@@ -12,13 +12,13 @@
 
 		.frame {
 			height: 260px;
-			padding-top: 6px;
+			padding-top: 16px;
 			box-sizing: border-box;
 			text-align: center;
 
 			.picture {
 				max-width: 600px;
-				max-height: 250px;
+				max-height: 240px;
 				outline: 2px solid f1.$f1-red;
 				background: black;
 			}
