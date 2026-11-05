@@ -1,4 +1,4 @@
-// Photo of the day from r/F1Porn: one picture a day, chosen at random and kept by the skypaddock-hub service on the Pi
+// F1 Photo from r/F1Porn: one picture an hour, chosen at random and kept by the skypaddock-hub service on the Pi
 // (hub_f1photo.py reads the public Atom feed of the subreddit and downloads the file from i.redd.it); anywhere else the
 // screen is skipped. The title of the post is shown under the picture, without the resolution the posts usually carry.
 import STATUS from './status.mjs';
@@ -6,7 +6,6 @@ import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { plainText } from './utils/text.mjs';
-import f1Title from './utils/f1-title.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095';
 
@@ -45,8 +44,6 @@ class F1Photo extends WeatherDisplay {
 
 	async drawCanvas() {
 		super.drawCanvas();
-		this.elem.querySelector('.header .title.dual .top').innerHTML = f1Title('Photo');
-		this.elem.querySelector('.header .title.dual .bottom').textContent = 'of the Day';
 		this.elem.querySelector('.picture').src = this.src;
 		this.elem.querySelector('.caption').textContent = plainText(this.title);
 		this.finishDraw();

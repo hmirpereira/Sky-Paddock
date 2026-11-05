@@ -239,7 +239,7 @@ const sources = (now) => ({
 	})),
 });
 
-// F1 photo of the day: a made-up title with a long tail to test the two lines of the caption (the picture itself is made up in smoke.spec.mjs)
+// F1 Photo: a made-up title with a long tail to test the two lines of the caption (the picture itself is made up in smoke.spec.mjs)
 const f1photo = (now) => ({
 	title: 'A made up photo of a made up car going round a made up corner at sunset, with a rather long title',
 	image: '/f1photo.jpg?v=test',

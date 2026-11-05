@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.25.4** (2026-11-05): F1 Photo: the Pi service changes the picture every hour (was once a day) and the screen is now called F1 Photo (title: F1 logo and Photo); the page picks up the new picture on its 10 minute refresh
 - **1.25.3** (2026-11-05): page redesign: tabs (Screens, Settings, TV and link, About), screens in two columns, settings grouped (Location, Units, Screens, Look, Advanced), location and last update always in view; no change to the TV screens
 - **1.25.2** (2026-11-05): tests: the Jolpica F1 answers of the smoke test are made up (tests/f1-fixtures.mjs), so the F1 screens no longer depend on the day the sites were recorded; no change to the site
 - **1.25.1** (2026-11-05): F1 Photo of the Day: more margin above the picture
