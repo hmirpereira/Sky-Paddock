@@ -10,6 +10,7 @@ import { getConditionText } from './utils/weather.mjs';
 import { getWeatherIconFromIconLink } from './icons.mjs';
 
 import ConversionHelpers from './utils/conversionHelpers.mjs';
+import { escapeHtml } from './utils/html.mjs';
 
 class Radar extends WeatherDisplay {
 	static radarSource = 'https://api.rainviewer.com/public/weather-maps.json';
@@ -66,7 +67,7 @@ class Radar extends WeatherDisplay {
 					text-shadow: 3px 3px 0 #000, -1.5px -1.5px 0 #000, 0 -1.5px 0 #000, 1.5px -1.5px 0 #000, 1.5px 0 0 #000, 1.5px 1.5px 0 #000, 0 1.5px 0 #000, -1.5px 1.5px 0 #000, -1.5px 0 0 #000;
 					font-family: 'Star4000';
 					font-size: 18pt;"
-				>${cityName}</div>
+				>${escapeHtml(cityName)}</div>
 			</div>
 			<div class="temperature-icon" style="display: flex; align-items: center; margin-top: -14px;">
 				<div style="
@@ -117,7 +118,7 @@ class Radar extends WeatherDisplay {
 					border: 2px solid white;
 					white-space: nowrap;
 				">
-					${cityName}
+					${escapeHtml(cityName)}
 				</div>
 			`;
 		}

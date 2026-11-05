@@ -1,14 +1,14 @@
-// latest Portuguese news headlines (RTP, Expresso, Publico, CNN Portugal, Sabado), served by the
+// latest Portuguese news headlines (RTP, Expresso, Publico, CNN Portugal), served by the
 // skypaddock-hub service on the Pi, which reads the RSS feeds every 10 minutes and joins the same
 // story from several sources. BREAKING: the source marks it as such ("Ultima hora") in the last 2 hours;
-// TOP STORY: the same story in 3 or more sources in the last 3 hours. The last page has the Formula 1
-// news of FlyingLapF1 and F1PT (last 7 days). Each source is shown by its logo. Anywhere else this screen is skipped.
+// TOP STORY: the same story in 3 or more sources in the last 3 hours. Then a page of aviation news (Aviacao TV,
+// last 3 days) and a last page with the Formula 1 news of FlyingLapF1, F1PT and PlanetF1 (last 7 days). Each source is shown by its logo. Anywhere else this screen is skipped.
 import STATUS from './status.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import {
-	newsFresh, sourceLogo, isF1Source,
+	newsFresh, sourceLogo, isF1Source, isAviationSource,
 } from './utils/news.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { plainText } from './utils/text.mjs';
@@ -39,15 +39,17 @@ class News extends WeatherDisplay {
 			perSource[item.source] = (perSource[item.source] ?? 0) + 1;
 			return perSource[item.source] <= 2;
 		}).slice(0, F1_ROWS);
-		// with F1 news, one page less of the others
-		const items = (data.items ?? []).slice(0, ROWS_PER_PAGE * (MAX_PAGES - (f1.length ? 1 : 0)));
-		if (items.length === 0 && f1.length === 0) {
+		const aviation = (data.aviation ?? []).slice(0, ROWS_PER_PAGE);
+		// each page of aviation or F1 news takes the place of a page of the others
+		const items = (data.items ?? []).slice(0, ROWS_PER_PAGE * (MAX_PAGES - (f1.length ? 1 : 0) - (aviation.length ? 1 : 0)));
+		if (items.length === 0 && f1.length === 0 && aviation.length === 0) {
 			this.setStatus(STATUS.noData);
 			return;
 		}
 		this.sources = data.sources ?? [];
 		this.pages = [];
-		for (let i = 0; i < items.length; i += ROWS_PER_PAGE) this.pages.push({ f1: false, items: items.slice(i, i + ROWS_PER_PAGE) });
+		for (let i = 0; i < items.length; i += ROWS_PER_PAGE) this.pages.push({ items: items.slice(i, i + ROWS_PER_PAGE) });
+		if (aviation.length) this.pages.push({ aviation: true, items: aviation });
 		if (f1.length) this.pages.push({ f1: true, items: f1 });
 		this.timing.totalScreens = this.pages.length;
 
@@ -62,9 +64,9 @@ class News extends WeatherDisplay {
 		const today = DateTime.now().setZone(NEWS_TZ);
 
 		const page = this.pages[pageIndex];
-		// "Latest News", or "F1 News" with the red F1 logo, in one line
+		// "Latest News", "Aviation News", or "F1 News" with the red F1 logo, in one line
 		const title = this.elem.querySelector('.header .title.dual');
-		title.querySelector('.top').innerHTML = page.f1 ? f1Title('News', true) : 'Latest News';
+		title.querySelector('.top').innerHTML = page.f1 ? f1Title('News', true) : (page.aviation && 'Aviation News') || 'Latest News';
 		const rows = page.items.map((item) => {
 			const time = DateTime.fromISO(item.time).setZone(NEWS_TZ);
 			const when = time.hasSame(today, 'day') ? ConversionHelpers.formatTime(time) : `${time.toFormat('ccc')} ${ConversionHelpers.formatTime(time)}`;
@@ -87,12 +89,19 @@ class News extends WeatherDisplay {
 		list.innerHTML = '';
 		list.append(...rows);
 
-		// general sources | Formula 1 sources
-		const general = this.sources.filter((source) => !isF1Source(source)).map(sourceLogo);
-		const f1Sources = this.sources.filter(isF1Source).map(sourceLogo);
-		const divider = document.createElement('span');
-		divider.className = 'sources-divider';
-		fillFooter(this.elem, [...general, ...(general.length && f1Sources.length ? [divider] : []), ...f1Sources], pageIndex, this.pages.length);
+		// general sources | aviation sources | Formula 1 sources
+		const groups = [
+			this.sources.filter((source) => !isF1Source(source) && !isAviationSource(source)),
+			this.sources.filter(isAviationSource),
+			this.sources.filter(isF1Source),
+		].filter((group) => group.length).map((group) => group.map(sourceLogo));
+		const footer = groups.flatMap((group, i) => {
+			if (i === 0) return group;
+			const divider = document.createElement('span');
+			divider.className = 'sources-divider';
+			return [divider, ...group];
+		});
+		fillFooter(this.elem, footer, pageIndex, this.pages.length);
 
 		this.finishDraw();
 	}

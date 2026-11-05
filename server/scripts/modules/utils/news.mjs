@@ -1,12 +1,14 @@
 // Portuguese news headlines for the News screen and the bottom line, from the skypaddock-hub service
-// on the Pi (RSS feeds of RTP, Expresso, Publico, CNN Portugal and Sabado, and FlyingLapF1 and F1PT for Formula 1,
+// on the Pi (RSS feeds of RTP, Expresso, Publico and CNN Portugal, Aviacao TV for aviation, and FlyingLapF1, F1PT and PlanetF1 for Formula 1,
 // read there because the browser cannot read them from another site). Anywhere else the list is empty.
 import { plainText } from './text.mjs';
 
 const NEWS_URL = 'http://127.0.0.1:8095/news.json';
 const CHECK_EVERY_MS = 5 * 60 * 1000;
 
-let data = { items: [], f1: [], sources: [] };
+let data = {
+	items: [], f1: [], aviation: [], sources: [],
+};
 let lastCheck = 0;
 let pending = null;
 
@@ -17,11 +19,17 @@ const load = async () => {
 		if (!response.ok) throw new Error(`HTTP ${response.status}`);
 		const json = await response.json();
 		data = {
-			items: Array.isArray(json?.items) ? json.items : [], f1: Array.isArray(json?.f1) ? json.f1 : [], sources: json?.sources ?? [], ok: json?.ok,
+			items: Array.isArray(json?.items) ? json.items : [],
+			f1: Array.isArray(json?.f1) ? json.f1 : [],
+			aviation: Array.isArray(json?.aviation) ? json.aviation : [],
+			sources: json?.sources ?? [],
+			ok: json?.ok,
 		};
 	} catch {
 		// not on the Pi, or the service is down
-		data = { items: [], f1: [], sources: [] };
+		data = {
+			items: [], f1: [], aviation: [], sources: [],
+		};
 	}
 	pending = null;
 	return data;
@@ -42,7 +50,7 @@ export const newsFresh = async () => {
 };
 
 // logo of each source (images/news, from the owner's files), on a plate so it shows on the blue
-// background: light for the dark or red logos, dark for the white ones, red for Sabado (the red of its own box,
+// background: light for the dark or red logos, dark for the white ones, red for Aviacao TV and Sabado (the red of Sabado's own box,
 // so the logo has the same margins and size as the others)
 const LOGOS = {
 	RTP: { file: 'rtp.svg', plate: 'light' },
@@ -50,6 +58,8 @@ const LOGOS = {
 	Publico: { file: 'publico.svg', plate: 'light' },
 	'CNN Portugal': { file: 'cnn.svg', plate: 'light' },
 	Sabado: { file: 'sabado.png', plate: 'red' },
+	// only the plane symbol of the Aviacao TV logo, on the red plate
+	'Aviacao TV': { file: 'aviacaotv.png', plate: 'red', aviation: true },
 	FlyingLapF1: { file: 'flyinglapf1.png', plate: 'dark', f1: true },
 	F1PT: { file: 'f1pt.png', plate: 'dark', f1: true },
 	PlanetF1: { file: 'planetf1.png', plate: 'dark', f1: true },
@@ -57,6 +67,9 @@ const LOGOS = {
 
 // a Formula 1 source (F1 News page)
 export const isF1Source = (source) => !!LOGOS[source]?.f1;
+
+// an aviation source (Aviation News page)
+export const isAviationSource = (source) => !!LOGOS[source]?.aviation;
 
 // the logo of a source as an element, or its name when there is no logo
 export const sourceLogo = (source) => {

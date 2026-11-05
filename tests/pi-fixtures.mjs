@@ -196,19 +196,23 @@ const news = (now) => {
 		ok: iso(now - 5 * MIN),
 		errors: {},
 		items: [
-			item('Test headline <b>x</b> & a < b, ação e pão', 'RTP', ['RTP', 'Expresso', 'Sabado'], 20, { top: true }),
+			item('Test headline <b>x</b> & a < b, ação e pão', 'RTP', ['RTP', 'Expresso', 'Publico'], 20, { top: true }),
 			item('Second test headline, breaking news', 'CNN Portugal', ['CNN Portugal'], 35, { breaking: true }),
 			item('Third test headline, a long one that needs more than two lines on the screen to see how it wraps there', 'Publico', ['Publico'], 50),
 			item('Fourth test headline', 'Expresso', ['Expresso'], 70),
-			item('Fifth test headline', 'Sabado', ['Sabado'], 90),
+			item('Fifth test headline', 'Publico', ['Publico'], 90),
 			item('Sixth test headline', 'RTP', ['RTP'], 110),
+		],
+		aviation: [
+			item('First aviation test headline', 'Aviacao TV', ['Aviacao TV'], 200),
+			item('Second aviation test headline', 'Aviacao TV', ['Aviacao TV'], 900),
 		],
 		f1: [
 			item('First Formula 1 test headline', 'F1PT', ['F1PT'], 300),
 			item('Second Formula 1 test headline', 'FlyingLapF1', ['FlyingLapF1'], 600),
 			item('Third Formula 1 test headline', 'PlanetF1', ['PlanetF1'], 700),
 		],
-		sources: ['RTP', 'Expresso', 'Publico', 'CNN Portugal', 'Sabado', 'FlyingLapF1', 'F1PT', 'PlanetF1'],
+		sources: ['RTP', 'Expresso', 'Publico', 'CNN Portugal', 'Aviacao TV', 'FlyingLapF1', 'F1PT', 'PlanetF1'],
 	};
 };
 

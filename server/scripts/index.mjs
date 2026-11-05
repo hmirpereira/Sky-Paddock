@@ -132,10 +132,6 @@ const init = () => {
 		// so we have to set it to '' to show it again;
 		loadingId.style.display = '';
 
-		// document.querySelector('#spanStationId').innerHTML = '';
-		// document.querySelector('#spanRadarId').innerHTML = '';
-		// document.querySelector('#spanZoneId').innerHTML = '';
-
 		document.querySelector('#chkAutoRefresh').checked = true;
 		localStorage.removeItem('autoRefresh');
 

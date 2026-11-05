@@ -283,7 +283,7 @@ class Overhead extends WeatherDisplay {
 		(this.airport.taxiwayLabels ?? []).forEach(([ref, lat, lon]) => {
 			const p = project(lat, lon);
 			const w = ref.length * 7 + 6;
-			if (take([p.x - w / 2, p.y - 7, w, 14])) marks.push(`<div class="twy" style="left:${p.x - w / 2}px; top:${p.y - 7}px; width:${w}px">${ref}</div>`);
+			if (take([p.x - w / 2, p.y - 7, w, 14])) marks.push(`<div class="twy" style="left:${p.x - w / 2}px; top:${p.y - 7}px; width:${w}px">${escapeHtml(ref)}</div>`);
 		});
 		stands.forEach(([ref, lat, lon]) => {
 			const p = project(lat, lon);
@@ -294,7 +294,7 @@ class Overhead extends WeatherDisplay {
 				.map(([dx, dy]) => [p.x + dx, p.y + dy]).find(([x, y]) => free(x, y, w, 13));
 			if (spot) {
 				taken.push([...spot, w, 13]);
-				marks.push(`<div class="stand-ref" style="left:${spot[0]}px; top:${spot[1]}px">${ref}</div>`);
+				marks.push(`<div class="stand-ref" style="left:${spot[0]}px; top:${spot[1]}px">${escapeHtml(ref)}</div>`);
 			}
 		});
 		page.querySelector('.plan-targets').innerHTML = marks.join('') + targets.join('');
