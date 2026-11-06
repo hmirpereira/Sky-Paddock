@@ -19,7 +19,11 @@ const NEWS_TZ = 'Europe/Lisbon';
 const ROWS_PER_PAGE = 3;
 const MAX_PAGES = 4;
 const F1_ROWS = 3;
+// headlines longer than this go to the smaller letters on three lines (the picture beside a headline narrows its text)
 const LONG_HEADLINE = 84;
+const LONG_HEADLINE_WITH_PICTURE = 62;
+const VERY_LONG_HEADLINE = 150; // even smaller letters, on four lines
+const VERY_LONG_WITH_PICTURE = 100;
 
 class News extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
@@ -77,8 +81,6 @@ class News extends WeatherDisplay {
 				count: sources > 1 ? `${sources} sources` : '',
 				headline: plainText(item.title),
 			});
-			// more than two lines at the usual size
-			if (plainText(item.title).length > LONG_HEADLINE) row.classList.add('long');
 			row.querySelector('.source').replaceWith(sourceLogo(item.source));
 			// a small picture beside the headline, when the source gives one (only https; a picture that fails is left out)
 			const thumb = row.querySelector('.thumb');
@@ -87,6 +89,11 @@ class News extends WeatherDisplay {
 				thumb.addEventListener('error', () => row.classList.remove('has-thumb'), { once: true });
 				row.classList.add('has-thumb');
 			}
+			// more than two lines at the usual size
+			const { length } = plainText(item.title);
+			const withPicture = row.classList.contains('has-thumb');
+			if (length > (withPicture ? LONG_HEADLINE_WITH_PICTURE : LONG_HEADLINE)) row.classList.add('long');
+			if (length > (withPicture ? VERY_LONG_WITH_PICTURE : VERY_LONG_HEADLINE)) row.classList.add('long', 'very-long');
 			if (item.breaking) row.classList.add('breaking');
 			else if (item.top) row.classList.add('top');
 			return row;

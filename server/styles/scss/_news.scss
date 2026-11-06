@@ -50,12 +50,17 @@
 						line-height: 14px;
 					}
 
+					// the Star4000 Small letters sit low: lifted so the time and the count are centred on the logo plate
 					.when {
+						position: relative;
+						top: -3px;
 						margin-left: 14px;
 						color: white;
 					}
 
 					.count {
+						position: relative;
+						top: -3px;
 						float: right;
 						color: #9fd0ff;
 					}
@@ -101,6 +106,13 @@
 					font-size: 16pt;
 					line-height: 21px;
 					-webkit-line-clamp: 3;
+				}
+
+				// very long headlines: smaller still, on four lines
+				&.long.very-long .headline {
+					font-size: 14pt;
+					line-height: 16px;
+					-webkit-line-clamp: 4;
 				}
 
 				&.breaking {

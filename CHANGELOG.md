@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.29.1** (2026-11-06): News: long headlines beside a picture use smaller letters (16pt on three lines, 14pt on four) so they are no longer cut, and the time and source count are centred on the source logo; F1 Photo keeps the F1 red background behind the frame
 - **1.29.0** (2026-11-06): Overhead radar over a faint OpenStreetMap map; F1 Photo at about 95% in its frame with the caption on the picture; National Forecast titles with the zone on the second line; telemetry chart sector labels no longer cut; the GT screens follow the GT calendar alone in the racing gap
 - **1.28.0** (2026-11-06): racing gap: the F1 Standings screen is skipped too, so the Verstappen Jet is the only F1 screen in the gap; GT events with dates but no dated sessions yet count from their dates (the GT screens were showing in the gap)
 - **1.27.1** (2026-11-05): News pictures: RTP's second generic placeholder (the Antena 1 one) is left out too; no change to the page

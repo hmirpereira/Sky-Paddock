@@ -203,9 +203,9 @@ const news = (now) => {
 			item('Test headline <b>x</b> & a < b, ação e pão', 'RTP', ['RTP', 'Expresso', 'Publico'], 20, { top: true, image: picture('#5aa0e6', '#3c8c46') }),
 			item('Second test headline, breaking news', 'CNN Portugal', ['CNN Portugal'], 35, { breaking: true, image: picture('#8a4a8c', '#5a3a2a') }),
 			item('Third test headline, a long one that needs more than two lines on the screen to see how it wraps there', 'Publico', ['Publico'], 50),
-			item('Fourth test headline', 'Expresso', ['Expresso'], 70),
-			item('Fifth test headline', 'Publico', ['Publico'], 90),
-			item('Sixth test headline', 'RTP', ['RTP'], 110),
+			item('Fourth test headline, with a picture and about seventy nine letters in all, a bit long', 'Expresso', ['Expresso'], 70, { image: picture('#5aa0e6', '#3c8c46') }),
+			item('Fifth test headline with a picture and the longest length seen in practice, about one hundred and ten letters here, to see it', 'Publico', ['Publico'], 90, { image: picture('#8a4a8c', '#5a3a2a') }),
+			item('Sixth test headline, a picture and around sixty six letters here', 'RTP', ['RTP'], 110, { image: picture('#d8d8e0', '#c03030') }),
 		],
 		aviation: [
 			item('First aviation test headline', 'Aviacao TV', ['Aviacao TV'], 200, { image: picture('#4a90d8', '#7a8a96', PLANE) }),

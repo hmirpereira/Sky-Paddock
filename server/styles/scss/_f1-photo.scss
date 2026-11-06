@@ -13,7 +13,6 @@
 		.frame {
 			position: relative;
 			height: 310px;
-			background: black;
 
 			// about 95% of the box, centred, with the red frame
 			.picture {
@@ -25,6 +24,7 @@
 				max-width: 95%;
 				max-height: 95%;
 				outline: 2px solid f1.$f1-red;
+				background: black;
 			}
 		}
 
