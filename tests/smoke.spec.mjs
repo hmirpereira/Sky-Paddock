@@ -19,6 +19,7 @@ const HAR = path.join(RECORDED, 'sites.har');
 const META = path.join(RECORDED, 'recorded.json');
 // what is recorded and replayed: every https site
 const SITES = /^https:\/\//;
+const TILE = '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="#222"/><path d="M0 128H256M128 0V256" stroke="#888" stroke-width="2"/><circle cx="128" cy="128" r="60" fill="none" stroke="#666" stroke-width="6"/></svg>';
 const PHOTO = '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600"><rect width="900" height="600" fill="#222"/><circle cx="450" cy="300" r="200" fill="#e10600"/></svg>';
 
 // a public place, not anyone's home
@@ -67,6 +68,11 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 				return route.abort();
 			});
 		}
+		// the Overhead radar map: made-up tiles (a grid), or the real ones with LIVE_TILES=1 to look at the map
+		await page.route('https://tile.openstreetmap.org/**', (route) => {
+			if (process.env.LIVE_TILES) return route.continue();
+			return route.fulfill({ status: 200, contentType: 'image/svg+xml', body: TILE });
+		});
 		await page.route('http://127.0.0.1:8095/**', (route) => {
 			const answer = pi[new URL(route.request().url()).pathname];
 			// the F1 Photo is a picture, not JSON: a made-up one (3:2, red and black)

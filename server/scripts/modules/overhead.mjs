@@ -19,6 +19,9 @@ const SERVICE_URL = 'http://127.0.0.1:8095/overhead.json';
 const RANGE_KM = 50;
 const M_PER_FT = 0.3048;
 const RADAR_RADIUS = 140; // px, keep in sync with _overhead.scss
+// the radar background: map tiles (OpenStreetMap) around home, drawn faint behind the rings
+const MAP_ZOOM = 9;
+const MAP_URL = (x, y) => `https://tile.openstreetmap.org/${MAP_ZOOM}/${x}/${y}.png`;
 const GROUP_ICONS = ['LH', 'LX', 'OS', '4Y', 'SN'];
 // airline logos drawn above the flight number on the radar, by ICAO airline code (the first
 // three letters of the callsign): add the code here and the file as images/overhead-logos/<CODE>.png
@@ -332,8 +335,39 @@ class Overhead extends WeatherDisplay {
 		card.querySelector('.reg .value').textContent = ac.reg ?? '';
 	}
 
+	// the tiles that cover the scope, placed in scope pixels (the scope is RANGE_KM in every direction); built once per home
+	drawMap(scope) {
+		const key = `${this.home.lat},${this.home.lon}`;
+		if (this.mapKey === key) return;
+		this.mapKey = key;
+		const n = 2 ** MAP_ZOOM;
+		const world = 256 * n;
+		const lat = toRad(this.home.lat);
+		const cx = ((this.home.lon + 180) / 360) * world;
+		const cy = ((1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2) * world;
+		// scope pixels per tile pixel
+		const k = ((40075016.686 * Math.cos(lat)) / world) / ((RANGE_KM * 1000) / RADAR_RADIUS);
+		const half = RADAR_RADIUS / k;
+		const map = scope.querySelector('.map');
+		map.innerHTML = '';
+		for (let ty = Math.floor((cy - half) / 256); ty <= Math.floor((cy + half) / 256); ty += 1) {
+			for (let tx = Math.floor((cx - half) / 256); tx <= Math.floor((cx + half) / 256); tx += 1) {
+				if (ty < 0 || ty >= n) continue; // eslint-disable-line no-continue
+				const img = document.createElement('img');
+				img.alt = '';
+				img.style.left = `${RADAR_RADIUS + (tx * 256 - cx) * k}px`;
+				img.style.top = `${RADAR_RADIUS + (ty * 256 - cy) * k}px`;
+				img.style.width = `${256 * k + 1}px`;
+				img.addEventListener('error', () => img.remove());
+				img.src = MAP_URL(((tx % n) + n) % n, ty);
+				map.append(img);
+			}
+		}
+	}
+
 	drawRadar() {
 		const page = this.elem.querySelector('.overhead-page.radar');
+		this.drawMap(page.querySelector('.scope'));
 		const scope = page.querySelector('.scope .targets');
 		scope.innerHTML = '';
 		const place = (lat, lon) => {

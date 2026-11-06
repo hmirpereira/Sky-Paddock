@@ -5,6 +5,15 @@
 	background-image: var(--bg-regional, url('/images/BackGround5_1.png'));
 }
 
+// the zone on the second title line, a little smaller than the first
+#regional-forecast-html .header .title.dual {
+	white-space: nowrap;
+
+	.bottom {
+		font-size: 20pt;
+	}
+}
+
 // Portugal: 640 x 310 maps, label blocks 54 px high placed by ferramentas/mkregional.py
 .weather-display .main.regional-forecast {
 	position: relative;

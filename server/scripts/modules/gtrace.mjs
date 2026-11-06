@@ -4,7 +4,7 @@
 // service on the Pi reads the public pages of the official site (no API, no CORS) and serves /gt.json;
 // anywhere else this screen is skipped.
 import STATUS from './status.mjs';
-import racingGap from './utils/racing-gap-events.mjs';
+import { gtRacingGap } from './utils/racing-gap-events.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
@@ -30,7 +30,7 @@ class GtRace extends WeatherDisplay {
 
 	async getData(weatherParameters) {
 		if (!super.getData(weatherParameters)) return;
-		if (await racingGap()) {
+		if (await gtRacingGap()) {
 			this.setStatus(STATUS.noData);
 			return;
 		}

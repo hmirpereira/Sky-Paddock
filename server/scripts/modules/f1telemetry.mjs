@@ -369,7 +369,7 @@ class F1Telemetry extends WeatherDisplay {
 		const x = (f) => c.left + f * (c.w - c.left - c.right);
 		const y = (v) => c.speedTop + (1 - (Math.min(Math.max(v, c.min), c.max) - c.min) / (c.max - c.min)) * (c.speedBottom - c.speedTop);
 		const grid = [100, 200, 300].map((v) => `<line x1="${c.left}" x2="${c.w - c.right}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${c.left - 6}" y="${y(v) + 6}" class="axis" text-anchor="end">${v}</text>`).join('');
-		const sectors = sectorFracs.map((f, i) => `<line x1="${x(f)}" x2="${x(f)}" y1="${c.speedTop}" y2="${c.gapBottom}" class="sector-line"/><text x="${x(f) + 4}" y="${c.h - 6}" class="axis">S${i + 2}</text>`).join('');
+		const sectors = sectorFracs.map((f, i) => `<line x1="${x(f)}" x2="${x(f)}" y1="${c.speedTop}" y2="${c.gapBottom}" class="sector-line"/><text x="${x(f) + 4}" y="${c.h - 10}" class="axis">S${i + 2}</text>`).join('');
 		const line = (k) => `<polyline points="${trace.map((p) => `${x(p[0]).toFixed(1)},${y(p[k + 1]).toFixed(1)}`).join(' ')}" fill="none" stroke="${drivers[k].colour}" stroke-width="2.5" stroke-linejoin="round"/>`;
 		const speed = `${grid}<text x="${c.w - c.right + 6}" y="${c.speedTop + 14}" class="axis">km/h</text>${line(1)}${line(0)}`;
 
@@ -394,7 +394,7 @@ class F1Telemetry extends WeatherDisplay {
 				+ `<text x="${c.w - c.right + 6}" y="${gy(last) + 6}" class="axis">${last >= 0 ? '+' : ''}${last.toFixed(3)}</text>`
 				+ `<text x="${c.w - c.right + 6}" y="${c.gapTop + 2}" class="axis small">GAP</text>`;
 		}
-		return `<svg viewBox="0 0 ${c.w} ${c.h}" width="${c.w}" height="${c.h}">${sectors}${speed}${gap}<text x="${c.left + 4}" y="${c.h - 6}" class="axis">S1</text></svg>`;
+		return `<svg viewBox="0 0 ${c.w} ${c.h}" width="${c.w}" height="${c.h}">${sectors}${speed}${gap}<text x="${c.left + 4}" y="${c.h - 10}" class="axis">S1</text></svg>`;
 	}
 }
 

@@ -47,7 +47,6 @@ class RegionalForecast extends WeatherDisplay {
 					low: Math.round(ConversionHelpers.convertTemperatureUnits(daily.temperature_2m_min[day])),
 				};
 			});
-			this.dayName = this.today ? 'Today' : DateTime.local().plus({ days: 1 }).toFormat('cccc');
 		} catch (error) {
 			console.error('RegionalForecast: no data', error);
 			this.forecast = {};
@@ -63,8 +62,8 @@ class RegionalForecast extends WeatherDisplay {
 		super.drawCanvas();
 		const page = REGIONAL_PAGES[Math.min(Math.max(this.screenIndex, 0), REGIONAL_PAGES.length - 1)];
 
-		this.elem.querySelector('.header .title.dual .top').innerHTML = `Portugal ${PAGE_TITLES[page.id]}`;
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = `Forecast ${this.dayName}`;
+		this.elem.querySelector('.header .title.dual .top').textContent = 'National Forecast';
+		this.elem.querySelector('.header .title.dual .bottom').textContent = PAGE_TITLES[page.id];
 		this.elem.querySelector('.map img').src = page.map;
 
 		const blocks = page.cities.map((city) => {

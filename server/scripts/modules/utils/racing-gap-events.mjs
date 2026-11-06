@@ -34,4 +34,10 @@ const racingGap = async (now = DateTime.now()) => {
 	return isRacingGap([...f1, ...gt], now);
 };
 
+// the GT screens follow the GT calendar alone: an F1 race within 21 days does not bring them back
+export const gtRacingGap = async (now = DateTime.now()) => {
+	const gt = await gtEvents();
+	return !!gt && isRacingGap(gt, now);
+};
+
 export default racingGap;

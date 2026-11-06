@@ -1,7 +1,7 @@
 @use 'shared/_utils'as u;
 @use 'f1-theme'as f1;
 
-// 310px: picture 260 + caption 50
+// 310px: the picture takes about 95% of the box; the caption sits on the bottom of the picture, inside its frame
 .weather-display .main.f1-photo {
 	&.main {
 		overflow: hidden;
@@ -11,22 +11,31 @@
 		@include u.text-shadow();
 
 		.frame {
-			height: 260px;
-			padding-top: 16px;
-			box-sizing: border-box;
-			text-align: center;
+			position: relative;
+			height: 310px;
+			background: black;
 
+			// about 95% of the box, centred, with the red frame
 			.picture {
-				max-width: 600px;
-				max-height: 240px;
+				display: block;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				max-width: 95%;
+				max-height: 95%;
 				outline: 2px solid f1.$f1-red;
-				background: black;
 			}
 		}
 
 		.caption {
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 12px;
 			height: 50px;
 			padding: 0 24px;
+			box-sizing: border-box;
 			display: flex;
 			align-items: center;
 			justify-content: center;

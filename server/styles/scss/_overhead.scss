@@ -172,6 +172,32 @@
 				width: 280px;
 				height: 280px;
 
+				// the map behind the rings: faint, inside the 50 km circle
+				.map {
+					position: absolute;
+					inset: 0;
+					border-radius: 50%;
+					overflow: hidden;
+					opacity: 0.25;
+
+					img {
+						position: absolute;
+						display: block;
+						max-width: none;
+					}
+				}
+
+				.map-credit {
+					position: absolute;
+					left: 0;
+					right: 0;
+					bottom: -14px;
+					text-align: center;
+					font-family: 'Star4000 Small';
+					font-size: 9px;
+					color: rgba(169, 196, 239, 0.6);
+				}
+
 				.ring {
 					position: absolute;
 					border: 2px solid rgba(169, 196, 239, 0.45);
