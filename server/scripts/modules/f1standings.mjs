@@ -7,6 +7,7 @@ import ScrollWeatherDisplay from './scrollweatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { readCache, writeCache, isFresh } from './utils/f1-update.mjs';
 import { plainText } from './utils/text.mjs';
+import racingGap from './utils/racing-gap-events.mjs';
 
 const STANDINGS_URL = 'https://api.jolpi.ca/ergast/f1/current/driverstandings/';
 // the standings list every team a driver raced for this season, in no particular order,
@@ -28,6 +29,11 @@ class F1Standings extends ScrollWeatherDisplay {
 
 	async getData(_weatherParameters) {
 		if (!super.getData(_weatherParameters)) return;
+		// in the racing gap the Verstappen Jet is the only F1 screen (utils/racing-gap.mjs)
+		if (await racingGap()) {
+			this.setStatus(STATUS.noData);
+			return;
+		}
 
 		let cache = readCache(CACHE_KEY);
 		if (!isFresh(cache)) {

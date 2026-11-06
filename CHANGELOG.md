@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.28.0** (2026-11-06): racing gap: the F1 Standings screen is skipped too, so the Verstappen Jet is the only F1 screen in the gap; GT events with dates but no dated sessions yet count from their dates (the GT screens were showing in the gap)
 - **1.27.1** (2026-11-05): News pictures: RTP's second generic placeholder (the Antena 1 one) is left out too; no change to the page
 - **1.27.0** (2026-11-05): News: a small picture on the right of each headline when its source gives one (Pi service: `image` in `news.json`, only small pictures from known CDNs)
 - **1.26.0** (2026-11-05): News: new Aviation News page (Aviacao TV, its plane symbol on a red plate), between the general headlines and F1 News; Sabado switched off for now; the place name on the Radar map and the stand and taxiway names of the Overhead plan are shown as text, never as HTML (a place name in an edited link could run a script); unit test of the F1 download rule; unused upstream weather.md removed
