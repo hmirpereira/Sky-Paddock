@@ -1,0 +1,24 @@
+[Back to the README](../README.md)
+
+# Development
+
+You need Node.js. Run it locally:
+
+```
+npm install
+npm run dev
+```
+
+and open http://localhost:8080/ (Vite: changes to the code and the styles show at once). `npm run preview` builds and serves the finished site.
+
+**Requests**: `utils/fetch.mjs` asks again, after 1, 2 and 5 seconds, a request that failed because of the network or the server (an error of 500 or more), so a screen does not stay failed because of a blip of the Wi-Fi or a busy server (also from ws4kp). It does not ask again after a 4xx answer, after the 30 s timeout, for a request with a signal of its own, or for the Pi service on the same machine. `tests/unit/fetch.test.mjs` covers it.
+
+**Updating the live site**: edit the sources and push to `main`. GitHub Actions (`.github/workflows/pages.yml`) checks the code with ESLint, builds the site with Vite (`npm run build`, into `docs/`) and publishes it on GitHub Pages; if the check or the build fails, nothing is published and the site stays as it was. `npm run lint` checks every `.mjs` file under `server/scripts/` (the pattern is quoted, so ESLint expands it the same way on Windows and on Linux). The built files are not in the repository. Vite gives the code and style files names that change with their content, so browsers and the TV always load the new ones; the Pi loads new code when Chromium restarts.
+
+**Testing**: `npm run test:unit` runs, in milliseconds and without a browser (Node's own runner), the tests of the pure logic: the METAR and TAF decoders (including a TAF issued on the last day of the month), the unit conversions, the text helpers (`plainText`, `escapeHtml`), the F1 Telemetry maths and colours and the rule for when the F1 screens download again (Friday to Monday at 22:00 Lisbon, winter and summer time) (`tests/unit/`). `npm test` runs them and then the browser test below (after `npm run build`), which opens the built site in Chromium with Playwright, every screen on, in kiosk mode at 16:9 and at 4:3, and goes through every page of every screen. It fails on a page error, on a screen that fails or stays loading, on a loaded screen that is never shown, and on a screen that ends differently from the recording. The weather, F1 and other sites are not asked: their answers were recorded once into `tests/recorded/sites.har` (`npm run test:record`, about 1.7 MB, for Lisbon) and the page clock is set to the time of that recording, so the result is the same every time. The Pi service is replaced by made-up answers (`tests/pi-fixtures.mjs`). So are the Jolpica F1 answers (`tests/f1-fixtures.mjs`, built from the test time: the F1 screens end the same way whatever day the sites were recorded; OpenF1 stays in the recording). One more case opens a link with an airport name that is HTML and a location that is not JSON, and checks that the name is shown as text and the page still starts. Record again when a screen starts asking for new data. GitHub Actions runs the unit tests before the build and the browser test after it, and nothing is published if one fails. `SCREENSHOTS=1 npm test` saves every page of every screen in `test-results/`.
+
+**Text from other sites**: news titles, flight and aircraft data, race results, place names and warnings reach the page as text, never as HTML. `fillTemplate` (`weatherdisplay.mjs`) puts a string with `textContent`; markup the page builds itself is passed as `{ html: ... }` (only the pressure arrow and the line breaks of the warnings do), and anywhere HTML is built by hand (the Overhead labels, flight numbers and stand and taxiway names, the telemetry legend, the place name on the Radar map, which can come from the page address) the outside text goes through `escapeHtml` (`utils/html.mjs`). The smoke test has a headline with `<b>x</b> & a < b` and fails if it is not shown letter by letter.
+
+**Layout**: views in `views/` (EJS), one module per screen in `server/scripts/modules/`, all loaded from `server/scripts/main.mjs`, styles in `server/styles/scss/`. Each screen is a `WeatherDisplay` subclass registered with `registerDisplay`; a new screen is added to `server/scripts/main.mjs`; the build is set in `vite.config.mjs`. The built page has no spaces or line breaks between tags (`html-minifier-terser`), as before Vite: several boxes keep spaces as written (`white-space: pre`) and would otherwise show the line breaks of the templates.
+
+**Version**: Sky Paddock has its own version number in `package.json`, starting at 1.0.0 (10 October 2026; forked from WeatherStar 4000+ International 12.1.0). It is shown on the loading screen and is the cache-buster of the script, style and icon links, so each release raises it: the last number for fixes, the middle one for new screens or features.

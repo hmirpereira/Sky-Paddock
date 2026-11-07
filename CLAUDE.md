@@ -5,7 +5,7 @@ news screens in the 1990s WeatherStar look. It runs as a Chromium kiosk on a Ras
 (DietPi, 1080p, widescreen), loading the site published on GitHub Pages. Screens marked "Pi" read a
 local service on the Pi (`skypaddock-hub`, http://127.0.0.1:8095) and are skipped anywhere else.
 
-`README.md` describes every screen and option; read it before changing a screen.
+`README.md` is the overview; each screen and option is described in `docs-src/` (`screens/*.md`, `look-and-feel.md`, `sources.md`); read the page of a screen before changing it.
 Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is not committed.
 
 ## Commands
@@ -62,7 +62,7 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 ## Rules (always)
 
 - Versions: `package.json` (and the two version fields in `package-lock.json`); the last number for
-  fixes, the middle one for new screens or features. Update `README.md` with every change.
+  fixes, the middle one for new screens or features. Update the README or the page of `docs-src/` that the change affects, and `CHANGELOG.md`, with every change.
 - The repository is public: no personal data, no home coordinates, no API keys, tokens or passwords.
   Keys and credentials live only in the Pi's configuration.
 - Do not scrape flightradar24. Do not spoof `Referer`/`Origin` or otherwise get round a site's

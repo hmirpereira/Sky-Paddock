@@ -99,4 +99,6 @@ One line per version, newest first (the subject of its commit; the details are i
 - **1.5.1** (2026-10-16): GT World Next hides Qualifying Combined when Q1-Q3 are listed
 - **1.5.0** (2026-10-16): GT World results and next event, team logos, GT colours
 - **1.5.0** (2026-10-16): GT World race results and next event screens, GT colour theme
-- **12.1.0 build attach** (2026-05-27): 
+- **12.1.0 build attach** (2026-05-27):
+
+Notes: until version 1.3 the project was called Sky Pit Wall. Version 1.0.0 is from 10 October 2026, forked from WeatherStar 4000+ International 12.1.0.

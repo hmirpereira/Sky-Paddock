@@ -1,4 +1,4 @@
-// a screen whose rows scroll: the whole .main scrolls, so the background stripes move with the rows (README: Look and feel),
+// a screen whose rows scroll: the whole .main scrolls, so the background stripes move with the rows (docs-src/look-and-feel.md),
 // while the column headers or the title stay at the top (position: sticky). The subclass puts its rows in and tells
 // setScrollDistance how far there is to scroll; the time of the screen comes from that distance (utils/scroll-timing.mjs).
 import WeatherDisplay from './weatherdisplay.mjs';
