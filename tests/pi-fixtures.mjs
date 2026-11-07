@@ -233,6 +233,16 @@ const plex = (now) => ({
 	},
 });
 
+// Plex Now Playing: one made-up episode, playing (poster served by tests/smoke.spec.mjs)
+const plexNow = (now) => ({
+	generated: iso(now),
+	ok: iso(now),
+	error: null,
+	sessions: [{
+		key: '10', title: 'Made Up Show', detail: 'S2 E5 - The One With A Rather Long Episode Name', state: 'playing', user: 'Guest', player: 'Living Room TV', offset: 1260, duration: 2700, poster: '/plexnow-poster-10.jpg', summary: 'Some more made up words. '.repeat(30),
+	}],
+});
+
 // the Status screen (Debug mode): one row per source, one of them that never answered
 const sources = (now) => ({
 	generated: iso(now),
@@ -270,6 +280,7 @@ const piResponses = (now) => ({
 	'/gt.json': gt(now),
 	'/news.json': news(now),
 	'/plex.json': plex(now),
+	'/plexnow.json': plexNow(now),
 	'/f1photo.json': f1photo(now),
 	'/health.json': health(now),
 	'/sources.json': sources(now),

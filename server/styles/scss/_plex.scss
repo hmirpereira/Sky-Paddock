@@ -9,7 +9,8 @@ $cinema-gold: #ffd56a;
 $cinema-frame: #d4a640;
 $cinema-cream: #f3e6c8;
 
-#plex-html {
+#plex-html,
+#plex-now-html {
 	background-image: url(/images/BackGround1_1_cinema.png);
 
 	.header .title {
@@ -50,7 +51,8 @@ $cinema-cream: #f3e6c8;
 	}
 }
 
-.wide.plex #container {
+.wide.plex #container,
+.wide.plex-now #container {
 	background: url(/images/BackGround1_1_wide_cinema.png);
 }
 
@@ -151,6 +153,53 @@ $cinema-cream: #f3e6c8;
 					display: block;
 					width: 30px;
 					height: 30px;
+				}
+			}
+
+			// Now Playing: who is watching and where, the state first
+			.who {
+				flex: none;
+				font-family: 'Star4000 Small';
+				font-size: 18pt;
+				line-height: 24px;
+				color: $cinema-cream;
+				white-space: nowrap;
+				overflow: hidden;
+
+				.state {
+					margin-right: 14px;
+					color: $cinema-gold;
+				}
+
+				.state.paused {
+					color: #ff8a8a;
+				}
+			}
+
+			// the position in the film, and when it ends
+			.progress {
+				flex: none;
+				margin-top: 6px;
+
+				.bar {
+					height: 12px;
+					box-sizing: border-box;
+					border: 2px solid $cinema-frame;
+					background: black;
+				}
+
+				.fill {
+					height: 100%;
+					background: linear-gradient(to right, #e8b440, $cinema-gold);
+				}
+
+				.times {
+					display: flex;
+					justify-content: space-between;
+					font-family: 'Star4000 Small';
+					font-size: 16pt;
+					line-height: 22px;
+					color: $cinema-cream;
 				}
 			}
 
