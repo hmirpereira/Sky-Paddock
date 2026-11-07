@@ -3,7 +3,7 @@ import noSleep from './utils/nosleep.mjs';
 import STATUS from './status.mjs';
 import { wrap } from './utils/calc.mjs';
 import {
-	getPoint, getMarinePoint, getGeocoding, aggregateWeatherForecastData,
+	getPoint, getGeocoding, aggregateWeatherForecastData,
 } from './utils/weather.mjs';
 // eslint-disable-next-line import/no-cycle
 import settings from './settings.mjs';
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const DISPLAY_ORDER = [
 	'hazards', 'current-weather', 'hourly', 'hourly-graph',
 	'travel', 'regional-forecast', 'extended-forecast', 'almanac',
-	'radar', 'marine-forecast', 'pollen', 'work-schedule',
+	'radar', 'pollen', 'work-schedule',
 	'metar', 'departures', 'cancellations', 'overhead',
 	'news', 'f1-last-race', 'f1-photo', 'f1-grid', 'f1-telemetry',
 	'f1-standings', 'f1-next-race', 'f1-jet', 'gt-race',
@@ -39,6 +39,9 @@ const AUTO_REFRESH_TIME_MS = 600_000; // 10 min.
 const CHK_AUTO_REFRESH_SELECTOR = '#chkAutoRefresh';
 let AutoRefreshIntervalId = null;
 let AutoRefreshCountMs = 0;
+// when the first load fails (no network yet), try again after this, not only at the next 10 minute refresh
+const RETRY_AFTER_FAILURE_MS = 120_000;
+let retryTimer = null;
 
 const init = async () => {
 	// every screen of the list must have registered, or the navigation would find a hole
@@ -46,22 +49,6 @@ const init = async () => {
 	// set up resize handler
 	window.addEventListener('resize', resize);
 	resize();
-
-	// set up custom event listener for custom messages from displays
-	window.addEventListener('custom-weather:update', (event) => {
-		console.debug('Received custom-weather:update event with data:', event);
-		if (event.detail) {
-			// store on shared weatherParameters so displays can read it
-			weatherParameters.customWeather = event.detail;
-
-			// optionally notify displays that implement a handler
-			displays.forEach((display) => {
-				if (typeof display.onCustomWeather === 'function') {
-					display.onCustomWeather(event.detail);
-				}
-			});
-		}
-	});
 
 	// auto refresh
 	const autoRefresh = localStorage.getItem('autoRefresh');
@@ -162,20 +149,6 @@ const getWeather = async (latLon, haveDataCallback) => {
 	// call for new data on each display
 	displays.forEach((display) => display.getData(weatherParameters));
 	return point;
-};
-
-// the marine data asks Open-Meteo once per wave model (about 8 requests): only when the screen is on
-const getMarineForecast = async (latLon, point, haveDataCallback) => {
-	if (!displays.some((display) => display?.name === 'Marine Forecast' && display.isEnabled)) return;
-	const marinePoint = await getMarinePoint(latLon.lat, latLon.lon, 'marine');
-
-	if (typeof haveDataCallback === 'function') haveDataCallback(marinePoint);
-
-	displays.forEach((display) => {
-		if (display.name === 'Marine Forecast') {
-			display.getMarineData(point, marinePoint);
-		}
-	});
 };
 
 // receive a status update from a module {id, value}
@@ -489,18 +462,21 @@ const AssignLastUpdate = (date) => {
 };
 
 const latLonReceived = async (data, haveDataCallback) => {
+	// a retry after a failure is no longer needed once this load starts (it plans its own if it fails)
+	clearTimeout(retryTimer);
 	// clear the timestamp before loading (it used to be cleared afterwards, wiping the new value)
 	AssignLastUpdate(null);
 	try {
-		const point = await getWeather(data, haveDataCallback);
-		await getMarineForecast(data, point, haveDataCallback);
+		await getWeather(data, haveDataCallback);
 
 		// We can immediately start playing (auto play),
 		// as all data has been retrieved
 		setPlaying(true);
 	} catch (error) {
-		// a network or API failure must not stop the auto refresh for good
-		console.error('latLonReceived: failed to get data, retrying on next refresh', error);
+		// a network or API failure must not stop the auto refresh for good; and after a power cut the router can
+		// come back later than the Pi, so try again soon instead of waiting for the 10 minute refresh
+		console.error('latLonReceived: failed to get data, trying again in 2 minutes', error);
+		retryTimer = setTimeout(loadTwcData, RETRY_AFTER_FAILURE_MS);
 	} finally {
 		// make sure the auto refresh starts even if a display is stuck in "loading"
 		// or the data load failed

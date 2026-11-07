@@ -3,7 +3,6 @@ import {
 	kphToMs,
 	kphToMph,
 	kphToBft,
-	knotsToMs,
 
 	celsiusToFahrenheit,
 	celsiusToKelvin,
@@ -12,7 +11,6 @@ import {
 	kilometersToFeet,
 	kilometersToMeters,
 	KilometersToBananas,
-	metersToFeet,
 
 	pascalToInHg,
 	pascalToMmHg,
@@ -59,34 +57,6 @@ export default class ConversionHelpers {
 		// Convert to kilometers and round to 2 decimal places
 		const heightKm = Math.max(0, Math.round(heightMeters / 10) / 100);
 		return heightKm;
-	}
-
-	static getMarineWindUnitText() {
-		let marineWindUnitText = '';
-		// [1, 'knots'],
-		// [2, 'm/s'],
-		switch (document.documentElement.attributes.getNamedItem('marine-wind-units').value) {
-			case '1':
-				marineWindUnitText = 'kts';
-				break;
-			case '2':
-				marineWindUnitText = 'm/s';
-				break;
-			default:
-				marineWindUnitText = 'kts';
-		}
-
-		return marineWindUnitText;
-	}
-
-	static convertMarineWindUnitsFromKnots(openMeteoValue) {
-		// [1, 'knots'],
-		// [2, 'm/s'],
-		const windUnits = document.documentElement.attributes.getNamedItem('marine-wind-units').value;
-
-		if (windUnits === '1') return openMeteoValue; // knots
-		if (windUnits === '2') return knotsToMs(openMeteoValue); // m/s
-		return openMeteoValue;
 	}
 
 	static getWindUnitText() {
@@ -246,33 +216,5 @@ export default class ConversionHelpers {
 				pressureUnitText = 'hPa';
 		}
 		return pressureUnitText;
-	}
-
-	static convertWaveHeightUnits(openMeteoValue) {
-		// [1, 'feet'],
-		// [2, 'meters'],
-		const waveHeightUnits = document.documentElement.attributes.getNamedItem('marine-wave-height-units').value;
-
-		if (waveHeightUnits === '1') return metersToFeet(openMeteoValue); // feet
-		if (waveHeightUnits === '2') return openMeteoValue; // meters
-		return openMeteoValue;
-	}
-
-	static getWaveHeightUnitText() {
-		let waveHeightUnitText = '';
-		// [1, 'feet'],
-		// [2, 'meters'],
-		switch (document.documentElement.attributes.getNamedItem('marine-wave-height-units').value) {
-			case '1':
-				waveHeightUnitText = "'";
-				break;
-			case '2':
-				waveHeightUnitText = 'm';
-				break;
-			default:
-				waveHeightUnitText = "'";
-		}
-
-		return waveHeightUnitText;
 	}
 }

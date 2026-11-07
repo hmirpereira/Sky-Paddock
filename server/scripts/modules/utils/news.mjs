@@ -5,6 +5,8 @@ import { plainText } from './text.mjs';
 
 const NEWS_URL = 'http://127.0.0.1:8095/news.json';
 const CHECK_EVERY_MS = 5 * 60 * 1000;
+const KEEP_LAST_LIST_MS = 30 * 60 * 1000;
+let lastGood = 0;
 
 let data = {
 	items: [], f1: [], aviation: [], sources: [],
@@ -25,11 +27,15 @@ const load = async () => {
 			sources: json?.sources ?? [],
 			ok: json?.ok,
 		};
+		lastGood = Date.now();
 	} catch {
-		// not on the Pi, or the service is down
-		data = {
-			items: [], f1: [], aviation: [], sources: [],
-		};
+		// the service was slow for a moment: keep the last list instead of making the News screen and the breaking
+		// news disappear until the next refresh; but not for ever, old headlines are worse than none
+		if (Date.now() - lastGood > KEEP_LAST_LIST_MS) {
+			data = {
+				items: [], f1: [], aviation: [], sources: [],
+			};
+		}
 	}
 	pending = null;
 	return data;

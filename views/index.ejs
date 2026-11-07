@@ -15,17 +15,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="images/Logo192.png?v=<%- version %>" />
   
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-  crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin="">
-      window.leaflet = L;
-  </script>
-
-  <!-- Vite builds these two into hashed files (views/index.ejs is rendered by vite.config.mjs) -->
+  <!-- Vite builds these two (Leaflet comes with them: vendor-globals.mjs) into hashed files (views/index.ejs is rendered by vite.config.mjs) -->
   <link rel="stylesheet" type="text/css" href="/styles/scss/main.scss" />
   <script type="module" src="/scripts/main.mjs"></script>
 
@@ -91,9 +81,6 @@
       </div>
       <div id="hazards-html" class="weather-display">
         <%- include('partials/hazards.ejs') %>
-      </div>
-      <div id="marine-forecast-html" class="weather-display">
-        <%- include('partials/marine-forecast.ejs') %>
       </div>
       <div id="pollen-html" class="weather-display">
         <%- include('partials/pollen.ejs') %>

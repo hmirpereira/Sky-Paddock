@@ -13,18 +13,11 @@ import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import settings from './settings.mjs';
 import { ON } from './utils/dark-mode.mjs';
+import {
+	LOCAL_TZ, shiftTimes, keepDays, stillShown,
+} from './utils/shifts.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/schedule.json';
-const LOCAL_TZ = 'Europe/Lisbon';
-
-// a shift as start and end times (a shift that ends after midnight ends on the next day)
-const shiftTimes = (day) => {
-	if (day.off || !day.start || !day.end) return null;
-	const start = DateTime.fromISO(`${day.date}T${day.start}`, { zone: LOCAL_TZ });
-	let end = DateTime.fromISO(`${day.date}T${day.end}`, { zone: LOCAL_TZ });
-	if (end <= start) end = end.plus({ days: 1 });
-	return { start, end };
-};
 
 // the (R) schedule of a day, to show in small under the main one (the Pi adds it as day.r; nothing without it)
 const rSchedule = (day) => {
@@ -113,9 +106,8 @@ class WorkSchedule extends WeatherDisplay {
 			return;
 		}
 
-		// from today on (the file on the Pi is refreshed every hour)
-		const today = DateTime.now().setZone(LOCAL_TZ).toISODate();
-		this.days = (response.days ?? []).filter((day) => day.date >= today).slice(0, 8);
+		// from yesterday on, for a night shift still going on (the file on the Pi is refreshed every hour)
+		this.days = keepDays(response.days ?? [], DateTime.now().setZone(LOCAL_TZ)).slice(0, 9);
 		if (this.days.length === 0) {
 			this.setStatus(STATUS.noData);
 			return;
@@ -139,10 +131,8 @@ class WorkSchedule extends WeatherDisplay {
 	drawWeek() {
 		const now = DateTime.now().setZone(LOCAL_TZ);
 		const today = now.toISODate();
-		// today's shift leaves the list once it has ended (the Pi sends 8 days, so 7 rows remain)
-		const days = this.days
-			.filter((day) => !(day.date === today && shiftTimes(day) && shiftTimes(day).end <= now))
-			.slice(0, 7);
+		// today's shift leaves the list once it has ended; yesterday's night shift stays while it lasts
+		const days = this.days.filter((day) => stillShown(day, now)).slice(0, 7);
 		// the (R) schedule under each day only when the setting Personal Schedule is On
 		const showR = Number(settings.personalSchedule?.value) === ON;
 		const lines = days.map((day) => {

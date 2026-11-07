@@ -12,7 +12,6 @@ import './modules/hourly-graph.mjs';
 import './modules/radar.mjs';
 import './modules/regionalforecast.mjs';
 import './modules/travelforecast.mjs';
-import './modules/marine-forecast.mjs';
 import './modules/pollen.mjs';
 import './modules/metar.mjs';
 import './modules/departures.mjs';

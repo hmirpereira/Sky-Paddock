@@ -137,49 +137,8 @@ class Radar extends WeatherDisplay {
 		}).addTo(window._leafletMap);
 	}
 
-	updateLocationMarker(weatherData) {
-		if (!this.locationMarker || !weatherData) return;
-
-		const markerContent = Radar.createWeatherIconHTML(
-			weatherData.icon,
-			ConversionHelpers.convertTemperatureUnits(weatherData.temperature),
-			weatherData.cityName || 'Current Location',
-			this.weatherParameters.timeZone,
-		);
-
-		const customIcon = window.L.divIcon({
-			html: markerContent,
-			className: 'custom-weather-marker',
-			iconSize: [140, 120],
-			iconAnchor: [60, 60], // Center the marker
-			popupAnchor: [0, -60],
-		});
-
-		this.locationMarker.setIcon(customIcon);
-	}
-
 	isTilesLoading() {
 		return this.loadingTilesCount > this.loadedTilesCount;
-	}
-
-	static removeLayer(layer) {
-		if (!layer) {
-			console.warn('Tried to remove a layer, but layer is undefined or null');
-			return;
-		}
-
-		if (!window._leafletMap) {
-			console.warn('Leaflet map is not initialized');
-			return;
-		}
-
-		if (!window._leafletMap.hasLayer(layer)) {
-			console.warn('Layer not found on the map:', layer);
-			return;
-		}
-
-		console.log('Removing layer:', layer);
-		window._leafletMap.removeLayer(layer);
 	}
 
 	addLayer(frame) {
@@ -221,15 +180,16 @@ class Radar extends WeatherDisplay {
 	}
 
 	changeRadarPosition(position, preloadOnly = false, force = false) {
-	// Wrap position to valid range
+		// before the loops below: with no frames they would never end (a retry timer can fire after a refresh left none)
+		if (this.mapFrames.length === 0) return;
+
+		// Wrap position to valid range
 		while (position >= this.mapFrames.length) {
 			position -= this.mapFrames.length;
 		}
 		while (position < 0) {
 			position += this.mapFrames.length;
 		}
-
-		if (this.mapFrames.length === 0) return;
 
 		const nextFrame = this.mapFrames[position];
 
@@ -305,7 +265,7 @@ class Radar extends WeatherDisplay {
 		}
 	}
 
-	async initializeRadar(api, kind = 'radar') {
+	async initializeRadar(api) {
 		// Clear existing layers
 		if (window._leafletMap && Array.isArray(this.radarLayers)) {
 			this.radarLayers.forEach((layer) => {
@@ -324,10 +284,7 @@ class Radar extends WeatherDisplay {
 
 		if (!api) return;
 
-		if (kind === 'satellite' && api.satellite && api.satellite.infrared) {
-			this.mapFrames = api.satellite.infrared;
-			this.lastPastFramePosition = api.satellite.infrared.length - 1;
-		} else if (api.radar && api.radar.past) {
+		if (api.radar && api.radar.past) {
 			this.mapFrames = Array(Radar.radarIterationCount).fill(api.radar.past).flat();
 			if (api.radar.nowcast) {
 				this.mapFrames = this.mapFrames.concat(api.radar.nowcast);
@@ -342,12 +299,6 @@ class Radar extends WeatherDisplay {
 		// Show initial frame
 		if (this.mapFrames.length > 0) {
 			this.showFrame(this.lastPastFramePosition, true);
-		}
-	}
-
-	refreshCurrentFrame() {
-		if (this.mapFrames.length > 0) {
-			this.showFrame(this.animationPosition, true);
 		}
 	}
 
@@ -392,7 +343,7 @@ class Radar extends WeatherDisplay {
 
 			// Get radar data
 			this.radarData = await Radar.getRadarData();
-			await this.initializeRadar(this.radarData, 'radar');
+			await this.initializeRadar(this.radarData);
 
 			const todayKey = DateTime.now().setZone(weatherParameters.timeZone).toFormat('yyyy-MM-dd');
 

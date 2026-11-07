@@ -153,7 +153,8 @@ const autocompleteOnSelect = async (suggestion) => {
 		},
 	});
 
-	const loc = data.locations[0];
+	// ArcGIS answers some errors with a 200 and { error }, so there may be no list at all
+	const loc = data.locations?.[0];
 	if (loc) {
 		localStorage.removeItem('latLonFromGPS');
 		document.querySelector(BNT_GET_GPS_SELECTOR).classList.remove('active');
@@ -458,6 +459,5 @@ const fullScreenResizeCheck = () => {
 	fullScreenResizeCheck.wasFull = !!document.fullscreenElement;
 };
 
-// default export kept for compatibility (nothing uses it after the experimental features were removed)
-export default btnNavigateRefreshClick;
+// eslint-disable-next-line import/prefer-default-export
 export { loadData };

@@ -330,7 +330,8 @@ class Overhead extends WeatherDisplay {
 		if (ac.vrate > 300) trend = 'up';
 		if (ac.vrate < -300) trend = 'down';
 		card.querySelector('.alt .value').innerHTML = `${altitudeText(ac)}<span class="trend ${trend}"></span>`;
-		card.querySelector('.speed .value').textContent = `${Math.round(ac.gs * KM_PER_NM)} km/h`;
+		// an aircraft just picked up can have a position and no ground speed yet
+		card.querySelector('.speed .value').textContent = Number.isFinite(ac.gs) ? `${Math.round(ac.gs * KM_PER_NM)} km/h` : '';
 		card.querySelector('.type .value').textContent = ac.type ?? '';
 		card.querySelector('.reg .value').textContent = ac.reg ?? '';
 	}

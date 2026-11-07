@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.31.0** (2026-11-07): audit fixes: Work Schedule keeps a night shift that began yesterday while it lasts; CI build job without publish permissions and without install scripts; Leaflet bundled instead of loaded from unpkg.com; News keeps the last list for 30 minutes when the Pi is slow; first load retries after 2 minutes; Radar, Overhead, Plex Now Playing and place search edge cases; dead code removed; Marine Forecast removed
 - **1.30.0** (2026-11-07): new Plex Now Playing screen (Pi): what is playing on the Plex server now (one page per session, 3 at most), with poster, who is watching and where, progress bar with the end time and synopsis; skipped when nothing is playing
 - **1.29.1** (2026-11-06): News: long headlines beside a picture use smaller letters (16pt on three lines, 14pt on four) so they are no longer cut, and the time and source count are centred on the source logo; F1 Photo keeps the F1 red background behind the frame
 - **1.29.0** (2026-11-06): Overhead radar over a faint OpenStreetMap map; F1 Photo at about 95% in its frame with the caption on the picture; National Forecast titles with the zone on the second line; telemetry chart sector labels no longer cut; the GT screens follow the GT calendar alone in the racing gap

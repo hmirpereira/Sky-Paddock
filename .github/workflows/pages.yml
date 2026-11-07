@@ -8,10 +8,9 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+# the job that installs the npm packages and runs their code only reads; only the deploy job may publish
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # one publication at a time; a newer push waits for the one running
 concurrency:
@@ -21,6 +20,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,7 +30,8 @@ jobs:
           node-version: 22
           cache: npm
       - name: Install
-        run: npm ci --no-audit --no-fund
+        # no install scripts: the build and the tests do not need them (the Chromium below is installed on its own)
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Lint (stops here if the code has errors, so a broken page never reaches the TV)
         run: npm run lint
       - name: Unit tests (decoders, conversions, telemetry maths, text helpers)
@@ -62,6 +65,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

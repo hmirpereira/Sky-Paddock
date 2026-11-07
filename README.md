@@ -61,7 +61,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | GT World (Pi) | Result of the latest GT World Challenge Europe race(s), with Verstappen's team always shown | Public pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com) |
 | GT World Next (Pi) | Next GT World Challenge Europe event: track outline, round, cup, country with flag, length and turns, race date, countdown, weekend timetable and race forecast | Public event pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com), Open-Meteo |
 
-Every screen can be switched on or off on the page. Marine Forecast is kept from the original but is off on the TV. How often each source is asked and what limits it has: [Sources and limits](docs-src/sources.md).
+Every screen can be switched on or off on the page. How often each source is asked and what limits it has: [Sources and limits](docs-src/sources.md).
 
 ## Settings and the TV address
 

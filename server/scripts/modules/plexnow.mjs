@@ -70,6 +70,8 @@ class PlexNow extends WeatherDisplay {
 		super.drawCanvas();
 		const pageIndex = Math.min(Math.max(this.screenIndex, 0), this.sessions.length - 1);
 		const session = this.sessions[pageIndex];
+		// the sessions can end between two draws (the list is looked at again every minute): nothing to draw then
+		if (!session) return;
 
 		const poster = this.elem.querySelector('.poster');
 		poster.style.visibility = 'hidden';
