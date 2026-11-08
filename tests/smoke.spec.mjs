@@ -59,6 +59,11 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		page.on('pageerror', (error) => pageErrors.push(error.message));
 		const consoleErrors = [];
 		page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+		// the Content-Security-Policy of the page (csp.mjs) refuses anything that is not listed: every refusal is a failure
+		await page.addInitScript(() => {
+			window.cspViolations = [];
+			document.addEventListener('securitypolicyviolation', (event) => window.cspViolations.push(`${event.violatedDirective} ${event.blockedURI}`));
+		});
 
 		// anything outside the page and the Pi that was not recorded is refused (and listed)
 		const missing = [];
@@ -163,6 +168,8 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		if (consoleErrors.length) await testInfo.attach('console-errors.txt', { body: consoleErrors.join('\n'), contentType: 'text/plain' });
 
 		expect(pageErrors, 'page errors').toEqual([]);
+		expect(await page.evaluate(() => window.cspViolations), 'Content-Security-Policy violations (add the host to csp.mjs)').toEqual([]);
+		expect(await page.evaluate(() => !!document.querySelector('meta[http-equiv="Content-Security-Policy"]')), 'the page has its Content-Security-Policy').toBe(true);
 		expect(Object.entries(statuses).filter(([, status]) => status === 'failed' || status === 'unknown'), 'failed screens').toEqual([]);
 		expect(loaded.filter((screen) => !seen.has(screen)), 'loaded screens never shown').toEqual([]);
 		expect(escaped, 'a news headline with < and & must be shown as text').toBe(true);

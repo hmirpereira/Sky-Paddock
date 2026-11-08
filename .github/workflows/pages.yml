@@ -44,6 +44,9 @@ jobs:
           ls docs/assets/*.js docs/assets/*.css
           test -d docs/images/flags
           grep -q "$(node -p "require('./package.json').version")" docs/index.html
+          # the Content-Security-Policy is in the page and there is no inline script (the policy would refuse it)
+          grep -q 'http-equiv="Content-Security-Policy"' docs/index.html
+          ! grep -q '<script>' docs/index.html
       - name: Install Chromium for the test
         run: npx playwright install --with-deps chromium
       - name: Test every screen (recorded data; stops here if a screen fails or the page has an error)

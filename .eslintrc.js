@@ -63,7 +63,7 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: ['.eslintrc.js', 'vite.config.mjs', 'playwright.config.mjs', 'tests/**/*.mjs', '.claude/**/*.mjs'],
+			files: ['.eslintrc.js', 'vite.config.mjs', 'csp.mjs', 'playwright.config.mjs', 'tests/**/*.mjs', '.claude/**/*.mjs'],
 			env: { node: true, browser: false },
 			rules: {
 				'import/no-extraneous-dependencies': ['error', { devDependencies: true }],

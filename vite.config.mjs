@@ -7,6 +7,7 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import ejs from 'ejs';
 import { minify } from 'html-minifier-terser';
+import { buildPolicy } from './csp.mjs';
 
 const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
 // date of the commit being built, in Lisbon time, for the version mark (settings: Show Version Mark);
@@ -43,6 +44,17 @@ const collapseHtml = () => ({
 	},
 });
 
+// the Content-Security-Policy of the site (csp.mjs): a <meta> tag, because GitHub Pages sends no headers; only when building,
+// the dev server needs inline scripts and a websocket of its own
+const contentSecurityPolicy = () => ({
+	name: 'sky-paddock-csp',
+	apply: 'build',
+	transformIndexHtml: {
+		order: 'post',
+		handler: () => [{ tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content: buildPolicy() }, injectTo: 'head-prepend' }],
+	},
+});
+
 // the screens load images by name at run time (flags, logos, icons), so they are copied as they are
 // (fonts are only used by the styles, so Vite already puts them in assets/)
 const copyStatic = () => ({
@@ -61,7 +73,7 @@ export default defineConfig({
 	base: './',
 	// images and fonts are served from server/ while developing; copyStatic copies the images when building
 	publicDir: false,
-	plugins: [renderEjs(), collapseHtml(), copyStatic()],
+	plugins: [renderEjs(), collapseHtml(), contentSecurityPolicy(), copyStatic()],
 	build: {
 		outDir: out,
 		emptyOutDir: true,

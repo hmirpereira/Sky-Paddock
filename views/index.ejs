@@ -244,54 +244,6 @@
   </div>
   </main>
 
-  <script>
-    (function () {
-      // Parse bootstrapped JSON from a dedicated script tag to avoid template parsing issues
-      const initialJson = document.getElementById('initial-data') && document.getElementById('initial-data').textContent;
-      let initial = null;
-      try {
-        initial = initialJson ? JSON.parse(initialJson) : null;
-      } catch (e) {
-        initial = null;
-      }
-
-      // Minimal renderer: update a few visible fields. Modules can listen for 'custom-weather:update' event for more complex updates
-      function applyPayload(payload) {
-        if (!payload) return;
-        try {
-          if (payload.locationCity) document.getElementById('customSpanStationId').textContent = payload.locationCity;
-          if (payload.lastUpdated) document.getElementById('customSpanLastRefresh').textContent = payload.lastUpdated;
-
-          // Dispatch a global event so module code can react instead of coupling here
-          window.dispatchEvent(new CustomEvent('custom-weather:update', { detail: payload }));
-        } catch (e) {
-          // defensive: DOM may not be present yet
-        }
-      }
-
-      // Apply initial bootstrapped data if present
-      applyPayload(initial);
-
-      // Live updates using Server-Sent Events
-      if (typeof EventSource !== 'undefined') {
-        const es = new EventSource('/events');
-        es.onmessage = (e) => {
-          try {
-            const parsed = JSON.parse(e.data);
-            if (parsed && parsed.type === 'weather-update') {
-              console.log('Received weather update via SSE', parsed);
-              applyPayload(parsed.payload);
-            }
-          } catch (err) {
-            console.error('SSE parse error', err);
-          }
-        };
-        es.onerror = () => {
-          // optional: reconnect logic could go here
-        };
-      }
-    })();
-  </script>
   <!-- colour fringe on the pictures (Enable Colour Fringe on Pictures, _scan-lines.scss): red channel 1.5 px left, blue 1.5 px right -->
   <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position: absolute" aria-hidden="true">
     <filter id="vhs-rgb" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%">
