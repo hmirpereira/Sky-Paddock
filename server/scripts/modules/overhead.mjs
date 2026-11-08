@@ -247,7 +247,7 @@ class Overhead extends WeatherDisplay {
 			taken.push([LIST_BOX.x, LIST_BOX.y, LIST_BOX.w, LIST_BOX.h]);
 			const rows = list.slice(0, LIST_ROWS).map((ac) => `<div class="row${ac.parked ? ' parked' : ''}">`
 				+ `<div class="flight">${escapeHtml(flightText(ac))}</div><div class="stand">${escapeHtml(ac.parked ? ac.stand ?? '' : ac.groupStand)}</div>`
-				+ `<div class="since">${clock(ac.since)}</div></div>`);
+				+ `<div class="since">${escapeHtml(clock(ac.since))}</div></div>`);
 			if (list.length > LIST_ROWS) rows[LIST_ROWS - 1] = `<div class="row more">+${list.length - LIST_ROWS + 1} more</div>`;
 			listBox.querySelector('.rows').innerHTML = rows.join('');
 		}
@@ -279,7 +279,7 @@ class Overhead extends WeatherDisplay {
 			const label = spot ? `<div class="label ${side}" style="left:${spot[0] - p.x}px; top:${spot[1] - p.y}px">`
 				+ `${escapeHtml(flightText(ac))}${where ? `<div class="where">${escapeHtml(where)}</div>` : ''}</div>` : '';
 			return `<div class="target${ac.ground ? '' : ' moving'}${ac.parked ? ' parked' : ''}" style="left:${p.x}px; top:${p.y}px">
-				<div class="plane${isLufthansa(ac) ? ' lh' : ''}" style="transform: rotate(${(ac.track ?? 0) + turn}deg)"></div>${label}</div>`;
+				<div class="plane${isLufthansa(ac) ? ' lh' : ''}" style="transform: rotate(${(Number(ac.track) || 0) + turn}deg)"></div>${label}</div>`;
 		});
 
 		const marks = [];
@@ -329,7 +329,7 @@ class Overhead extends WeatherDisplay {
 		let trend = '';
 		if (ac.vrate > 300) trend = 'up';
 		if (ac.vrate < -300) trend = 'down';
-		card.querySelector('.alt .value').innerHTML = `${altitudeText(ac)}<span class="trend ${trend}"></span>`;
+		card.querySelector('.alt .value').innerHTML = `${escapeHtml(altitudeText(ac))}<span class="trend ${trend}"></span>`;
 		// an aircraft just picked up can have a position and no ground speed yet
 		card.querySelector('.speed .value').textContent = Number.isFinite(ac.gs) ? `${Math.round(ac.gs * KM_PER_NM)} km/h` : '';
 		card.querySelector('.type .value').textContent = ac.type ?? '';
@@ -427,7 +427,7 @@ class Overhead extends WeatherDisplay {
 			const label = spot ? `<div class="label ${side}" style="left:${spot[0] - p.x}px; top:${spot[1] - p.y}px">${logo ? `<img class="logo" src="images/overhead-logos/${code}.png" alt="">` : ''}`
 				+ `<div class="flight">${escapeHtml(flightText(ac))}</div>${route ? `<div class="route">${escapeHtml(route)}</div>` : ''}</div>` : '';
 			target.innerHTML = ac.ground ? '<div class="dot"></div>'
-				: `<div class="plane${isLufthansa(ac) ? ' lh' : ''}" style="transform: rotate(${ac.track ?? 0}deg)"></div>${label}`;
+				: `<div class="plane${isLufthansa(ac) ? ' lh' : ''}" style="transform: rotate(${Number(ac.track) || 0}deg)"></div>${label}`;
 			scope.append(target);
 		});
 

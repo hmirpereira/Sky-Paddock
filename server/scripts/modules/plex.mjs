@@ -53,7 +53,7 @@ class Plex extends WeatherDisplay {
 		poster.style.visibility = 'hidden';
 		poster.onload = () => { poster.style.visibility = ''; };
 		poster.onerror = () => { poster.style.visibility = 'hidden'; };
-		poster.src = movie.poster ? `${HUB}${movie.poster}` : '';
+		poster.src = movie.poster ? `${HUB}/${String(movie.poster).replace(/^\/+/, '')}` : '';
 
 		// the title in two lines at most: smaller letters for a long one
 		const titleBox = this.elem.querySelector('.plex-info .title');

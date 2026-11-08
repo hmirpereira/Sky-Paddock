@@ -30,7 +30,7 @@ class F1Photo extends WeatherDisplay {
 		try {
 			const photo = await json(`${SERVICE_URL}/f1photo.json`, { signal: AbortSignal.timeout(5000) });
 			if (!photo?.title || !photo?.image) throw new Error('no photo yet');
-			this.src = `${SERVICE_URL}${photo.image}`;
+			this.src = `${SERVICE_URL}/${String(photo.image).replace(/^\/+/, '')}`;
 			this.title = photo.title;
 			await loadPicture(this.src);
 		} catch (error) {
