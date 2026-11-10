@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.32.6** (2026-11-10): full screen from the iPhone Home Screen icon: the browser accepts the native request and does nothing (the screen stayed in the middle of the page, under the header), so there the window-only full screen is used straight away
 - **1.32.5** (2026-11-10): the Home Screen icon opened a 404: the build links a copy of the manifest in `assets/`, so its `start_url` and icon path now climb back to the site (`../`); unit test of the manifest paths
 - **1.32.4** (2026-11-10): leaving the window-only full screen on a phone: the note about the Home Screen is at the top (it covered the controls with the exit button) and the controls stay 6 seconds after a touch instead of 2
 - **1.32.3** (2026-11-10): the full screen button in Safari on the iPhone says so: the page cannot hide Safari's bars, so a note tells to add it to the Home Screen; Home Screen icon (`apple-touch-icon`), app title, landscape and black background in the manifest

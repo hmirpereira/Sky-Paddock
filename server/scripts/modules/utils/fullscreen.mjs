@@ -19,9 +19,14 @@ const isFullscreen = (doc = document) => !!nativeElement(doc) || isPseudo(doc);
 const isStandalone = (win = window) => !!win.navigator.standalone
 	|| !!win.matchMedia?.('(display-mode: standalone)').matches;
 
-// 'native' or 'pseudo' (what was done)
-const enterFullscreen = async (element, doc = document) => {
-	const name = findMethod(element, REQUESTS);
+// opened from the iPhone Home Screen icon (`navigator.standalone` exists only there): the page already has no browser bars,
+// and the browser accepts the native full screen request without doing anything (recorded on an iPhone), which left the
+// screen in the middle of the page with only the `:fullscreen` styles applied
+const isIosHomeScreen = (win = window) => !!win.navigator.standalone;
+
+// 'native' or 'pseudo' (what was done); `native: false` goes straight to the pseudo full screen
+const enterFullscreen = async (element, doc = document, { native = true } = {}) => {
+	const name = native ? findMethod(element, REQUESTS) : undefined;
 	if (name) {
 		try {
 			await element[name]({ navigationUI: 'hide' });
@@ -43,5 +48,5 @@ const exitFullscreen = async (doc = document) => {
 };
 
 export {
-	isFullscreen, isPseudo, isStandalone, enterFullscreen, exitFullscreen, findMethod, REQUESTS, EXITS,
+	isFullscreen, isPseudo, isStandalone, isIosHomeScreen, enterFullscreen, exitFullscreen, findMethod, REQUESTS, EXITS,
 };

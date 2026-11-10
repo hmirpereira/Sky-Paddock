@@ -5,7 +5,7 @@ import { round2 } from './modules/utils/units.mjs';
 import { parseQueryString } from './modules/share.mjs';
 import { setDarkModePlace } from './modules/darkmode.mjs';
 import {
-	isFullscreen, isPseudo, isStandalone, enterFullscreen, exitFullscreen,
+	isFullscreen, isPseudo, isStandalone, isIosHomeScreen, enterFullscreen, exitFullscreen,
 } from './modules/utils/fullscreen.mjs';
 import {
 	message as navMessage, hideAllCanvases, isPlaying, resize, resetStatuses, latLonReceived, stopAutoRefreshTimer, registerRefreshData,
@@ -198,7 +198,7 @@ const btnFullScreenClick = async () => {
 
 // the browser's full screen, or, where there is none (Safari on the iPhone), the screen filling the window (utils/fullscreen.mjs)
 const goFullScreen = async () => {
-	const mode = await enterFullscreen(document.querySelector('#divTwc'));
+	const mode = await enterFullscreen(document.querySelector('#divTwc'), document, { native: !isIosHomeScreen() });
 	// the page cannot hide Safari's bars: say how to get the whole screen
 	if (mode === 'pseudo' && !isStandalone()) showFullscreenNote();
 	window.scrollTo(0, 0);
