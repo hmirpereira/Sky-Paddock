@@ -60,9 +60,12 @@ body.kiosk.scan-lines {
 // On the page the screen is scaled too (1.5 times or more on a desktop, less on a phone), with the same uneven lines (2, 3 and
 // 4 pixels apart at 1.54). There the lines go over the screen in real pixels like on the TV, as high as the scaled screen
 // (--screen-height, set by resize()), so the control bar under it has none.
-body:not(.kiosk) #divTwc.scan-lines {
+body:not(.kiosk):not(.pseudo-fullscreen) #divTwc.scan-lines {
+  // not in the window-only full screen: there the screen is position: fixed (_page.scss), which also holds the lines
   position: relative;
+}
 
+body:not(.kiosk) #divTwc.scan-lines {
   #container::after {
     display: none;
   }
