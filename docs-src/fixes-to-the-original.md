@@ -13,7 +13,7 @@
 - Experimental Features removed (the nearby-cities lookup for Air Quality and Local Radar and its third-party proxy): slow, unreliable and of little use in Portugal.
 - Image preloads resolve relative to the page.
 - The loading screen lists every screen that is switched on (Hazards, Travel Forecast and Regional Forecast too, so any of them can be opened from there), in smaller lines when there are many.
-- Browser icon and web app manifest: the icon link carries the version, and the manifest paths are relative to the site.
+- Browser icon and web app manifest: the icon link carries the version, and the manifest paths climb out of `assets/` (the build links a copy of the manifest there), so the Home Screen icon opens the site and not a 404 (1.32.5).
 
 Removed from the original: Latest Observations and the United States city and station lists (1.5.5), the Personal Weather Station screen with its Express server and Docker files (1.6.1), the Local Forecast text screen (1.10.1).
 - Marine Forecast removed (1.31.0), with its wind and wave height unit settings: it was off on the TV and about 400 lines of code and styles. The Local Radar map library (Leaflet) is now bundled with the site instead of loaded from unpkg.com at every start.
