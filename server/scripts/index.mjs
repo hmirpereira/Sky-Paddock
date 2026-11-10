@@ -4,7 +4,9 @@ import noSleep from './modules/utils/nosleep.mjs';
 import { round2 } from './modules/utils/units.mjs';
 import { parseQueryString } from './modules/share.mjs';
 import { setDarkModePlace } from './modules/darkmode.mjs';
-import { isFullscreen, enterFullscreen, exitFullscreen } from './modules/utils/fullscreen.mjs';
+import {
+	isFullscreen, isStandalone, enterFullscreen, exitFullscreen,
+} from './modules/utils/fullscreen.mjs';
 import {
 	message as navMessage, hideAllCanvases, isPlaying, resize, resetStatuses, latLonReceived, stopAutoRefreshTimer, registerRefreshData,
 } from './modules/navigation.mjs';
@@ -196,7 +198,9 @@ const btnFullScreenClick = async () => {
 
 // the browser's full screen, or, where there is none (Safari on the iPhone), the screen filling the window (utils/fullscreen.mjs)
 const goFullScreen = async () => {
-	await enterFullscreen(document.querySelector('#divTwc'));
+	const mode = await enterFullscreen(document.querySelector('#divTwc'));
+	// the page cannot hide Safari's bars: say how to get the whole screen
+	if (mode === 'pseudo' && !isStandalone()) showFullscreenNote();
 	window.scrollTo(0, 0);
 	resize();
 	updateFullScreenNavigate();
@@ -205,6 +209,14 @@ const goFullScreen = async () => {
 	const img = document.querySelector(TOGGLE_FULL_SCREEN_SELECTOR);
 	img.src = 'images/nav/ic_fullscreen_exit_white_24dp_2x.png';
 	img.title = 'Exit fullscreen';
+};
+
+const showFullscreenNote = () => {
+	const note = document.createElement('div');
+	note.className = 'fullscreen-note';
+	note.textContent = 'This browser cannot hide its bars. For the whole screen, add this page to the Home Screen and open it from there.';
+	document.querySelector('#divTwc').append(note);
+	setTimeout(() => note.remove(), 7000);
 };
 
 const leaveFullScreen = async () => {

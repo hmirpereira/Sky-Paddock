@@ -15,6 +15,10 @@ const isPseudo = (doc = document) => doc.body.classList.contains(PSEUDO);
 
 const isFullscreen = (doc = document) => !!nativeElement(doc) || isPseudo(doc);
 
+// opened from the Home Screen icon (iOS `navigator.standalone`, others the display-mode media query): no browser bars to hide
+const isStandalone = (win = window) => !!win.navigator.standalone
+	|| !!win.matchMedia?.('(display-mode: standalone)').matches;
+
 // 'native' or 'pseudo' (what was done)
 const enterFullscreen = async (element, doc = document) => {
 	const name = findMethod(element, REQUESTS);
@@ -39,5 +43,5 @@ const exitFullscreen = async (doc = document) => {
 };
 
 export {
-	isFullscreen, isPseudo, enterFullscreen, exitFullscreen, findMethod, REQUESTS, EXITS,
+	isFullscreen, isPseudo, isStandalone, enterFullscreen, exitFullscreen, findMethod, REQUESTS, EXITS,
 };

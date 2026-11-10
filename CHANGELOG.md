@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.32.3** (2026-11-10): the full screen button in Safari on the iPhone says so: the page cannot hide Safari's bars, so a note tells to add it to the Home Screen; Home Screen icon (`apple-touch-icon`), app title, landscape and black background in the manifest
 - **1.32.2** (2026-11-10): the full screen button works on phones: every spelling of the browser API is tried and, where there is none or it refuses (Safari on the iPhone), the screen fills the browser window; a touch brings the controls back (`utils/fullscreen.mjs`, unit tests)
 - **1.32.1** (2026-11-10): bottom line warnings: the label stays in view and only the text of a long warning crawls
 - **1.32.0** (2026-11-10): IPMA weather warnings in the bottom line: the three most severe, one line each after the weather lines, with a label in the colour of the level (white letters) and the type with the end time; a line that does not fit crawls like a breaking news headline (`utils/hazard-lines.mjs`, unit tests)

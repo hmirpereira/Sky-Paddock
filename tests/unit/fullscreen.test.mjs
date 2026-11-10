@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-	isFullscreen, enterFullscreen, exitFullscreen, findMethod, REQUESTS,
+	isFullscreen, isStandalone, enterFullscreen, exitFullscreen, findMethod, REQUESTS,
 } from '../../server/scripts/modules/utils/fullscreen.mjs';
 
 // a document with a body whose class list works like the browser's
@@ -56,6 +56,13 @@ test('a browser that refuses the request also gets the pseudo full screen', asyn
 	} finally {
 		console.warn = warn;
 	}
+});
+
+test('opened from the Home Screen is told from a browser tab (iOS flag or display-mode)', () => {
+	assert.equal(isStandalone({ navigator: { standalone: true } }), true);
+	assert.equal(isStandalone({ navigator: {}, matchMedia: () => ({ matches: true }) }), true);
+	assert.equal(isStandalone({ navigator: { standalone: false }, matchMedia: () => ({ matches: false }) }), false);
+	assert.equal(isStandalone({ navigator: {} }), false);
 });
 
 test('leaving calls the browser exit with the spelling it has', async () => {
