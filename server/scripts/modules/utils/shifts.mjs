@@ -28,8 +28,10 @@ const stillShown = (day, now) => {
 };
 
 // the day of the Gates page: today while one of its flights has yet to leave; tomorrow once the last one has left, or when
-// today has no gates. With no gates to show, a message instead: "Day off" or "No gates assigned"
-const gatesDay = (days, now) => {
+// today has no gates. With no gates to show, a message instead: "Day off" or "No gates assigned".
+// all: every gate of the day (day.allGates, mine or not) instead of mine only; a day off of mine is then no reason for a message
+const gatesDay = (allDays, now, all = false) => {
+	const days = all ? allDays.map((day) => ({ ...day, gates: day.allGates ?? day.gates })) : allDays;
 	const today = days.find((day) => day.date === now.toISODate());
 	// the last departure of today ("19:05"); gates with no flight times known stay the whole day
 	const last = (today?.gates ?? []).flatMap((gate) => gate.flights ?? []).map((f) => f.etd ?? f.time ?? '').sort().at(-1);
@@ -37,7 +39,7 @@ const gatesDay = (days, now) => {
 	if (today?.gates?.length && !left) return { day: today, tomorrow: false, message: '' };
 	const day = days.find((d) => d.date === now.plus({ days: 1 }).toISODate());
 	if (day?.gates?.length) return { day, tomorrow: true, message: '' };
-	return { day, tomorrow: true, message: day?.off ? 'Day off' : 'No gates assigned' };
+	return { day, tomorrow: true, message: day?.off && !all ? 'Day off' : 'No gates assigned' };
 };
 
 export {

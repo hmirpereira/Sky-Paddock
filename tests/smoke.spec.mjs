@@ -127,6 +127,8 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		params.set('kiosk', 'true');
 		params.set('settings-scanLines-checkbox', 'true');
 		params.set('settings-debugMode-checkbox', 'true');
+		// other settings for a look at the screenshots: EXTRA_PARAMS="settings-personalGates-select=1.00"
+		new URLSearchParams(process.env.EXTRA_PARAMS ?? '').forEach((value, key) => params.set(key, value));
 		await page.goto(`./?${params}`, { waitUntil: 'domcontentloaded' });
 
 		// every screen has finished loading (loaded, no data, or failed)

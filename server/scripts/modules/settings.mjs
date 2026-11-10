@@ -146,10 +146,6 @@ const init = () => {
 		return box;
 	});
 
-	const gates = settings.personalGates.element;
-	gates.querySelector('select').disabled = true;
-	gates.style.opacity = '0.5';
-
 	// write to page
 	const settingsSection = document.querySelector('#settings');
 	settingsSection.innerHTML = '';

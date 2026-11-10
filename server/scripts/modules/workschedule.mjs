@@ -1,6 +1,7 @@
 // work shifts: page 1 lists the next 7 days with the weather at the start of each shift,
 // page 2 shows the next shift with a countdown and the weather at the start and at the end,
-// page 3, Gates: the flights of my gates today (tomorrow once the last one has left), each with the staff on the gate, the stand and
+// page 3, Gates: the flights of my gates today (tomorrow once the last one has left; of every gate with the setting Personal Gates
+// off), each with the staff on the gate, the stand and
 // the ETA of the aircraft that does the rotation, and the supervisors of the day in one line under them.
 // Shifts are read from the skypaddock-hub service on the Raspberry Pi, which serves what
 // skypaddock-horario extracts from a private schedule spreadsheet. The schedule never leaves the Pi;
@@ -14,7 +15,7 @@ import { getConditionText } from './utils/weather.mjs';
 import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import settings from './settings.mjs';
-import { ON } from './utils/dark-mode.mjs';
+import { ON, OFF } from './utils/dark-mode.mjs';
 import {
 	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay,
 } from './utils/shifts.mjs';
@@ -121,19 +122,27 @@ class WorkSchedule extends WeatherDisplay {
 
 		// the Gates page (the Pi adds day.gates: [{ dests: ['MUC'], with: ['ANA M'], flights: [...] }]): which day it shows is
 		// decided here, with each refresh of the data, so that the time of the page matches what it shows
-		this.gates = gatesDay(this.days, DateTime.now().setZone(LOCAL_TZ));
+		this.pickGates();
 		this.timing.delay = [12, 12, this.gates.message ? 5 : 12];
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
 	}
 
+	// my gates, or those of everybody with the setting Personal Gates off (the Pi adds them as day.allGates)
+	pickGates() {
+		this.allGates = Number(settings.personalGates?.value) === OFF;
+		this.gates = gatesDay(this.days, DateTime.now().setZone(LOCAL_TZ), this.allGates);
+	}
+
 	async drawCanvas() {
 		super.drawCanvas();
+		// the setting was changed since the data came
+		if (this.allGates !== (Number(settings.personalGates?.value) === OFF)) this.pickGates();
 		const page = Math.min(Math.max(this.screenIndex, 0), this.timing.totalScreens - 1);
 		this.elem.querySelector('.schedule-page.week').style.display = page === 0 ? 'block' : 'none';
 		this.elem.querySelector('.schedule-page.next').style.display = page === 1 ? 'block' : 'none';
 		this.elem.querySelector('.schedule-page.assignments').style.display = page === 2 ? 'block' : 'none';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = ['Next 7 Days', 'Next Shift', this.gates.tomorrow ? 'Gates Tomorrow' : 'Gates'][page];
+		this.elem.querySelector('.header .title.dual .bottom').innerHTML = ['Next 7 Days', 'Next Shift', `${this.allGates ? 'All ' : ''}Gates${this.gates.tomorrow ? ' Tomorrow' : ''}`][page];
 		if (page === 0) this.drawWeek(); else if (page === 1) this.drawNext(); else this.drawAssignments();
 		this.finishDraw();
 	}

@@ -127,6 +127,18 @@ const gates = {
 	],
 	supervisors: { morning: ['EVA S'], afternoon: ['IVO S', 'ZE P'], night: [] },
 };
+// every gate of the day (Personal Gates off): mine and those of the others
+gates.allGates = [
+	{ dests: ['MUC'], with: ['BIA N', 'GIL R'], flights: [{ number: 'LH1785', time: '06:40', arrival: 'LH1784' }] },
+	{
+		dests: ['GVA'],
+		with: ['DUDA V', 'NUNO Q', 'SARA W'],
+		flights: [{
+			number: 'LX2079', time: '10:15', stand: 'S31', eta: '09:30', arrival: 'LX2078',
+		}],
+	},
+	...gates.gates,
+];
 
 const schedule = (now) => ({
 	generated: iso(now - HOUR),
