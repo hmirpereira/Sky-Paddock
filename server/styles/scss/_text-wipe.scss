@@ -41,7 +41,28 @@
 
 // IPMA warnings (utils/hazard-lines.mjs): the label in the colour of the level, white letters (the hazard-lines
 // colours of the Hazards screen, a little lighter so the label stands out on the blue bottom line)
+// The label stays in view; when the text is too long only the text crawls, inside its own window.
+.weather-display .scroll .fixed .text-layer.alert {
+	.text-content {
+		display: inline-flex;
+		align-items: baseline;
+		max-width: 100%;
+	}
+
+	.alert-window {
+		flex: 0 1 auto;
+		min-width: 0;
+		overflow: hidden;
+		white-space: pre;
+	}
+
+	.alert-text {
+		display: inline-block;
+	}
+}
+
 .weather-display .scroll .fixed .text-layer.alert .alert-label {
+	flex: none;
 	color: white;
 	padding: 0 6px;
 

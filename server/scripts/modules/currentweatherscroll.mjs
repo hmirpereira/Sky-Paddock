@@ -144,21 +144,26 @@ const screens = [
 // Pi services (only when there is a problem), then this round's news headlines (if turned on)
 const allScreens = () => [...screens, ...hazardLines(), ...piProblems(), ...roundNews];
 
-// a headline or an IPMA warning: its label, then the text, which crawls to the left until its end is shown
+// a headline or an IPMA warning: its label, then the text, which crawls to the left until its end is shown.
+// In a headline the whole line crawls; in a warning only the text does, so its label stays in view.
 const drawNews = (item) => {
 	const layers = drawCondition(item.text, false, item);
 	// measure on the screen being shown (hidden screens have no size)
 	let overflow = 0;
 	layers.forEach((layer) => {
-		const content = layer.querySelector('.text-content');
-		if (layer.offsetParent) overflow = Math.max(overflow, content.scrollWidth - layer.clientWidth);
+		const crawler = layer.querySelector('.alert-text');
+		if (!layer.offsetParent) return;
+		overflow = Math.max(overflow, crawler
+			? crawler.offsetWidth - crawler.parentElement.clientWidth
+			: layer.querySelector('.text-content').scrollWidth - layer.clientWidth);
 	});
 	if (overflow <= 0) return NEWS_HOLD_MS + NEWS_END_MS + 1000;
 	const crawlMs = Math.round((overflow / NEWS_PX_PER_S) * 1000);
 	layers.forEach((layer) => {
-		const content = layer.querySelector('.text-content');
-		content.style.transition = `clip-path 0.2s ease-out, transform ${crawlMs}ms linear ${NEWS_HOLD_MS}ms`;
-		content.style.transform = `translateX(-${overflow}px)`;
+		const crawler = layer.querySelector('.alert-text');
+		const moving = crawler ?? layer.querySelector('.text-content');
+		moving.style.transition = `${crawler ? '' : 'clip-path 0.2s ease-out, '}transform ${crawlMs}ms linear ${NEWS_HOLD_MS}ms`;
+		moving.style.transform = `translateX(-${overflow}px)`;
 	});
 	return NEWS_HOLD_MS + crawlMs + NEWS_END_MS;
 };
@@ -188,7 +193,14 @@ const drawCondition = (text, warning = false, news = null) => {
 			const label = document.createElement('span');
 			label.className = `alert-label level-${news.level}`;
 			label.textContent = news.label;
-			content.append(label, ` ${text}`);
+			// the text sits in a window of its own: when it is too long only it crawls, the label stays
+			const frame = document.createElement('span');
+			frame.className = 'alert-window';
+			const crawler = document.createElement('span');
+			crawler.className = 'alert-text';
+			crawler.textContent = ` ${text}`;
+			frame.appendChild(crawler);
+			content.append(label, frame);
 		} else if (news) {
 			// "BREAKING  Headline..." with a red label; the source is not shown (it is on the News screen)
 			newLayer.classList.add('news');
