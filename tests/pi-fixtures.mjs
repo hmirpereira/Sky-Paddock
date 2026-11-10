@@ -106,6 +106,28 @@ const overhead = (now) => ({
 	airport: airportPlan,
 });
 
+// the Gates page: made-up names; today and tomorrow have gates, so the page has rows whatever the time of the recording
+const gates = {
+	gates: [
+		{
+			dests: ['FRA'],
+			with: ['ANA M', 'RUI T', 'TOM X'],
+			star: true,
+			flights: [{
+				number: 'LH1175', time: '12:35', etd: '12:50', stand: 'S35', eta: '11:58', arrival: 'LH1174',
+			}],
+		},
+		{
+			dests: ['ZRH', 'VIE'],
+			with: ['LIA F', 'TOM X'],
+			flights: [{
+				number: 'LX2067', time: '18:05', stand: 'S30', eta: '17:10', arrival: 'LX2066',
+			}, { number: 'OS492', time: '19:40', arrival: 'OS491' }],
+		},
+	],
+	supervisors: { morning: ['EVA S'], afternoon: ['IVO S', 'ZE P'], night: [] },
+};
+
 const schedule = (now) => ({
 	generated: iso(now - HOUR),
 	days: Array.from({ length: 8 }, (_, i) => {
@@ -122,7 +144,7 @@ const schedule = (now) => ({
 		} : {
 			date, code: 'M', start: '07:00', end: '15:00', off: false, r,
 		};
-	}),
+	}).map((day, i) => (i < 2 ? { ...day, ...gates } : day)),
 });
 
 const f1jet = (now) => ({

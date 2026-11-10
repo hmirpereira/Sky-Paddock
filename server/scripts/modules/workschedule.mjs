@@ -1,5 +1,7 @@
 // work shifts: page 1 lists the next 7 days with the weather at the start of each shift,
-// page 2 shows the next shift with a countdown and the weather at the start and at the end.
+// page 2 shows the next shift with a countdown and the weather at the start and at the end,
+// page 3, Gates: the flights of my gates today (tomorrow once the last one has left), each with the staff on the gate, the stand and
+// the ETA of the aircraft that does the rotation, and the supervisors of the day in one line under them.
 // Shifts are read from the skypaddock-hub service on the Raspberry Pi, which serves what
 // skypaddock-horario extracts from a private schedule spreadsheet. The schedule never leaves the Pi;
 // anywhere else this screen is skipped. Weather: Open-Meteo hourly forecast for the chosen location.
@@ -14,7 +16,7 @@ import { DateTime } from '../vendor/auto/luxon.mjs';
 import settings from './settings.mjs';
 import { ON } from './utils/dark-mode.mjs';
 import {
-	LOCAL_TZ, shiftTimes, keepDays, stillShown,
+	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay,
 } from './utils/shifts.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/schedule.json';
@@ -84,13 +86,16 @@ const countdown = (from, to) => {
 	return h > 0 ? `${h} h ${String(m).padStart(2, '0')} min` : `${m} min`;
 };
 
+// "SUELI B" -> "Sueli B" (the team file is in capitals)
+const niceName = (name) => name.toLowerCase().replace(/(^|[ .])([a-z])/g, (m, sep, letter) => sep + letter.toUpperCase());
+
 class WorkSchedule extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'Work Schedule', defaultActive);
 
-		// two pages, 12 seconds each
-		this.timing.baseDelay = 12000;
-		this.timing.totalScreens = 2;
+		// three pages, 12 seconds each (the Gates page 5 seconds when it only has a message)
+		this.timing.baseDelay = 1000;
+		this.timing.delay = [12, 12, 12];
 	}
 
 	async getData(weatherParameters) {
@@ -114,17 +119,22 @@ class WorkSchedule extends WeatherDisplay {
 		}
 		this.forecast = await getForecast(this.weatherParameters ?? weatherParameters);
 
+		// the Gates page (the Pi adds day.gates: [{ dests: ['MUC'], with: ['ANA M'], flights: [...] }]): which day it shows is
+		// decided here, with each refresh of the data, so that the time of the page matches what it shows
+		this.gates = gatesDay(this.days, DateTime.now().setZone(LOCAL_TZ));
+		this.timing.delay = [12, 12, this.gates.message ? 5 : 12];
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);
 	}
 
 	async drawCanvas() {
 		super.drawCanvas();
-		const page = Math.min(Math.max(this.screenIndex, 0), 1);
+		const page = Math.min(Math.max(this.screenIndex, 0), this.timing.totalScreens - 1);
 		this.elem.querySelector('.schedule-page.week').style.display = page === 0 ? 'block' : 'none';
 		this.elem.querySelector('.schedule-page.next').style.display = page === 1 ? 'block' : 'none';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = page === 0 ? 'Next 7 Days' : 'Next Shift';
-		if (page === 0) this.drawWeek(); else this.drawNext();
+		this.elem.querySelector('.schedule-page.assignments').style.display = page === 2 ? 'block' : 'none';
+		this.elem.querySelector('.header .title.dual .bottom').innerHTML = ['Next 7 Days', 'Next Shift', this.gates.tomorrow ? 'Gates Tomorrow' : 'Gates'][page];
+		if (page === 0) this.drawWeek(); else if (page === 1) this.drawNext(); else this.drawAssignments();
 		this.finishDraw();
 	}
 
@@ -164,6 +174,84 @@ class WorkSchedule extends WeatherDisplay {
 		list.append(...lines);
 		// with the (R) schedule the rows are laid out for a second, small line under each value
 		list.classList.toggle('has-r', showR && days.some((day) => day.r));
+	}
+
+	// the gates of the day: flight, staff, stand and ETA of the aircraft that arrives for the rotation; the supervisors under them
+	drawAssignments() {
+		const { day, tomorrow, message } = this.gates;
+		// with no gates, only a message in the middle ("Day off", "No gates assigned")
+		const box = this.elem.querySelector('.schedule-page.assignments');
+		box.classList.toggle('message', !!message);
+		box.querySelector('.assign-message').textContent = message;
+		// one row per flight, in the order of the departures (etd, or the time of the team file: "06:40"); a gate with no known
+		// flights shows its destination
+		const flights = (day?.gates ?? [])
+			.flatMap((gate) => (gate.flights?.length ? gate.flights : [{ number: gate.dests.join('/') }]).map((f) => ({ ...f, crew: gate.with, star: gate.star })))
+			.sort((x, y) => (x.etd ?? x.time ?? '').localeCompare(y.etd ?? y.time ?? ''));
+		const gates = flights.map((f) => {
+			const block = this.fillTemplate('assign-gate', {});
+			const div = (parent, text) => {
+				const elem = document.createElement('div');
+				elem.textContent = text;
+				block.querySelector(parent).append(elem);
+				return elem;
+			};
+			const row = div('.flights', '');
+			// airline tail icon to the left of the flight number: images/airlines/<IATA code>.png (none when there is no picture)
+			if (/^[A-Z0-9]{2}\d/.test(f.number)) {
+				const tail = document.createElement('img');
+				tail.alt = '';
+				tail.addEventListener('error', () => { tail.style.visibility = 'hidden'; });
+				tail.src = `images/airlines/${f.number.slice(0, 2)}.png`;
+				row.append(tail);
+			}
+			// the number with the departure time in small under it
+			const number = document.createElement('div');
+			number.className = 'number';
+			number.textContent = f.number;
+			const etd = document.createElement('div');
+			etd.className = 'etd';
+			etd.textContent = f.etd ?? f.time ?? '';
+			number.append(etd);
+			row.append(number);
+			// the staff as the Pi gives it (me included), one name under the other
+			f.crew.forEach((name) => div('.crew', niceName(name)));
+			// a star to the right of the names of a gate that the Pi marks (who makes a starred team is set on the Pi, not here)
+			if (f.star) {
+				const star = document.createElement('img');
+				star.className = 'star';
+				star.alt = '';
+				star.src = 'images/star-icon.svg';
+				block.querySelector('.crew').append(star);
+			}
+			// the Pi adds the stand and the ETA of the arriving aircraft to the flight ("S32", "05:55"); empty until they are known
+			div('.stands', f.stand ?? '');
+			const eta = div('.etas', f.eta ?? '');
+			// minutes to the arrival in small under the ETA ("T-45m"), as of the moment the page is drawn; nothing once it has passed.
+			// Under 20 minutes it is yellow and blinks slowly, under 10 red and faster
+			const at = DateTime.fromISO(`${day.date}T${f.eta}`, { zone: LOCAL_TZ });
+			const mins = Math.ceil(at.diffNow('minutes').minutes);
+			if (!tomorrow && at.isValid && mins >= 0) {
+				const left = document.createElement('div');
+				left.className = 'left';
+				if (mins < 20) left.classList.add(mins < 10 ? 'now' : 'soon');
+				left.textContent = `T-${mins}m`;
+				eta.append(left);
+			}
+			return block;
+		});
+		const list = this.elem.querySelector('.assign-lines');
+		list.replaceChildren(...gates);
+		// smaller rows only when the flights do not fit (more than 4, or 4 with many names)
+		list.classList.remove('compact');
+		list.classList.toggle('compact', list.scrollHeight > list.clientHeight);
+		// the supervisors of the day in order (morning, afternoon, night), one line: "SPV: Tiago / Cristiano / Angela"
+		const names = ['morning', 'afternoon', 'night'].flatMap((part) => day?.supervisors?.[part] ?? []).map(niceName);
+		const label = document.createElement('span');
+		label.textContent = 'SPV: ';
+		const supv = this.elem.querySelector('.supv');
+		supv.replaceChildren(label, names.join(' / '));
+		supv.style.visibility = names.length && !message ? 'visible' : 'hidden';
 	}
 
 	drawNext() {

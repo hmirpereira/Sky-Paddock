@@ -154,6 +154,203 @@
 			}
 		}
 	
+		// page 3: the gates of today, the flights with the staff on them, the stand and the ETA; the supervisors under them
+		.schedule-page.assignments {
+			position: relative;
+			height: 310px;
+			font-family: 'Star4000';
+			color: white;
+			@include u.text-shadow();
+
+			// the columns, shared by the headers and the lines
+			.column-headers {
+				.flight {
+					left: 62px;
+				}
+
+				.crew {
+					left: 210px;
+				}
+
+				.stand {
+					left: 420px;
+				}
+
+				.eta {
+					left: 530px;
+				}
+			}
+
+			.assign-lines {
+				// 280 px with the line of the supervisors over its last 28
+				box-sizing: border-box;
+				height: 280px;
+				padding-bottom: 28px;
+				overflow: hidden;
+			}
+
+			// a flight: number | staff of its gate (one name under the other) | stand | ETA
+			.assign-gate {
+				display: grid;
+				grid-template-columns: 190px 210px 110px auto;
+				align-items: center;
+				padding: 1px 20px;
+				font-size: 24pt;
+				line-height: 38px;
+				white-space: nowrap;
+
+				// a lighter band on every other flight, so that the names belong to their flight at a glance
+				&:nth-child(odd) {
+					background-color: rgba(255, 255, 255, 0.07);
+				}
+
+				// tail | number with the departure time in small under it
+				.flights > div {
+					display: flex;
+					align-items: center;
+					color: #ffe97a;
+
+					img {
+						height: 32px;
+						margin-right: 10px;
+					}
+
+					.number {
+						line-height: 28px;
+					}
+
+					.etd {
+						margin-top: 3px;
+						font-size: 12pt;
+						line-height: 14px;
+						color: #b5d0ff;
+					}
+				}
+
+				// the ETA with the minutes left in small under it, centred on the time
+				.etas > div {
+					display: inline-block;
+					line-height: 28px;
+					text-align: center;
+
+					.left {
+						margin-top: 3px;
+						font-size: 12pt;
+						line-height: 14px;
+						color: #b5d0ff;
+
+						// under 20 minutes: yellow, blinking slowly; under 10: red and faster (two steps a cycle, no frames in between)
+						&.soon,
+						&.now {
+							color: #ffe97a;
+							animation: gate-blink 2s steps(1) infinite;
+						}
+
+						&.now {
+							color: #ff5a5a;
+							animation-duration: 1s;
+						}
+					}
+				}
+
+				.crew {
+					position: relative;
+					font-size: 16pt;
+					line-height: 20px;
+
+					// the star of a starred team, to the right of the names and centred on them
+					.star {
+						position: absolute;
+						top: 50%;
+						right: 40px;
+						height: 32px;
+						transform: translateY(-50%);
+					}
+
+					div {
+						overflow: hidden;
+						text-overflow: ellipsis;
+					}
+				}
+			}
+
+			// no gates to show: only a message in the middle, without the column headers
+			.assign-message {
+				position: absolute;
+				top: 50%;
+				left: 0;
+				right: 0;
+				font-size: 32pt;
+				text-align: center;
+				transform: translateY(-50%);
+			}
+
+			&.message .column-headers div {
+				visibility: hidden;
+			}
+
+			// when the flights do not fit (set by the script): smaller rows, 6 flights with 2 names each or 5 with 3
+			.assign-lines.compact .assign-gate {
+				padding: 1px 20px;
+				font-size: 18pt;
+				line-height: 26px;
+
+				.flights > div {
+					img {
+						height: 24px;
+					}
+
+					.number {
+						line-height: 20px;
+					}
+
+					.etd {
+						margin-top: 2px;
+						font-size: 10pt;
+						line-height: 12px;
+					}
+				}
+
+				.etas > div {
+					line-height: 20px;
+
+					.left {
+						margin-top: 2px;
+						font-size: 10pt;
+						line-height: 12px;
+					}
+				}
+
+				.crew {
+					font-size: 11pt;
+					line-height: 14px;
+
+					.star {
+						height: 24px;
+					}
+				}
+			}
+
+			// the supervisors of today in order (morning, afternoon, night), one line of small letters
+			.supv {
+				position: absolute;
+				left: 20px;
+				right: 20px;
+				bottom: 3px;
+				border-top: 1px solid rgba(255, 255, 255, 0.25);
+				padding-top: 3px;
+				font-size: 12pt;
+				line-height: 18px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+
+				span {
+					color: #b5d0ff;
+				}
+			}
+		}
+
 		// page 2: next shift
 		.schedule-page.next {
 			position: relative;
@@ -216,5 +413,16 @@
 				}
 			}
 		}
+	}
+}
+
+// the subtitle (second line of the title) a little smaller than the title itself, like the F1 screens
+#work-schedule-html .header .title.dual .bottom {
+	font-size: 20pt;
+}
+
+@keyframes gate-blink {
+	50% {
+		opacity: 0;
 	}
 }

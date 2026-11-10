@@ -43,7 +43,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | Extended Forecast, Almanac | The next days; sun and moon | Open-Meteo |
 | Local Radar | Precipitation radar | [RainViewer](https://www.rainviewer.com) |
 | Air & Pollen | European Air Quality Index now and daily pollen levels, on one screen | Open-Meteo (CAMS) |
-| Work Schedule (Pi) | Shifts for the next 7 days, with the weather at those times | Private spreadsheet, kept on the Pi |
+| Work Schedule (Pi) | Shifts for the next 7 days, with the weather at those times; the day's gates with staff, stand and ETA | Private spreadsheets, kept on the Pi; stand and ETA from TAP's public FLIC pages for OPO |
 | Airport METAR | METAR of one airport decoded into plain English, then its TAF (Pi) | [metar.vatsim.net](https://metar.vatsim.net); TAF from [aviationweather.gov](https://aviationweather.gov) |
 | Departures (Pi) | Next departures of a list of airlines from one airport | [AeroDataBox](https://aerodatabox.com) |
 | Cancellations (Pi) | Cancelled departures from the same airport, all airlines | AeroDataBox |

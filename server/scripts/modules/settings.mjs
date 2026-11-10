@@ -31,6 +31,7 @@ const settings = {
 	imageFringe: { value: false },
 	newsTicker: { value: false },
 	personalSchedule: { value: ON },
+	personalGates: { value: ON },
 	darkMode: { value: OFF },
 	christmas: { value: AUTOMATIC },
 	halloween: { value: AUTOMATIC },
@@ -90,6 +91,11 @@ const init = () => {
 		[ON, 'On'],
 		[OFF, 'Off'],
 	]);
+	// Work Schedule, Gates page: shown greyed out and does nothing yet (its function is still to come), so it is not stored
+	settings.personalGates = new Setting('personalGates', 'Personal Gates', 'select', ON, null, false, [
+		[ON, 'On'],
+		[OFF, 'Off'],
+	]);
 	// dark weather screens: Off, On, or Automatic (10 minutes after the sunset until 10 minutes after the sunrise)
 	settings.darkMode = new Setting('darkMode', 'Dark Mode', 'select', OFF, setDarkMode, true, [
 		[OFF, 'Off'],
@@ -126,7 +132,7 @@ const init = () => {
 	const GROUPS = [
 		['Location', ['airportIcao', 'ipmaArea', 'travelCity']],
 		['Units', ['windUnits', 'temperatureUnits', 'distanceUnits', 'pressureUnits', 'hoursFormat']],
-		['Screens', ['speed', 'personalSchedule', 'newsTicker']],
+		['Screens', ['speed', 'personalSchedule', 'personalGates', 'newsTicker']],
 		['Look', ['darkMode', 'wide', 'scanLines', 'vignette', 'colorFringe', 'imageFringe', 'christmas', 'halloween']],
 		['Advanced', ['kiosk', 'debugMode']],
 	];
@@ -139,6 +145,10 @@ const init = () => {
 		box.append(heading, ...keys.map((key) => settings[key].generate()).filter((el) => el));
 		return box;
 	});
+
+	const gates = settings.personalGates.element;
+	gates.querySelector('select').disabled = true;
+	gates.style.opacity = '0.5';
 
 	// write to page
 	const settingsSection = document.querySelector('#settings');

@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DateTime } from '../../server/scripts/vendor/auto/luxon.mjs';
-import { keepDays, stillShown, shiftTimes } from '../../server/scripts/modules/utils/shifts.mjs';
+import {
+	keepDays, stillShown, shiftTimes, gatesDay,
+} from '../../server/scripts/modules/utils/shifts.mjs';
 
 const at = (iso) => DateTime.fromISO(iso, { zone: 'Europe/Lisbon' });
 const night = {
@@ -49,4 +51,16 @@ test('later days are always shown', () => {
 	assert.equal(stillShown({
 		date: '2026-11-09', code: 'M', start: '07:00', end: '15:00',
 	}, at('2026-11-08T03:00')), true);
+});
+
+test('the Gates page shows today until its last flight has left, then tomorrow or a message', () => {
+	const gates = [{ dests: ['MUC'], with: ['ANA M'], flights: [{ number: 'LH1785', time: '06:40' }, { number: 'LH1783', etd: '12:10', time: '11:50' }] }];
+	const today = { date: '2026-11-08', gates };
+	const pick = (tomorrow, time) => gatesDay([today, { date: '2026-11-09', ...tomorrow }], at(`2026-11-08T${time}`));
+	assert.equal(pick({ gates }, '12:05').day, today);
+	assert.deepEqual([pick({ gates }, '12:15').day.date, pick({ gates }, '12:15').tomorrow, pick({ gates }, '12:15').message], ['2026-11-09', true, '']);
+	assert.equal(pick({}, '12:15').message, 'No gates assigned');
+	assert.equal(pick({ off: true }, '12:15').message, 'Day off');
+	// a day with no gates looks at tomorrow from the start
+	assert.equal(gatesDay([{ date: '2026-11-08' }, { date: '2026-11-09', gates }], at('2026-11-08T08:00')).day.date, '2026-11-09');
 });

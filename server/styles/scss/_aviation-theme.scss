@@ -69,13 +69,27 @@ $av-yellow: #ffad00;
 
 	.departures-lines,
 	.cancellations-lines,
-	.schedule-lines {
+	.schedule-lines,
+	.assign-lines {
 		@include av-rows-background;
 
 		.flight,
 		.schedule-row .day {
 			color: $av-yellow;
 		}
+	}
+
+	.assign-gate .flights .number {
+		color: $av-yellow;
+	}
+
+	.assign-gate .flights .etd,
+	.assign-gate .etas .left:not(.soon, .now) {
+		color: $av-light-blue;
+	}
+
+	.supv span {
+		color: $av-light-blue;
 	}
 
 	.departures-footer,
