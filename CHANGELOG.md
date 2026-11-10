@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.32.4** (2026-11-10): leaving the window-only full screen on a phone: the note about the Home Screen is at the top (it covered the controls with the exit button) and the controls stay 6 seconds after a touch instead of 2
 - **1.32.3** (2026-11-10): the full screen button in Safari on the iPhone says so: the page cannot hide Safari's bars, so a note tells to add it to the Home Screen; Home Screen icon (`apple-touch-icon`), app title, landscape and black background in the manifest
 - **1.32.2** (2026-11-10): the full screen button works on phones: every spelling of the browser API is tried and, where there is none or it refuses (Safari on the iPhone), the screen fills the browser window; a touch brings the controls back (`utils/fullscreen.mjs`, unit tests)
 - **1.32.1** (2026-11-10): bottom line warnings: the label stays in view and only the text of a long warning crawls

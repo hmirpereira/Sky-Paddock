@@ -530,7 +530,7 @@ body {
 .fullscreen-note {
 	position: fixed;
 	left: 50%;
-	bottom: 16px;
+	top: 16px; // not at the bottom: the controls with the exit button are there
 	transform: translateX(-50%);
 	z-index: 1001;
 	box-sizing: border-box;

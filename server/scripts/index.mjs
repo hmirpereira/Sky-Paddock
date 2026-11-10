@@ -5,7 +5,7 @@ import { round2 } from './modules/utils/units.mjs';
 import { parseQueryString } from './modules/share.mjs';
 import { setDarkModePlace } from './modules/darkmode.mjs';
 import {
-	isFullscreen, isStandalone, enterFullscreen, exitFullscreen,
+	isFullscreen, isPseudo, isStandalone, enterFullscreen, exitFullscreen,
 } from './modules/utils/fullscreen.mjs';
 import {
 	message as navMessage, hideAllCanvases, isPlaying, resize, resetStatuses, latLonReceived, stopAutoRefreshTimer, registerRefreshData,
@@ -309,7 +309,8 @@ const updateFullScreenNavigate = () => {
 			divTwcBottom.classList.add('hidden');
 			document.querySelector('#divTwc').classList.add('no-cursor');
 		}
-	}, 2000);
+	// on a phone the first touch only brings the controls back, so the second needs time to find the exit button
+	}, isPseudo() ? 6000 : 2000);
 };
 
 const documentKeydown = (e) => {
