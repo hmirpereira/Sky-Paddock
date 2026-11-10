@@ -114,14 +114,14 @@ const gates = {
 			with: ['ANA M', 'RUI T', 'TOM X'],
 			star: true,
 			flights: [{
-				number: 'LH1175', time: '12:35', etd: '12:50', stand: 'S35', eta: '11:58', arrival: 'LH1174',
+				number: 'LH1175', time: '12:35', etd: '12:50', stand: 'S35', eta: '11:58', arrival: 'LH1174', ramp: 'CRISTIANO F',
 			}],
 		},
 		{
 			dests: ['ZRH', 'VIE'],
 			with: ['LIA F', 'TOM X'],
 			flights: [{
-				number: 'LX2067', time: '18:05', stand: 'S30', eta: '17:10', arrival: 'LX2066',
+				number: 'LX2067', time: '18:05', stand: 'S30', eta: '17:10', arrival: 'LX2066', ramp: 'OLGA',
 			}, { number: 'OS492', time: '19:40', arrival: 'OS491' }],
 		},
 	],
@@ -134,7 +134,7 @@ gates.allGates = [
 		dests: ['GVA'],
 		with: ['DUDA V', 'NUNO Q', 'SARA W'],
 		flights: [{
-			number: 'LX2079', time: '10:15', stand: 'S31', eta: '09:30', arrival: 'LX2078',
+			number: 'LX2079', time: '10:15', stand: 'S31', eta: '09:30', arrival: 'LX2078', ramp: 'VASCO D',
 		}],
 	},
 	...gates.gates,

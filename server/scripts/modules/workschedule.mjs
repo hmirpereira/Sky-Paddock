@@ -214,14 +214,14 @@ class WorkSchedule extends WeatherDisplay {
 				tail.src = `images/airlines/${f.number.slice(0, 2)}.png`;
 				row.append(tail);
 			}
-			// the number with the departure time in small under it
+			// the number with the ramp agent of the flight in small under it ("(R) Rui T"), when the roster names one
 			const number = document.createElement('div');
 			number.className = 'number';
 			number.textContent = f.number;
-			const etd = document.createElement('div');
-			etd.className = 'etd';
-			etd.textContent = f.etd ?? f.time ?? '';
-			number.append(etd);
+			const ramp = document.createElement('div');
+			ramp.className = 'ramp';
+			ramp.textContent = f.ramp ? `(R) ${niceName(f.ramp)}` : '';
+			number.append(ramp);
 			row.append(number);
 			// the staff as the Pi gives it (me included), one name under the other
 			f.crew.forEach((name) => div('.crew', niceName(name)));

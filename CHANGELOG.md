@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.35.0** (2026-11-10): Gates page: under the flight number, the ramp agent of the flight (`(R) Name`, from the team roster on the Pi) instead of the departure time
 - **1.34.0** (2026-11-10): the option Personal Gates works: On, the owner's gates as before; Off, the Gates page shows the gates of everybody that day ("All Gates", from `allGates` in the data of the Pi), whether the owner is on them or not; `EXTRA_PARAMS` in the smoke test for screenshots with other settings
 - **1.33.0** (2026-11-10): Work Schedule has a third page, Gates: the flights of the day's gates by departure time with the staff, the stand, the ETA of the rotation aircraft with a countdown, a star on a marked gate and the supervisors (`gatesDay` in `utils/shifts.mjs`, unit tests); tomorrow once the last flight has left; option Personal Gates in the Settings, greyed out, no function yet
 - **1.32.7** (2026-11-10): the window-only full screen with the scan lines on: the scan lines rule set the screen to `position: relative` and it stopped covering the window (seen in WebKit, with the options of the page switched on one by one); it stays fixed now

@@ -204,7 +204,7 @@
 					background-color: rgba(255, 255, 255, 0.07);
 				}
 
-				// tail | number with the departure time in small under it
+				// tail | number with the ramp agent in small under it
 				.flights > div {
 					display: flex;
 					align-items: center;
@@ -219,7 +219,7 @@
 						line-height: 28px;
 					}
 
-					.etd {
+					.ramp {
 						margin-top: 3px;
 						font-size: 12pt;
 						line-height: 14px;
@@ -304,7 +304,7 @@
 						line-height: 20px;
 					}
 
-					.etd {
+					.ramp {
 						margin-top: 2px;
 						font-size: 10pt;
 						line-height: 12px;
