@@ -4,6 +4,7 @@ import noSleep from './modules/utils/nosleep.mjs';
 import { round2 } from './modules/utils/units.mjs';
 import { parseQueryString } from './modules/share.mjs';
 import { setDarkModePlace } from './modules/darkmode.mjs';
+import { isFullscreen, enterFullscreen, exitFullscreen } from './modules/utils/fullscreen.mjs';
 import {
 	message as navMessage, hideAllCanvases, isPlaying, resize, resetStatuses, latLonReceived, stopAutoRefreshTimer, registerRefreshData,
 } from './modules/navigation.mjs';
@@ -44,9 +45,10 @@ const init = () => {
 	btnGetGps.addEventListener('click', btnGetGpsClick);
 	if (!navigator.geolocation) btnGetGps.style.display = 'none';
 
-	document.querySelector('#divTwc').addEventListener('mousemove', () => {
-		if (document.fullscreenElement) updateFullScreenNavigate();
-	});
+	// a touch shows the controls again too (a phone has no mouse to move)
+	['mousemove', 'touchstart'].forEach((type) => document.querySelector('#divTwc').addEventListener(type, () => {
+		if (isFullscreen()) updateFullScreenNavigate();
+	}, { passive: true }));
 	// local change detection when exiting full screen via ESC key (or other non button click methods)
 	window.addEventListener('resize', fullScreenResizeCheck);
 	fullScreenResizeCheck.wasFull = false;
@@ -55,7 +57,7 @@ const init = () => {
 	document.querySelector('#btnGetLatLng').addEventListener('click', () => formSubmit());
 
 	document.addEventListener('keydown', documentKeydown);
-	document.addEventListener('touchmove', (e) => { if (document.fullscreenElement) e.preventDefault(); });
+	document.addEventListener('touchmove', (e) => { if (isFullscreen()) e.preventDefault(); });
 
 	const search = autocomplete(document.querySelector(TXT_ADDRESS_SELECTOR), {
 		serviceUrl: 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest',
@@ -174,11 +176,11 @@ const doRedirectToGeometry = (geom, haveDataCallback) => {
 	loadData(latLon, haveDataCallback);
 };
 
-const btnFullScreenClick = () => {
-	if (document.fullscreenElement) {
-		exitFullscreen();
+const btnFullScreenClick = async () => {
+	if (isFullscreen()) {
+		await leaveFullScreen();
 	} else {
-		enterFullScreen();
+		await goFullScreen();
 	}
 
 	if (isPlaying()) {
@@ -192,20 +194,10 @@ const btnFullScreenClick = () => {
 	return false;
 };
 
-const enterFullScreen = () => {
-	const element = document.querySelector('#divTwc');
-
-	// Supports most browsers and their versions.
-	const requestMethod = element.requestFullScreen || element.webkitRequestFullScreen
-		|| element.mozRequestFullScreen || element.msRequestFullscreen;
-
-	if (requestMethod) {
-		// Native full screen.
-		requestMethod.call(element, { navigationUI: 'hide' });
-	} else {
-		// iOS doesn't support FullScreen API.
-		window.scrollTo(0, 0);
-	}
+// the browser's full screen, or, where there is none (Safari on the iPhone), the screen filling the window (utils/fullscreen.mjs)
+const goFullScreen = async () => {
+	await enterFullscreen(document.querySelector('#divTwc'));
+	window.scrollTo(0, 0);
 	resize();
 	updateFullScreenNavigate();
 
@@ -215,19 +207,8 @@ const enterFullScreen = () => {
 	img.title = 'Exit fullscreen';
 };
 
-const exitFullscreen = () => {
-	// exit full-screen
-
-	if (document.exitFullscreen) {
-		// Chrome 71 broke this if the user pressed F11 to enter full screen mode.
-		document.exitFullscreen();
-	} else if (document.webkitExitFullscreen) {
-		document.webkitExitFullscreen();
-	} else if (document.mozCancelFullScreen) {
-		document.mozCancelFullScreen();
-	} else if (document.msExitFullscreen) {
-		document.msExitFullscreen();
-	}
+const leaveFullScreen = async () => {
+	await exitFullscreen();
 	resize();
 	exitFullScreenVisibilityChanges();
 };
@@ -311,7 +292,7 @@ const updateFullScreenNavigate = () => {
 	}
 
 	navigateFadeIntervalId = setTimeout(() => {
-		if (document.fullscreenElement) {
+		if (isFullscreen()) {
 			divTwcBottom.classList.remove('visible');
 			divTwcBottom.classList.add('hidden');
 			document.querySelector('#divTwc').classList.add('no-cursor');
@@ -322,7 +303,7 @@ const updateFullScreenNavigate = () => {
 const documentKeydown = (e) => {
 	const { key } = e;
 
-	if (document.fullscreenElement || document.activeElement === document.body) {
+	if (isFullscreen() || document.activeElement === document.body) {
 		switch (key) {
 			case ' ': // Space
 				// don't scroll
@@ -446,17 +427,13 @@ const reverseGeocode = async (latitude, longitude) => {
 
 // check for change in full screen triggered by browser and run local functions
 const fullScreenResizeCheck = () => {
-	if (fullScreenResizeCheck.wasFull && !document.fullscreenElement) {
+	if (fullScreenResizeCheck.wasFull && !isFullscreen()) {
 		// leaving full screen
 		exitFullScreenVisibilityChanges();
 	}
-	if (!fullScreenResizeCheck.wasFull && document.fullscreenElement) {
-		// entering full screen
-		// can't do much here because a UI interaction is required to change the full screen div element
-	}
 
 	// store state of fullscreen element for next change detection
-	fullScreenResizeCheck.wasFull = !!document.fullscreenElement;
+	fullScreenResizeCheck.wasFull = isFullscreen();
 };
 
 // eslint-disable-next-line import/prefer-default-export

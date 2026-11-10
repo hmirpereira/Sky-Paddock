@@ -1,5 +1,6 @@
 // navigation handles progress, next/previous and initial load messages from the parent frame
 import noSleep from './utils/nosleep.mjs';
+import { isFullscreen } from './utils/fullscreen.mjs';
 import STATUS from './status.mjs';
 import { wrap } from './utils/calc.mjs';
 import {
@@ -342,12 +343,13 @@ const resize = () => {
 	document.body.style.setProperty('--scan-px', `${1 / (window.devicePixelRatio || 1)}px`);
 
 	// full screen and kiosk: the screen fills the window
-	if (document.fullscreenElement || settings.kiosk?.value) {
+	if (isFullscreen() || settings.kiosk?.value) {
+		// the width set for the page layout goes first: the control bar is measured at the full width
+		twc.style.width = '';
+		twc.style.removeProperty('--screen-height');
 		const widthZoomPercent = (document.querySelector('#divTwcBottom').getBoundingClientRect().width) / targetWidth;
 		container.style.transform = `scale(${Math.min(widthZoomPercent, window.innerHeight / 480)})`;
 		container.style.marginBottom = '';
-		twc.style.width = '';
-		twc.style.removeProperty('--screen-height');
 		return;
 	}
 

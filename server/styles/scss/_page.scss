@@ -305,6 +305,7 @@ body {
 }
 
 #divTwc:fullscreen #container,
+.pseudo-fullscreen #divTwc #container,
 .kiosk #divTwc #container {
 	// background-image: none;
 	width: unset;
@@ -450,6 +451,7 @@ body {
 }
 
 #divTwc:fullscreen,
+.pseudo-fullscreen #divTwc,
 .kiosk #divTwc {
 	display: flex;
 	align-items: center;
@@ -466,11 +468,13 @@ body {
 }
 
 #divTwc:fullscreen #display,
+.pseudo-fullscreen #divTwc #display,
 .kiosk #divTwc #display {
 	position: relative;
 }
 
 #divTwc:fullscreen #divTwcBottom,
+.pseudo-fullscreen #divTwc #divTwcBottom,
 .kiosk #divTwc #divTwcBottom {
 	display: flex;
 	flex-direction: row;
@@ -499,10 +503,27 @@ body {
 	transition: opacity 0.1s linear;
 }
 
-#divTwc:fullscreen .hidden {
+#divTwc:fullscreen .hidden,
+.pseudo-fullscreen #divTwc .hidden {
 	visibility: hidden;
 	opacity: 0;
 	transition: visibility 0s 1s, opacity 1s linear
+}
+
+// full screen where the browser has none (Safari on the iPhone): the screen covers the whole browser window (utils/fullscreen.mjs)
+.pseudo-fullscreen {
+	overflow: hidden;
+
+	#divTwc {
+		position: fixed;
+		inset: 0;
+		z-index: 1000;
+		box-sizing: border-box;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh;
+		background: black;
+	}
 }
 
 .github-links {

@@ -8,6 +8,7 @@
 - Missing weather icons: fog, freezing drizzle and rain, hail and violent rain showers.
 - Times follow the "Hours Format" setting everywhere (Hourly Forecast, Almanac, Radar).
 - The GPS (current location) button still expected a reply from the US weather service (NOAA) and stalled; it now turns the coordinates into a place name (ArcGIS reverse geocoding) and asks to type a city when the browser gives no position.
+- The full screen button did nothing on phones: it looked for one spelling of the browser's API (missing the standard one) and gave no way out where there is none (Safari on the iPhone cannot take a page element full screen). It now tries every spelling and, where the browser has none or refuses, the screen fills the browser window instead (`utils/fullscreen.mjs`); a touch brings the controls back. For the whole screen on an iPhone, add the page to the Home Screen (it opens without Safari's bars).
 - The menu button with no location chosen drew the progress screen under the start screen; it now focuses the search box.
 - Experimental Features removed (the nearby-cities lookup for Air Quality and Local Radar and its third-party proxy): slow, unreliable and of little use in Portugal.
 - Image preloads resolve relative to the page.
