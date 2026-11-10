@@ -4,6 +4,7 @@ import { currentDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import piProblems from './utils/pi-health.mjs';
 import { newsNow } from './utils/news.mjs';
+import { hazardLines } from './utils/hazard-lines.mjs';
 // eslint-disable-next-line import/no-cycle
 import settings from './settings.mjs';
 import { plainText } from './utils/text.mjs';
@@ -70,7 +71,7 @@ const drawScreen = async () => {
 	const list = allScreens();
 	if (screenIndex >= list.length) screenIndex = 0;
 	const item = list[screenIndex];
-	if (item?.news) return drawNews(item);
+	if (item?.news || item?.alert) return drawNews(item);
 	// Pi warnings are drawn in red
 	drawCondition(typeof item === 'string' ? item : item(data), typeof item === 'string');
 	return undefined;
@@ -139,11 +140,11 @@ const screens = [
 	},
 ];
 
-// the weather lines, then one line per warning from the Pi services (only when there is a problem),
-// then this round's news headlines (if turned on)
-const allScreens = () => [...screens, ...piProblems(), ...roundNews];
+// the weather lines, then one line per IPMA warning (the most severe three), then one line per warning from the
+// Pi services (only when there is a problem), then this round's news headlines (if turned on)
+const allScreens = () => [...screens, ...hazardLines(), ...piProblems(), ...roundNews];
 
-// a headline: the source, then the text, which crawls to the left until its end is shown
+// a headline or an IPMA warning: its label, then the text, which crawls to the left until its end is shown
 const drawNews = (item) => {
 	const layers = drawCondition(item.text, false, item);
 	// measure on the screen being shown (hidden screens have no size)
@@ -181,7 +182,14 @@ const drawCondition = (text, warning = false, news = null) => {
 		newLayer.className = warning ? 'text-layer warning' : 'text-layer';
 		const content = document.createElement('div');
 		content.className = 'text-content';
-		if (news) {
+		if (news?.alert) {
+			// "AVISO LARANJA  Precipitacao, ate TER 10 NOV 16:45": the label in the colour of the warning level
+			newLayer.classList.add('alert');
+			const label = document.createElement('span');
+			label.className = `alert-label level-${news.level}`;
+			label.textContent = news.label;
+			content.append(label, ` ${text}`);
+		} else if (news) {
 			// "BREAKING  Headline..." with a red label; the source is not shown (it is on the News screen)
 			newLayer.classList.add('news');
 			if (news.breaking) newLayer.classList.add('breaking');

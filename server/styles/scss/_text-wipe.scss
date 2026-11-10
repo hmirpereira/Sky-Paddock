@@ -39,6 +39,25 @@
 
 }
 
+// IPMA warnings (utils/hazard-lines.mjs): the label in the colour of the level, white letters (the hazard-lines
+// colours of the Hazards screen, a little lighter so the label stands out on the blue bottom line)
+.weather-display .scroll .fixed .text-layer.alert .alert-label {
+	color: white;
+	padding: 0 6px;
+
+	&.level-yellow {
+		background: #b58900;
+	}
+
+	&.level-orange {
+		background: #d35400;
+	}
+
+	&.level-red {
+		background: #c00000;
+	}
+}
+
 // news headlines (utils/news.mjs): the source as a label, then the headline crawling to the left,
 // inside the same width as the weather lines (55px free on each side)
 .weather-display .scroll .fixed .text-layer.news {

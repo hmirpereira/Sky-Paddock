@@ -7,6 +7,9 @@ import { registerDisplay } from './navigation.mjs';
 import { warningArea } from './utils/local-place.mjs';
 import { escapeHtml } from './utils/html.mjs';
 import { plainText } from './utils/text.mjs';
+import {
+	LEVEL_NAMES, formatIpmaTime, nowInPortugal, setHazardWarnings,
+} from './utils/hazard-lines.mjs';
 
 // NOTE: by the owner's choice, this screen is shown in Portuguese, the language of the IPMA
 // warning texts (the IPMA open data API has no English version of the descriptions).
@@ -15,26 +18,6 @@ import { plainText } from './utils/text.mjs';
 const IPMA_WARNINGS_URL = 'https://api.ipma.pt/open-data/forecast/warnings/warnings_www.json';
 
 const LEVELS = { yellow: 1, orange: 2, red: 3 };
-const LEVEL_NAMES = { yellow: 'AMARELO', orange: 'LARANJA', red: 'VERMELHO' };
-
-const DAYS = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
-const MONTHS = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-
-// IPMA times are Portuguese local time without an offset ("2026-10-06T09:00:00")
-const formatIpmaTime = (value) => {
-	const [date, time] = value.split('T');
-	const [y, m, d] = date.split('-').map(Number);
-	const weekday = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
-	return `${DAYS[weekday]} ${d} ${MONTHS[m - 1]} ${time.slice(0, 5)}`;
-};
-
-// current time in Portugal, in the same format as IPMA, so strings can be compared
-const nowInPortugal = () => {
-	const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
-		timeZone: 'Europe/Lisbon', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
-	}).formatToParts(new Date()).map((p) => [p.type, p.value]));
-	return `${parts.year}-${parts.month}-${parts.day}T${parts.hour === '24' ? '00' : parts.hour}:${parts.minute}:${parts.second}`;
-};
 
 class Hazards extends ScrollWeatherDisplay {
 	constructor(elemId, defaultActive) {
@@ -67,6 +50,8 @@ class Hazards extends ScrollWeatherDisplay {
 			console.error('Hazards: unable to get IPMA warnings', error);
 			this.data = [];
 		}
+		// the bottom line shows them too (utils/hazard-lines.mjs)
+		setHazardWarnings(this.data);
 
 		this.getDataCallback();
 
