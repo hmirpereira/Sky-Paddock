@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.39.6** (2026-11-11): README and docs: the Plex server is "another Raspberry Pi at home" (no host names of the owner's network); no change on the screens
 - **1.39.5** (2026-11-11): Hourly Graph: the rain probability is a line again (aqua, as before the bars of 1.10.8), not bars
 - **1.39.4** (2026-11-11): Overhead radar back to 50 km; it draws the runways, the RWY 17 approach track ending on the threshold, and the holding patterns (schematic racetracks, from the airport file of the Pi); no fix labels
 - **1.39.3** (2026-11-11): Overhead radar zoomed to 25 km (rings at 5, 10 and 25 km; the list and the title follow)

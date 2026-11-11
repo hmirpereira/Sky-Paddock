@@ -35,7 +35,7 @@ Every outside source the screens or the Pi service ask, how often, what limits i
 | RSS feeds of RTP, Expresso, Publico, CNN Portugal, Aviacao TV, FlyingLapF1, F1PT, PlanetF1 | News | Every 10 minutes, conditional requests, so an unchanged feed is not downloaded again | The headline list simply does not change |
 | [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com) | GT World, GT World Next | Public pages, every 6 hours, every 30 minutes from Friday to Monday | If the site changes its pages, the screens are skipped |
 | [r/F1Porn](https://www.reddit.com/r/F1Porn/) (public Atom feed) | F1 Photo | Two feed requests an hour; one download per Lisbon hour | The JSON is refused to anonymous clients and is not worked around |
-| [Tautulli](https://tautulli.com) (on the Raspy5, connected to Plex) | Plex Recommends, Plex Now Playing | Recommends every 30 minutes (every 5 after a failure); Now Playing kept for 15 seconds and asked by the page once a minute. Key `TAUTULLI_KEY` in the Pi's configuration | Screens are skipped; the Pi warning line adds `Plex stale since ...` after 3 hours |
+| [Tautulli](https://tautulli.com) (on another Raspberry Pi at home, connected to Plex) | Plex Recommends, Plex Now Playing | Recommends every 30 minutes (every 5 after a failure); Now Playing kept for 15 seconds and asked by the page once a minute. Key `TAUTULLI_KEY` in the Pi's configuration | Screens are skipped; the Pi warning line adds `Plex stale since ...` after 3 hours |
 
 ## Rules that apply to all of them
 

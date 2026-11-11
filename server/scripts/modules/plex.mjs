@@ -1,5 +1,5 @@
 // Plex Recommends: two pages. Page 1: the movie added most recently to the Plex library. Page 2: a movie chosen at random from
-// those not watched yet. The skypaddock-hub service on the Pi asks Tautulli (on the Raspy5, connected to Plex) every 30 minutes
+// those not watched yet. The skypaddock-hub service on the Pi asks Tautulli (on another Pi at home, connected to Plex) every 30 minutes
 // and serves /plex.json and the posters, so the key of Tautulli never leaves the Pi; anywhere else the screen is skipped.
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
