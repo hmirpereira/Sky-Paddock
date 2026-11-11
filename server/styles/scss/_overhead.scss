@@ -182,6 +182,8 @@
 					position: absolute;
 					left: 0;
 					top: 0;
+					// only what is inside the circle of the radar is drawn
+					clip-path: circle(50% at 50% 50%);
 					width: 280px;
 					height: 280px;
 					pointer-events: none;
@@ -195,6 +197,15 @@
 
 					.missed {
 						stroke-dasharray: 4 3;
+					}
+
+					// the arrival routes (STAR): thin and dashed
+					.star {
+						fill: none;
+						stroke: av.$av-light-blue;
+						stroke-width: 1;
+						stroke-dasharray: 2 2;
+						opacity: 0.7;
 					}
 
 					// the runways (thin, grey), the holding racetracks (thin, solid)

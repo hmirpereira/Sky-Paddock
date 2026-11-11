@@ -412,7 +412,10 @@ class Overhead extends WeatherDisplay {
 			svg.append(pl);
 		};
 		(this.airport?.map?.runways ?? []).forEach((line) => plot(line, 'runway'));
-		Object.values(this.airport?.approaches ?? {}).forEach(({ track = [], missed = [], holds = [] }) => {
+		Object.values(this.airport?.approaches ?? {}).forEach(({
+			track = [], missed = [], holds = [], routes = [],
+		}) => {
+			routes.forEach((route) => plot(route.map(([, lat, lon]) => [lat, lon]), 'star'));
 			plot(track.map(([, lat, lon]) => [lat, lon]), 'track');
 			plot(missed.map(([, lat, lon]) => [lat, lon]), 'missed');
 			holds.forEach((hold) => plot(holdingPattern(hold), 'hold'));
