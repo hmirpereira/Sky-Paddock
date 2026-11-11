@@ -21,6 +21,7 @@ import {
 import { plainText } from './utils/text.mjs';
 import fillFooter from './utils/footer.mjs';
 import f1Title from './utils/f1-title.mjs';
+import placeLabel from './utils/map-label.mjs';
 
 const OPENF1 = 'https://api.openf1.org/v1';
 // v2: the gap along the lap was added to the saved copy
@@ -353,14 +354,16 @@ class F1Telemetry extends WeatherDisplay {
 			const [qx, qy] = map[(k + 1) % map.length];
 			const ql = Math.hypot(qx - px, qy - py) || 1;
 			const [sx, sy] = [-(qy - py) / ql, (qx - px) / ql];
-			// the label goes on the side of the track away from the middle of the box
-			const side = (px - MAP_W / 2) * sx + (py - MAP_H / 2) * sy >= 0 ? 1 : -1;
-			const [lx, ly] = [px + sx * side * 24, py + sy * side * 24 + 6];
+			// the label goes on the side of the track away from the middle of the box, and always inside the box
+			const [lx, ly] = placeLabel(px, py, sx, sy, MAP_W, MAP_H);
 			return `<line x1="${px - sx * 10}" y1="${py - sy * 10}" x2="${px + sx * 10}" y2="${py + sy * 10}" stroke="black" stroke-width="6"/>`
 				+ `<line x1="${px - sx * 9}" y1="${py - sy * 9}" x2="${px + sx * 9}" y2="${py + sy * 9}" stroke="white" stroke-width="2.5"/>`
 				+ `<text x="${lx}" y="${ly}" class="sector-label" text-anchor="middle">S${i + 2}</text>`;
 		}).join('');
-		return `<svg viewBox="0 0 ${MAP_W} ${MAP_H}" width="${MAP_W}" height="${MAP_H}">${outline}${coloured}${finish}${arrow}${sectors}</svg>`;
+		// S1 starts at the start and finish line: its label sits beside the line, on the other side from the arrow
+		const [s1x, s1y] = placeLabel(x0, y0, -uy, ux, MAP_W, MAP_H);
+		const s1 = `<text x="${s1x}" y="${s1y}" class="sector-label" text-anchor="middle">S1</text>`;
+		return `<svg viewBox="0 0 ${MAP_W} ${MAP_H}" width="${MAP_W}" height="${MAP_H}">${outline}${coloured}${finish}${arrow}${sectors}${s1}</svg>`;
 	}
 
 	chartSvg() {
