@@ -209,6 +209,12 @@
 					text-align: center;
 				}
 
+				// the ETA centred in both ways: with no minutes under it the time sits in the middle of the row
+				.etas {
+					display: flex;
+					justify-content: center;
+				}
+
 				// a lighter band on every other flight, so that the names belong to their flight at a glance
 				&:nth-child(odd) {
 					background-color: rgba(255, 255, 255, 0.07);
@@ -223,7 +229,7 @@
 					img {
 						// the same width in both sizes, so that the flight numbers start in the same place as the title FLIGHT
 						width: 36px;
-						height: 32px;
+						height: 38px;
 						object-fit: contain;
 						margin-right: 10px;
 					}
@@ -310,7 +316,7 @@
 
 				.flights > div {
 					img {
-						height: 24px;
+						height: 28px;
 					}
 
 					.number {

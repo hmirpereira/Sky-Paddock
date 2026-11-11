@@ -18,7 +18,7 @@ import { DateTime } from '../vendor/auto/luxon.mjs';
 import settings from './settings.mjs';
 import { ON, OFF } from './utils/dark-mode.mjs';
 import {
-	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay,
+	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome,
 } from './utils/shifts.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/schedule.json';
@@ -138,10 +138,13 @@ class WorkSchedule extends WeatherDisplay {
 
 	// one row per flight, in the order of the departures (etd, or the time of the team file: "06:40"); a gate with no known
 	// flights shows its destination
+	// today's flights leave the list as they depart; tomorrow's all stay
 	gateFlights() {
-		return (this.gates.day?.gates ?? [])
+		const { day, tomorrow } = this.gates;
+		const flights = (day?.gates ?? [])
 			.flatMap((gate) => (gate.flights?.length ? gate.flights : [{ number: gate.dests.join('/') }]).map((f) => ({ ...f, crew: gate.with, star: gate.star })))
 			.sort((x, y) => (x.etd ?? x.time ?? '').localeCompare(y.etd ?? y.time ?? ''));
+		return tomorrow ? flights : flightsToCome(flights, day.date, DateTime.now().setZone(LOCAL_TZ));
 	}
 
 	// the flights in pages of at most GATES_PER_PAGE, as even as possible (7 flights: 4 and 3); each page is one more screen
@@ -159,11 +162,11 @@ class WorkSchedule extends WeatherDisplay {
 
 	async drawCanvas() {
 		super.drawCanvas();
-		// the setting was changed since the data came
-		if (this.allGates !== (Number(settings.personalGates?.value) === OFF)) {
-			this.pickGates();
-			this.setGateTiming();
-		}
+		// the setting was changed since the data came: the pages are counted again
+		const changed = this.allGates !== (Number(settings.personalGates?.value) === OFF);
+		// the day of the Gates page is decided each time it is drawn: once the last flight has left it is tomorrow's
+		this.pickGates();
+		if (changed) this.setGateTiming();
 		const screen = Math.min(Math.max(this.screenIndex, 0), this.timing.totalScreens - 1);
 		// the screens after the second are the pages of the Gates page
 		const page = Math.min(screen, 2);
@@ -222,7 +225,9 @@ class WorkSchedule extends WeatherDisplay {
 		box.classList.toggle('message', !!message);
 		box.querySelector('.assign-message').textContent = message;
 		const pages = this.gatePages();
-		const flights = pages[Math.min(pageIndex, pages.length - 1)];
+		// flights may have left since the pages were counted: never past the last page
+		const shown = Math.min(pageIndex, pages.length - 1);
+		const flights = pages[shown];
 		const gates = flights.map((f) => {
 			const block = this.fillTemplate('assign-gate', {});
 			const div = (parent, text) => {
@@ -291,7 +296,7 @@ class WorkSchedule extends WeatherDisplay {
 		label.className = 'supv-label';
 		label.textContent = 'SPV: ';
 		text.append(label, supv.join(' - '));
-		fillFooter(this.elem, supv.length && !message ? [text] : [], pageIndex, message ? 1 : pages.length);
+		fillFooter(this.elem, supv.length && !message ? [text] : [], shown, message ? 1 : pages.length);
 	}
 
 	drawNext() {

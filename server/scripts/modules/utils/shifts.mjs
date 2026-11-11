@@ -42,6 +42,13 @@ const gatesDay = (allDays, now, all = false) => {
 	return { day, tomorrow: true, message: day?.off && !all ? 'Day off' : 'No gates assigned' };
 };
 
+// the flights of a day that have not left yet: a flight drops out of the Gates page once its departure (etd, or the time of the
+// team file) has passed; one with no time known stays
+const flightsToCome = (flights, date, now) => flights.filter((f) => {
+	const time = f.etd ?? f.time;
+	return !time || DateTime.fromISO(`${date}T${time}`, { zone: LOCAL_TZ }) >= now;
+});
+
 export {
-	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay,
+	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome,
 };

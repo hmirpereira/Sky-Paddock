@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.36.2** (2026-11-11): Gates page: a flight of today leaves the list once its departure time has passed (the ETD from FLIC, or the time of the team file); tomorrow's flights all stay; the airline tails use more of the row height; an ETA with no minutes under it (`T-xxm`) is centred vertically in the row; the day of the page is worked out each time it is drawn (`flightsToCome` in `utils/shifts.mjs`, unit test)
 - **1.36.1** (2026-11-11): Gates page: the title FLIGHT starts where the flight numbers do (the airline tail has the same width in both sizes of row) and STAFF where the names do; `T-xxm` checked centred under its ETA
 - **1.36.0** (2026-11-11): Gates page: more than 6 flights go on more pages (1/2, 2/2, as even as possible, 12 s each); three or more staff names in pairs (`A - B` and the third under them), two as before; stand and ETA centred in their columns; smaller ramp agent and `T-xxm` letters; the supervisors (`SPV: A - B`) and the page counter are in the bottom bar of the other screens (`footer.ejs`); the star only when the owner and a marked colleague are on the same gate (Pi)
 - **1.35.0** (2026-11-10): Gates page: under the flight number, the ramp agent of the flight (`(R) Name`, from the team roster on the Pi) instead of the departure time

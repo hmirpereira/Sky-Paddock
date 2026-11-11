@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DateTime } from '../../server/scripts/vendor/auto/luxon.mjs';
 import {
-	keepDays, stillShown, shiftTimes, gatesDay,
+	keepDays, stillShown, shiftTimes, gatesDay, flightsToCome,
 } from '../../server/scripts/modules/utils/shifts.mjs';
 
 const at = (iso) => DateTime.fromISO(iso, { zone: 'Europe/Lisbon' });
@@ -68,4 +68,14 @@ test('the Gates page shows today until its last flight has left, then tomorrow o
 	const all = gatesDay([{ date: '2026-11-08', off: true, allGates: others }], at('2026-11-08T08:00'), true);
 	assert.deepEqual([all.day.gates, all.tomorrow, all.message], [others, false, '']);
 	assert.equal(gatesDay([{ date: '2026-11-08', off: true }, { date: '2026-11-09', off: true }], at('2026-11-08T08:00'), true).message, 'No gates assigned');
+});
+
+test('a flight leaves the Gates list once its departure has passed', () => {
+	const flights = [{ number: 'A', time: '06:40' }, { number: 'B', time: '11:50', etd: '12:10' }, { number: 'C' }, { number: 'D', time: '16:00' }];
+	const numbers = (time) => flightsToCome(flights, '2026-11-08', at(`2026-11-08T${time}`)).map((f) => f.number).join('');
+	assert.equal(numbers('06:00'), 'ABCD');
+	// the etd counts, not the time of the roster; a flight with no time stays
+	assert.equal(numbers('12:05'), 'BCD');
+	assert.equal(numbers('12:15'), 'CD');
+	assert.equal(numbers('17:00'), 'C');
 });
