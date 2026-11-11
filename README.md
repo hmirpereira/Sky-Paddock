@@ -41,7 +41,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | Travel Forecast | Page 1: five European cities, high and low. Page 2: current weather and local time of one city chosen in the settings (Montreal by default) | Open-Meteo |
 | Regional Forecast | Portugal: district and island capitals on five maps | Open-Meteo; maps from [Natural Earth](https://www.naturalearthdata.com) |
 | Extended Forecast, Almanac | The next days; sun and moon | Open-Meteo |
-| Local Radar | Precipitation radar | [LibreWXR](https://github.com/JoshuaKimsey/LibreWXR) (open source; OPERA radar composite) |
+| Local Radar | Precipitation radar | [RainViewer](https://www.rainviewer.com) |
 | Air & Pollen | European Air Quality Index now and daily pollen levels, on one screen | Open-Meteo (CAMS) |
 | Work Schedule (Pi) | Shifts for the next 7 days, with the weather at those times; the day's gates with staff, stand and ETA | Private spreadsheets, kept on the Pi; stand and ETA from TAP's public FLIC pages for OPO |
 | Airport METAR | METAR of one airport decoded into plain English, then its TAF (Pi) | [metar.vatsim.net](https://metar.vatsim.net); TAF from [aviationweather.gov](https://aviationweather.gov) |
@@ -106,7 +106,7 @@ The whole story (requests and retries, the tests, text from other sites, layout,
 - Fonts and weather icons from [TWCClassics](https://twcclassics.com/downloads.html): fonts by Nick Smith; icons by Charles Abel, Nick Smith and Malek Masoud.
 - Track outlines from [bacinger/f1-circuits](https://github.com/bacinger/f1-circuits), MIT License, Copyright (c) 2019-2025 Tomislav Bacinger. Lap records and corner names (`utils/circuit-facts.mjs`) are facts taken from public sources such as Wikipedia, not copied text. The positions of the start lines and corners were checked against [tobi/track-atlas](https://github.com/tobi/track-atlas) (geometry from OpenStreetMap contributors, ODbL; corner data from Lovely-Sim-Racing); none of its data is included, only our own measurements of where things are on our outlines.
 - Map data: [Natural Earth](https://www.naturalearthdata.com) (public domain); airport plans (c) OpenStreetMap contributors, [ODbL](https://opendatacommons.org/licenses/odbl/).
-- Data: Open-Meteo, IPMA, LibreWXR (EUMETNET OPERA radar), metar.vatsim.net, aviationweather.gov, Jolpica F1, OpenF1, RTP, Expresso, Publico, CNN Portugal, Aviacao TV, FlyingLapF1, F1PT, PlanetF1, Tautulli and Plex, gt-world-challenge-europe.com, AeroDataBox, adsb.fi, airplanes.live, adsb.lol, The OpenSky Network, adsbdb, OurAirports.
+- Data: Open-Meteo, IPMA, RainViewer, metar.vatsim.net, aviationweather.gov, Jolpica F1, OpenF1, RTP, Expresso, Publico, CNN Portugal, Aviacao TV, FlyingLapF1, F1PT, PlanetF1, Tautulli and Plex, gt-world-challenge-europe.com, AeroDataBox, adsb.fi, airplanes.live, adsb.lol, The OpenSky Network, adsbdb, OurAirports.
 - Licence: MIT, as the projects it is built on; see [LICENSE](LICENSE).
 
 **Disclaimer**: this is a personal, non-commercial project. Do not rely on it in dangerous weather or for flight operations; the data can be late, wrong or missing. The WeatherSTAR 4000 belongs to The Weather Channel. Sky Paddock is not affiliated with The Weather Channel, Formula 1, the FIA, the Lufthansa Group, Max Verstappen or any team or airline; their names and marks (including the MV logo) belong to their owners.

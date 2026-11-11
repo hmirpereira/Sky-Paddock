@@ -15,8 +15,7 @@ import fillFooter from './utils/footer.mjs';
 import { BORDER, COAST, DISTRICTS } from './utils/radar-lines.mjs';
 
 class Radar extends WeatherDisplay {
-	// LibreWXR (open source; its public server is CC BY 4.0): the same API as RainViewer, with frames every 10 minutes
-	static radarSource = 'https://api.librewxr.net/public/weather-maps.json';
+	static radarSource = 'https://api.rainviewer.com/public/weather-maps.json';
 
 	static tileSource = 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}';
 
@@ -25,7 +24,7 @@ class Radar extends WeatherDisplay {
 	static referenceSource = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}';
 
 	// the rain is see-through enough for the map under it
-	static rainOpacity = 0.6;
+	static rainOpacity = 0.8;
 
 	// how long the latest image stays, in frames of the animation (2 seconds)
 	static holdLatestFrames = 4;
@@ -56,7 +55,7 @@ class Radar extends WeatherDisplay {
 		this.radarOptions = {
 			kind: 'radar',
 			tileSize: 256,
-			colorScheme: 2, // Universal Blue
+			colorScheme: 4,
 			smoothData: 1,
 			snowColors: 1,
 			extension: 'webp',
@@ -322,7 +321,7 @@ class Radar extends WeatherDisplay {
 
 		const weatherParameters = _weatherParameters ?? this.weatherParameters;
 
-		const leafletDefaultZoom = 8;
+		const leafletDefaultZoom = 7;
 		const leafletInitializationOptions = {
 			zoomControl: false,
 			dragging: false,
@@ -394,7 +393,7 @@ class Radar extends WeatherDisplay {
 			);
 
 			// the source line and the clock: the frames change through screenIndexChange, which draws neither
-			fillFooter(this.elem, ['LibreWXR · EUMETNET OPERA']);
+			fillFooter(this.elem, ['RainViewer']);
 			this.finishDraw();
 			this.setStatus(STATUS.loaded);
 		} catch (error) {

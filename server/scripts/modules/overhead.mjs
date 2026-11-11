@@ -19,9 +19,9 @@ const SERVICE_URL = 'http://127.0.0.1:8095/overhead.json';
 const RANGE_KM = 50;
 const M_PER_FT = 0.3048;
 const RADAR_RADIUS = 140; // px, keep in sync with _overhead.scss
-// the radar background: map tiles (OpenStreetMap) around home, drawn faint behind the rings
+// the radar background: map tiles (CARTO Dark Matter, from the Pi, which keeps the key and a cache) around home, drawn faint behind the rings
 const MAP_ZOOM = 9;
-const MAP_URL = (x, y) => `https://tile.openstreetmap.org/${MAP_ZOOM}/${x}/${y}.png`;
+const MAP_URL = (x, y) => `http://127.0.0.1:8095/tiles/dark_all/${MAP_ZOOM}/${x}/${y}.png`;
 const GROUP_ICONS = ['LH', 'LX', 'OS', '4Y', 'SN'];
 // airline logos drawn above the flight number on the radar, by ICAO airline code (the first
 // three letters of the callsign): add the code here and the file as images/overhead-logos/<CODE>.png

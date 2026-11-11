@@ -35,12 +35,6 @@
 		}
 	}
 
-	// the frames cross-fade: the layer of the frame leaving fades out while the next one fades in (the browser does the
-	// blend, so the script changes only the opacity of two layers at each frame)
-	#map .leaflet-layer {
-		transition: opacity 300ms linear;
-	}
-
 	#map {
 		height: 100%;
 		// under the countdown line (z-index 2 of the screens), which has priority
