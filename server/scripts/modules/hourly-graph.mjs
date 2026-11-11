@@ -110,15 +110,10 @@ class HourlyGraph extends WeatherDisplay {
 		ctx.fillRect(0, 0, 3, availableHeight - 24);
 
 		// order is important last line drawn is on top
-		// precipitation, as bars on its own 0 to 100 % scale
-		this.data.probabilityOfPrecipitation.forEach((value, i) => {
-			if (!value) return;
-			const height = Math.max(2, baseY - percentScale(value));
-			const x = timeScale(i);
-			ctx.fillStyle = 'black';
-			ctx.fillRect(x - 6, baseY - height, 14, height + 2);
-			ctx.fillStyle = 'aqua';
-			ctx.fillRect(x - 5, baseY - height, 12, height);
+		// precipitation: a line on its own 0 to 100 % scale, as before the bars (aqua, 3 px)
+		drawPath(createPath(this.data.probabilityOfPrecipitation, timeScale, percentScale), ctx, {
+			strokeStyle: 'aqua',
+			lineWidth: 3,
 		});
 
 		// clouds
