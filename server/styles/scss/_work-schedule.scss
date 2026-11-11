@@ -165,7 +165,7 @@
 			// the columns, shared by the headers and the lines
 			.column-headers {
 				.flight {
-					left: 66px;
+					left: 74px;
 				}
 
 				.crew {
@@ -228,8 +228,8 @@
 
 					img {
 						// the same width in both sizes, so that the flight numbers start in the same place as the title FLIGHT
-						width: 36px;
-						height: 38px;
+						width: 44px;
+						height: 44px;
 						object-fit: contain;
 						margin-right: 10px;
 					}
@@ -239,8 +239,10 @@
 					}
 
 					.ramp {
-						margin-top: 3px;
-						font-size: 11pt;
+						margin-top: 4px;
+						margin-left: -2px;
+						font-family: 'Star4000 Small';
+						font-size: 14pt;
 						line-height: 14px;
 						color: #b5d0ff;
 					}
@@ -253,8 +255,10 @@
 					text-align: center;
 
 					.left {
-						margin-top: 3px;
-						font-size: 11pt;
+						margin-top: 4px;
+						margin-left: -2px;
+						font-family: 'Star4000 Small';
+						font-size: 14pt;
 						line-height: 14px;
 						color: #b5d0ff;
 
@@ -310,13 +314,14 @@
 
 			// when the flights do not fit (set by the script): smaller rows, 6 flights with 2 names each or 5 with 3
 			.assign-lines.compact .assign-gate {
+				min-height: 40px;
 				padding: 1px 20px;
 				font-size: 18pt;
 				line-height: 26px;
 
 				.flights > div {
 					img {
-						height: 28px;
+						height: 34px;
 					}
 
 					.number {
@@ -325,7 +330,7 @@
 
 					.ramp {
 						margin-top: 2px;
-						font-size: 9pt;
+						font-size: 12pt;
 						line-height: 12px;
 					}
 				}
@@ -335,7 +340,7 @@
 
 					.left {
 						margin-top: 2px;
-						font-size: 9pt;
+						font-size: 12pt;
 						line-height: 12px;
 					}
 				}

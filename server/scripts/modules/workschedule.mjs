@@ -270,7 +270,7 @@ class WorkSchedule extends WeatherDisplay {
 			// the Pi adds the stand and the ETA of the arriving aircraft to the flight ("S32", "05:55"); empty until they are known
 			div('.stands', f.stand ?? '');
 			const eta = div('.etas', f.eta ?? '');
-			// minutes to the arrival in small under the ETA ("T-45m"), as of the moment the page is drawn; nothing once it has passed.
+			// minutes to the arrival in small under the ETA ("T-45"), as of the moment the page is drawn; nothing once it has passed.
 			// Under 20 minutes it is yellow and blinks slowly, under 10 red and faster
 			const at = DateTime.fromISO(`${day.date}T${f.eta}`, { zone: LOCAL_TZ });
 			const mins = Math.ceil(at.diffNow('minutes').minutes);
@@ -278,7 +278,7 @@ class WorkSchedule extends WeatherDisplay {
 				const left = document.createElement('div');
 				left.className = 'left';
 				if (mins < 20) left.classList.add(mins < 10 ? 'now' : 'soon');
-				left.textContent = `T-${mins}m`;
+				left.textContent = `T-${mins}`;
 				eta.append(left);
 			}
 			return block;
