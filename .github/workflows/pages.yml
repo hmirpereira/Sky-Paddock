@@ -48,11 +48,12 @@ jobs:
           # the Content-Security-Policy is in the page and there is no inline script (the policy would refuse it)
           grep -q 'http-equiv="Content-Security-Policy"' docs/index.html
           ! grep -q '<script>' docs/index.html
-      # the browser and its system libraries on separate steps (so the log says which one fails); the libraries are retried once
       - name: Install Chromium for the test
         run: npx playwright install chromium
-      - name: Install the system libraries of Chromium
-        run: sudo npx playwright install-deps chromium || (sleep 60 && sudo npx playwright install-deps chromium)
+      # the runner already has the libraries Chromium needs; the apt mirror of the runner has been unreachable, so this step is optional
+      - name: Install the system libraries of Chromium (optional)
+        continue-on-error: true
+        run: sudo npx playwright install-deps chromium
       - name: Test every screen (recorded data; stops here if a screen fails or the page has an error)
         run: npx playwright test --project=smoke
       - name: Keep the test report when it fails
