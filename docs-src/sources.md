@@ -9,7 +9,7 @@ Every outside source the screens or the Pi service ask, how often, what limits i
 | Source | Used by | How often and limits | When it refuses |
 |---|---|---|---|
 | [Open-Meteo](https://open-meteo.com) (also CAMS for air and pollen) | Weather screens, Air & Pollen, forecasts at F1 and GT circuits | Forecasts in one request per screen where the README says so | |
-| [Esri ArcGIS Online](https://server.arcgisonline.com) | Local Radar, Regional Forecast | The base map and the names and borders over it, one set of tiles per start | The rain is drawn on the background alone |
+| [Esri ArcGIS Online](https://server.arcgisonline.com) | Local Radar, Regional Forecast | The base map, one set of tiles per start (no place names: the map has none of them) | The rain is drawn on the background alone |
 | [IPMA](https://api.ipma.pt) | Hazards | Warnings for one district | Hazards is skipped when there are none |
 | [RainViewer](https://www.rainviewer.com) | Local Radar | Precipitation radar | |
 | [metar.vatsim.net](https://metar.vatsim.net) | Airport METAR | One airport | |

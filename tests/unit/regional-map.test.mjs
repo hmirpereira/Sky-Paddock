@@ -39,8 +39,8 @@ test('every island city goes to the group of its island, and the group has its v
 	PAGES.forEach((id) => assert.ok(VIEWS[id], id));
 });
 
-test('a label starts on its city, 6 px up and left', () => {
-	assert.deepEqual(placeLabels([{ x: 200, y: 150, w: 96 }]), [[194, 144]]);
+test('a label sits beside its city, to the right and above the dot', () => {
+	assert.deepEqual(placeLabels([{ x: 200, y: 150, w: 96 }]), [[206, 128]]);
 });
 
 test('two labels on the same city do not cover each other and stay inside the map', () => {

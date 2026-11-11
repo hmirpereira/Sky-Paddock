@@ -21,7 +21,6 @@ class Radar extends WeatherDisplay {
 
 	// borders, coast and the names of the cities, drawn over the rain so that the map can still be read under widespread rain
 	// (same host as the base map; loaded once, like it)
-	static referenceSource = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}';
 
 	// the rain is see-through enough for the map under it
 	static rainOpacity = 0.8;
@@ -51,6 +50,7 @@ class Radar extends WeatherDisplay {
 		this.loadedTilesCount = 0;
 		this.radarData = {};
 		this.locationMarker = null;
+		this.locationDot = null;
 
 		this.radarOptions = {
 			kind: 'radar',
@@ -141,10 +141,19 @@ class Radar extends WeatherDisplay {
 			html: markerContent,
 			className: 'custom-weather-marker',
 			iconSize: [140, 120],
-			iconAnchor: [60, 60], // Center the marker
+			iconAnchor: [-27, 62], // the label sits up and to the right of its dot
 			popupAnchor: [0, -60],
 		});
 
+		// a white dot on the exact place of the city; the label beside it
+		if (this.locationDot) window._leafletMap.removeLayer(this.locationDot);
+		this.locationDot = window.L.marker([latitude, longitude], {
+			icon: window.L.divIcon({
+				html: '', className: 'radar-city-dot', iconSize: [5, 5], iconAnchor: [2, 2],
+			}),
+			interactive: false,
+			zIndexOffset: 1000,
+		}).addTo(window._leafletMap);
 		this.locationMarker = window.L.marker([latitude, longitude], {
 			icon: customIcon,
 			zIndexOffset: 1000, // Ensure it appears above other layers
@@ -350,11 +359,8 @@ class Radar extends WeatherDisplay {
 				window.L.tileLayer(Radar.tileSource, {
 					attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
 				}).addTo(window._leafletMap);
-				// a pane of its own above the tiles (the rain layers are in the tile pane) and under the marker
-				window._leafletMap.createPane('reference').style.zIndex = 250;
-				window.L.tileLayer(Radar.referenceSource, { pane: 'reference' }).addTo(window._leafletMap);
 				// the coast, the border and the district lines of Portugal, which the map has no line for, over the rain: drawn once, they never move
-				const renderer = window.L.svg({ pane: 'reference' });
+				const renderer = window.L.svg();
 				const draw = (lines, style) => lines.forEach((line) => window.L.polyline(line, {
 					renderer,
 					interactive: false,

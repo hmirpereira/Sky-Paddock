@@ -50,6 +50,16 @@
 		color: c.$title-color;
 	}
 
+	.city-dot {
+		position: absolute;
+		width: 5px;
+		height: 5px;
+		margin: -2px 0 0 -2px;
+		border-radius: 50%;
+		background: #fff;
+		box-shadow: 0 0 0 1px #000;
+	}
+
 	.location {
 		position: absolute;
 		height: 54px;

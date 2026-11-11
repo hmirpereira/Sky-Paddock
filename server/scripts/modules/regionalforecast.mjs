@@ -1,5 +1,5 @@
 // Regional Forecast for Portugal: district capitals and island capitals on six maps
-// (north, centre, Lisbon area, south, Madeira, Azores); each label sits on its city, without dots or lines, each with the day's weather icon, high and low.
+// (north, centre, Lisbon area, south, Madeira, Azores); each city has a white dot on its place and its label beside it, each with the day's weather icon, high and low.
 // Before 18:00 it shows today, after that tomorrow (like the Travel Forecast).
 // Data: one Open-Meteo request for all 22 cities. The maps are Esri's ocean tiles with the coast, border and district lines
 // of the radar (utils/regional-map.mjs draws them); the cities and their coordinates come from utils/regional-pt.mjs
@@ -105,7 +105,16 @@ class RegionalForecast extends WeatherDisplay {
 
 		const container = this.elem.querySelector('.location-container');
 		container.innerHTML = '';
-		container.append(...blocks);
+		// a white dot with a black edge on the exact place of each city; its label sits beside it
+		const dots = cities.map((city) => {
+			const [x, y] = project(view, city.lat, city.lon);
+			const dot = document.createElement('div');
+			dot.className = 'city-dot';
+			dot.style.left = `${x}px`;
+			dot.style.top = `${y}px`;
+			return dot;
+		});
+		container.append(...dots, ...blocks);
 
 		this.finishDraw();
 	}

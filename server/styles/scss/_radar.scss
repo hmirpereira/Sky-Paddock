@@ -87,3 +87,10 @@
 		}
 	}
 }
+
+// the white dot on the place of the city (the Local Radar; the Regional Forecast has its own)
+.radar-city-dot {
+	background: #fff;
+	border-radius: 50%;
+	box-shadow: 0 0 0 1px #000;
+}
