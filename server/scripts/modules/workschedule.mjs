@@ -251,7 +251,7 @@ class WorkSchedule extends WeatherDisplay {
 			number.textContent = f.number;
 			const ramp = document.createElement('div');
 			ramp.className = 'ramp';
-			ramp.textContent = f.ramp ? `(R) ${niceName(f.ramp)}` : '';
+			ramp.textContent = f.ramp ? niceName(f.ramp) : '';
 			number.append(ramp);
 			row.append(number);
 			// the staff as the Pi gives it (me included): two names, one under the other; three or more, in pairs ("A - B", "C"),

@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.36.6** (2026-11-11): Gates page: the ramp agent under the flight number is shown without the `(R)`
 - **1.36.5** (2026-11-11): F1 Telemetry track map: the sector labels (S2, S3) never fall outside the map any more (the other side of the track, or pushed inside), and S1 is labelled beside the start and finish line (`utils/map-label.mjs`, unit tests)
 - **1.36.4** (2026-11-11): Gates page: less space between the flight number and the ramp agent, and between the ETA and the countdown
 - **1.36.3** (2026-11-11): Gates page: the airline tails cover about 95% of the row height; the ramp agent and the countdown use the small font of the bottom bar (`Star4000 Small`, capitals), the placa starts under the first letter of the flight number, the compact rows are 40 px with air around the two-line blocks; the countdown has no `m` at the end (`T-45`)
