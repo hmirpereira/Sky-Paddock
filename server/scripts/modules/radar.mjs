@@ -50,7 +50,6 @@ class Radar extends WeatherDisplay {
 		this.loadedTilesCount = 0;
 		this.radarData = {};
 		this.locationMarker = null;
-		this.locationDot = null;
 
 		this.radarOptions = {
 			kind: 'radar',
@@ -141,19 +140,10 @@ class Radar extends WeatherDisplay {
 			html: markerContent,
 			className: 'custom-weather-marker',
 			iconSize: [140, 120],
-			iconAnchor: [-27, 62], // the label sits up and to the right of its dot
+			iconAnchor: [60, 60], // Center the marker
 			popupAnchor: [0, -60],
 		});
 
-		// a white dot on the exact place of the city; the label beside it
-		if (this.locationDot) window._leafletMap.removeLayer(this.locationDot);
-		this.locationDot = window.L.marker([latitude, longitude], {
-			icon: window.L.divIcon({
-				html: '', className: 'radar-city-dot', iconSize: [5, 5], iconAnchor: [2, 2],
-			}),
-			interactive: false,
-			zIndexOffset: 1000,
-		}).addTo(window._leafletMap);
 		this.locationMarker = window.L.marker([latitude, longitude], {
 			icon: customIcon,
 			zIndexOffset: 1000, // Ensure it appears above other layers
