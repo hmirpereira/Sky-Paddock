@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.40.0** (2026-11-11): National Forecast: Esri ocean tiles without names, with the coast, border and district lines of the Local Radar; Madeira and the Azores on pages of their own with their coasts (6 pages, 6 seconds each); the district lines are solid and thinner than the country border (also on the Local Radar); the labels move to a free place when they would cover each other; the maps are drawn from the coordinates (utils/regional-map.mjs), the images of the generator are no longer used
 - **1.39.7** (2026-11-11): Work Schedule pages in the order Next Shift (7 seconds), Work Schedule with the next 7 days (10 seconds), Gates (10 seconds each page, the message pages too, were 5)
 - **1.39.6** (2026-11-11): README and docs: the Plex server is "another Raspberry Pi at home" (no host names of the owner's network); no change on the screens
 - **1.39.5** (2026-11-11): Hourly Graph: the rain probability is a line again (aqua, as before the bars of 1.10.8), not bars

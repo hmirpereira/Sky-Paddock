@@ -39,7 +39,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | Current Conditions | Temperature, sky, wind, humidity, pressure and more | [Open-Meteo](https://open-meteo.com) |
 | Hourly Forecast, Hourly Graph | The next 24 hours, as a list and as a graph (temperature line with its highest and lowest marked, cloud cover line, precipitation chance as bars, a yellow "now" edge and the weekday after midnight) | Open-Meteo |
 | Travel Forecast | Page 1: five European cities, high and low. Page 2: current weather and local time of one city chosen in the settings (Montreal by default) | Open-Meteo |
-| Regional Forecast | Portugal: district and island capitals on five maps | Open-Meteo; maps from [Natural Earth](https://www.naturalearthdata.com) |
+| Regional Forecast | Portugal: district and island capitals on six maps | Open-Meteo; maps from [Esri](https://www.esri.com) tiles; coast lines from [Natural Earth](https://www.naturalearthdata.com) |
 | Extended Forecast, Almanac | The next days; sun and moon | Open-Meteo |
 | Local Radar | Precipitation radar | [RainViewer](https://www.rainviewer.com) |
 | Air & Pollen | European Air Quality Index now and daily pollen levels, on one screen | Open-Meteo (CAMS) |

@@ -14,7 +14,7 @@
 	}
 }
 
-// Portugal: 640 x 310 maps, label blocks 54 px high placed by ferramentas/mkregional.py
+// Portugal: 640 x 310 maps (tiles and lines drawn by regionalforecast.mjs), label blocks 54 px high
 .weather-display .main.regional-forecast {
 	position: relative;
 
@@ -22,12 +22,32 @@
 		position: absolute;
 		left: 0;
 		top: 0;
+		width: 640px;
+		height: 310px;
+		overflow: hidden;
 
-		img {
-			display: block;
-			width: 640px;
-			height: 310px;
+		// 257 px, a pixel more than the tile, so no line shows between two tiles
+		.tile {
+			position: absolute;
+			width: 257px;
+			height: 257px;
 		}
+
+		.lines {
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+	}
+
+	.map-credit {
+		position: absolute;
+		right: 8px;
+		bottom: 4px;
+		z-index: 5;
+		font-family: 'Star4000 Small';
+		font-size: 9pt;
+		color: c.$title-color;
 	}
 
 	.location {

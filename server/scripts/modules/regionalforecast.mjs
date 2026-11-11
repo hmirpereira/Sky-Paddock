@@ -1,8 +1,9 @@
-// Regional Forecast for Portugal: district capitals and island capitals on five maps
-// (north, centre, Lisbon area, south, islands); each label sits on its city, without dots or lines, each with the day's weather icon, high and low.
+// Regional Forecast for Portugal: district capitals and island capitals on six maps
+// (north, centre, Lisbon area, south, Madeira, Azores); each label sits on its city, without dots or lines, each with the day's weather icon, high and low.
 // Before 18:00 it shows today, after that tomorrow (like the Travel Forecast).
-// Data: one Open-Meteo request for all 22 cities. Maps and label positions are made by
-// ferramentas/mkregional.py from Natural Earth (public domain) and stored in utils/regional-pt.mjs.
+// Data: one Open-Meteo request for all 22 cities. The maps are Esri's ocean tiles with the coast, border and district lines
+// of the radar (utils/regional-map.mjs draws them); the cities and their coordinates come from utils/regional-pt.mjs
+// (made by ferramentas/mkregional.py from Natural Earth, public domain; its map images are no longer used).
 // (The original screen used the US National Weather Service and a US map, so it never worked here.)
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
@@ -13,17 +14,32 @@ import { registerDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import REGIONAL_PAGES from './utils/regional-pt.mjs';
+import { BORDER, COAST, DISTRICTS } from './utils/radar-lines.mjs';
+import { ISLAND_COAST } from './utils/island-lines.mjs';
+import {
+	MAP_H, MAP_W, PAGES, VIEWS, islandGroup, placeLabels, project, tilesFor, worldPx,
+} from './utils/regional-map.mjs';
 
 const SWITCH_TO_TOMORROW_HOUR = 18;
+const TILE_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile';
+const SVG_NS = 'http://www.w3.org/2000/svg';
 const PAGE_TITLES = {
-	north: 'North', centre: 'Centre', lisbon: 'Lisbon', south: 'South', islands: 'Islands',
+	north: 'North', centre: 'Centre', lisbon: 'Lisbon', south: 'South', madeira: 'Madeira', azores: 'Azores',
+};
+
+// the cities of a page: the island cities of the Islands page are split between Madeira and the Azores
+const citiesOf = (id) => {
+	if (id === 'madeira' || id === 'azores') {
+		return REGIONAL_PAGES.find((page) => page.id === 'islands').cities.filter((city) => islandGroup(city) === id);
+	}
+	return REGIONAL_PAGES.find((page) => page.id === id).cities;
 };
 
 class RegionalForecast extends WeatherDisplay {
 	constructor(elemId) {
 		super(elemId, 'Regional Forecast', false);
 		this.timing.baseDelay = 6000;
-		this.timing.totalScreens = REGIONAL_PAGES.length;
+		this.timing.totalScreens = PAGES.length;
 	}
 
 	async getData(_weatherParameters) {
@@ -60,32 +76,84 @@ class RegionalForecast extends WeatherDisplay {
 
 	async drawCanvas() {
 		super.drawCanvas();
-		const page = REGIONAL_PAGES[Math.min(Math.max(this.screenIndex, 0), REGIONAL_PAGES.length - 1)];
+		const id = PAGES[Math.min(Math.max(this.screenIndex, 0), PAGES.length - 1)];
+		const view = VIEWS[id];
 
 		this.elem.querySelector('.header .title.dual .top').textContent = 'National Forecast';
-		this.elem.querySelector('.header .title.dual .bottom').textContent = PAGE_TITLES[page.id];
-		this.elem.querySelector('.map img').src = page.map;
+		this.elem.querySelector('.header .title.dual .bottom').textContent = PAGE_TITLES[id];
+		this.drawMap(id, view);
 
-		const blocks = page.cities.map((city) => {
+		const cities = citiesOf(id).filter((city) => this.forecast[city.key]);
+		// each label starts on its city and moves to a free place when another label is there (placeLabels)
+		const spots = placeLabels(cities.map((city) => {
+			const [x, y] = project(view, city.lat, city.lon);
+			return { x, y, w: city.w };
+		}));
+		const blocks = cities.map((city, i) => {
 			const data = this.forecast[city.key];
-			if (!data) return false;
 			const block = this.fillTemplate('location', {
 				city: city.name,
 				high: data.high,
 				low: data.low,
 				icon: { type: 'img', src: data.icon },
 			});
-			block.style.left = `${city.x}px`;
-			block.style.top = `${city.y}px`;
+			block.style.left = `${spots[i][0]}px`;
+			block.style.top = `${spots[i][1]}px`;
 			block.style.width = `${city.w}px`;
 			return block;
-		}).filter((d) => d);
+		});
 
 		const container = this.elem.querySelector('.location-container');
 		container.innerHTML = '';
 		container.append(...blocks);
 
 		this.finishDraw();
+	}
+
+	// the ocean tiles, then the lines over them: the coast, border and districts of Portugal, or the coast of an island group
+	drawMap(id, view) {
+		const [cx, cy] = worldPx(view.z, view.lat, view.lon);
+		const tiles = tilesFor(view).map(([z, x, y]) => {
+			const img = document.createElement('img');
+			img.className = 'tile';
+			img.alt = '';
+			img.src = `${TILE_URL}/${z}/${y}/${x}`;
+			img.style.left = `${Math.round(x * 256 - (cx - MAP_W / 2))}px`;
+			img.style.top = `${Math.round(y * 256 - (cy - MAP_H / 2))}px`;
+			return img;
+		});
+		const sets = (id === 'madeira' || id === 'azores')
+			? [{ rings: ISLAND_COAST[id], halo: 4, width: 1.6 }]
+			: [
+				{ rings: COAST, halo: 4, width: 1.6 },
+				{ rings: BORDER, halo: 4, width: 1.6 },
+				{
+					rings: DISTRICTS, halo: 3, width: 0.9,
+				},
+			];
+		const svg = document.createElementNS(SVG_NS, 'svg');
+		svg.setAttribute('class', 'lines');
+		svg.setAttribute('width', MAP_W);
+		svg.setAttribute('height', MAP_H);
+		const stroke = (points, color, width, opacity, dash) => {
+			const line = document.createElementNS(SVG_NS, 'polyline');
+			line.setAttribute('points', points);
+			line.setAttribute('fill', 'none');
+			line.setAttribute('stroke', color);
+			line.setAttribute('stroke-width', width);
+			line.setAttribute('stroke-opacity', opacity);
+			line.setAttribute('stroke-linejoin', 'round');
+			if (dash) line.setAttribute('stroke-dasharray', dash);
+			svg.append(line);
+		};
+		sets.forEach(({
+			rings, halo, width, dash,
+		}) => rings.forEach((ring) => {
+			const points = ring.map(([lat, lon]) => project(view, lat, lon).join(',')).join(' ');
+			stroke(points, '#000', halo, 0.45);
+			stroke(points, '#fff', width, 0.95, dash);
+		}));
+		this.elem.querySelector('.map').replaceChildren(...tiles, svg);
 	}
 }
 

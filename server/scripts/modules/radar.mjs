@@ -365,10 +365,8 @@ class Radar extends WeatherDisplay {
 				draw(COAST, { color: '#fff', weight: 1.6, opacity: 0.95 });
 				draw(BORDER, { color: '#000', weight: 4, opacity: 0.45 });
 				draw(BORDER, { color: '#fff', weight: 1.6, opacity: 0.95 });
-				draw(DISTRICTS, { color: '#000', weight: 2.6, opacity: 0.3 });
-				draw(DISTRICTS, {
-					color: '#fff', weight: 1, opacity: 0.85, dashArray: '5 3',
-				});
+				draw(DISTRICTS, { color: '#000', weight: 3, opacity: 0.45 });
+				draw(DISTRICTS, { color: '#fff', weight: 0.9, opacity: 0.95 });
 			} else {
 				window._leafletMap.setView([weatherParameters.latitude, weatherParameters.longitude], leafletDefaultZoom);
 			}
