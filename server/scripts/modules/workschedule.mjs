@@ -1,5 +1,5 @@
-// work shifts: page 1 lists the next 7 days with the weather at the start of each shift,
-// page 2 shows the next shift with a countdown and the weather at the start and at the end,
+// work shifts: page 1 shows the next shift with a countdown and the weather at the start and at the end (7 seconds),
+// page 2 lists the next 7 days with the weather at the start of each shift (10 seconds),
 // page 3, Gates: the flights of my gates today (tomorrow once the last one has left; of every gate with the setting Personal Gates
 // off), each with the staff on the gate, the stand and
 // the ETA of the aircraft that does the rotation, and the supervisors of the day in one line under them.
@@ -97,9 +97,9 @@ class WorkSchedule extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'Work Schedule', defaultActive);
 
-		// three pages, 12 seconds each (the Gates page 5 seconds when it only has a message)
+		// three pages: Next Shift 7 seconds, Work Schedule 10 seconds, each Gates page 10 seconds
 		this.timing.baseDelay = 1000;
-		this.timing.delay = [12, 12, 12];
+		this.timing.delay = [7, 10, 10];
 	}
 
 	async getData(weatherParameters) {
@@ -156,7 +156,7 @@ class WorkSchedule extends WeatherDisplay {
 	}
 
 	setGateTiming() {
-		this.timing.delay = [12, 12, ...this.gatePages().map(() => (this.gates.message ? 5 : 12))];
+		this.timing.delay = [7, 10, ...this.gatePages().map(() => 10)];
 		this.calcNavTiming();
 	}
 
@@ -170,12 +170,12 @@ class WorkSchedule extends WeatherDisplay {
 		const screen = Math.min(Math.max(this.screenIndex, 0), this.timing.totalScreens - 1);
 		// the screens after the second are the pages of the Gates page
 		const page = Math.min(screen, 2);
-		this.elem.querySelector('.schedule-page.week').style.display = page === 0 ? 'block' : 'none';
-		this.elem.querySelector('.schedule-page.next').style.display = page === 1 ? 'block' : 'none';
+		this.elem.querySelector('.schedule-page.week').style.display = page === 1 ? 'block' : 'none';
+		this.elem.querySelector('.schedule-page.next').style.display = page === 0 ? 'block' : 'none';
 		this.elem.querySelector('.schedule-page.assignments').style.display = page === 2 ? 'block' : 'none';
 		this.elem.querySelector('.source-footer').style.display = page === 2 ? '' : 'none';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = ['Next 7 Days', 'Next Shift', `${this.allGates ? 'All ' : ''}Gates${this.gates.tomorrow ? ' Tomorrow' : ''}`][page];
-		if (page === 0) this.drawWeek(); else if (page === 1) this.drawNext(); else this.drawAssignments(screen - 2);
+		this.elem.querySelector('.header .title.dual .bottom').innerHTML = ['Next Shift', 'Next 7 Days', `${this.allGates ? 'All ' : ''}Gates${this.gates.tomorrow ? ' Tomorrow' : ''}`][page];
+		if (page === 0) this.drawNext(); else if (page === 1) this.drawWeek(); else this.drawAssignments(screen - 2);
 		this.finishDraw();
 	}
 
