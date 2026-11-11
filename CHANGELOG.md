@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.36.1** (2026-11-11): Gates page: the title FLIGHT starts where the flight numbers do (the airline tail has the same width in both sizes of row) and STAFF where the names do; `T-xxm` checked centred under its ETA
 - **1.36.0** (2026-11-11): Gates page: more than 6 flights go on more pages (1/2, 2/2, as even as possible, 12 s each); three or more staff names in pairs (`A - B` and the third under them), two as before; stand and ETA centred in their columns; smaller ramp agent and `T-xxm` letters; the supervisors (`SPV: A - B`) and the page counter are in the bottom bar of the other screens (`footer.ejs`); the star only when the owner and a marked colleague are on the same gate (Pi)
 - **1.35.0** (2026-11-10): Gates page: under the flight number, the ramp agent of the flight (`(R) Name`, from the team roster on the Pi) instead of the departure time
 - **1.34.0** (2026-11-10): the option Personal Gates works: On, the owner's gates as before; Off, the Gates page shows the gates of everybody that day ("All Gates", from `allGates` in the data of the Pi), whether the owner is on them or not; `EXTRA_PARAMS` in the smoke test for screenshots with other settings

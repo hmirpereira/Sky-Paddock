@@ -165,7 +165,7 @@
 			// the columns, shared by the headers and the lines
 			.column-headers {
 				.flight {
-					left: 62px;
+					left: 66px;
 				}
 
 				.crew {
@@ -221,7 +221,10 @@
 					color: #ffe97a;
 
 					img {
+						// the same width in both sizes, so that the flight numbers start in the same place as the title FLIGHT
+						width: 36px;
 						height: 32px;
+						object-fit: contain;
 						margin-right: 10px;
 					}
 
