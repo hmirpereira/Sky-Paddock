@@ -11,6 +11,7 @@ import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
+import fillFooter from './utils/footer.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
@@ -36,6 +37,8 @@ const rSchedule = (day) => {
 // hourly forecast at the location, 8 days, keyed by local hour ("2026-10-09T03:00");
 // kept for an hour, so the 10-minute data refresh does not ask Open-Meteo again each time
 const FORECAST_CACHE_MINUTES = 60;
+// flights on a page of the Gates page; with more, they go on more pages (1/2, 2/2)
+const GATES_PER_PAGE = 6;
 let forecastCache = null;
 const getForecast = async (weatherParameters) => {
 	const key = `${weatherParameters.latitude},${weatherParameters.longitude}`;
@@ -123,8 +126,7 @@ class WorkSchedule extends WeatherDisplay {
 		// the Gates page (the Pi adds day.gates: [{ dests: ['MUC'], with: ['ANA M'], flights: [...] }]): which day it shows is
 		// decided here, with each refresh of the data, so that the time of the page matches what it shows
 		this.pickGates();
-		this.timing.delay = [12, 12, this.gates.message ? 5 : 12];
-		this.calcNavTiming();
+		this.setGateTiming();
 		this.setStatus(STATUS.loaded);
 	}
 
@@ -134,16 +136,43 @@ class WorkSchedule extends WeatherDisplay {
 		this.gates = gatesDay(this.days, DateTime.now().setZone(LOCAL_TZ), this.allGates);
 	}
 
+	// one row per flight, in the order of the departures (etd, or the time of the team file: "06:40"); a gate with no known
+	// flights shows its destination
+	gateFlights() {
+		return (this.gates.day?.gates ?? [])
+			.flatMap((gate) => (gate.flights?.length ? gate.flights : [{ number: gate.dests.join('/') }]).map((f) => ({ ...f, crew: gate.with, star: gate.star })))
+			.sort((x, y) => (x.etd ?? x.time ?? '').localeCompare(y.etd ?? y.time ?? ''));
+	}
+
+	// the flights in pages of at most GATES_PER_PAGE, as even as possible (7 flights: 4 and 3); each page is one more screen
+	gatePages() {
+		const flights = this.gateFlights();
+		const count = Math.max(1, Math.ceil(flights.length / GATES_PER_PAGE));
+		const perPage = Math.ceil(flights.length / count);
+		return Array.from({ length: count }, (_, i) => flights.slice(i * perPage, (i + 1) * perPage));
+	}
+
+	setGateTiming() {
+		this.timing.delay = [12, 12, ...this.gatePages().map(() => (this.gates.message ? 5 : 12))];
+		this.calcNavTiming();
+	}
+
 	async drawCanvas() {
 		super.drawCanvas();
 		// the setting was changed since the data came
-		if (this.allGates !== (Number(settings.personalGates?.value) === OFF)) this.pickGates();
-		const page = Math.min(Math.max(this.screenIndex, 0), this.timing.totalScreens - 1);
+		if (this.allGates !== (Number(settings.personalGates?.value) === OFF)) {
+			this.pickGates();
+			this.setGateTiming();
+		}
+		const screen = Math.min(Math.max(this.screenIndex, 0), this.timing.totalScreens - 1);
+		// the screens after the second are the pages of the Gates page
+		const page = Math.min(screen, 2);
 		this.elem.querySelector('.schedule-page.week').style.display = page === 0 ? 'block' : 'none';
 		this.elem.querySelector('.schedule-page.next').style.display = page === 1 ? 'block' : 'none';
 		this.elem.querySelector('.schedule-page.assignments').style.display = page === 2 ? 'block' : 'none';
+		this.elem.querySelector('.source-footer').style.display = page === 2 ? '' : 'none';
 		this.elem.querySelector('.header .title.dual .bottom').innerHTML = ['Next 7 Days', 'Next Shift', `${this.allGates ? 'All ' : ''}Gates${this.gates.tomorrow ? ' Tomorrow' : ''}`][page];
-		if (page === 0) this.drawWeek(); else if (page === 1) this.drawNext(); else this.drawAssignments();
+		if (page === 0) this.drawWeek(); else if (page === 1) this.drawNext(); else this.drawAssignments(screen - 2);
 		this.finishDraw();
 	}
 
@@ -186,17 +215,14 @@ class WorkSchedule extends WeatherDisplay {
 	}
 
 	// the gates of the day: flight, staff, stand and ETA of the aircraft that arrives for the rotation; the supervisors under them
-	drawAssignments() {
+	drawAssignments(pageIndex = 0) {
 		const { day, tomorrow, message } = this.gates;
 		// with no gates, only a message in the middle ("Day off", "No gates assigned")
 		const box = this.elem.querySelector('.schedule-page.assignments');
 		box.classList.toggle('message', !!message);
 		box.querySelector('.assign-message').textContent = message;
-		// one row per flight, in the order of the departures (etd, or the time of the team file: "06:40"); a gate with no known
-		// flights shows its destination
-		const flights = (day?.gates ?? [])
-			.flatMap((gate) => (gate.flights?.length ? gate.flights : [{ number: gate.dests.join('/') }]).map((f) => ({ ...f, crew: gate.with, star: gate.star })))
-			.sort((x, y) => (x.etd ?? x.time ?? '').localeCompare(y.etd ?? y.time ?? ''));
+		const pages = this.gatePages();
+		const flights = pages[Math.min(pageIndex, pages.length - 1)];
 		const gates = flights.map((f) => {
 			const block = this.fillTemplate('assign-gate', {});
 			const div = (parent, text) => {
@@ -223,8 +249,11 @@ class WorkSchedule extends WeatherDisplay {
 			ramp.textContent = f.ramp ? `(R) ${niceName(f.ramp)}` : '';
 			number.append(ramp);
 			row.append(number);
-			// the staff as the Pi gives it (me included), one name under the other
-			f.crew.forEach((name) => div('.crew', niceName(name)));
+			// the staff as the Pi gives it (me included): two names, one under the other; three or more, in pairs ("A - B", "C"),
+			// to use less height
+			const staff = f.crew.map(niceName);
+			if (staff.length <= 2) staff.forEach((name) => div('.crew', name));
+			else for (let i = 0; i < staff.length; i += 2) div('.crew', staff.slice(i, i + 2).join(' - '));
 			// a star to the right of the names of a gate that the Pi marks (who makes a starred team is set on the Pi, not here)
 			if (f.star) {
 				const star = document.createElement('img');
@@ -254,13 +283,15 @@ class WorkSchedule extends WeatherDisplay {
 		// smaller rows only when the flights do not fit (more than 4, or 4 with many names)
 		list.classList.remove('compact');
 		list.classList.toggle('compact', list.scrollHeight > list.clientHeight);
-		// the supervisors of the day in order (morning, afternoon, night), one line: "SPV: Tiago / Cristiano / Angela"
-		const names = ['morning', 'afternoon', 'night'].flatMap((part) => day?.supervisors?.[part] ?? []).map(niceName);
+		// the bottom bar like the other screens: the supervisors of the day in order (morning, afternoon, night), "SPV: Tiago - Cristiano -
+		// Angela", and the page counter (1/2) when the flights take more than one page
+		const supv = ['morning', 'afternoon', 'night'].flatMap((part) => day?.supervisors?.[part] ?? []).map(niceName);
+		const text = document.createElement('span');
 		const label = document.createElement('span');
+		label.className = 'supv-label';
 		label.textContent = 'SPV: ';
-		const supv = this.elem.querySelector('.supv');
-		supv.replaceChildren(label, names.join(' / '));
-		supv.style.visibility = names.length && !message ? 'visible' : 'hidden';
+		text.append(label, supv.join(' - '));
+		fillFooter(this.elem, supv.length && !message ? [text] : [], pageIndex, message ? 1 : pages.length);
 	}
 
 	drawNext() {

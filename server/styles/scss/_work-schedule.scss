@@ -172,12 +172,17 @@
 					left: 210px;
 				}
 
+				// the stand and the ETA are centred in their columns (110 and 90 px, those of the lines)
 				.stand {
 					left: 420px;
+					width: 110px;
+					text-align: center;
 				}
 
 				.eta {
 					left: 530px;
+					width: 90px;
+					text-align: center;
 				}
 			}
 
@@ -198,6 +203,11 @@
 				font-size: 24pt;
 				line-height: 38px;
 				white-space: nowrap;
+
+				.stands,
+				.etas {
+					text-align: center;
+				}
 
 				// a lighter band on every other flight, so that the names belong to their flight at a glance
 				&:nth-child(odd) {
@@ -221,7 +231,7 @@
 
 					.ramp {
 						margin-top: 3px;
-						font-size: 12pt;
+						font-size: 11pt;
 						line-height: 14px;
 						color: #b5d0ff;
 					}
@@ -235,7 +245,7 @@
 
 					.left {
 						margin-top: 3px;
-						font-size: 12pt;
+						font-size: 11pt;
 						line-height: 14px;
 						color: #b5d0ff;
 
@@ -306,7 +316,7 @@
 
 					.ramp {
 						margin-top: 2px;
-						font-size: 10pt;
+						font-size: 9pt;
 						line-height: 12px;
 					}
 				}
@@ -316,7 +326,7 @@
 
 					.left {
 						margin-top: 2px;
-						font-size: 10pt;
+						font-size: 9pt;
 						line-height: 12px;
 					}
 				}
@@ -330,25 +340,11 @@
 					}
 				}
 			}
+		}
 
-			// the supervisors of today in order (morning, afternoon, night), one line of small letters
-			.supv {
-				position: absolute;
-				left: 20px;
-				right: 20px;
-				bottom: 3px;
-				border-top: 1px solid rgba(255, 255, 255, 0.25);
-				padding-top: 3px;
-				font-size: 12pt;
-				line-height: 18px;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-
-				span {
-					color: #b5d0ff;
-				}
-			}
+		// the supervisors in the bottom bar: at full opacity, unlike the sources of the other screens
+		.source-footer .sources {
+			opacity: 1;
 		}
 
 		// page 2: next shift

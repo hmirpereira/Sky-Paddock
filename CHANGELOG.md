@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.36.0** (2026-11-11): Gates page: more than 6 flights go on more pages (1/2, 2/2, as even as possible, 12 s each); three or more staff names in pairs (`A - B` and the third under them), two as before; stand and ETA centred in their columns; smaller ramp agent and `T-xxm` letters; the supervisors (`SPV: A - B`) and the page counter are in the bottom bar of the other screens (`footer.ejs`); the star only when the owner and a marked colleague are on the same gate (Pi)
 - **1.35.0** (2026-11-10): Gates page: under the flight number, the ramp agent of the flight (`(R) Name`, from the team roster on the Pi) instead of the departure time
 - **1.34.0** (2026-11-10): the option Personal Gates works: On, the owner's gates as before; Off, the Gates page shows the gates of everybody that day ("All Gates", from `allGates` in the data of the Pi), whether the owner is on them or not; `EXTRA_PARAMS` in the smoke test for screenshots with other settings
 - **1.33.0** (2026-11-10): Work Schedule has a third page, Gates: the flights of the day's gates by departure time with the staff, the stand, the ETA of the rotation aircraft with a countdown, a star on a marked gate and the supervisors (`gatesDay` in `utils/shifts.mjs`, unit tests); tomorrow once the last flight has left; option Personal Gates in the Settings, greyed out, no function yet
