@@ -11,6 +11,7 @@ import { getWeatherIconFromIconLink } from './icons.mjs';
 
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { escapeHtml } from './utils/html.mjs';
+import fillFooter from './utils/footer.mjs';
 import { BORDER, COAST, DISTRICTS } from './utils/radar-lines.mjs';
 
 class Radar extends WeatherDisplay {
@@ -39,7 +40,8 @@ class Radar extends WeatherDisplay {
 		super(elemId, 'Local Radar', true);
 
 		this.okToDrawCurrentConditions = false;
-		this.okToDrawCurrentDateTime = false;
+		// the clock of the header, as on the other screens; the frame time goes on the bottom line
+		this.okToDrawCurrentDateTime = true;
 
 		this.radarLayers = [];
 		this.mapFrames = [];
@@ -247,7 +249,7 @@ class Radar extends WeatherDisplay {
 	}
 
 	updateTimestamp(frame) {
-		const timeElem = this.elem.querySelector('.time');
+		const timeElem = this.elem.querySelector('.frame');
 		if (timeElem && frame.time) {
 			const frameTime = DateTime.fromSeconds(frame.time).setZone(this.weatherParameters.timeZone);
 			// the latest image is NOW; the ones before it PAST; the nowcast, when the server gives one, FORECAST
@@ -396,6 +398,9 @@ class Radar extends WeatherDisplay {
 				currentWeatherData,
 			);
 
+			// the source line and the clock: the frames change through screenIndexChange, which draws neither
+			fillFooter(this.elem, ['LibreWXR · EUMETNET OPERA']);
+			this.finishDraw();
 			this.setStatus(STATUS.loaded);
 		} catch (error) {
 			console.error('Failed to initialize radar:', error);

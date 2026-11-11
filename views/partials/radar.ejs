@@ -1,18 +1,11 @@
-<div class="header">
-	<div class="logo"><img src="images/skypaddock-logo.png" /></div>
-	<div class="title dual">
-		<div class="top">
-			Local
+<%- include('header.ejs', {title: 'Local Radar', hasTime: true, noaaLogo: false}) %>
+	<div class="main has-scroll radar">
+		<div class="container">
+			<div id="map"></div>
 		</div>
-		<div class="bottom">
-			Radar
-		</div>
-	</div>
-	<div class="right">
-		<div class="precip">
-			<div class="precip-header">PRECIP</div>
+		<div class="overlay">
 			<div class="scale">
-				<div class="text">Light</div>
+				<span class="text">LIGHT</span>
 				<div class="scale-table">
 					<div class="box box-1"></div>
 					<div class="box box-2"></div>
@@ -23,15 +16,10 @@
 					<div class="box box-7"></div>
 					<div class="box box-8"></div>
 				</div>
-				<div class="text">Heavy</div>
+				<span class="text">HEAVY</span>
 			</div>
-			<div class="time"></div>
+			<div class="frame"></div>
 		</div>
+		<%- include('footer.ejs') %>
 	</div>
-</div>
-
-<div class="main radar">
-	<div class="container">
-		 <div id="map"></div>
-	</div>
-</div>
+	<%- include('scroll.ejs') %>
