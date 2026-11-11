@@ -50,36 +50,38 @@
 					padding: 0
 				}
 
+				// the colours RainViewer draws the rain with (sampled from its tiles: the colour scheme in the address makes no
+				// difference any more), from drizzle to heavy rain
 				.box-1 {
-					background-color: rgb(49, 210, 22);
+					background-color: rgb(221, 207, 150);
 				}
 
 				.box-2 {
-					background-color: rgb(28, 138, 18);
+					background-color: rgb(136, 221, 238);
 				}
 
 				.box-3 {
-					background-color: rgb(20, 90, 15);
+					background-color: rgb(54, 186, 229);
 				}
 
 				.box-4 {
-					background-color: rgb(10, 40, 10);
+					background-color: rgb(0, 145, 202);
 				}
 
 				.box-5 {
-					background-color: rgb(196, 179, 70);
+					background-color: rgb(0, 105, 156);
 				}
 
 				.box-6 {
-					background-color: rgb(190, 72, 19);
+					background-color: rgb(255, 238, 0);
 				}
 
 				.box-7 {
-					background-color: rgb(171, 14, 14);
+					background-color: rgb(255, 159, 0);
 				}
 
 				.box-8 {
-					background-color: rgb(115, 31, 4);
+					background-color: rgb(230, 40, 0);
 				}
 			}
 

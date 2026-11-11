@@ -11,11 +11,22 @@ import { getWeatherIconFromIconLink } from './icons.mjs';
 
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { escapeHtml } from './utils/html.mjs';
+import { BORDER, COAST, DISTRICTS } from './utils/radar-lines.mjs';
 
 class Radar extends WeatherDisplay {
 	static radarSource = 'https://api.rainviewer.com/public/weather-maps.json';
 
 	static tileSource = 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}';
+
+	// borders, coast and the names of the cities, drawn over the rain so that the map can still be read under widespread rain
+	// (same host as the base map; loaded once, like it)
+	static referenceSource = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}';
+
+	// the rain is see-through enough for the map under it
+	static rainOpacity = 0.6;
+
+	// how long the latest image stays, in frames of the animation (2 seconds)
+	static holdLatestFrames = 4;
 
 	static defaultCityDistance = 40; 				// 40 km
 
@@ -33,6 +44,7 @@ class Radar extends WeatherDisplay {
 		this.mapFrames = [];
 		this.animationPosition = 0;
 		this.lastPastFramePosition = -1;
+		this.latestTime = 0;
 		this.loadingTilesCount = 0;
 		this.loadedTilesCount = 0;
 		this.radarData = {};
@@ -226,7 +238,7 @@ class Radar extends WeatherDisplay {
 
 		// Show the current frame
 		if (nextLayer && nextLayer.setOpacity) {
-			nextLayer.setOpacity(0.8);
+			nextLayer.setOpacity(Radar.rainOpacity);
 		}
 
 		// Update timestamp display
@@ -237,9 +249,11 @@ class Radar extends WeatherDisplay {
 		const timeElem = this.elem.querySelector('.time');
 		if (timeElem && frame.time) {
 			const frameTime = DateTime.fromSeconds(frame.time).setZone(this.weatherParameters.timeZone);
-			const pastOrForecast = frame.time > Date.now() / 1000 ? 'FORECAST' : 'PAST';
-			const timeString = ConversionHelpers.formatTime(frameTime);
-			timeElem.innerHTML = `${pastOrForecast}: ${timeString}`;
+			// the latest image is NOW; the ones before it PAST; the nowcast, when RainViewer gives one, FORECAST
+			let label = 'PAST';
+			if (frame.time === this.latestTime) label = 'NOW';
+			else if (frame.time > this.latestTime) label = 'FORECAST';
+			timeElem.textContent = `${label}: ${ConversionHelpers.formatTime(frameTime)}`;
 		}
 	}
 
@@ -290,9 +304,11 @@ class Radar extends WeatherDisplay {
 				this.mapFrames = this.mapFrames.concat(api.radar.nowcast);
 			}
 			this.lastPastFramePosition = api.radar.past.length - 1;
+			this.latestTime = api.radar.past[this.lastPastFramePosition].time;
 		}
 
-		// Update timing based on actual frame count
+		// one frame of the animation per image, and the latest image held for a while each time it comes round
+		this.timing.delay = this.mapFrames.map((frame) => (frame.time === this.latestTime ? Radar.holdLatestFrames : 1));
 		this.timing.totalScreens = this.mapFrames.length;
 		this.calcNavTiming();
 
@@ -337,6 +353,25 @@ class Radar extends WeatherDisplay {
 				window.L.tileLayer(Radar.tileSource, {
 					attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
 				}).addTo(window._leafletMap);
+				// a pane of its own above the tiles (the rain layers are in the tile pane) and under the marker
+				window._leafletMap.createPane('reference').style.zIndex = 250;
+				window.L.tileLayer(Radar.referenceSource, { pane: 'reference' }).addTo(window._leafletMap);
+				// the coast, the border and the district lines of Portugal, which the map has no line for, over the rain: drawn once, they never move
+				const renderer = window.L.svg({ pane: 'reference' });
+				const draw = (lines, style) => lines.forEach((line) => window.L.polyline(line, {
+					renderer,
+					interactive: false,
+					lineJoin: 'round',
+					...style,
+				}).addTo(window._leafletMap));
+				draw(COAST, { color: '#000', weight: 4, opacity: 0.45 });
+				draw(COAST, { color: '#fff', weight: 1.6, opacity: 0.95 });
+				draw(BORDER, { color: '#000', weight: 4, opacity: 0.45 });
+				draw(BORDER, { color: '#fff', weight: 1.6, opacity: 0.95 });
+				draw(DISTRICTS, { color: '#000', weight: 2.6, opacity: 0.3 });
+				draw(DISTRICTS, {
+					color: '#fff', weight: 1, opacity: 0.85, dashArray: '5 3',
+				});
 			} else {
 				window._leafletMap.setView([weatherParameters.latitude, weatherParameters.longitude], leafletDefaultZoom);
 			}

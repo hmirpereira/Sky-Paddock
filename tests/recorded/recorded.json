@@ -1,6 +1,6 @@
 {
-	"time": 1792857487913,
-	"recorded": "2026-10-24T15:58:07.913Z",
+	"time": 1794390312333,
+	"recorded": "2026-11-11T09:45:12.333Z",
 	"statuses": {
 		"hazards": "loaded",
 		"current-weather": "loaded",
@@ -8,16 +8,15 @@
 		"hourly-graph": "loaded",
 		"travel": "loaded",
 		"regional-forecast": "loaded",
-		"status": "loaded",
 		"extended-forecast": "loaded",
 		"almanac": "loaded",
 		"radar": "loaded",
 		"pollen": "loaded",
+		"work-schedule": "loaded",
 		"metar": "loaded",
 		"departures": "loaded",
 		"cancellations": "loaded",
 		"overhead": "loaded",
-		"work-schedule": "loaded",
 		"news": "loaded",
 		"plex": "loaded",
 		"plex-now": "loaded",
@@ -29,6 +28,7 @@
 		"f1-next-race": "loaded",
 		"f1-jet": "loaded",
 		"gt-race": "loaded",
-		"gt-next-race": "loaded"
+		"gt-next-race": "loaded",
+		"status": "loaded"
 	}
 }
