@@ -232,8 +232,8 @@
 				}
 
 				// 10, 25 and 50 km (radius 140 px = 50 km)
-				.r1 { left: 112px; top: 112px; width: 56px; height: 56px; }
-				.r2 { left: 70px; top: 70px; width: 140px; height: 140px; }
+				.r1 { left: 84px; top: 84px; width: 112px; height: 112px; }
+				.r2 { left: 112px; top: 112px; width: 56px; height: 56px; }
 				.r3 { left: 0; top: 0; width: 280px; height: 280px; border-color: rgba(169, 196, 239, 0.8); }
 
 				.ring-label {
@@ -242,8 +242,8 @@
 					color: av.$av-light-blue;
 				}
 
-				.l1 { left: 171px; top: 128px; }
-				.l2 { left: 212px; top: 128px; }
+				.l1 { left: 199px; top: 128px; }
+				.l2 { left: 262px; top: 128px; }
 
 				.home {
 					position: absolute;
