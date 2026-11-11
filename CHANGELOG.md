@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.39.4** (2026-11-11): Overhead radar back to 50 km; it draws the runways, the RWY 17 approach track ending on the threshold, and the holding patterns (schematic racetracks, from the airport file of the Pi); no fix labels
 - **1.39.3** (2026-11-11): Overhead radar zoomed to 25 km (rings at 5, 10 and 25 km; the list and the title follow)
 - **1.39.2** (2026-11-11): Overhead radar draws the approach track of runway 17 (solid) and its missed approach (dashed) with the fix names, from the airport file of the Pi (not in the code)
 - **1.39.1** (2026-11-11): Overhead: the map under the radar is CARTO Dark Matter, served by the Pi (which keeps the key and a disk cache), at 40% opacity; the credit names CARTO and OpenStreetMap. Local Radar back to RainViewer (zoom 7, the most its free service gives), without the cross-fade between frames; the rain at 80% opacity

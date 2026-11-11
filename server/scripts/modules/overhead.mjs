@@ -1,7 +1,7 @@
 // aircraft around the chosen location, served by the skypaddock-hub service on the Pi
 // (the owner's ADS-B receiver first, completed by the adsb.fi network, with adsb.lol as backup; routes from adsbdb.com).
 // Page 1: the closest aircraft in the air (flight, airline, route, altitude, speed, type).
-// Page 2: radar of everything within 25 km (RANGE_KM), and a list sorted by distance.
+// Page 2: radar of everything within 50 km (RANGE_KM), and a list sorted by distance.
 // Page 3 (only with aircraft on the ground): airport plan with the aircraft on it, and in grey the
 // group's aircraft still on their stand after switching the transponder off (old flight number and stand).
 // Metric units.
@@ -16,12 +16,35 @@ import { KM_PER_NM } from './utils/units.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/overhead.json';
 // everything on screen is metric; ADS-B gives feet and knots
-const RANGE_KM = 25;
+const RANGE_KM = 50;
 const M_PER_FT = 0.3048;
 const RADAR_RADIUS = 140; // px, keep in sync with _overhead.scss
 // the radar background: map tiles (CARTO Dark Matter, from the Pi, which keeps the key and a cache) around home, drawn faint behind the rings
 const MAP_ZOOM = 9;
 const MAP_URL = (x, y) => `http://127.0.0.1:8095/tiles/dark_all/${MAP_ZOOM}/${x}/${y}.png`;
+// a holding pattern as a racetrack: the fix at the end of the inbound leg, right-hand turns, the leg length from the time
+// at the speed (1 minute at 230 kt is about 7.1 km), the turns of about 3 km radius (25 degrees of bank). Schematic: the
+// AIP chart is the reference, this is only to show where the hold is.
+const holdingPattern = ({
+	lat, lon, inboundTrue, minutes = 1, speedKt = 230,
+}) => {
+	const legKm = (speedKt / 60) * minutes * 1.852;
+	const turnKm = 3.0;
+	const theta = toRad(inboundTrue);
+	const along = [Math.sin(theta), Math.cos(theta)]; // east, north of the inbound course
+	const right = [Math.cos(theta), -Math.sin(theta)];
+	const arc = (cx, cy, from, to, n = 12) => Array.from({ length: n + 1 }, (_, i) => {
+		const a = from + ((to - from) * i) / n;
+		return [cx + turnKm * Math.cos(a), cy + turnKm * Math.sin(a)];
+	});
+	// local x across the track (to the right), y along it; the fix at (0, 0)
+	const local = [[0, -legKm], [0, 0], ...arc(turnKm, 0, Math.PI, 0), [2 * turnKm, -legKm], ...arc(turnKm, -legKm, 0, -Math.PI), [0, -legKm]];
+	return local.map(([x, y]) => {
+		const east = x * right[0] + y * along[0];
+		const north = x * right[1] + y * along[1];
+		return [lat + north / 111.32, lon + east / (111.32 * Math.cos(toRad(lat)))];
+	});
+};
 const GROUP_ICONS = ['LH', 'LX', 'OS', '4Y', 'SN'];
 // airline logos drawn above the flight number on the radar, by ICAO airline code (the first
 // three letters of the callsign): add the code here and the file as images/overhead-logos/<CODE>.png
@@ -377,34 +400,24 @@ class Overhead extends WeatherDisplay {
 			const r = ((d * KM_PER_NM) / RANGE_KM) * RADAR_RADIUS;
 			return { x: RADAR_RADIUS + r * Math.sin(b), y: RADAR_RADIUS - r * Math.cos(b) };
 		};
-		// the approach tracks of the runways, from the airport file of the Pi (not in this code): solid for the approach,
-		// dashed for the missed approach, each fix named
-		const approaches = Object.values(this.airport?.approaches ?? {});
-		if (approaches.length) {
-			const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-			svg.setAttribute('class', 'approach');
-			svg.setAttribute('viewBox', '0 0 280 280');
-			const at = (fix) => place(fix[1], fix[2]);
-			const line = (fixes, cls) => {
-				const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-				pl.setAttribute('class', cls);
-				pl.setAttribute('points', fixes.map((f) => `${at(f).x},${at(f).y}`).join(' '));
-				svg.append(pl);
-			};
-			approaches.forEach(({ track, missed }) => {
-				line(track, 'track');
-				line(missed, 'missed');
-				track.forEach((f) => {
-					const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-					text.setAttribute('class', 'fix');
-					text.setAttribute('x', at(f).x + 4);
-					text.setAttribute('y', at(f).y - 4);
-					[text.textContent] = f;
-					svg.append(text);
-				});
-			});
-			scope.append(svg);
-		}
+		// runways, approach tracks and holding patterns (from the airport file of the Pi, not in this code): the runways in
+		// grey, the approach solid, the missed approach dashed, the holds as racetracks (right turns, 1 minute, 230 kt)
+		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		svg.setAttribute('class', 'approach');
+		svg.setAttribute('viewBox', '0 0 280 280');
+		const plot = (points, cls) => {
+			const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+			pl.setAttribute('class', cls);
+			pl.setAttribute('points', points.map(([lat, lon]) => `${place(lat, lon).x},${place(lat, lon).y}`).join(' '));
+			svg.append(pl);
+		};
+		(this.airport?.map?.runways ?? []).forEach((line) => plot(line, 'runway'));
+		Object.values(this.airport?.approaches ?? {}).forEach(({ track = [], missed = [], holds = [] }) => {
+			plot(track.map(([, lat, lon]) => [lat, lon]), 'track');
+			plot(missed.map(([, lat, lon]) => [lat, lon]), 'missed');
+			holds.forEach((hold) => plot(holdingPattern(hold), 'hold'));
+		});
+		if (svg.childElementCount) scope.append(svg);
 		// labels must not overlap each other, the ring numbers, the home dot or the airport name:
 		// the closest aircraft first, then by distance; a label goes to the right of its aircraft,
 		// or to the left, or is left out (the arrow is always drawn). Boxes are [x, y, width, height].
