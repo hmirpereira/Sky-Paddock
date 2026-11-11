@@ -14,7 +14,8 @@ import { escapeHtml } from './utils/html.mjs';
 import { BORDER, COAST, DISTRICTS } from './utils/radar-lines.mjs';
 
 class Radar extends WeatherDisplay {
-	static radarSource = 'https://api.rainviewer.com/public/weather-maps.json';
+	// LibreWXR (open source; its public server is CC BY 4.0): the same API as RainViewer, with a 60-minute nowcast and zoom up to 12
+	static radarSource = 'https://api.librewxr.net/public/weather-maps.json';
 
 	static tileSource = 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}';
 
@@ -53,7 +54,7 @@ class Radar extends WeatherDisplay {
 		this.radarOptions = {
 			kind: 'radar',
 			tileSize: 256,
-			colorScheme: 4,
+			colorScheme: 2, // Universal Blue
 			smoothData: 1,
 			snowColors: 1,
 			extension: 'webp',
@@ -249,7 +250,7 @@ class Radar extends WeatherDisplay {
 		const timeElem = this.elem.querySelector('.time');
 		if (timeElem && frame.time) {
 			const frameTime = DateTime.fromSeconds(frame.time).setZone(this.weatherParameters.timeZone);
-			// the latest image is NOW; the ones before it PAST; the nowcast, when RainViewer gives one, FORECAST
+			// the latest image is NOW; the ones before it PAST; the nowcast, when the server gives one, FORECAST
 			let label = 'PAST';
 			if (frame.time === this.latestTime) label = 'NOW';
 			else if (frame.time > this.latestTime) label = 'FORECAST';
@@ -324,7 +325,7 @@ class Radar extends WeatherDisplay {
 
 		const weatherParameters = _weatherParameters ?? this.weatherParameters;
 
-		const leafletDefaultZoom = 7;
+		const leafletDefaultZoom = 8;
 		const leafletInitializationOptions = {
 			zoomControl: false,
 			dragging: false,

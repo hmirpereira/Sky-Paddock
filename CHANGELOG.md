@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.38.0** (2026-11-11): Local Radar uses the public server of LibreWXR (open source, the RainViewer API, CC BY 4.0; EUMETNET OPERA radar, 12 past frames and a 60-minute nowcast) instead of RainViewer (whose free tier no longer has the nowcast and is for personal use); zoom 8; Universal Blue colours; credits on the About panel; no lightning (the GOES data does not reach Portugal)
 - **1.37.0** (2026-11-11): Local Radar: the city names (Esri `World_Light_Gray_Reference`) and the coast of Iberia, the whole border of Portugal and the lines of its 18 districts (Natural Earth, `utils/radar-lines.mjs`) drawn over the rain so the map can be read under widespread rain; the rain at 60% instead of 80%; the legend has the colours RainViewer really draws with (the colour scheme in the tile address no longer changes anything); the latest image is held 2 seconds and labelled `NOW` (the earlier ones `PAST`, the nowcast `FORECAST`); the radar and Esri recording of the smoke test renewed
 - **1.36.6** (2026-11-11): Gates page: the ramp agent under the flight number is shown without the `(R)`
 - **1.36.5** (2026-11-11): F1 Telemetry track map: the sector labels (S2, S3) never fall outside the map any more (the other side of the track, or pushed inside), and S1 is labelled beside the start and finish line (`utils/map-label.mjs`, unit tests)

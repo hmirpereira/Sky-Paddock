@@ -20,7 +20,7 @@ export const CONNECT_HOSTS = [
 	'https://api.open-meteo.com',
 	'https://air-quality-api.open-meteo.com',
 	'https://geocoding-api.open-meteo.com',
-	'https://api.rainviewer.com',
+	'https://api.librewxr.net',
 ];
 
 // hosts used only for pictures (map tiles): img-src allows https: anyway, they are listed so the unit test knows them

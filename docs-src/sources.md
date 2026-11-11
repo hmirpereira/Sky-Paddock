@@ -11,7 +11,7 @@ Every outside source the screens or the Pi service ask, how often, what limits i
 | [Open-Meteo](https://open-meteo.com) (also CAMS for air and pollen) | Weather screens, Air & Pollen, forecasts at F1 and GT circuits | Forecasts in one request per screen where the README says so | |
 | [Esri ArcGIS Online](https://server.arcgisonline.com) | Local Radar | The base map and the names and borders over it, one set of tiles per start | The rain is drawn on the background alone |
 | [IPMA](https://api.ipma.pt) | Hazards | Warnings for one district | Hazards is skipped when there are none |
-| [RainViewer](https://www.rainviewer.com) | Local Radar | Precipitation radar | |
+| [LibreWXR](https://github.com/JoshuaKimsey/LibreWXR) public server, with [EUMETNET OPERA](https://www.eumetnet.eu/) radar data | Local Radar | Precipitation radar (CC BY 4.0: credited on the About panel) | |
 | [metar.vatsim.net](https://metar.vatsim.net) | Airport METAR | One airport | |
 | [Jolpica F1](https://github.com/jolpica/jolpica-f1) | F1 screens | Standings and results; Drivers and Next Race once a day, Friday to Monday after 22:00 Lisbon time, then kept in `localStorage` | Falls back to OpenF1 for sessions Jolpica has not published |
 | [OpenF1](https://openf1.org) | F1 Telemetry, F1 Last Race and Grid when Jolpica is late | One queue for all F1 screens, one request at a time and spaced. Telemetry looks for a newer session at most once an hour, 30 minutes after a session ends | Refuses free requests while a session is live and answers 429 when requests come too close together |
