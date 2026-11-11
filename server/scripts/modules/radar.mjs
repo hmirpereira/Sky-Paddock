@@ -15,7 +15,7 @@ import fillFooter from './utils/footer.mjs';
 import { BORDER, COAST, DISTRICTS } from './utils/radar-lines.mjs';
 
 class Radar extends WeatherDisplay {
-	// LibreWXR (open source; its public server is CC BY 4.0): the same API as RainViewer, with a 60-minute nowcast and zoom up to 12
+	// LibreWXR (open source; its public server is CC BY 4.0): the same API as RainViewer, with frames every 10 minutes
 	static radarSource = 'https://api.librewxr.net/public/weather-maps.json';
 
 	static tileSource = 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}';
@@ -252,10 +252,8 @@ class Radar extends WeatherDisplay {
 		const timeElem = this.elem.querySelector('.frame');
 		if (timeElem && frame.time) {
 			const frameTime = DateTime.fromSeconds(frame.time).setZone(this.weatherParameters.timeZone);
-			// the latest image is NOW; the ones before it PAST; the nowcast, when the server gives one, FORECAST
-			let label = 'PAST';
-			if (frame.time === this.latestTime) label = 'NOW';
-			else if (frame.time > this.latestTime) label = 'FORECAST';
+			// the latest image is NOW; the ones before it PAST (no forecast frames are shown)
+			const label = frame.time === this.latestTime ? 'NOW' : 'PAST';
 			timeElem.textContent = `${label}: ${ConversionHelpers.formatTime(frameTime)}`;
 		}
 	}
@@ -303,9 +301,6 @@ class Radar extends WeatherDisplay {
 
 		if (api.radar && api.radar.past) {
 			this.mapFrames = Array(Radar.radarIterationCount).fill(api.radar.past).flat();
-			if (api.radar.nowcast) {
-				this.mapFrames = this.mapFrames.concat(api.radar.nowcast);
-			}
 			this.lastPastFramePosition = api.radar.past.length - 1;
 			this.latestTime = api.radar.past[this.lastPastFramePosition].time;
 		}

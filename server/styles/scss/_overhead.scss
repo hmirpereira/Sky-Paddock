@@ -187,15 +187,14 @@
 					}
 				}
 
+				// the credit in the bottom right corner of the box, as the one of the ground plan
 				.map-credit {
 					position: absolute;
-					left: 0;
-					right: 0;
-					bottom: -14px;
-					text-align: center;
+					right: 8px;
+					bottom: 4px;
 					font-family: 'Star4000 Small';
-					font-size: 9px;
-					color: rgba(169, 196, 239, 0.6);
+					font-size: 9pt;
+					color: av.$av-light-blue;
 				}
 
 				.ring {
