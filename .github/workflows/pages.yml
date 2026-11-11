@@ -19,7 +19,8 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # pinned: the 'ubuntu-latest' image moved on and the Chromium dependencies of the test stopped installing (the step failed in runs 130 to 132)
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pages: read
