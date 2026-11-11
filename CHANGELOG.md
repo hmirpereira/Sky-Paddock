@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.39.2** (2026-11-11): Overhead radar draws the approach track of runway 17 (solid) and its missed approach (dashed) with the fix names, from the airport file of the Pi (not in the code)
 - **1.39.1** (2026-11-11): Overhead: the map under the radar is CARTO Dark Matter, served by the Pi (which keeps the key and a disk cache), at 40% opacity; the credit names CARTO and OpenStreetMap. Local Radar back to RainViewer (zoom 7, the most its free service gives), without the cross-fade between frames; the rain at 80% opacity
 - **1.39.0** (2026-11-11): Local Radar: no forecast frames (only the last 12 images, a frame every 10 minutes), the frames cross-fade (CSS transition of the layer opacity); Overhead: the OpenStreetMap credit in the bottom right corner of the radar, in the style of the ground plan
 - **1.38.1** (2026-11-11): Local Radar in the layout of the other screens: the map fills the area between the header and the bottom line, with the header, the source bar (small, bottom right) and the countdown line over it; the colour scale in its top right corner with the time of the frame under it (no title bar, no box); the title on one line; Universal Blue

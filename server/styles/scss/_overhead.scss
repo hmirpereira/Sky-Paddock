@@ -177,6 +177,33 @@
 			}
 
 			.scope {
+				// approach tracks of the runways (in the targets layer, so they are redrawn with it)
+				.approach {
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 280px;
+					height: 280px;
+					pointer-events: none;
+
+					.track,
+					.missed {
+						fill: none;
+						stroke: av.$av-light-blue;
+						stroke-width: 1.5;
+					}
+
+					.missed {
+						stroke-dasharray: 4 3;
+					}
+
+					.fix {
+						fill: av.$av-light-blue;
+						font-family: 'Star4000 Small';
+						font-size: 8px;
+					}
+				}
+
 				position: absolute;
 				left: 22px;
 				top: 15px;

@@ -377,6 +377,34 @@ class Overhead extends WeatherDisplay {
 			const r = ((d * KM_PER_NM) / RANGE_KM) * RADAR_RADIUS;
 			return { x: RADAR_RADIUS + r * Math.sin(b), y: RADAR_RADIUS - r * Math.cos(b) };
 		};
+		// the approach tracks of the runways, from the airport file of the Pi (not in this code): solid for the approach,
+		// dashed for the missed approach, each fix named
+		const approaches = Object.values(this.airport?.approaches ?? {});
+		if (approaches.length) {
+			const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			svg.setAttribute('class', 'approach');
+			svg.setAttribute('viewBox', '0 0 280 280');
+			const at = (fix) => place(fix[1], fix[2]);
+			const line = (fixes, cls) => {
+				const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+				pl.setAttribute('class', cls);
+				pl.setAttribute('points', fixes.map((f) => `${at(f).x},${at(f).y}`).join(' '));
+				svg.append(pl);
+			};
+			approaches.forEach(({ track, missed }) => {
+				line(track, 'track');
+				line(missed, 'missed');
+				track.forEach((f) => {
+					const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+					text.setAttribute('class', 'fix');
+					text.setAttribute('x', at(f).x + 4);
+					text.setAttribute('y', at(f).y - 4);
+					[text.textContent] = f;
+					svg.append(text);
+				});
+			});
+			scope.append(svg);
+		}
 		// labels must not overlap each other, the ring numbers, the home dot or the airport name:
 		// the closest aircraft first, then by distance; a label goes to the right of its aircraft,
 		// or to the left, or is left out (the arrow is always drawn). Boxes are [x, y, width, height].
