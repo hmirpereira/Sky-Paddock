@@ -10,6 +10,7 @@ import { json } from './utils/fetch.mjs';
 import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
+import fillFooter from './utils/footer.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
@@ -82,6 +83,8 @@ class RegionalForecast extends WeatherDisplay {
 		this.elem.querySelector('.header .title.dual .top').textContent = 'National Forecast';
 		this.elem.querySelector('.header .title.dual .bottom').textContent = PAGE_TITLES[id];
 		this.drawMap(id, view);
+		// the map credit in the bottom right corner, as the sources of the Local Radar
+		fillFooter(this.elem, ['Esri', 'Natural Earth']);
 
 		const cities = citiesOf(id).filter((city) => this.forecast[city.key]);
 		// each label starts on its city and moves to a free place when another label is there (placeLabels)

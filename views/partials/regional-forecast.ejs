@@ -1,7 +1,7 @@
 <%- include('header.ejs', {titleDual:{ top: 'National Forecast' , bottom: 'North' }, hasTime: true }) %>
 	<div class="main has-scroll regional-forecast">
 		<div class="map"></div>
-		<div class="map-credit">Map: Esri, Natural Earth</div>
+		<%- include('footer.ejs') %>
 		<div class="location-container">
 			<div class="location template">
 				<div class="city"></div>

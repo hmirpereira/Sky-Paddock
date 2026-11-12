@@ -9,6 +9,7 @@ import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { plainText } from './utils/text.mjs';
+import fitSummary from './utils/summary.mjs';
 import fillFooter from './utils/footer.mjs';
 
 const HUB = 'http://127.0.0.1:8095';
@@ -102,14 +103,8 @@ class PlexNow extends WeatherDisplay {
 		this.elem.querySelector('.elapsed').textContent = total ? `${clock(done)} / ${clock(total)}` : '';
 		this.elem.querySelector('.ends').textContent = total && !paused ? `Ends ${DateTime.now().plus({ seconds: total - done }).toFormat('HH:mm')}` : '';
 
-		// the synopsis is cut, at a word, where the box ends
-		const summary = this.elem.querySelector('.summary');
-		let words = plainText(session.summary ?? '').split(' ');
-		summary.textContent = words.join(' ');
-		while (words.length > 3 && summary.scrollHeight > summary.clientHeight) {
-			words = words.slice(0, -Math.max(1, Math.round(words.length * 0.05)));
-			summary.textContent = `${words.join(' ').replace(/[.,;:!?-]+$/, '')}...`;
-		}
+		// the synopsis: smaller letters if needed, then cut at a word where the box ends
+		fitSummary(this.elem.querySelector('.summary'), plainText(session.summary ?? ''));
 
 		fillFooter(this.elem, [], pageIndex, this.sessions.length);
 		this.finishDraw();

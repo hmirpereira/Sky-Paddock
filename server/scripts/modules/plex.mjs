@@ -6,6 +6,7 @@ import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { plainText } from './utils/text.mjs';
+import fitSummary from './utils/summary.mjs';
 import fillFooter from './utils/footer.mjs';
 
 const HUB = 'http://127.0.0.1:8095';
@@ -72,14 +73,8 @@ class Plex extends WeatherDisplay {
 			score.querySelector('.value').textContent = `${movie[value]}%`;
 		});
 
-		// the synopsis is cut, at a word, where the box ends
-		const summary = this.elem.querySelector('.summary');
-		let words = plainText(movie.summary ?? '').split(' ');
-		summary.textContent = words.join(' ');
-		while (words.length > 3 && summary.scrollHeight > summary.clientHeight) {
-			words = words.slice(0, -Math.max(1, Math.round(words.length * 0.05)));
-			summary.textContent = `${words.join(' ').replace(/[.,;:!?-]+$/, '')}...`;
-		}
+		// the synopsis: smaller letters if needed, then cut at a word where the box ends
+		fitSummary(this.elem.querySelector('.summary'), plainText(movie.summary ?? ''));
 
 		// only the page counter: the source (Plex) goes without saying
 		fillFooter(this.elem, [], pageIndex, this.pages.length);

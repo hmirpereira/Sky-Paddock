@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.41.3** (2026-11-12): Regional Forecast: the map credit in the bottom right corner is the sources bar of the Local Radar (small letters, `Esri`, `Natural Earth`); Plex: the synopsis gets smaller letters (down to 11 pt) before it is cut at a word (`utils/summary.mjs`)
 - **1.41.2** (2026-11-12): Work Schedule: the Next Shift page stays 9 seconds (was 7)$
 - **1.41.1** (2026-11-12): Gates page title: "Gates Today", "Gates Tomorrow", or the date from two days on ("Gates Fri 20/11"), from `gatesLabel` in `utils/shifts.mjs` (unit test)
 - **1.41.0** (2026-11-12): Work Schedule, Personal Gates On: the Gates page shows the next day with the owner's gates (today while its flights have not all left), the date in the title ("Gates Fri 13 Nov"); Regional Forecast: the Lisbon map at zoom 8

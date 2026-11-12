@@ -40,14 +40,15 @@
 		}
 	}
 
-	.map-credit {
-		position: absolute;
-		right: 8px;
-		bottom: 4px;
-		z-index: 5;
-		font-family: 'Star4000 Small';
+	// the sources in the bottom right corner of the map, in small letters (as on the Local Radar)
+	.source-footer {
+		z-index: 30;
 		font-size: 9pt;
-		color: c.$title-color;
+		padding: 0 12px;
+
+		.sources {
+			justify-content: flex-end;
+		}
 	}
 
 	.city-dot {
