@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DateTime } from '../../server/scripts/vendor/auto/luxon.mjs';
 import {
-	keepDays, stillShown, shiftTimes, gatesDay, flightsToCome,
+	keepDays, stillShown, shiftTimes, gatesDay, flightsToCome, gatesLabel,
 } from '../../server/scripts/modules/utils/shifts.mjs';
 
 const at = (iso) => DateTime.fromISO(iso, { zone: 'Europe/Lisbon' });
@@ -81,4 +81,9 @@ test('a flight leaves the Gates list once its departure has passed', () => {
 	assert.equal(numbers('12:05'), 'BCD');
 	assert.equal(numbers('12:15'), 'CD');
 	assert.equal(numbers('17:00'), 'C');
+});
+
+test('the title of the Gates page: Today, Tomorrow, then the date from two days on', () => {
+	const now = at('2026-11-12T09:00');
+	assert.deepEqual(['2026-11-12', '2026-11-13', '2026-11-14', '2026-11-20'].map((date) => gatesLabel(date, now)), ['Today', 'Tomorrow', 'Sat 14/11', 'Fri 20/11']);
 });

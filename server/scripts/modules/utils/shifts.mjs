@@ -50,6 +50,14 @@ const flightsToCome = (flights, date, now) => flights.filter((f) => {
 	return !time || DateTime.fromISO(`${date}T${time}`, { zone: LOCAL_TZ }) >= now;
 });
 
+// the day of the Gates page for its title: "Today", "Tomorrow", or the date from two days on ("Fri 20/11")
+const gatesLabel = (date, now) => {
+	const ahead = Math.round(DateTime.fromISO(date, { zone: LOCAL_TZ }).startOf('day').diff(now.startOf('day'), 'days').days);
+	if (ahead === 0) return 'Today';
+	if (ahead === 1) return 'Tomorrow';
+	return DateTime.fromISO(date, { zone: LOCAL_TZ }).toFormat('ccc dd/LL');
+};
+
 export {
-	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome,
+	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel,
 };

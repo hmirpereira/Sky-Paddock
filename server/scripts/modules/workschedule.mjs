@@ -18,7 +18,7 @@ import { DateTime } from '../vendor/auto/luxon.mjs';
 import settings from './settings.mjs';
 import { ON, OFF } from './utils/dark-mode.mjs';
 import {
-	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome,
+	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel,
 } from './utils/shifts.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/schedule.json';
@@ -174,8 +174,8 @@ class WorkSchedule extends WeatherDisplay {
 		this.elem.querySelector('.schedule-page.next').style.display = page === 0 ? 'block' : 'none';
 		this.elem.querySelector('.schedule-page.assignments').style.display = page === 2 ? 'block' : 'none';
 		this.elem.querySelector('.source-footer').style.display = page === 2 ? '' : 'none';
-		// the date of the Gates page in the title ("Gates Fri 13 Nov"), so the day is always known
-		const gatesDate = this.gates.day ? ` ${DateTime.fromISO(this.gates.day.date, { zone: LOCAL_TZ }).toFormat('ccc d LLL')}` : '';
+		// the day of the Gates page in the title: "Gates Today", "Gates Tomorrow" or the date from two days on ("Gates Fri 20/11")
+		const gatesDate = this.gates.day ? ` ${gatesLabel(this.gates.day.date, DateTime.now().setZone(LOCAL_TZ))}` : '';
 		this.elem.querySelector('.header .title.dual .bottom').innerHTML = ['Next Shift', 'Next 7 Days', `${this.allGates ? 'All ' : ''}Gates${gatesDate}`][page];
 		if (page === 0) this.drawNext(); else if (page === 1) this.drawWeek(); else this.drawAssignments(screen - 2);
 		this.finishDraw();
