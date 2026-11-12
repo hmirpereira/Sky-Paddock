@@ -5,6 +5,16 @@ const REGIONAL_PAGES = [
 		id: 'north',
 		cities: [
 			{
+				key: 'mirandela',
+				name: 'Mirandela',
+				lat: 41.4833,
+				lon: -7.1833,
+				x: 0,
+				y: 0,
+				w: 76,
+				small: true,
+			},
+			{
 				key: 'viana',
 				name: 'Viana',
 				lat: 41.6932,
@@ -163,6 +173,26 @@ const REGIONAL_PAGES = [
 	{
 		id: 'south',
 		cities: [
+			{
+				key: 'portimao',
+				name: 'Portimao',
+				lat: 37.1364,
+				lon: -8.5379,
+				x: 0,
+				y: 0,
+				w: 76,
+				small: true,
+			},
+			{
+				key: 'sines',
+				name: 'Sines',
+				lat: 37.9559,
+				lon: -8.8707,
+				x: 0,
+				y: 0,
+				w: 76,
+				small: true,
+			},
 			{
 				key: 'beja',
 				name: 'Beja',

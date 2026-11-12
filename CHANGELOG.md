@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.41.8** (2026-11-12): Regional Forecast: Mirandela (North), Portimao and Sines (South) with smaller labels; the Viana label above its point
 - **1.41.7** (2026-11-12): Regional Forecast: Lisbon map has Evora and Setubal, the Lisboa label sits higher; South map at zoom 8 on Beja and Faro (Setubal is on the Lisbon map)
 - **1.41.6** (2026-11-12): Regional Forecast data: the unused map image fields removed (the maps are drawn by the page)
 - **1.41.5** (2026-11-12): Verstappen Jet: the line with the origin, the altitude and the speed (in flight) is 20 pt, so the speed and its km/h fit in the box

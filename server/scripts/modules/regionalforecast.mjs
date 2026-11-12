@@ -30,7 +30,7 @@ const PAGE_TITLES = {
 
 // the cities of a page: the island cities of the Islands page are split between Madeira and the Azores
 // cities whose label sits higher than usual, so the label of a city beside them keeps to its own district (Lisboa over Setubal)
-const ABOVE_POINT = new Set(['lisboa']);
+const ABOVE_POINT = new Set(['lisboa', 'viana']);
 
 const citiesOf = (id) => {
 	// the Azores page shows Ponta Delgada only (the map is on its island); the other island cities stay in the request
@@ -110,6 +110,7 @@ class RegionalForecast extends WeatherDisplay {
 			block.style.left = `${spots[i][0]}px`;
 			block.style.top = `${spots[i][1]}px`;
 			block.style.width = `${city.w}px`;
+			block.classList.toggle('small', !!city.small);
 			return block;
 		});
 
