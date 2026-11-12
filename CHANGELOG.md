@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.41.4** (2026-11-12): Regional Forecast: Setubal on the South map (not Lisbon); the Azores page shows Ponta Delgada only, on a zoomed map of its island
 - **1.41.3** (2026-11-12): Regional Forecast: the map credit in the bottom right corner is the sources bar of the Local Radar (small letters, `Esri`, `Natural Earth`); Plex: the synopsis gets smaller letters (down to 11 pt) before it is cut at a word (`utils/summary.mjs`)
 - **1.41.2** (2026-11-12): Work Schedule: the Next Shift page stays 9 seconds (was 7)$
 - **1.41.1** (2026-11-12): Gates page title: "Gates Today", "Gates Tomorrow", or the date from two days on ("Gates Fri 20/11"), from `gatesLabel` in `utils/shifts.mjs` (unit test)

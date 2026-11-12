@@ -12,7 +12,7 @@ export const VIEWS = {
 	lisbon: { z: 8, lat: 38.91055, lon: -8.2839 },
 	south: { z: 7, lat: 37.7954, lon: -7.8968 },
 	madeira: { z: 9, lat: 32.75, lon: -16.95 },
-	azores: { z: 7, lat: 38.45, lon: -28.0 },
+	azores: { z: 9, lat: 37.75, lon: -25.55 },
 };
 
 // the Madeira cities are south of the Azores group; every island city is one of the two

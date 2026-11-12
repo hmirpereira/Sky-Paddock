@@ -30,7 +30,9 @@ const PAGE_TITLES = {
 
 // the cities of a page: the island cities of the Islands page are split between Madeira and the Azores
 const citiesOf = (id) => {
-	if (id === 'madeira' || id === 'azores') {
+	// the Azores page shows Ponta Delgada only (the map is on its island); the other island cities stay in the request
+	if (id === 'azores') return REGIONAL_PAGES.find((page) => page.id === 'islands').cities.filter((city) => city.key === 'pontadelgada');
+	if (id === 'madeira') {
 		return REGIONAL_PAGES.find((page) => page.id === 'islands').cities.filter((city) => islandGroup(city) === id);
 	}
 	return REGIONAL_PAGES.find((page) => page.id === id).cities;

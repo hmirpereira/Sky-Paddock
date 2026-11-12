@@ -126,15 +126,6 @@ const REGIONAL_PAGES = [
 				w: 96,
 			},
 			{
-				key: 'setubal',
-				name: 'Setubal',
-				lat: 38.5244,
-				lon: -8.8882,
-				x: 204,
-				y: 228,
-				w: 96,
-			},
-			{
 				key: 'santarem',
 				name: 'Santarem',
 				lat: 39.2362,
@@ -158,6 +149,15 @@ const REGIONAL_PAGES = [
 		id: 'south',
 		map: 'images/regional-pt-south.png',
 		cities: [
+			{
+				key: 'setubal',
+				name: 'Setubal',
+				lat: 38.5244,
+				lon: -8.8882,
+				x: 204,
+				y: 228,
+				w: 96,
+			},
 			{
 				key: 'evora',
 				name: 'Evora',
