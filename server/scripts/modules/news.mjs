@@ -74,11 +74,9 @@ class News extends WeatherDisplay {
 		const rows = page.items.map((item) => {
 			const time = DateTime.fromISO(item.time).setZone(NEWS_TZ);
 			const when = time.hasSame(today, 'day') ? ConversionHelpers.formatTime(time) : `${time.toFormat('ccc')} ${ConversionHelpers.formatTime(time)}`;
-			const sources = item.sources?.length ?? 1;
 			const row = this.fillTemplate('news-item', {
 				badge: item.breaking ? 'BREAKING' : 'TOP STORY',
 				when,
-				count: sources > 1 ? `${sources} sources` : '',
 				headline: plainText(item.title),
 			});
 			row.querySelector('.source').replaceWith(sourceLogo(item.source));
