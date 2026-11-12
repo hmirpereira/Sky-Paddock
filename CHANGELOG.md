@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.41.6** (2026-11-12): Regional Forecast data: the unused map image fields removed (the maps are drawn by the page)
 - **1.41.5** (2026-11-12): Verstappen Jet: the line with the origin, the altitude and the speed (in flight) is 20 pt, so the speed and its km/h fit in the box
 - **1.41.4** (2026-11-12): Regional Forecast: Setubal on the South map (not Lisbon); the Azores page shows Ponta Delgada only, on a zoomed map of its island
 - **1.41.3** (2026-11-12): Regional Forecast: the map credit in the bottom right corner is the sources bar of the Local Radar (small letters, `Esri`, `Natural Earth`); Plex: the synopsis gets smaller letters (down to 11 pt) before it is cut at a word (`utils/summary.mjs`)

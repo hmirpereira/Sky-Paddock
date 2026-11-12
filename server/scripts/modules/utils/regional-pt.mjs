@@ -3,7 +3,6 @@
 const REGIONAL_PAGES = [
 	{
 		id: 'north',
-		map: 'images/regional-pt-north.png',
 		cities: [
 			{
 				key: 'viana',
@@ -54,7 +53,6 @@ const REGIONAL_PAGES = [
 	},
 	{
 		id: 'centre',
-		map: 'images/regional-pt-centre.png',
 		cities: [
 			{
 				key: 'aveiro',
@@ -114,7 +112,6 @@ const REGIONAL_PAGES = [
 	},
 	{
 		id: 'lisbon',
-		map: 'images/regional-pt-lisbon.png',
 		cities: [
 			{
 				key: 'lisboa',
@@ -147,7 +144,6 @@ const REGIONAL_PAGES = [
 	},
 	{
 		id: 'south',
-		map: 'images/regional-pt-south.png',
 		cities: [
 			{
 				key: 'setubal',
@@ -189,7 +185,6 @@ const REGIONAL_PAGES = [
 	},
 	{
 		id: 'islands',
-		map: 'images/regional-pt-islands.png',
 		cities: [
 			{
 				key: 'pontadelgada',
