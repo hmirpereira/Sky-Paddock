@@ -10,7 +10,7 @@ export const VIEWS = {
 	north: { z: 8, lat: 41.47785, lon: -7.7948 },
 	centre: { z: 8, lat: 40.2023, lon: -8.0373 },
 	lisbon: { z: 8, lat: 38.91055, lon: -8.2839 },
-	south: { z: 7, lat: 37.7954, lon: -7.8968 },
+	south: { z: 8, lat: 37.52, lon: -7.9 },
 	madeira: { z: 9, lat: 32.75, lon: -16.95 },
 	azores: { z: 9, lat: 37.75, lon: -25.55 },
 };
@@ -50,7 +50,9 @@ export const placeLabels = (items, h = 50) => {
 	const placed = [];
 	const overlaps = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + h && b.y < a.y + h;
 	const covers = (box, c) => c.x >= box.x - 3 && c.x <= box.x + box.w + 3 && c.y >= box.y - 3 && c.y <= box.y + h + 3;
-	return items.map(({ x, y, w }, index) => {
+	return items.map(({
+		x, y, w, oy: target = -22,
+	}, index) => {
 		const others = items.filter((_, j) => j !== index);
 		const inside = (b) => b.x >= 0 && b.x + w <= MAP_W && b.y >= 0 && b.y + h <= MAP_H;
 		const free = (b) => inside(b) && placed.every((q) => !overlaps(b, q)) && others.every((c) => !covers(b, c)) && !covers(b, { x, y });
@@ -59,7 +61,7 @@ export const placeLabels = (items, h = 50) => {
 		for (let oy = -62; oy <= 40; oy += 2) {
 			for (let ox = -w + 12; ox <= 24; ox += 2) {
 				const b = { x: Math.round(x + ox), y: Math.round(y + oy), w };
-				const cost = Math.hypot(ox - 6, oy + 22);
+				const cost = Math.hypot(ox - 6, oy - target);
 				if (cost < bestCost && free(b)) {
 					best = b;
 					bestCost = cost;

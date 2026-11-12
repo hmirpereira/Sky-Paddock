@@ -114,6 +114,24 @@ const REGIONAL_PAGES = [
 		id: 'lisbon',
 		cities: [
 			{
+				key: 'setubal',
+				name: 'Setubal',
+				lat: 38.5244,
+				lon: -8.8882,
+				x: 204,
+				y: 228,
+				w: 96,
+			},
+			{
+				key: 'evora',
+				name: 'Evora',
+				lat: 38.5714,
+				lon: -7.9135,
+				x: 301,
+				y: 11,
+				w: 96,
+			},
+			{
 				key: 'lisboa',
 				name: 'Lisboa',
 				lat: 38.7223,
@@ -145,24 +163,6 @@ const REGIONAL_PAGES = [
 	{
 		id: 'south',
 		cities: [
-			{
-				key: 'setubal',
-				name: 'Setubal',
-				lat: 38.5244,
-				lon: -8.8882,
-				x: 204,
-				y: 228,
-				w: 96,
-			},
-			{
-				key: 'evora',
-				name: 'Evora',
-				lat: 38.5714,
-				lon: -7.9135,
-				x: 301,
-				y: 11,
-				w: 96,
-			},
 			{
 				key: 'beja',
 				name: 'Beja',
