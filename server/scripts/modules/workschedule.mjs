@@ -1,7 +1,7 @@
 // work shifts: page 1 shows the next shift with a countdown and the weather at the start and at the end (7 seconds),
 // page 2 lists the next 7 days with the weather at the start of each shift (10 seconds),
-// page 3, Gates: the flights of my gates today (tomorrow once the last one has left; of every gate with the setting Personal Gates
-// off), each with the staff on the gate, the stand and
+// page 3, Gates: the flights of my gates today, or of the next day with my gates once the last one has left (of every gate with
+// the setting Personal Gates off), with the date in the title, each with the staff on the gate, the stand and
 // the ETA of the aircraft that does the rotation, and the supervisors of the day in one line under them.
 // Shifts are read from the skypaddock-hub service on the Raspberry Pi, which serves what
 // skypaddock-horario extracts from a private schedule spreadsheet. The schedule never leaves the Pi;
@@ -138,13 +138,13 @@ class WorkSchedule extends WeatherDisplay {
 
 	// one row per flight, in the order of the departures (etd, or the time of the team file: "06:40"); a gate with no known
 	// flights shows its destination
-	// today's flights leave the list as they depart; tomorrow's all stay
+	// today's flights leave the list as they depart; the flights of a later day all stay
 	gateFlights() {
-		const { day, tomorrow } = this.gates;
+		const { day, later } = this.gates;
 		const flights = (day?.gates ?? [])
 			.flatMap((gate) => (gate.flights?.length ? gate.flights : [{ number: gate.dests.join('/') }]).map((f) => ({ ...f, crew: gate.with, star: gate.star })))
 			.sort((x, y) => (x.etd ?? x.time ?? '').localeCompare(y.etd ?? y.time ?? ''));
-		return tomorrow ? flights : flightsToCome(flights, day.date, DateTime.now().setZone(LOCAL_TZ));
+		return later ? flights : flightsToCome(flights, day.date, DateTime.now().setZone(LOCAL_TZ));
 	}
 
 	// the flights in pages of at most GATES_PER_PAGE, as even as possible (7 flights: 4 and 3); each page is one more screen
@@ -164,7 +164,7 @@ class WorkSchedule extends WeatherDisplay {
 		super.drawCanvas();
 		// the setting was changed since the data came: the pages are counted again
 		const changed = this.allGates !== (Number(settings.personalGates?.value) === OFF);
-		// the day of the Gates page is decided each time it is drawn: once the last flight has left it is tomorrow's
+		// the day of the Gates page is decided each time it is drawn: once the last flight has left it is the next day with gates
 		this.pickGates();
 		if (changed) this.setGateTiming();
 		const screen = Math.min(Math.max(this.screenIndex, 0), this.timing.totalScreens - 1);
@@ -174,7 +174,9 @@ class WorkSchedule extends WeatherDisplay {
 		this.elem.querySelector('.schedule-page.next').style.display = page === 0 ? 'block' : 'none';
 		this.elem.querySelector('.schedule-page.assignments').style.display = page === 2 ? 'block' : 'none';
 		this.elem.querySelector('.source-footer').style.display = page === 2 ? '' : 'none';
-		this.elem.querySelector('.header .title.dual .bottom').innerHTML = ['Next Shift', 'Next 7 Days', `${this.allGates ? 'All ' : ''}Gates${this.gates.tomorrow ? ' Tomorrow' : ''}`][page];
+		// the date of the Gates page in the title ("Gates Fri 13 Nov"), so the day is always known
+		const gatesDate = this.gates.day ? ` ${DateTime.fromISO(this.gates.day.date, { zone: LOCAL_TZ }).toFormat('ccc d LLL')}` : '';
+		this.elem.querySelector('.header .title.dual .bottom').innerHTML = ['Next Shift', 'Next 7 Days', `${this.allGates ? 'All ' : ''}Gates${gatesDate}`][page];
 		if (page === 0) this.drawNext(); else if (page === 1) this.drawWeek(); else this.drawAssignments(screen - 2);
 		this.finishDraw();
 	}
@@ -219,7 +221,7 @@ class WorkSchedule extends WeatherDisplay {
 
 	// the gates of the day: flight, staff, stand and ETA of the aircraft that arrives for the rotation; the supervisors under them
 	drawAssignments(pageIndex = 0) {
-		const { day, tomorrow, message } = this.gates;
+		const { day, later, message } = this.gates;
 		// with no gates, only a message in the middle ("Day off", "No gates assigned")
 		const box = this.elem.querySelector('.schedule-page.assignments');
 		box.classList.toggle('message', !!message);
@@ -274,7 +276,7 @@ class WorkSchedule extends WeatherDisplay {
 			// Under 20 minutes it is yellow and blinks slowly, under 10 red and faster
 			const at = DateTime.fromISO(`${day.date}T${f.eta}`, { zone: LOCAL_TZ });
 			const mins = Math.ceil(at.diffNow('minutes').minutes);
-			if (!tomorrow && at.isValid && mins >= 0) {
+			if (!later && at.isValid && mins >= 0) {
 				const left = document.createElement('div');
 				left.className = 'left';
 				if (mins < 20) left.classList.add(mins < 10 ? 'now' : 'soon');

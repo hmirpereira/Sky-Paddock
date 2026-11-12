@@ -9,7 +9,7 @@ export const PAGES = ['north', 'centre', 'lisbon', 'south', 'madeira', 'azores']
 export const VIEWS = {
 	north: { z: 8, lat: 41.47785, lon: -7.7948 },
 	centre: { z: 8, lat: 40.2023, lon: -8.0373 },
-	lisbon: { z: 7, lat: 38.91055, lon: -8.2839 },
+	lisbon: { z: 8, lat: 38.91055, lon: -8.2839 },
 	south: { z: 7, lat: 37.7954, lon: -7.8968 },
 	madeira: { z: 9, lat: 32.75, lon: -16.95 },
 	azores: { z: 7, lat: 38.45, lon: -28.0 },

@@ -58,15 +58,18 @@ test('the Gates page shows today until its last flight has left, then tomorrow o
 	const today = { date: '2026-11-08', gates };
 	const pick = (tomorrow, time) => gatesDay([today, { date: '2026-11-09', ...tomorrow }], at(`2026-11-08T${time}`));
 	assert.equal(pick({ gates }, '12:05').day, today);
-	assert.deepEqual([pick({ gates }, '12:15').day.date, pick({ gates }, '12:15').tomorrow, pick({ gates }, '12:15').message], ['2026-11-09', true, '']);
+	assert.deepEqual([pick({ gates }, '12:15').day.date, pick({ gates }, '12:15').later, pick({ gates }, '12:15').message], ['2026-11-09', true, '']);
 	assert.equal(pick({}, '12:15').message, 'No gates assigned');
 	assert.equal(pick({ off: true }, '12:15').message, 'Day off');
 	// a day with no gates looks at tomorrow from the start
 	assert.equal(gatesDay([{ date: '2026-11-08' }, { date: '2026-11-09', gates }], at('2026-11-08T08:00')).day.date, '2026-11-09');
+	// the next day with gates, however far ahead: tomorrow and the day after have none, so the Gates page goes to the one after
+	const later = gatesDay([{ date: '2026-11-08', gates }, { date: '2026-11-09', off: true }, { date: '2026-11-10' }, { date: '2026-11-11', gates }], at('2026-11-08T12:15'));
+	assert.deepEqual([later.day.date, later.later, later.message], ['2026-11-11', true, '']);
 	// every gate of the day (Personal Gates off): a day of mine with no gates, or off, still has the gates of the others
 	const others = [{ dests: ['FRA'], with: ['RUI T'], flights: [{ number: 'LH1175', time: '12:35' }] }];
 	const all = gatesDay([{ date: '2026-11-08', off: true, allGates: others }], at('2026-11-08T08:00'), true);
-	assert.deepEqual([all.day.gates, all.tomorrow, all.message], [others, false, '']);
+	assert.deepEqual([all.day.gates, all.later, all.message], [others, false, '']);
 	assert.equal(gatesDay([{ date: '2026-11-08', off: true }, { date: '2026-11-09', off: true }], at('2026-11-08T08:00'), true).message, 'No gates assigned');
 });
 

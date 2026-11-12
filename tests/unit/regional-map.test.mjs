@@ -15,11 +15,11 @@ test('a point is at the middle of the map when it is the view centre', () => {
 	});
 });
 
-test('one degree of longitude at zoom 7 is 256 * 2^7 / 360 pixels', () => {
+test('one degree of longitude at the zoom of the Lisbon view is 256 * 2^zoom / 360 pixels', () => {
 	const v = VIEWS.lisbon;
 	const [x0] = project(v, v.lat, v.lon);
 	const [x1] = project(v, v.lat, v.lon + 1);
-	assert.ok(Math.abs(x1 - x0 - (256 * 2 ** 7) / 360) < 1e-6);
+	assert.ok(Math.abs(x1 - x0 - (256 * 2 ** v.z) / 360) < 1e-6);
 });
 
 test('the tiles cover the whole map, and each tile is at the zoom of its view', () => {

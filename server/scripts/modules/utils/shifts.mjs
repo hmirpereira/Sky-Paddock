@@ -27,19 +27,20 @@ const stillShown = (day, now) => {
 	return true;
 };
 
-// the day of the Gates page: today while one of its flights has yet to leave; tomorrow once the last one has left, or when
-// today has no gates. With no gates to show, a message instead: "Day off" or "No gates assigned".
-// all: every gate of the day (day.allGates, mine or not) instead of mine only; a day off of mine is then no reason for a message
+// the day of the Gates page: today while one of its flights has yet to leave; otherwise the next day with gates, however far
+// ahead (within the days given). With no gates to show, a message instead: "Day off" (the next day, when it is off) or "No gates assigned".
+// later: the day is not today. all: every gate of the day (day.allGates, mine or not) instead of mine only
 const gatesDay = (allDays, now, all = false) => {
 	const days = all ? allDays.map((day) => ({ ...day, gates: day.allGates ?? day.gates })) : allDays;
 	const today = days.find((day) => day.date === now.toISODate());
 	// the last departure of today ("19:05"); gates with no flight times known stay the whole day
 	const last = (today?.gates ?? []).flatMap((gate) => gate.flights ?? []).map((f) => f.etd ?? f.time ?? '').sort().at(-1);
 	const left = !!last && DateTime.fromISO(`${today.date}T${last}`, { zone: LOCAL_TZ }) < now;
-	if (today?.gates?.length && !left) return { day: today, tomorrow: false, message: '' };
-	const day = days.find((d) => d.date === now.plus({ days: 1 }).toISODate());
-	if (day?.gates?.length) return { day, tomorrow: true, message: '' };
-	return { day, tomorrow: true, message: day?.off && !all ? 'Day off' : 'No gates assigned' };
+	if (today?.gates?.length && !left) return { day: today, later: false, message: '' };
+	const ahead = days.filter((d) => d.date > now.toISODate() && d.gates?.length);
+	if (ahead.length) return { day: ahead[0], later: true, message: '' };
+	const next = days.find((d) => d.date === now.plus({ days: 1 }).toISODate());
+	return { day: next, later: true, message: next?.off && !all ? 'Day off' : 'No gates assigned' };
 };
 
 // the flights of a day that have not left yet: a flight drops out of the Gates page once its departure (etd, or the time of the
