@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.42.2** (2026-11-13): the address location is also used when the coordinates are numbers written as text (`"38.7"`); `null` or missing ones are still ignored
 - **1.42.1** (2026-11-13): Radar: the radar list has a 10 s limit (a server that never answers no longer keeps the screen loading); the address location is used only when both coordinates are numbers
 - **1.42.0** (2026-11-13): Plex Now Playing: the photo of who is watching (Tautulli, round, before the name), served by the Pi service
 - **1.41.9** (2026-11-12): Latest News: the source count leaves the headline line, so a long breaking headline stays on one line

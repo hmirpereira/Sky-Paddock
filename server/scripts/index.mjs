@@ -105,8 +105,8 @@ const init = () => {
 		} catch {
 			// a location in the address that is not JSON: start without it
 		}
-		// both numbers, or the requests would go out with NaN in them
-		if (Number.isFinite(location?.lat) && Number.isFinite(location?.lon)) loadData(location);
+		// both numbers (quoted ones too; parseFloat, not Number, so null is not 0), or the requests would go out with NaN in them
+		if (Number.isFinite(parseFloat(location?.lat)) && Number.isFinite(parseFloat(location?.lon))) loadData(location);
 	}
 	if (fromGPS) {
 		btnGetGpsClick();
