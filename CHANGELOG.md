@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.42.1** (2026-11-13): Radar: the radar list has a 10 s limit (a server that never answers no longer keeps the screen loading); the address location is used only when both coordinates are numbers
 - **1.42.0** (2026-11-13): Plex Now Playing: the photo of who is watching (Tautulli, round, before the name), served by the Pi service
 - **1.41.9** (2026-11-12): Latest News: the source count leaves the headline line, so a long breaking headline stays on one line
 - **1.41.8** (2026-11-12): Regional Forecast: Mirandela (North), Portimao and Sines (South) with smaller labels; the Viana label above its point

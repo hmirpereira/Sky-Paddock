@@ -6,6 +6,7 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 
+import { json } from './utils/fetch.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import { getWeatherIconFromIconLink } from './icons.mjs';
 
@@ -270,8 +271,8 @@ class Radar extends WeatherDisplay {
 
 	static async getRadarData() {
 		try {
-			const response = await fetch(Radar.radarSource);
-			return await response.json();
+			// with a time limit: a server that never answers must not keep the screen loading for ever
+			return await json(Radar.radarSource, { signal: AbortSignal.timeout(10000) });
 		} catch (error) {
 			console.error('Failed to fetch radar data:', error);
 			throw error;
