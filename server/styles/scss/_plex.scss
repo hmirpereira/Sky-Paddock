@@ -166,6 +166,17 @@ $cinema-cream: #f3e6c8;
 				white-space: nowrap;
 				overflow: hidden;
 
+				// the photo of who is watching, round, in front of the state
+				.avatar {
+					width: 30px;
+					height: 30px;
+					margin-right: 10px;
+					vertical-align: middle;
+					border: 2px solid rgba(255, 255, 255, 0.85);
+					border-radius: 50%;
+					box-sizing: border-box;
+				}
+
 				.state {
 					margin-right: 14px;
 					color: $cinema-gold;

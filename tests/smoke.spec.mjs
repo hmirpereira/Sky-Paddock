@@ -81,7 +81,7 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		await page.route('http://127.0.0.1:8095/**', (route) => {
 			const answer = pi[new URL(route.request().url()).pathname];
 			// the F1 Photo is a picture, not JSON: a made-up one (3:2, red and black)
-			if (['/f1photo.jpg', '/plexnow-poster-10.jpg'].includes(new URL(route.request().url()).pathname)) {
+			if (['/f1photo.jpg', '/plexnow-poster-10.jpg', '/plexnow-avatar-4.jpg'].includes(new URL(route.request().url()).pathname)) {
 				return route.fulfill({
 					status: 200, contentType: 'image/svg+xml', headers: { 'Access-Control-Allow-Origin': '*' }, body: PHOTO,
 				});

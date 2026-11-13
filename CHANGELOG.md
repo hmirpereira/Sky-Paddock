@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.42.0** (2026-11-13): Plex Now Playing: the photo of who is watching (Tautulli, round, before the name), served by the Pi service
 - **1.41.9** (2026-11-12): Latest News: the source count leaves the headline line, so a long breaking headline stays on one line
 - **1.41.8** (2026-11-12): Regional Forecast: Mirandela (North), Portimao and Sines (South) with smaller labels; the Viana label above its point
 - **1.41.7** (2026-11-12): Regional Forecast: Lisbon map has Evora and Setubal, the Lisboa label sits higher; South map at zoom 8 on Beja and Faro (Setubal is on the Lisbon map)

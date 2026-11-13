@@ -273,7 +273,7 @@ const plexNow = (now) => ({
 	ok: iso(now),
 	error: null,
 	sessions: [{
-		key: '10', title: 'Made Up Show', detail: 'S2 E5 - The One With A Rather Long Episode Name', state: 'playing', user: 'Guest', player: 'Living Room TV', offset: 1260, duration: 2700, poster: '/plexnow-poster-10.jpg', summary: 'Some more made up words. '.repeat(30),
+		key: '10', title: 'Made Up Show', detail: 'S2 E5 - The One With A Rather Long Episode Name', state: 'playing', user: 'Guest', player: 'Living Room TV', offset: 1260, duration: 2700, poster: '/plexnow-poster-10.jpg', avatar: '/plexnow-avatar-4.jpg', summary: 'Some more made up words. '.repeat(30),
 	}],
 });
 

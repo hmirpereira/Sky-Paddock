@@ -94,6 +94,11 @@ class PlexNow extends WeatherDisplay {
 		state.textContent = paused ? 'Paused' : 'Playing';
 		state.classList.toggle('paused', paused);
 		this.elem.querySelector('.where').textContent = plainText([session.user, session.player].filter(Boolean).join(' on '));
+		// the photo of who is watching, when Plex has one (the service serves it from the Pi)
+		const avatar = this.elem.querySelector('.avatar');
+		avatar.onerror = () => { avatar.style.display = 'none'; };
+		avatar.style.display = session.avatar ? '' : 'none';
+		avatar.src = session.avatar ? `${HUB}/${String(session.avatar).replace(/^\/+/, '')}` : '';
 
 		// the position moves on while it plays: from the time the service answered
 		const seconds = (session.offset ?? 0) + (paused ? 0 : (Date.now() - this.fetchedAt) / 1000);
