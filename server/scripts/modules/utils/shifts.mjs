@@ -58,6 +58,12 @@ const gatesLabel = (date, now) => {
 	return DateTime.fromISO(date, { zone: LOCAL_TZ }).toFormat('ccc dd/LL');
 };
 
+// does a shift that has not begun yet start in `hours` hours or less (one already under way does not count)
+const shiftSoon = (days, now, hours = 3) => days.some((day) => {
+	const times = shiftTimes(day);
+	return !!times && times.start > now && times.start.diff(now, 'hours').hours <= hours;
+});
+
 export {
-	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel,
+	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel, shiftSoon,
 };

@@ -12,6 +12,8 @@ import settings from './settings.mjs';
 import { parseQueryString } from './share.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import piHeartbeat from './utils/pi-heartbeat.mjs';
+import { DateTime } from '../vendor/auto/luxon.mjs';
+import { LOCAL_TZ, shiftSoon } from './utils/shifts.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
 	init();
@@ -24,7 +26,7 @@ const DISPLAY_ORDER = [
 	'hazards', 'current-weather', 'hourly', 'hourly-graph',
 	'travel', 'regional-forecast', 'extended-forecast', 'almanac',
 	'radar', 'pollen', 'work-schedule',
-	'metar', 'departures', 'cancellations', 'overhead',
+	'departures', 'cancellations', 'overhead', 'metar',
 	'news', 'f1-last-race', 'f1-photo', 'f1-grid', 'f1-telemetry',
 	'f1-standings', 'f1-next-race', 'f1-jet', 'gt-race',
 	'gt-next-race', 'plex', 'plex-now', 'status',
@@ -248,6 +250,13 @@ const navTo = (direction) => {
 	if (direction === msg.command.previousFrame) currentDisplay().navPrev();
 };
 
+// the aviation screens (together in DISPLAY_ORDER): within 3 hours of the start of a shift they go round 4 times before the rotation moves on
+const AVIATION = ['work-schedule', 'departures', 'cancellations', 'overhead', 'metar'];
+const AVIATION_PASSES = 4;
+let aviationPass = 1;
+
+const isAviation = (index) => AVIATION.includes(displays[index]?.elemId);
+
 // find the next or previous available display
 const loadDisplay = (direction) => {
 	const totalDisplays = displays.length;
@@ -260,6 +269,19 @@ const loadDisplay = (direction) => {
 	}
 	// if new display index is less than current display a wrap occurred, test for reload timeout
 	if (idx <= curIdx && refreshCheck()) return;
+	if (direction > 0 && isAviation(curIdx) && !isAviation(idx)) {
+		// the aviation screens are over: go round again while a shift is near, up to 4 passes
+		const first = displays.findIndex((d, i) => isAviation(i) && d.status === STATUS.loaded && d.timing.totalScreens > 0);
+		const soon = shiftSoon(displays.find((d) => d.elemId === 'work-schedule')?.days ?? [], DateTime.now().setZone(LOCAL_TZ));
+		if (soon && aviationPass < AVIATION_PASSES && first >= 0) {
+			aviationPass += 1;
+			idx = first;
+		} else {
+			aviationPass = 1;
+		}
+	} else if (!isAviation(curIdx)) {
+		aviationPass = 1;
+	}
 	const newDisplay = displays[idx];
 	// hide all displays
 	hideAllCanvases();
@@ -388,7 +410,7 @@ const registerDisplay = (display) => {
 const DISPLAY_GROUPS = [
 	{ title: 'Weather', ids: null },
 	{ title: 'Personal', ids: ['work-schedule'] },
-	{ title: 'Aviation', ids: ['metar', 'departures', 'cancellations', 'overhead'] },
+	{ title: 'Aviation', ids: ['departures', 'cancellations', 'overhead', 'metar'] },
 	{ title: 'News', ids: ['news'] },
 	{ title: 'Media', ids: ['plex', 'plex-now'] },
 	{ title: 'Formula 1', ids: ['f1-last-race', 'f1-photo', 'f1-grid', 'f1-telemetry', 'f1-standings', 'f1-next-race', 'f1-jet'] },

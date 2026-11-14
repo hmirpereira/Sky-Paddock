@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DateTime } from '../../server/scripts/vendor/auto/luxon.mjs';
 import {
-	keepDays, stillShown, shiftTimes, gatesDay, flightsToCome, gatesLabel,
+	keepDays, stillShown, shiftTimes, gatesDay, flightsToCome, gatesLabel, shiftSoon,
 } from '../../server/scripts/modules/utils/shifts.mjs';
 
 const at = (iso) => DateTime.fromISO(iso, { zone: 'Europe/Lisbon' });
@@ -86,4 +86,19 @@ test('a flight leaves the Gates list once its departure has passed', () => {
 test('the title of the Gates page: Today, Tomorrow, then the date from two days on', () => {
 	const now = at('2026-11-12T09:00');
 	assert.deepEqual(['2026-11-12', '2026-11-13', '2026-11-14', '2026-11-20'].map((date) => gatesLabel(date, now)), ['Today', 'Tomorrow', 'Sat 14/11', 'Fri 20/11']);
+});
+
+test('shiftSoon: a shift that has not begun and starts in 3 hours or less', () => {
+	const days = [day]; // starts 14:00
+	assert.equal(shiftSoon(days, at('2026-11-08T11:00')), true);
+	assert.equal(shiftSoon(days, at('2026-11-08T10:59')), false);
+	assert.equal(shiftSoon(days, at('2026-11-08T14:00')), false);
+	assert.equal(shiftSoon(days, at('2026-11-08T16:00')), false);
+	assert.equal(shiftSoon([{ date: '2026-11-08', off: true }], at('2026-11-08T12:00')), false);
+	assert.equal(shiftSoon([], at('2026-11-08T12:00')), false);
+});
+
+test('shiftSoon: a night shift over midnight counts from the evening before', () => {
+	assert.equal(shiftSoon([night], at('2026-11-07T19:30')), true);
+	assert.equal(shiftSoon([night], at('2026-11-07T23:00')), false);
 });

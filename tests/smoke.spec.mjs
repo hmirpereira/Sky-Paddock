@@ -11,6 +11,7 @@ import path from 'node:path';
 import { test as base, expect } from '@playwright/test';
 import piResponses from './pi-fixtures.mjs';
 import jolpicaResponses from './f1-fixtures.mjs';
+import { DateTime } from '../server/scripts/vendor/auto/luxon.mjs';
 
 const test = base.extend({ record: [false, { option: true }] });
 
@@ -214,4 +215,58 @@ test('a link with odd settings shows the airport city as text', async ({ page })
 	await page.waitForFunction(() => document.querySelector('#metar-html .title.dual .top')?.textContent.includes('<b>'), null, { timeout: 60_000 });
 	expect(await page.locator('#metar-html .title.dual .top b').count()).toBe(0);
 	expect(pageErrors, 'page errors').toEqual([]);
+});
+
+// within 3 hours of the start of a shift the aviation screens go round 4 times before the rotation moves on; further away, once
+[[2, 4], [5, 1]].forEach(([hours, passes]) => {
+	test(`the aviation screens go round ${passes} time(s) when the shift starts in ${hours} hours`, async ({ page, record }) => {
+		test.skip(record, 'it does not ask the sites');
+		test.setTimeout(240_000);
+		const meta = readMeta();
+		const pi = piResponses(meta.time);
+		// the first day has one shift, starting `hours` hours after the page clock
+		const start = DateTime.fromMillis(meta.time, { zone: 'Europe/Lisbon' }).plus({ hours });
+		pi['/schedule.json'].days = [{
+			date: start.toISODate(), code: 'M', start: start.toFormat('HH:mm'), end: start.plus({ hours: 8 }).toFormat('HH:mm'), off: false,
+		}];
+		await page.route('https://tile.openstreetmap.org/**', (route) => route.fulfill({ status: 200, contentType: 'image/svg+xml', body: TILE }));
+		await page.route('http://127.0.0.1:8095/**', (route) => {
+			const answer = pi[new URL(route.request().url()).pathname];
+			if (!answer) return route.fulfill({ status: 404, body: '' });
+			return route.fulfill({
+				status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(answer),
+			});
+		});
+		await page.routeFromHAR(HAR, { url: SITES, notFound: 'fallback' });
+		await page.clock.install({ time: meta.time });
+		await page.goto('./', { waitUntil: 'domcontentloaded' });
+		const screens = await page.locator('#enabledDisplays input[type=checkbox]')
+			.evaluateAll((inputs) => inputs.map((input) => input.id.replace(/-checkbox$/, '')));
+		// only the aviation screens and the News, so the rotation leaves the aviation block for a screen that is easy to see
+		const on = ['work-schedule', 'metar', 'departures', 'cancellations', 'overhead', 'news'];
+		const params = new URLSearchParams();
+		screens.forEach((screen) => params.set(`${screen}-checkbox`, String(on.includes(screen))));
+		params.set('latLonQuery', LOCATION.query);
+		params.set('latLon', JSON.stringify(LOCATION.latLon));
+		params.set('settings-airportIcao-text', LOCATION.airportIcao);
+		params.set('settings-ipmaArea-select', LOCATION.ipmaArea);
+		await page.goto(`./?${params}`, { waitUntil: 'domcontentloaded' });
+		await page.waitForFunction(() => document.querySelector('.weather-display.show'), null, { timeout: 90_000 });
+		// walk the rotation: count the times the Airport METAR is entered, until the News is shown
+		let entered = 0;
+		let last = null;
+		for (let steps = 0; steps < 400; steps += 1) {
+			// eslint-disable-next-line no-await-in-loop
+			const shown = await shownScreen(page);
+			if (shown === 'metar' && last !== 'metar') entered += 1;
+			if (shown === 'news') break;
+			last = shown;
+			// eslint-disable-next-line no-await-in-loop
+			await page.evaluate(() => document.querySelector('#NavigateNext').click());
+			// eslint-disable-next-line no-await-in-loop
+			await page.waitForTimeout(150);
+		}
+		expect(await shownScreen(page)).toBe('news');
+		expect(entered).toBe(passes);
+	});
 });
