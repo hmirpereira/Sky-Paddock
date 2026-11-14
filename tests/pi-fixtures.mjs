@@ -14,13 +14,14 @@ const flights = (now) => ({
 	generated: iso(now),
 	lastUpdate: iso(now - 30 * MIN),
 	flights: [
-		['LH 1177', 40, 'FRA', 'ON TIME'],
+		['LH 1175', -300, 'FRA', 'DEPARTED'],
+		['LX 2079', -120, 'ZRH', 'DEPARTED'],
+		['LH 1177', 40, 'FRA', 'BOARDED'],
 		['LH 1793', 95, 'MUC', 'DELAYED'],
-		['LX 2093', 150, 'ZRH', 'ON TIME'],
+		['LX 2093', 150, 'ZRH', 'BOARDING'],
 		['OS 368', 210, 'VIE', 'ON TIME'],
 		['SN 3820', 260, 'BRU', 'CANCELLED'],
 		['EW 7689', 330, 'DUS', 'ON TIME'],
-		['LH 1181', 400, 'FRA', 'ON TIME'],
 	].map(([number, minutes, destination, status]) => ({
 		number,
 		scheduled: iso(now + minutes * MIN),

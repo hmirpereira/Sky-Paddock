@@ -20,12 +20,15 @@
 				@include u.text-shadow();
 			}
 
+			// the same columns as the Gates page: FLIGHT where its flight numbers start, the ETD centred in its column like the ETA there
 			.flight {
-				left: 60px;
+				left: 74px;
 			}
 
 			.time {
-				left: 255px;
+				left: 250px;
+				width: 110px;
+				text-align: center;
 			}
 
 			.status {
@@ -45,10 +48,15 @@
 			.departures-row {
 				position: relative;
 				height: 41px;
-				font-family: 'Star4000 Large';
+				// the font, the size and the bands of the Gates page
+				font-family: 'Star4000';
 				font-size: 24pt;
 				color: white;
 				@include u.text-shadow();
+
+				&:nth-child(odd) {
+					background-color: rgba(255, 255, 255, 0.07);
+				}
 
 				>div {
 					position: absolute;
@@ -56,23 +64,25 @@
 					white-space: pre;
 				}
 
-				// airline tail icon (square image, shown 36 x 36)
+				// airline tail icon (square image, shown 44 x 44 like on the Gates page: the flight numbers start at 74 px)
 				.tail {
 					position: absolute;
-					left: 14px;
-					top: 2px;
-					width: 36px;
-					height: 36px;
+					left: 20px;
+					top: -1px;
+					width: 44px;
+					height: 44px;
 					object-fit: contain;
 				}
 
+				// the flight number has the colour of the Gates page: $av-yellow of _aviation-theme.scss
 				.flight {
-					left: 60px;
-					color: c.$title-color;
+					left: 74px;
 				}
 
 				.time {
-					left: 255px;
+					left: 250px;
+					width: 110px;
+					text-align: center;
 				}
 
 				.status {
@@ -92,6 +102,33 @@
 
 					&.cancelled {
 						color: #ff4040;
+					}
+
+					&.departed {
+						color: #b5d0ff;
+					}
+
+					// boarding: white and blinking slowly (the blink of the Gates page, _work-schedule.scss); boarded: white, with a tick to the right
+					&.boarding,
+					&.boarded {
+						color: white;
+					}
+
+					&.boarding {
+						animation: gate-blink 2s steps(1) infinite;
+					}
+
+					// the tick, drawn with two borders (the fonts have no tick), with the shadow of the text
+					&.boarded::after {
+						content: '';
+						display: inline-block;
+						width: 9px;
+						height: 20px;
+						margin-left: 16px;
+						border-right: 5px solid white;
+						border-bottom: 5px solid white;
+						transform: translateY(-4px) rotate(45deg);
+						filter: drop-shadow(3px 3px 0 black);
 					}
 				}
 			}

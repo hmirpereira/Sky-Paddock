@@ -853,3 +853,14 @@ body.work-mode {
 		height: 220px;
 	}
 }
+
+// the subtitle (second line of the title) a little smaller than the title itself, like the F1 screens
+// (the aviation screens have it in _aviation-theme.scss)
+#travel-html,
+#pollen-html,
+#gt-race-html,
+#gt-next-race-html {
+	.header .title.dual .bottom {
+		font-size: 20pt;
+	}
+}

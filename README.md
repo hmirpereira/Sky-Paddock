@@ -44,7 +44,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | Local Radar | Precipitation radar | [RainViewer](https://www.rainviewer.com) |
 | Air & Pollen | European Air Quality Index now and daily pollen levels, on one screen | Open-Meteo (CAMS) |
 | Work Schedule (Pi) | Shifts for the next 7 days, with the weather at those times; the day's gates with staff, stand and ETA | Private spreadsheets, kept on the Pi; stand and ETA from TAP's public FLIC pages for OPO |
-| Departures (Pi) | Next departures of a list of airlines from one airport | [AeroDataBox](https://aerodatabox.com) |
+| Departures (Pi) | The day's departures of a list of airlines from one airport, with the ETD and the status (departed, delayed, cancelled, boarding, boarded) | [AeroDataBox](https://aerodatabox.com); status and ETD from TAP's public FLIC page |
 | Cancellations (Pi) | Cancelled departures from the same airport, all airlines | AeroDataBox |
 | Overhead (Pi) | Closest aircraft, a 50 km radar and the airport plan with the aircraft on the ground | Own ADS-B receiver, [adsb.fi](https://adsb.fi), [adsb.lol](https://adsb.lol) (backup), [OpenSky](https://opensky-network.org), [adsbdb](https://www.adsbdb.com), [OpenStreetMap](https://www.openstreetmap.org) |
 | Airport METAR | METAR of one airport decoded into plain English | [metar.vatsim.net](https://metar.vatsim.net) |

@@ -98,3 +98,14 @@ $av-yellow: #ffad00;
 		color: $av-light-blue;
 	}
 }
+
+// the subtitle (second line of the title) a little smaller than the title itself, like the F1 screens
+// (also on Travel Forecast, Air & Pollen, GT World and GT World Next: _page.scss)
+#metar-html,
+#departures-html,
+#cancellations-html,
+#overhead-html {
+	.header .title.dual .bottom {
+		font-size: 20pt;
+	}
+}

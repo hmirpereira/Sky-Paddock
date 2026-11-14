@@ -2,6 +2,8 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.45.0** (2026-11-14): Departures: in the style of the Gates page (font, bands, 44 px tail icon, flight number without a space and in its colour); the status (departed, delayed, cancelled, boarding: white and blinking slowly, boarded: white with a tick) and the ETD from the FLIC page (title ETD instead of Time); all the flights of the day stay, also those that have left; tomorrow's only an hour after the last one of today (the Pi side: `hub_departures.py`)
+- **1.44.2** (2026-11-14): the subtitle of the title is smaller (20 pt, like the F1 screens) on Travel Forecast, Air & Pollen, METAR, Departures, Cancellations, Overhead, GT World and GT World Next
 - **1.44.1** (2026-11-14): Work mode: the Lufthansa tail fin instead of the Sky Paddock logo (for now)
 - **1.44.0** (2026-11-14): Work mode (a setting, for a break room): only Work Schedule (Gates page, of everybody), Departures, Cancellations, Overhead (radar page only, centred on the airport of the settings) and Airport METAR are shown
 - **1.43.1** (2026-11-14): Airport METAR: only the METAR is shown, the TAF pages are gone (the decoder, its tests and the `/taf.json` fixture too)

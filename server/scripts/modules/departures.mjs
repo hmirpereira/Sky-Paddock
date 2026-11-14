@@ -1,6 +1,7 @@
-// next Lufthansa Group departures from the local airport (set on the Pi)
-// Flight data comes from AeroDataBox through a small service on the Raspberry Pi
-// (skypaddock-hub), which keeps the API key private and serves the result on the Pi only.
+// Lufthansa Group departures of the day from the local airport (set on the Pi), all of them, also those that have left
+// Flight data comes from AeroDataBox and from the airport's FLIC page (status and ETD) through a small service on the Raspberry Pi
+// (skypaddock-hub), which keeps the API key private and serves the result on the Pi only; it also decides which day is shown
+// (tomorrow's flights an hour after the last one of today has left).
 // Anywhere else the service is not reachable and this screen is skipped.
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
@@ -15,15 +16,15 @@ const SERVICE_URL = 'http://127.0.0.1:8095/flights.json';
 const AIRPORT_TZ = 'Europe/Lisbon';
 // leaves room for the footer; busy days use pages (7 flights = 4 + 3)
 const ROWS_PER_PAGE = 6;
-// departed flights leave the list; cancelled ones stay a little after their scheduled time
-const KEEP_AFTER_DEPARTURE_MIN = 5;
-const KEEP_CANCELLED_MIN = 30;
 
 const STATUS_CLASS = {
 	'ON TIME': 'on-time',
 	SCHEDULED: 'scheduled',
 	DELAYED: 'delayed',
 	CANCELLED: 'cancelled',
+	DEPARTED: 'departed',
+	BOARDING: 'boarding',
+	BOARDED: 'boarded',
 };
 
 class Departures extends WeatherDisplay {
@@ -49,16 +50,8 @@ class Departures extends WeatherDisplay {
 
 		await loadAirportCity();
 
-		const now = Date.now();
-		this.flights = (response.flights ?? [])
-			.filter((flight) => {
-				const estimated = Date.parse(flight.estimated);
-				const scheduled = Date.parse(flight.scheduled);
-				if (flight.status === 'DEPARTED') return false;
-				if (flight.status === 'CANCELLED') return scheduled > now - KEEP_CANCELLED_MIN * 60000;
-				return estimated > now - KEEP_AFTER_DEPARTURE_MIN * 60000;
-			})
-			.sort((a, b) => Date.parse(a.estimated) - Date.parse(b.estimated));
+		// the service sends the flights to show (the day's, departed ones too): in the order of the ETD
+		this.flights = [...(response.flights ?? [])].sort((a, b) => Date.parse(a.estimated) - Date.parse(b.estimated));
 		this.lastUpdate = response.lastUpdate ? DateTime.fromISO(response.lastUpdate).setZone(AIRPORT_TZ) : null;
 
 		if (this.flights.length === 0) {
@@ -85,7 +78,8 @@ class Departures extends WeatherDisplay {
 		const lines = this.pages[pageIndex].map((flight) => {
 			const time = DateTime.fromISO(flight.estimated).setZone(AIRPORT_TZ);
 			const row = this.fillTemplate('departures-row', {
-				flight: flight.number,
+				// as on the Gates page: LH1175, without the space
+				flight: flight.number.replaceAll(' ', ''),
 				time: ConversionHelpers.formatTime(time),
 				status: flight.status,
 			});
