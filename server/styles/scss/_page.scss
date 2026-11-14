@@ -351,7 +351,8 @@ body {
 	display: inline;
 }
 
-// the network dot between brackets, at the end of the line: red without a network connection, green with it (net-status.mjs)
+// the network dot between brackets, to the right of the date of the build, before the track: red without a network connection, green with it
+// (net-status.mjs)
 #version-mark .net {
 	margin-left: 8px;
 
@@ -369,7 +370,7 @@ body {
 	}
 }
 
-.debug-mode #version-mark .version + .music {
+.debug-mode #version-mark .net + .music {
 	margin-left: 8px;
 }
 

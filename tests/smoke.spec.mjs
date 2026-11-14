@@ -309,6 +309,8 @@ test('work mode shows only Work Schedule (Gates), Departures, Cancellations, Ove
 	expect([...titles].every((title) => title.startsWith('All Gates'))).toBe(true);
 	// the logo of work mode (images/workmode-logo.png, which the build gives a new name) instead of the Sky Paddock logo
 	expect(await page.locator('.weather-display.show .header .logo img').evaluate((img) => getComputedStyle(img).content)).toMatch(/workmode-logo/);
+	// the star of a gate with the owner and a colleague together (the Pi marks it, also on the gates of everybody) is never drawn in work mode
+	await expect(page.locator('#work-schedule-html .assign-gate .star')).toHaveCount(0);
 	// Debug mode: the dot of the network connection is green, and red when the browser goes offline
 	await expect(page.locator('#version-mark .net.on')).toHaveCount(1);
 	await page.context().setOffline(true);
@@ -326,4 +328,21 @@ test('work mode shows only Work Schedule (Gates), Departures, Cancellations, Ove
 	const expected = pi['/overhead.json'].aircraft.filter((ac) => !ac.ground).map((ac) => km(airport, ac)).filter((d) => d <= 50).map((d) => String(Math.round(d)))
 		.sort();
 	expect(radar.sort()).toEqual(expected);
+});
+
+// outside work mode the star of the gate of the owner with a colleague (the Pi marks it) is drawn on the Gates page
+test('the star of a gate is drawn on the Gates page outside work mode', async ({ page, record }) => {
+	test.skip(record, 'it does not ask the sites');
+	test.setTimeout(120_000);
+	await openRotation(page, piResponses(readMeta().time), ['work-schedule']);
+	for (let steps = 0; steps < 20; steps += 1) {
+		// eslint-disable-next-line no-await-in-loop
+		const title = await page.locator('#work-schedule-html .header .title.dual .bottom').textContent();
+		if (title.includes('Gates')) break;
+		// eslint-disable-next-line no-await-in-loop
+		await page.evaluate(() => document.querySelector('#NavigateNext').click());
+		// eslint-disable-next-line no-await-in-loop
+		await page.waitForTimeout(200);
+	}
+	await expect(page.locator('#work-schedule-html .assign-gate .star')).toHaveCount(1);
 });

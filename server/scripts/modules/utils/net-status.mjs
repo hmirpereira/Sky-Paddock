@@ -1,4 +1,4 @@
-// Debug: a dot at the end of the line in the bottom right corner, between brackets: green with a network connection, red without
+// Debug: a dot in the line of the bottom right corner, between brackets, to the right of the date of the build: green with a network connection, red without
 // (the link, as the browser knows it: navigator.onLine; it says nothing about the internet working). Only events, no polling.
 const update = () => {
 	document.querySelector('#version-mark .net')?.classList.toggle('on', navigator.onLine);

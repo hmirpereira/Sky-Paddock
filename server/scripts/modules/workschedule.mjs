@@ -279,7 +279,8 @@ class WorkSchedule extends WeatherDisplay {
 			if (staff.length <= 2) staff.forEach((name) => div('.crew', name));
 			else for (let i = 0; i < staff.length; i += 2) div('.crew', staff.slice(i, i + 2).join(' - '));
 			// a star to the right of the names of a gate that the Pi marks (who makes a starred team is set on the Pi, not here)
-			if (f.star) {
+			// (never in work mode: the star is the owner's, with a colleague)
+			if (f.star && !workMode()) {
 				const star = document.createElement('img');
 				star.className = 'star';
 				star.alt = '';

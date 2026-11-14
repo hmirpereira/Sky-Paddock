@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.46.4** (2026-11-14): Debug mode: the network dot is to the right of the date of the build, before the track; Work mode: the star of the Gates page is never drawn
 - **1.46.3** (2026-11-14): each page of Gates stays 20 seconds and each page of Departures 15; Work mode: the Overhead shows its Ground page (the airport plan) after the radar, when there are aircraft on the ground
 - **1.46.2** (2026-11-14): the airline tails use 75% of the height of their row and have a thin white outline of 1 px (Departures, Gates, Cancellations); Debug mode: a dot between brackets at the end of the line in the corner, green with a network connection and red without
 - **1.46.1** (2026-11-14): the airline tails use about 90% of the height of their row on Departures, Gates and Cancellations

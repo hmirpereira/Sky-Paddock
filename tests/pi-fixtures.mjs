@@ -103,7 +103,7 @@ const gates = {
 			with: ['ANA M', 'RUI T', 'TOM X'],
 			star: true,
 			flights: [{
-				number: 'LH1175', time: '12:35', etd: '12:50', stand: 'S35', eta: '11:58', arrival: 'LH1174', ramp: 'CRISTIANO F',
+				number: 'LH1175', time: '21:35', etd: '21:50', stand: 'S35', eta: '11:58', arrival: 'LH1174', ramp: 'CRISTIANO F',
 			}],
 		},
 		{
@@ -129,6 +129,7 @@ gates.allGates = [
 	{
 		dests: ['FRA'],
 		with: ['ANA L', 'RUI P'],
+		star: true,
 		flights: [{
 			number: 'LH1177', time: '14:30', stand: 'S33', eta: '13:50', arrival: 'LH1176', ramp: 'JOSE M',
 		}],
