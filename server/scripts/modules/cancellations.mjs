@@ -16,7 +16,7 @@ const SERVICE_URL = 'http://127.0.0.1:8095/cancelled.json';
 const AIRPORT_TZ = 'Europe/Lisbon';
 const ROWS_PER_PAGE = 6;
 // tail icons drawn so far (images/airlines/<IATA>.png); other airlines show none
-const TAIL_ICONS = ['LH', 'LX', 'OS', '4Y', 'SN'];
+const TAIL_ICONS = ['LH', 'LX', 'OS', '4Y', 'SN', 'EW', 'AZ', 'TP'];
 // the Star4000 fonts draw accented letters blank (São Paulo -> S o Paulo), so accents are removed
 
 class Cancellations extends WeatherDisplay {

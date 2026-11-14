@@ -11,11 +11,15 @@ import { loadAirportCity, placeTitle } from './utils/local-place.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import fillFooter from './utils/footer.mjs';
+import { fitRows, scaleSteps } from './utils/fit-rows.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/flights.json';
 const AIRPORT_TZ = 'Europe/Lisbon';
-// leaves room for the footer; busy days use pages (7 flights = 4 + 3)
-const ROWS_PER_PAGE = 6;
+// the rows: 41 px each, 252 px of space (the 280 of the lines leave room for the footer). All the flights of the day go on one page: with more
+// than 6 the rows and the letters get smaller (down to 45%, 13 flights); only with even more are there more pages
+const ROW_HEIGHT = 41;
+const PAGE_HEIGHT = 252;
+const SCALES = scaleSteps(0.45, 0.01);
 
 const STATUS_CLASS = {
 	'ON TIME': 'on-time',
@@ -50,8 +54,8 @@ class Departures extends WeatherDisplay {
 
 		await loadAirportCity();
 
-		// the service sends the flights to show (the day's, departed ones too): in the order of the ETD
-		this.flights = [...(response.flights ?? [])].sort((a, b) => Date.parse(a.estimated) - Date.parse(b.estimated));
+		// the service sends the flights to show (the day's, departed ones too): in the order of the STD
+		this.flights = [...(response.flights ?? [])].sort((a, b) => Date.parse(a.scheduled) - Date.parse(b.scheduled));
 		this.lastUpdate = response.lastUpdate ? DateTime.fromISO(response.lastUpdate).setZone(AIRPORT_TZ) : null;
 
 		if (this.flights.length === 0) {
@@ -59,10 +63,9 @@ class Departures extends WeatherDisplay {
 			return;
 		}
 
-		this.pages = [];
-		const pageCount = Math.ceil(this.flights.length / ROWS_PER_PAGE);
-		const perPage = Math.ceil(this.flights.length / pageCount);
-		for (let i = 0; i < this.flights.length; i += perPage) this.pages.push(this.flights.slice(i, i + perPage));
+		const layout = fitRows(this.flights.map(() => ROW_HEIGHT), PAGE_HEIGHT, SCALES);
+		this.scale = layout.scale;
+		this.pages = layout.pages.map((rows) => rows.map((i) => this.flights[i]));
 		this.timing.totalScreens = this.pages.length;
 
 		this.calcNavTiming();
@@ -76,12 +79,14 @@ class Departures extends WeatherDisplay {
 		const pageIndex = Math.min(Math.max(this.screenIndex, 0), this.pages.length - 1);
 
 		const lines = this.pages[pageIndex].map((flight) => {
-			const time = DateTime.fromISO(flight.estimated).setZone(AIRPORT_TZ);
+			const clock = (value) => (value ? ConversionHelpers.formatTime(DateTime.fromISO(value).setZone(AIRPORT_TZ)) : '');
 			const row = this.fillTemplate('departures-row', {
 				// as on the Gates page: LH1175, without the space
 				flight: flight.number.replaceAll(' ', ''),
-				time: ConversionHelpers.formatTime(time),
+				std: clock(flight.scheduled),
+				etd: clock(flight.estimated),
 				status: flight.status,
+				atd: clock(flight.actual),
 			});
 			// tail icon per airline: images/airlines/<IATA code>.png (hidden if missing)
 			const tail = row.querySelector('.tail');
@@ -95,6 +100,11 @@ class Departures extends WeatherDisplay {
 		const list = this.elem.querySelector('.departures-lines');
 		list.innerHTML = '';
 		list.append(...lines);
+		// the size of the rows and of the letters for the flights of the day (utils/fit-rows.mjs)
+		const height = Math.floor(ROW_HEIGHT * this.scale);
+		list.style.setProperty('--row-h', `${height}px`);
+		list.style.setProperty('--row-font', `${Math.round(height * 0.78)}px`);
+		list.style.setProperty('--tail', `${Math.min(38, Math.round(height * 0.92))}px`);
 
 		fillFooter(this.elem, [...(this.lastUpdate ? [`Updated ${ConversionHelpers.formatTime(this.lastUpdate)}`] : [])], pageIndex, this.pages.length);
 

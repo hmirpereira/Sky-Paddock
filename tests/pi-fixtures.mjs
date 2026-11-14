@@ -22,10 +22,14 @@ const flights = (now) => ({
 		['OS 368', 210, 'VIE', 'ON TIME'],
 		['SN 3820', 260, 'BRU', 'CANCELLED'],
 		['EW 7689', 330, 'DUS', 'ON TIME'],
+		['LH 1181', 400, 'FRA', 'ON TIME'],
+		['LX 2085', 460, 'ZRH', 'ON TIME'],
 	].map(([number, minutes, destination, status]) => ({
 		number,
 		scheduled: iso(now + minutes * MIN),
 		estimated: iso(now + (minutes + (status === 'DELAYED' ? 25 : 0)) * MIN),
+		// the actual departure only once it has left
+		actual: status === 'DEPARTED' ? iso(now + (minutes + 7) * MIN) : null,
 		status,
 		destination,
 	})),
@@ -122,6 +126,23 @@ gates.allGates = [
 			number: 'LX2079', time: '10:15', stand: 'S31', eta: '09:30', arrival: 'LX2078', ramp: 'VASCO D',
 		}],
 	},
+	{
+		dests: ['FRA'],
+		with: ['ANA L', 'RUI P'],
+		flights: [{
+			number: 'LH1177', time: '14:30', stand: 'S33', eta: '13:50', arrival: 'LH1176', ramp: 'JOSE M',
+		}],
+	},
+	{ dests: ['MUC'], with: ['IVA S', 'PAULO R', 'LEO K', 'TANIA B'], flights: [{ number: 'LH1793', time: '15:05', arrival: 'LH1792' }] },
+	{
+		dests: ['VIE'],
+		with: ['MARTA C'],
+		flights: [{
+			number: 'OS494', time: '16:20', arrival: 'OS493', ramp: 'DIOGO',
+		}],
+	},
+	{ dests: ['ZRH'], with: ['SOFIA D', 'HUGO F', 'LUIS G'], flights: [{ number: 'LX2093', time: '17:00', arrival: 'LX2092' }] },
+	{ dests: ['FRA'], with: ['CATIA N', 'RITA O'], flights: [{ number: 'LH1181', time: '20:10', arrival: 'LH1180' }] },
 	...gates.gates,
 ];
 

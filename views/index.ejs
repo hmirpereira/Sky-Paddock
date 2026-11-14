@@ -24,6 +24,19 @@
 </head>
 
 <body>
+  <!-- the shadow of the text (the text-shadow mixin of _utils.scss: the letter moved 3 px down and to the right, and a 1.5 px outline, all black) for a picture:
+       the logo of work mode (_page.scss) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="text-shadow" x="-5%" y="-8%" width="115%" height="125%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="1.5" result="outline" />
+      <feOffset in="SourceAlpha" dx="3" dy="3" result="drop" />
+      <feMerge>
+        <feMergeNode in="drop" />
+        <feMergeNode in="outline" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </svg>
 
 
   <header class="site-header">

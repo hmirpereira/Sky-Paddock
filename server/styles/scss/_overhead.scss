@@ -43,12 +43,14 @@
 					font-size: 20pt;
 				}
 
+				// the tail icon is 363 x 256: 68 x 48 px
 				.tail {
 					position: absolute;
 					right: 24px;
 					top: 6px;
-					width: 48px;
+					width: 68px;
 					height: 48px;
+					object-fit: contain;
 				}
 			}
 

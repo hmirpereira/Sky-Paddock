@@ -195,11 +195,15 @@
 			}
 
 			// a flight: number | staff of its gate (one name under the other) | stand | ETA
+			// The rows get smaller when there are many flights (--gs, from 1 to 0.6, set by the script: workschedule.mjs, utils/fit-rows.mjs).
+			// zoom makes everything in a row smaller; the widths are divided by it, so that the columns stay where the headers are
 			.assign-gate {
+				zoom: var(--gs, 1);
+				box-sizing: border-box;
 				display: grid;
-				grid-template-columns: 190px 210px 110px auto;
+				grid-template-columns: calc(190px / var(--gs, 1)) calc(210px / var(--gs, 1)) calc(110px / var(--gs, 1)) auto;
 				align-items: center;
-				padding: 1px 20px;
+				padding: 1px calc(20px / var(--gs, 1));
 				font-size: 24pt;
 				line-height: 38px;
 				white-space: nowrap;
@@ -227,11 +231,13 @@
 					color: #ffe97a;
 
 					img {
-						// the same width in both sizes, so that the flight numbers start in the same place as the title FLIGHT
-						width: 44px;
-						height: 44px;
+						// the tail icon is 363 x 256: 54 x 38 px, the same width in both sizes, so that the flight numbers start in the same place
+						// as the title FLIGHT
+						width: 54px;
+						height: 38px;
 						object-fit: contain;
-						margin-right: 10px;
+						// the number starts at 74 px of the page, under FLIGHT, at any size
+						margin-right: calc(54px / var(--gs, 1) - 54px);
 					}
 
 					.number {
@@ -310,49 +316,6 @@
 
 			&.message .column-headers div {
 				visibility: hidden;
-			}
-
-			// when the flights do not fit (set by the script): smaller rows, 6 flights with 2 names each or 5 with 3
-			.assign-lines.compact .assign-gate {
-				min-height: 40px;
-				padding: 1px 20px;
-				font-size: 18pt;
-				line-height: 26px;
-
-				.flights > div {
-					img {
-						height: 34px;
-					}
-
-					.number {
-						line-height: 20px;
-					}
-
-					.ramp {
-						margin-top: 0;
-						font-size: 12pt;
-						line-height: 12px;
-					}
-				}
-
-				.etas > div {
-					line-height: 20px;
-
-					.left {
-						margin-top: 0;
-						font-size: 12pt;
-						line-height: 12px;
-					}
-				}
-
-				.crew {
-					font-size: 11pt;
-					line-height: 14px;
-
-					.star {
-						height: 24px;
-					}
-				}
 			}
 		}
 

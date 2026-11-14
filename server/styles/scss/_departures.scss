@@ -20,23 +20,40 @@
 				@include u.text-shadow();
 			}
 
-			// the same columns as the Gates page: FLIGHT where its flight numbers start, the ETD centred in its column like the ETA there
+			// FLIGHT where the flight numbers of the Gates page start; the times centred in their columns, like the ETA there
 			.flight {
 				left: 74px;
 			}
 
-			.time {
-				left: 250px;
-				width: 110px;
+			// the columns are spread over the whole width: STD, ETD and ATD (80 px) and STATUS (150 px) are centred in theirs
+			.std {
+				left: 190px;
+				width: 80px;
+				text-align: center;
+			}
+
+			.etd {
+				left: 290px;
+				width: 80px;
 				text-align: center;
 			}
 
 			.status {
-				left: 400px;
+				left: 385px;
+				width: 150px;
+				text-align: center;
+			}
+
+			.atd {
+				left: 530px;
+				width: 80px;
+				text-align: center;
 			}
 		}
 
-		// 310px in total: headers 30 + rows 280 (6 x 41, the bottom bar of the sources is on the lower part)
+		// 310px in total: headers 30 + rows 280 (the bottom bar of the sources is on the lower part). The rows and the letters
+		// get smaller when there are many flights, so that all those of the day fit (--row-h, --row-font and --tail are set by the
+		// script, departures.mjs; the sizes here are those of 6 flights or fewer)
 		.departures-lines {
 			height: 280px;
 			background: repeating-linear-gradient(0deg, c.$gradient-main-background-2 0px,
@@ -47,10 +64,10 @@
 
 			.departures-row {
 				position: relative;
-				height: 41px;
-				// the font, the size and the bands of the Gates page
+				height: var(--row-h, 41px);
+				// the font and the bands of the Gates page
 				font-family: 'Star4000';
-				font-size: 24pt;
+				font-size: var(--row-font, 32px);
 				color: white;
 				@include u.text-shadow();
 
@@ -60,18 +77,18 @@
 
 				>div {
 					position: absolute;
-					top: 4px;
+					top: 0;
+					line-height: var(--row-h, 41px);
 					white-space: pre;
 				}
 
-				// airline tail icon (square image, shown 44 x 44 like on the Gates page: the flight numbers start at 74 px)
+				// airline tail icon (363 x 256: 54 x 38 px at full size, like on the Gates page; the flight numbers start at 74 px)
 				.tail {
 					position: absolute;
-					left: 20px;
-					top: -1px;
-					width: 44px;
-					height: 44px;
-					object-fit: contain;
+					left: 14px;
+					top: calc((var(--row-h, 41px) - var(--tail, 38px)) / 2);
+					width: auto;
+					height: var(--tail, 38px);
 				}
 
 				// the flight number has the colour of the Gates page: $av-yellow of _aviation-theme.scss
@@ -79,14 +96,28 @@
 					left: 74px;
 				}
 
-				.time {
-					left: 250px;
-					width: 110px;
+				.std {
+					left: 190px;
+					width: 80px;
+					text-align: center;
+				}
+
+				.etd {
+					left: 290px;
+					width: 80px;
+					text-align: center;
+				}
+
+				.atd {
+					left: 530px;
+					width: 80px;
 					text-align: center;
 				}
 
 				.status {
-					left: 400px;
+					left: 385px;
+					width: 150px;
+					text-align: center;
 
 					&.on-time {
 						color: #7CFC00;
@@ -108,26 +139,28 @@
 						color: #b5d0ff;
 					}
 
-					// boarding: white and blinking slowly (the blink of the Gates page, _work-schedule.scss); boarded: white, with a tick to the right
+					// boarding: white and blinking like a flashing sign: 1.5 s a cycle in one step (on, then off), as in the FIDS of airhex.com
+					// (animation: aptBlink 1.5s steps(1, end) infinite); the keyframes are those of the Gates page (_work-schedule.scss);
+					// boarded: white, with a tick to the right
 					&.boarding,
 					&.boarded {
 						color: white;
 					}
 
 					&.boarding {
-						animation: gate-blink 2s steps(1) infinite;
+						animation: gate-blink 1.5s steps(1, end) infinite;
 					}
 
-					// the tick, drawn with two borders (the fonts have no tick), with the shadow of the text
+					// the tick, drawn with two borders (the fonts have no tick), with the shadow of the text; in em, so that it follows the letters
 					&.boarded::after {
 						content: '';
 						display: inline-block;
-						width: 9px;
-						height: 20px;
-						margin-left: 16px;
-						border-right: 5px solid white;
-						border-bottom: 5px solid white;
-						transform: translateY(-4px) rotate(45deg);
+						width: 0.28em;
+						height: 0.62em;
+						margin-left: 0.5em;
+						border-right: 0.16em solid white;
+						border-bottom: 0.16em solid white;
+						transform: translateY(-0.125em) rotate(45deg);
 						filter: drop-shadow(3px 3px 0 black);
 					}
 				}

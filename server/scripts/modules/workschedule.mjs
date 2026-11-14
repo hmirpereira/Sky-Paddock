@@ -17,6 +17,7 @@ import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import settings from './settings.mjs';
 import { workMode } from './utils/work-mode.mjs';
+import { fitRows, scaleSteps } from './utils/fit-rows.mjs';
 import { ON, OFF } from './utils/dark-mode.mjs';
 import {
 	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel,
@@ -38,8 +39,14 @@ const rSchedule = (day) => {
 // hourly forecast at the location, 8 days, keyed by local hour ("2026-10-09T03:00");
 // kept for an hour, so the 10-minute data refresh does not ask Open-Meteo again each time
 const FORECAST_CACHE_MINUTES = 60;
-// flights on a page of the Gates page; with more, they go on more pages (1/2, 2/2)
-const GATES_PER_PAGE = 6;
+// the Gates page: all the flights of the day go on one page, at the biggest size that fits them (down to 60%); only with more than the
+// smallest size takes are there more pages (1/2, 2/2). 252 px: the 280 of the lines minus the 28 of the line of the supervisors
+const GATES_HEIGHT = 252;
+const GATE_SCALES = scaleSteps(0.6, 0.02);
+// the names of a gate: one per line, or in pairs from three on (see drawAssignments); each line is 20 px
+const crewLines = (names) => (names <= 2 ? names : Math.ceil(names / 2));
+// the height of a row at full size: the tail icon makes it at least 46 px
+const gateHeight = (flight) => Math.max(46, crewLines(flight.crew?.length ?? 0) * 20 + 2);
 let forecastCache = null;
 const getForecast = async (weatherParameters) => {
 	const key = `${weatherParameters.latitude},${weatherParameters.longitude}`;
@@ -152,12 +159,15 @@ class WorkSchedule extends WeatherDisplay {
 		return later ? flights : flightsToCome(flights, day.date, DateTime.now().setZone(LOCAL_TZ));
 	}
 
-	// the flights in pages of at most GATES_PER_PAGE, as even as possible (7 flights: 4 and 3); each page is one more screen
-	gatePages() {
+	// the flights in pages and the size of the rows (utils/fit-rows.mjs); each page is one more screen
+	gateLayout() {
 		const flights = this.gateFlights();
-		const count = Math.max(1, Math.ceil(flights.length / GATES_PER_PAGE));
-		const perPage = Math.ceil(flights.length / count);
-		return Array.from({ length: count }, (_, i) => flights.slice(i * perPage, (i + 1) * perPage));
+		const { scale, pages } = fitRows(flights.map(gateHeight), GATES_HEIGHT, GATE_SCALES);
+		return { scale, pages: pages.map((rows) => rows.map((i) => flights[i])) };
+	}
+
+	gatePages() {
+		return this.gateLayout().pages;
 	}
 
 	setGateTiming() {
@@ -233,7 +243,7 @@ class WorkSchedule extends WeatherDisplay {
 		const box = this.elem.querySelector('.schedule-page.assignments');
 		box.classList.toggle('message', !!message);
 		box.querySelector('.assign-message').textContent = message;
-		const pages = this.gatePages();
+		const { scale, pages } = this.gateLayout();
 		// flights may have left since the pages were counted: never past the last page
 		const shown = Math.min(pageIndex, pages.length - 1);
 		const flights = pages[shown];
@@ -294,9 +304,13 @@ class WorkSchedule extends WeatherDisplay {
 		});
 		const list = this.elem.querySelector('.assign-lines');
 		list.replaceChildren(...gates);
-		// smaller rows only when the flights do not fit (more than 4, or 4 with many names)
-		list.classList.remove('compact');
-		list.classList.toggle('compact', list.scrollHeight > list.clientHeight);
+		// the size of the rows (--gs, see _work-schedule.scss); one more step smaller if what is drawn is taller than what was counted
+		let size = scale;
+		list.style.setProperty('--gs', size);
+		while (list.scrollHeight > list.clientHeight && size > GATE_SCALES.at(-1)) {
+			size = Math.round((size - 0.02) * 100) / 100;
+			list.style.setProperty('--gs', size);
+		}
 		// the bottom bar like the other screens: the supervisors of the day in order (morning, afternoon, night), "SPV: Tiago - Cristiano -
 		// Angela", and the page counter (1/2) when the flights take more than one page
 		const supv = ['morning', 'afternoon', 'night'].flatMap((part) => day?.supervisors?.[part] ?? []).map(niceName);

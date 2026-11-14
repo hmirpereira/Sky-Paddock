@@ -307,8 +307,8 @@ test('work mode shows only Work Schedule (Gates), Departures, Cancellations, Ove
 	}
 	expect([...seen].sort()).toEqual(['cancellations', 'departures', 'metar', 'overhead', 'work-schedule']);
 	expect([...titles].every((title) => title.startsWith('All Gates'))).toBe(true);
-	// the Lufthansa tail fin (images/airlines/LH.png, which the build gives a new name) instead of the Sky Paddock logo
-	expect(await page.locator('.weather-display.show .header .logo img').evaluate((img) => getComputedStyle(img).content)).toMatch(/assets\/LH-.*\.png/);
+	// the logo of work mode (images/workmode-logo.png, which the build gives a new name) instead of the Sky Paddock logo
+	expect(await page.locator('.weather-display.show .header .logo img').evaluate((img) => getComputedStyle(img).content)).toMatch(/workmode-logo/);
 	// the Overhead is the radar page only, measured from the airport of the settings (not from home): the distances are those from the airport
 	expect([...radarTitles]).toEqual(['Within 50 km']);
 	const airport = pi['/airport.json'];
