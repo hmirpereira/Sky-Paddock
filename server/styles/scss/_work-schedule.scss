@@ -201,9 +201,9 @@
 				zoom: var(--gs, 1);
 				box-sizing: border-box;
 				display: grid;
-				grid-template-columns: calc(190px / var(--gs, 1)) calc(210px / var(--gs, 1)) calc(110px / var(--gs, 1)) auto;
+				grid-template-columns: calc(198px / var(--gs, 1)) calc(210px / var(--gs, 1)) calc(110px / var(--gs, 1)) auto;
 				align-items: center;
-				padding: 1px calc(20px / var(--gs, 1));
+				padding: 1px calc(20px / var(--gs, 1)) 1px calc(12px / var(--gs, 1));
 				font-size: 24pt;
 				line-height: 38px;
 				white-space: nowrap;
@@ -231,13 +231,13 @@
 					color: #ffe97a;
 
 					img {
-						// the tail icon is 363 x 256: 54 x 38 px, the same width in both sizes, so that the flight numbers start in the same place
-						// as the title FLIGHT
-						width: 54px;
-						height: 38px;
+						// the tail icon is 363 x 256: 90% of the height of a row of one or two names (46 px), 41 px high and 58 wide (it is not
+						// taller on the rows of three names), the same width in both sizes, so that the flight numbers start in the same place
+						// as the title FLIGHT (74 px: 12 of the padding, the icon, and what the margin adds: a gap of 4 px after the icon)
+						width: 58px;
+						height: 41px;
 						object-fit: contain;
-						// the number starts at 74 px of the page, under FLIGHT, at any size
-						margin-right: calc(54px / var(--gs, 1) - 54px);
+						margin-right: calc(62px / var(--gs, 1) - 58px);
 					}
 
 					.number {

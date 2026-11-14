@@ -56,13 +56,13 @@
 					white-space: pre;
 				}
 
-				// airline tail icon (363 x 256, shown 42 x 30)
+				// airline tail icon (363 x 256): 90% of the height of the row, 37 x 52 px, ending 4 px before where the flight numbers start (60 px)
 				.tail {
 					position: absolute;
-					left: 14px;
-					top: 5px;
-					width: 42px;
-					height: 30px;
+					left: 4px;
+					top: 2px;
+					width: 52px;
+					height: 37px;
 					object-fit: contain;
 				}
 
