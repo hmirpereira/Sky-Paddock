@@ -837,3 +837,19 @@ body {
 	color: hsl(60, 100%, 30%);
 	margin-bottom: 1rem;
 }
+
+// work mode (a break room), for now: the Lufthansa tail fin (images/airlines/LH.png, 128 x 128) instead of the Sky Paddock logo, on the screens and on the loading screen
+body.work-mode {
+	.header .logo img {
+		content: url(/images/airlines/LH.png);
+		width: 67px;
+		height: 67px;
+		margin-left: 9px; // the Sky Paddock logo is 85 px wide: the tail fin is centred on the same place
+	}
+
+	#loading .logo {
+		content: url(/images/airlines/LH.png);
+		width: 220px;
+		height: 220px;
+	}
+}

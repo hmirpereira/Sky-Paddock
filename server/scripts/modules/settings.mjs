@@ -98,7 +98,7 @@ const init = () => {
 		[OFF, 'Off'],
 	]);
 	// only the aviation screens and the gates of everybody, for a break room (utils/work-mode.mjs); read when the data loads
-	settings.workMode = new Setting('workMode', 'Work mode', 'checkbox', false, null, true);
+	settings.workMode = new Setting('workMode', 'Work mode', 'checkbox', false, (value) => document.body.classList.toggle('work-mode', !!value), true);
 	// dark weather screens: Off, On, or Automatic (10 minutes after the sunset until 10 minutes after the sunrise)
 	settings.darkMode = new Setting('darkMode', 'Dark Mode', 'select', OFF, setDarkMode, true, [
 		[OFF, 'Off'],
