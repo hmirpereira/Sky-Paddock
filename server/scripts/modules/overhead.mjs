@@ -13,6 +13,8 @@ import { registerDisplay } from './navigation.mjs';
 import { escapeHtml } from './utils/html.mjs';
 import { plainText } from './utils/text.mjs';
 import { KM_PER_NM } from './utils/units.mjs';
+import { airportPoint, loadAirportCity } from './utils/local-place.mjs';
+import { workMode } from './utils/work-mode.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/overhead.json';
 // everything on screen is metric; ADS-B gives feet and knots
@@ -189,7 +191,16 @@ class Overhead extends WeatherDisplay {
 
 	async getData(weatherParameters) {
 		if (!super.getData(weatherParameters)) return;
-		const home = { lat: (this.weatherParameters ?? weatherParameters).latitude, lon: (this.weatherParameters ?? weatherParameters).longitude };
+		// the centre of the radar: home (the location of the page), or the airport of the settings in work mode
+		let home = { lat: (this.weatherParameters ?? weatherParameters).latitude, lon: (this.weatherParameters ?? weatherParameters).longitude };
+		if (workMode()) {
+			await loadAirportCity();
+			home = airportPoint();
+			if (!home) {
+				this.setStatus(STATUS.noData);
+				return;
+			}
+		}
 		try {
 			const data = await json(SERVICE_URL, { signal: AbortSignal.timeout(5000) });
 			this.home = home;
@@ -212,13 +223,14 @@ class Overhead extends WeatherDisplay {
 			...this.allAircraft.filter((ac) => insidePlan(this.airport, ac) && (ac.ground || ac.alt * M_PER_FT < 300)),
 			...this.parked.filter((ac) => insidePlan(this.airport, ac)),
 		] : [];
-		if (!this.closest && !this.onAirport.length) {
+		// (work mode shows the radar only)
+		if (!this.closest && (workMode() || !this.onAirport.length)) {
 			this.setStatus(STATUS.noData);
 			return;
 		}
 		// aircraft on the ground go to the airport plan page when there is one, so the radar shows what is flying
 		this.radarAircraft = this.onAirport.length ? this.aircraft.filter((ac) => !ac.ground) : this.aircraft;
-		this.pages = [this.closest && 'closest', this.closest && 'radar', this.onAirport.length && 'ground'].filter(Boolean);
+		this.pages = workMode() ? ['radar'] : [this.closest && 'closest', this.closest && 'radar', this.onAirport.length && 'ground'].filter(Boolean);
 		this.timing.totalScreens = this.pages.length;
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);

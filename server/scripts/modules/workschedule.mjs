@@ -16,6 +16,7 @@ import { getConditionText } from './utils/weather.mjs';
 import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import settings from './settings.mjs';
+import { workMode } from './utils/work-mode.mjs';
 import { ON, OFF } from './utils/dark-mode.mjs';
 import {
 	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel,
@@ -93,6 +94,9 @@ const countdown = (from, to) => {
 // "SUELI B" -> "Sueli B" (the team file is in capitals)
 const niceName = (name) => name.toLowerCase().replace(/(^|[ .])([a-z])/g, (m, sep, letter) => sep + letter.toUpperCase());
 
+// everybody's gates: with the setting Personal Gates off, or in work mode
+const wantsAllGates = () => workMode() || Number(settings.personalGates?.value) === OFF;
+
 class WorkSchedule extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'Work Schedule', defaultActive);
@@ -121,7 +125,8 @@ class WorkSchedule extends WeatherDisplay {
 			this.setStatus(STATUS.noData);
 			return;
 		}
-		this.forecast = await getForecast(this.weatherParameters ?? weatherParameters);
+		// (work mode shows only the Gates page: no weather at the shifts)
+		if (!workMode()) this.forecast = await getForecast(this.weatherParameters ?? weatherParameters);
 
 		// the Gates page (the Pi adds day.gates: [{ dests: ['MUC'], with: ['ANA M'], flights: [...] }]): which day it shows is
 		// decided here, with each refresh of the data, so that the time of the page matches what it shows
@@ -132,7 +137,7 @@ class WorkSchedule extends WeatherDisplay {
 
 	// my gates, or those of everybody with the setting Personal Gates off (the Pi adds them as day.allGates)
 	pickGates() {
-		this.allGates = Number(settings.personalGates?.value) === OFF;
+		this.allGates = wantsAllGates();
 		this.gates = gatesDay(this.days, DateTime.now().setZone(LOCAL_TZ), this.allGates);
 	}
 
@@ -156,18 +161,20 @@ class WorkSchedule extends WeatherDisplay {
 	}
 
 	setGateTiming() {
-		this.timing.delay = [9, 10, ...this.gatePages().map(() => 10)];
+		// work mode: the Gates page only
+		this.timing.delay = [...(workMode() ? [] : [9, 10]), ...this.gatePages().map(() => 10)];
 		this.calcNavTiming();
 	}
 
 	async drawCanvas() {
 		super.drawCanvas();
 		// the setting was changed since the data came: the pages are counted again
-		const changed = this.allGates !== (Number(settings.personalGates?.value) === OFF);
+		const changed = this.allGates !== wantsAllGates();
 		// the day of the Gates page is decided each time it is drawn: once the last flight has left it is the next day with gates
 		this.pickGates();
 		if (changed) this.setGateTiming();
-		const screen = Math.min(Math.max(this.screenIndex, 0), this.timing.totalScreens - 1);
+		// in work mode the first screen is the first Gates page
+		const screen = Math.min(Math.max(this.screenIndex, 0), this.timing.totalScreens - 1) + (workMode() ? 2 : 0);
 		// the screens after the second are the pages of the Gates page
 		const page = Math.min(screen, 2);
 		this.elem.querySelector('.schedule-page.week').style.display = page === 1 ? 'block' : 'none';

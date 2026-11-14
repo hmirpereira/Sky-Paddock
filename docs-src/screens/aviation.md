@@ -4,6 +4,8 @@
 
 Navy and silver, with yellow flight numbers. Apart from the METAR, they read their data from a small service on the Raspberry Pi (see [The Raspberry Pi side](../../README.md#the-raspberry-pi-side)).
 
+**Work mode** (a setting, for a break room): only Work Schedule (its Gates page, of everybody's gates), Departures, Cancellations, Overhead (its radar page only, centred on the airport of the settings) and Airport METAR; see [Look and feel](../look-and-feel.md).
+
 **Before a shift**: when the next shift of the Work Schedule starts in 3 hours or less, the aviation screens (Work Schedule, Departures, Cancellations, Overhead and, last, Airport METAR, those that are on and have data) go round 4 times, one after the other, before the rotation moves on to the next screen. A shift that has already begun does not count. With no schedule (no Pi service) or with the next shift further away, the rotation is as usual.
 
 - **Departures**: next departures from the airport set on the Pi, for the airlines set there, with a tail icon, estimated time and status (ON TIME, DELAYED, CANCELLED, or SCHEDULED when there is no live data). Codeshares are left out; a delay counts from 15 minutes. The Pi calls the AeroDataBox FIDS API with a private key and spreads the monthly quota over the days left.

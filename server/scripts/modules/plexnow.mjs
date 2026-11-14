@@ -60,7 +60,7 @@ class PlexNow extends WeatherDisplay {
 		// a film can start at any time: look again every minute (the page reloads its data only every 10 minutes)
 		if (!this.checkTimer) {
 			this.checkTimer = setInterval(async () => {
-				if (!this.isEnabled) return;
+				if (!this.enabled) return;
 				const now = await fetchSessions();
 				if (signature(now.sessions) !== signature(this.sessions)) this.apply(now);
 			}, CHECK_EVERY);

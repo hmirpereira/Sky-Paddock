@@ -7,6 +7,7 @@ import {
 } from './navigation.mjs';
 import { parseQueryString } from './share.mjs';
 import settings from './settings.mjs';
+import { WORK_SCREENS, workMode } from './utils/work-mode.mjs';
 
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 
@@ -147,7 +148,7 @@ class WeatherDisplay {
 		if (weatherParameters) this.weatherParameters = weatherParameters;
 
 		// set status
-		if (this.isEnabled) {
+		if (this.enabled) {
 			this.setStatus(STATUS.loading);
 		} else {
 			this.setStatus(STATUS.disabled);
@@ -263,7 +264,8 @@ class WeatherDisplay {
 	}
 
 	get enabled() {
-		return this.isEnabled;
+		// work mode leaves out the screens that are not for a break room, whatever their checkbox says
+		return this.isEnabled && (!workMode() || WORK_SCREENS.includes(this.elemId));
 	}
 
 	// navigation timings

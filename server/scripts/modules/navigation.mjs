@@ -14,6 +14,7 @@ import ConversionHelpers from './utils/conversionHelpers.mjs';
 import piHeartbeat from './utils/pi-heartbeat.mjs';
 import { DateTime } from '../vendor/auto/luxon.mjs';
 import { LOCAL_TZ, shiftSoon } from './utils/shifts.mjs';
+import { workMode } from './utils/work-mode.mjs';
 
 document.addEventListener('DOMContentLoaded', () => {
 	init();
@@ -272,7 +273,8 @@ const loadDisplay = (direction) => {
 	if (direction > 0 && isAviation(curIdx) && !isAviation(idx)) {
 		// the aviation screens are over: go round again while a shift is near, up to 4 passes
 		const first = displays.findIndex((d, i) => isAviation(i) && d.status === STATUS.loaded && d.timing.totalScreens > 0);
-		const soon = shiftSoon(displays.find((d) => d.elemId === 'work-schedule')?.days ?? [], DateTime.now().setZone(LOCAL_TZ));
+		// (not in work mode: the shifts are not shown, so they are not the reason to stay)
+		const soon = !workMode() && shiftSoon(displays.find((d) => d.elemId === 'work-schedule')?.days ?? [], DateTime.now().setZone(LOCAL_TZ));
 		if (soon && aviationPass < AVIATION_PASSES && first >= 0) {
 			aviationPass += 1;
 			idx = first;

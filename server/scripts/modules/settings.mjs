@@ -32,6 +32,7 @@ const settings = {
 	newsTicker: { value: false },
 	personalSchedule: { value: ON },
 	personalGates: { value: ON },
+	workMode: { value: false },
 	darkMode: { value: OFF },
 	christmas: { value: AUTOMATIC },
 	halloween: { value: AUTOMATIC },
@@ -96,6 +97,8 @@ const init = () => {
 		[ON, 'On'],
 		[OFF, 'Off'],
 	]);
+	// only the aviation screens and the gates of everybody, for a break room (utils/work-mode.mjs); read when the data loads
+	settings.workMode = new Setting('workMode', 'Work mode', 'checkbox', false, null, true);
 	// dark weather screens: Off, On, or Automatic (10 minutes after the sunset until 10 minutes after the sunrise)
 	settings.darkMode = new Setting('darkMode', 'Dark Mode', 'select', OFF, setDarkMode, true, [
 		[OFF, 'Off'],
@@ -132,7 +135,7 @@ const init = () => {
 	const GROUPS = [
 		['Location', ['airportIcao', 'ipmaArea', 'travelCity']],
 		['Units', ['windUnits', 'temperatureUnits', 'distanceUnits', 'pressureUnits', 'hoursFormat']],
-		['Screens', ['speed', 'personalSchedule', 'personalGates', 'newsTicker']],
+		['Screens', ['speed', 'personalSchedule', 'personalGates', 'workMode', 'newsTicker']],
 		['Look', ['darkMode', 'wide', 'scanLines', 'vignette', 'colorFringe', 'imageFringe', 'christmas', 'halloween']],
 		['Advanced', ['kiosk', 'debugMode']],
 	];

@@ -217,6 +217,34 @@ test('a link with odd settings shows the airport city as text', async ({ page })
 	expect(pageErrors, 'page errors').toEqual([]);
 });
 
+// loads the built site with the recorded answers and the made-up answers of the Pi (`pi`), with only the screens in `on` turned on
+// (null: all of them); `extra`: other parameters of the address
+const openRotation = async (page, pi, on, extra = {}) => {
+	const meta = readMeta();
+	await page.route('https://tile.openstreetmap.org/**', (route) => route.fulfill({ status: 200, contentType: 'image/svg+xml', body: TILE }));
+	await page.route('http://127.0.0.1:8095/**', (route) => {
+		const answer = pi[new URL(route.request().url()).pathname];
+		if (!answer) return route.fulfill({ status: 404, body: '' });
+		return route.fulfill({
+			status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(answer),
+		});
+	});
+	await page.routeFromHAR(HAR, { url: SITES, notFound: 'fallback' });
+	await page.clock.install({ time: meta.time });
+	await page.goto('./', { waitUntil: 'domcontentloaded' });
+	const screens = await page.locator('#enabledDisplays input[type=checkbox]')
+		.evaluateAll((inputs) => inputs.map((input) => input.id.replace(/-checkbox$/, '')));
+	const params = new URLSearchParams();
+	screens.forEach((screen) => params.set(`${screen}-checkbox`, String(!on || on.includes(screen))));
+	params.set('latLonQuery', LOCATION.query);
+	params.set('latLon', JSON.stringify(LOCATION.latLon));
+	params.set('settings-airportIcao-text', LOCATION.airportIcao);
+	params.set('settings-ipmaArea-select', LOCATION.ipmaArea);
+	Object.entries(extra).forEach(([key, value]) => params.set(key, value));
+	await page.goto(`./?${params}`, { waitUntil: 'domcontentloaded' });
+	await page.waitForFunction(() => document.querySelector('.weather-display.show'), null, { timeout: 90_000 });
+};
+
 // within 3 hours of the start of a shift the aviation screens go round 4 times before the rotation moves on; further away, once
 [[2, 4], [5, 1]].forEach(([hours, passes]) => {
 	test(`the aviation screens go round ${passes} time(s) when the shift starts in ${hours} hours`, async ({ page, record }) => {
@@ -229,29 +257,8 @@ test('a link with odd settings shows the airport city as text', async ({ page })
 		pi['/schedule.json'].days = [{
 			date: start.toISODate(), code: 'M', start: start.toFormat('HH:mm'), end: start.plus({ hours: 8 }).toFormat('HH:mm'), off: false,
 		}];
-		await page.route('https://tile.openstreetmap.org/**', (route) => route.fulfill({ status: 200, contentType: 'image/svg+xml', body: TILE }));
-		await page.route('http://127.0.0.1:8095/**', (route) => {
-			const answer = pi[new URL(route.request().url()).pathname];
-			if (!answer) return route.fulfill({ status: 404, body: '' });
-			return route.fulfill({
-				status: 200, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(answer),
-			});
-		});
-		await page.routeFromHAR(HAR, { url: SITES, notFound: 'fallback' });
-		await page.clock.install({ time: meta.time });
-		await page.goto('./', { waitUntil: 'domcontentloaded' });
-		const screens = await page.locator('#enabledDisplays input[type=checkbox]')
-			.evaluateAll((inputs) => inputs.map((input) => input.id.replace(/-checkbox$/, '')));
 		// only the aviation screens and the News, so the rotation leaves the aviation block for a screen that is easy to see
-		const on = ['work-schedule', 'metar', 'departures', 'cancellations', 'overhead', 'news'];
-		const params = new URLSearchParams();
-		screens.forEach((screen) => params.set(`${screen}-checkbox`, String(on.includes(screen))));
-		params.set('latLonQuery', LOCATION.query);
-		params.set('latLon', JSON.stringify(LOCATION.latLon));
-		params.set('settings-airportIcao-text', LOCATION.airportIcao);
-		params.set('settings-ipmaArea-select', LOCATION.ipmaArea);
-		await page.goto(`./?${params}`, { waitUntil: 'domcontentloaded' });
-		await page.waitForFunction(() => document.querySelector('.weather-display.show'), null, { timeout: 90_000 });
+		await openRotation(page, pi, ['work-schedule', 'metar', 'departures', 'cancellations', 'overhead', 'news']);
 		// walk the rotation: count the times the Airport METAR is entered, until the News is shown
 		let entered = 0;
 		let last = null;
@@ -269,4 +276,46 @@ test('a link with odd settings shows the airport city as text', async ({ page })
 		expect(await shownScreen(page)).toBe('news');
 		expect(entered).toBe(passes);
 	});
+});
+
+// work mode (a break room): with every screen turned on, only the screens for it are shown, and of the Work Schedule only the Gates page, of everybody's gates
+test('work mode shows only Work Schedule (Gates), Departures, Cancellations, Overhead and METAR', async ({ page, record }) => {
+	test.skip(record, 'it does not ask the sites');
+	test.setTimeout(240_000);
+	const pi = piResponses(readMeta().time);
+	await openRotation(page, pi, null, { 'settings-workMode-checkbox': 'true' });
+	const seen = new Set();
+	const titles = new Set();
+	let radar = [];
+	const radarTitles = new Set();
+	for (let steps = 0; steps < 150; steps += 1) {
+		// eslint-disable-next-line no-await-in-loop
+		const shown = await shownScreen(page);
+		seen.add(shown);
+		// eslint-disable-next-line no-await-in-loop
+		if (shown === 'overhead') {
+			radarTitles.add(await page.locator('#overhead-html .header .title.dual .bottom').textContent());
+			// eslint-disable-next-line no-await-in-loop
+			radar = await page.locator('#overhead-html .overhead-lines .dist').allTextContents();
+		}
+		// eslint-disable-next-line no-await-in-loop
+		if (shown === 'work-schedule') titles.add(await page.locator('#work-schedule-html .header .title.dual .bottom').textContent());
+		// eslint-disable-next-line no-await-in-loop
+		await page.evaluate(() => document.querySelector('#NavigateNext').click());
+		// eslint-disable-next-line no-await-in-loop
+		await page.waitForTimeout(100);
+	}
+	expect([...seen].sort()).toEqual(['cancellations', 'departures', 'metar', 'overhead', 'work-schedule']);
+	expect([...titles].every((title) => title.startsWith('All Gates'))).toBe(true);
+	// the Overhead is the radar page only, measured from the airport of the settings (not from home): the distances are those from the airport
+	expect([...radarTitles]).toEqual(['Within 50 km']);
+	const airport = pi['/airport.json'];
+	const km = (a, b) => {
+		const rad = (d) => (d * Math.PI) / 180;
+		const h = Math.sin(rad(b.lat - a.lat) / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(rad(b.lon - a.lon) / 2) ** 2;
+		return 2 * 6371 * Math.asin(Math.sqrt(h));
+	};
+	const expected = pi['/overhead.json'].aircraft.filter((ac) => !ac.ground).map((ac) => km(airport, ac)).filter((d) => d <= 50).map((d) => String(Math.round(d)))
+		.sort();
+	expect(radar.sort()).toEqual(expected);
 });

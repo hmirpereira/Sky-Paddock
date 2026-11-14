@@ -9,19 +9,24 @@ const CITY_URL = 'http://127.0.0.1:8095/airport.json';
 // "City Departures" must fit in one line before the clock: a longer title is just "Departures"
 const TITLE_MAX = 17;
 const cities = {};
+const points = {};
 
 const airport = () => {
 	const icao = String(settings.airportIcao?.value ?? '').trim().toUpperCase();
 	return { icao: /^[A-Z0-9]{4}$/.test(icao) ? icao : '' };
 };
 
-// asks the Pi service for the city of the local airport (once per code; an answer that fails is asked again next time)
+// asks the Pi service for the city and the position of the local airport (once per code; an answer that fails is asked again next time)
 const loadAirportCity = async () => {
 	const { icao } = airport();
 	if (!icao || icao in cities) return;
 	try {
 		const response = await fetch(`${CITY_URL}?icao=${icao}`, { signal: AbortSignal.timeout(3000) });
-		if (response.ok) cities[icao] = plainText(String((await response.json()).city ?? '').slice(0, 40)).trim();
+		if (response.ok) {
+			const data = await response.json();
+			cities[icao] = plainText(String(data.city ?? '').slice(0, 40)).trim();
+			if (Number.isFinite(data.lat) && Number.isFinite(data.lon)) points[icao] = { lat: data.lat, lon: data.lon };
+		}
 	} catch (error) {
 		console.warn('Airport city: not available', error.message);
 	}
@@ -33,8 +38,11 @@ const placeTitle = (word) => {
 	return title.length <= TITLE_MAX ? title : word;
 };
 
+// where the local airport is ({ lat, lon }), or null when the Pi has not said (yet)
+const airportPoint = () => points[airport().icao] ?? null;
+
 const warningArea = () => ipmaArea(settings.ipmaArea?.value);
 
 export {
-	airport, loadAirportCity, placeTitle, warningArea,
+	airport, airportPoint, loadAirportCity, placeTitle, warningArea,
 };
