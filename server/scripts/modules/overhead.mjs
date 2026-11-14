@@ -223,14 +223,14 @@ class Overhead extends WeatherDisplay {
 			...this.allAircraft.filter((ac) => insidePlan(this.airport, ac) && (ac.ground || ac.alt * M_PER_FT < 300)),
 			...this.parked.filter((ac) => insidePlan(this.airport, ac)),
 		] : [];
-		// (work mode shows the radar only)
-		if (!this.closest && (workMode() || !this.onAirport.length)) {
+		if (!this.closest && !this.onAirport.length) {
 			this.setStatus(STATUS.noData);
 			return;
 		}
 		// aircraft on the ground go to the airport plan page when there is one, so the radar shows what is flying
 		this.radarAircraft = this.onAirport.length ? this.aircraft.filter((ac) => !ac.ground) : this.aircraft;
-		this.pages = workMode() ? ['radar'] : [this.closest && 'closest', this.closest && 'radar', this.onAirport.length && 'ground'].filter(Boolean);
+		// work mode: the radar and the airport plan, without Closest Now
+		this.pages = [!workMode() && this.closest && 'closest', this.closest && 'radar', this.onAirport.length && 'ground'].filter(Boolean);
 		this.timing.totalScreens = this.pages.length;
 		this.calcNavTiming();
 		this.setStatus(STATUS.loaded);

@@ -108,9 +108,9 @@ class WorkSchedule extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'Work Schedule', defaultActive);
 
-		// three pages: Next Shift 9 seconds, Work Schedule 10 seconds, each Gates page 10 seconds
+		// three pages: Next Shift 9 seconds, Work Schedule 10 seconds, each Gates page 20 seconds
 		this.timing.baseDelay = 1000;
-		this.timing.delay = [9, 10, 10];
+		this.timing.delay = [9, 10, 20];
 	}
 
 	async getData(weatherParameters) {
@@ -172,7 +172,7 @@ class WorkSchedule extends WeatherDisplay {
 
 	setGateTiming() {
 		// work mode: the Gates page only
-		this.timing.delay = [...(workMode() ? [] : [9, 10]), ...this.gatePages().map(() => 10)];
+		this.timing.delay = [...(workMode() ? [] : [9, 10]), ...this.gatePages().map(() => 20)];
 		this.calcNavTiming();
 	}
 

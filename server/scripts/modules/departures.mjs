@@ -36,7 +36,7 @@ class Departures extends WeatherDisplay {
 		super(elemId, 'Departures', defaultActive);
 
 		// set timings (seconds on screen)
-		this.timing.baseDelay = 10000;
+		this.timing.baseDelay = 15000;
 	}
 
 	async getData(_weatherParameters) {

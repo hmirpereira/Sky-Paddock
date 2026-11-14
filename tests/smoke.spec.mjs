@@ -316,7 +316,7 @@ test('work mode shows only Work Schedule (Gates), Departures, Cancellations, Ove
 	await page.context().setOffline(false);
 	await expect(page.locator('#version-mark .net.on')).toHaveCount(1);
 	// the Overhead is the radar page only, measured from the airport of the settings (not from home): the distances are those from the airport
-	expect([...radarTitles]).toEqual(['Within 50 km']);
+	expect([...radarTitles]).toEqual(['Within 50 km', 'LIS Ground']);
 	const airport = pi['/airport.json'];
 	const km = (a, b) => {
 		const rad = (d) => (d * Math.PI) / 180;
