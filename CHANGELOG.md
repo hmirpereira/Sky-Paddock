@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.43.1** (2026-11-14): Airport METAR: only the METAR is shown, the TAF pages are gone (the decoder, its tests and the `/taf.json` fixture too)
 - **1.43.0** (2026-11-14): Aviation: within 3 hours of the start of the next shift the aviation screens (Work Schedule, METAR, Departures, Cancellations, Overhead) go round 4 times before the rotation moves on; the Airport METAR is now the last aviation screen (after Overhead)
 - **1.42.2** (2026-11-13): the address location is also used when the coordinates are numbers written as text (`"38.7"`); `null` or missing ones are still ignored
 - **1.42.1** (2026-11-13): Radar: the radar list has a 10 s limit (a server that never answers no longer keeps the screen loading); the address location is used only when both coordinates are numbers

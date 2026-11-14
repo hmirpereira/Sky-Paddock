@@ -5,12 +5,6 @@
 const MIN = 60 * 1000;
 const HOUR = 60 * MIN;
 const iso = (ms) => new Date(ms).toISOString().replace(/\.\d{3}Z$/, 'Z');
-const pad = (n) => String(n).padStart(2, '0');
-// TAF day and hour (DDHH, UTC)
-const dayHour = (ms) => {
-	const d = new Date(ms);
-	return `${pad(d.getUTCDate())}${pad(d.getUTCHours())}`;
-};
 // date in Lisbon (YYYY-MM-DD)
 const lisbonDate = (ms) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Lisbon' }).format(new Date(ms));
 
@@ -50,16 +44,6 @@ const cancelled = (now) => ({
 		},
 	],
 });
-
-const taf = (now) => {
-	const issued = Math.floor(now / HOUR) * HOUR - HOUR;
-	const raw = `TAF LPPR ${dayHour(issued)}00Z ${dayHour(issued + HOUR)}/${dayHour(issued + 25 * HOUR)} 07010KT 9999 FEW020`
-		+ ` BECMG ${dayHour(issued + 6 * HOUR)}/${dayHour(issued + 8 * HOUR)} 31012KT`
-		+ ` TEMPO ${dayHour(issued + 14 * HOUR)}/${dayHour(issued + 18 * HOUR)} 4000 BR BKN008`;
-	return {
-		station: 'LPPR', raw, issued: iso(issued), validTo: iso(issued + 25 * HOUR), fetched: iso(now - 10 * MIN), error: null,
-	};
-};
 
 // small airport plan near Lisbon (lines of [lat, lon]), as the Pi serves the real one
 const airportPlan = {
@@ -307,7 +291,6 @@ const health = (now) => ({ generated: iso(now), problems: [] });
 const piResponses = (now) => ({
 	'/flights.json': flights(now),
 	'/cancelled.json': cancelled(now),
-	'/taf.json': taf(now),
 	'/overhead.json': overhead(now),
 	'/schedule.json': schedule(now),
 	'/f1jet.json': f1jet(now),

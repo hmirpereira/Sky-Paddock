@@ -47,7 +47,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | Departures (Pi) | Next departures of a list of airlines from one airport | [AeroDataBox](https://aerodatabox.com) |
 | Cancellations (Pi) | Cancelled departures from the same airport, all airlines | AeroDataBox |
 | Overhead (Pi) | Closest aircraft, a 50 km radar and the airport plan with the aircraft on the ground | Own ADS-B receiver, [adsb.fi](https://adsb.fi), [adsb.lol](https://adsb.lol) (backup), [OpenSky](https://opensky-network.org), [adsbdb](https://www.adsbdb.com), [OpenStreetMap](https://www.openstreetmap.org) |
-| Airport METAR | METAR of one airport decoded into plain English, then its TAF (Pi) | [metar.vatsim.net](https://metar.vatsim.net); TAF from [aviationweather.gov](https://aviationweather.gov) |
+| Airport METAR | METAR of one airport decoded into plain English | [metar.vatsim.net](https://metar.vatsim.net) |
 | News (Pi) | Latest Portuguese headlines, breaking and top stories first, each with its source's logo; then a page of aviation news and a last page with Formula 1 news; breaking news can also crawl in the bottom line | RSS feeds of [RTP](https://www.rtp.pt/noticias), [Expresso](https://expresso.pt), [Publico](https://www.publico.pt), [CNN Portugal](https://cnnportugal.iol.pt), for aviation [Aviacao TV](https://aviacao.tv) and, for F1, [FlyingLapF1](https://flyinglapf1.com), [F1PT](https://www.f1pt.pt) and [PlanetF1](https://www.planetf1.com) |
 | Plex Recommends (Pi) | Two pages: the movie added most recently to the Plex library and an unwatched movie picked at random, each with its poster, title, year, runtime, Rotten Tomatoes scores (critics and audience) and synopsis | [Tautulli](https://tautulli.com) (connected to Plex) |
 | Plex Now Playing (Pi) | What is playing on the Plex server now, one page per session (3 at most): poster, title (with season, episode and name for a series), playing or paused, who is watching and on which device, a progress bar with the time played and when it ends, and the synopsis. Skipped when nothing is playing | Tautulli |
@@ -80,7 +80,7 @@ Chromium on the Pi lets the public site read the local service through the `Loca
 
 **Kiosk watchdog**: in kiosk mode the page tells the Pi service each time the rotation moves to another screen, at most once a minute (`utils/pi-heartbeat.mjs`). A timer on the Pi (`skypaddock-kiosk`) restarts the browser when there has been no sign of life for 6 minutes (a blank page after a power cut, a frozen page or one that never loaded), unless the TV was switched off on purpose, the internet is down (a restart would not help) or it already restarted in the last 10 minutes (at most 3 times an hour). Each restart is written to a log on the SD card with the reason.
 
-**Pi warnings**: when something on the Pi stops updating (flight data refused or failing, flight quota low, TAF or schedule stale, ADS-B receiver, OpenSky or Plex down), its screen is skipped, so the bottom line adds a short red warning such as `Schedule stale since Tue 14:07` (`utils/pi-health.mjs`, checked every 5 minutes). Nothing is shown when all is well or off the Pi.
+**Pi warnings**: when something on the Pi stops updating (flight data refused or failing, flight quota low, schedule stale, ADS-B receiver, OpenSky or Plex down), its screen is skipped, so the bottom line adds a short red warning such as `Schedule stale since Tue 14:07` (`utils/pi-health.mjs`, checked every 5 minutes). Nothing is shown when all is well or off the Pi.
 
 
 ## Development
