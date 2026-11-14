@@ -1,6 +1,7 @@
 // Sky Paddock: the single entry for Vite (dev server and build). Each screen registers itself on import
 // (the rotation order is DISPLAY_ORDER in modules/navigation.mjs); index.mjs (last) starts the page.
 import './vendor-globals.mjs';
+import './modules/utils/net-status.mjs';
 import './modules/currentweatherscroll.mjs';
 import './modules/hazards.mjs';
 import './modules/currentweather.mjs';

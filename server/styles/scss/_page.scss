@@ -335,7 +335,8 @@ body {
 	text-align: right;
 
 	.version,
-	.music {
+	.music,
+	.net {
 		display: none;
 	}
 }
@@ -345,8 +346,27 @@ body {
 }
 
 .debug-mode #version-mark .version,
-.debug-mode #version-mark .music {
+.debug-mode #version-mark .music,
+.debug-mode #version-mark .net {
 	display: inline;
+}
+
+// the network dot between brackets, at the end of the line: red without a network connection, green with it (net-status.mjs)
+#version-mark .net {
+	margin-left: 8px;
+
+	i {
+		display: inline-block;
+		width: 8px;
+		height: 8px;
+		margin: 0 4px;
+		border-radius: 50%;
+		background: #ff4040;
+	}
+
+	&.on i {
+		background: #00e000;
+	}
 }
 
 .debug-mode #version-mark .version + .music {

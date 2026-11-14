@@ -231,13 +231,14 @@
 					color: #ffe97a;
 
 					img {
-						// the tail icon is 363 x 256: 90% of the height of a row of one or two names (46 px), 41 px high and 58 wide (it is not
+						// the tail icon is 363 x 256: 75% of the height of a row of one or two names (46 px), 35 px high and 50 wide (it is not
 						// taller on the rows of three names), the same width in both sizes, so that the flight numbers start in the same place
-						// as the title FLIGHT (74 px: 12 of the padding, the icon, and what the margin adds: a gap of 4 px after the icon)
-						width: 58px;
-						height: 41px;
+						// as the title FLIGHT (74 px: 12 of the padding, the icon, and what the margin adds)
+						width: 50px;
+						height: 35px;
 						object-fit: contain;
-						margin-right: calc(62px / var(--gs, 1) - 58px);
+						filter: url(#tail-outline); // a thin white outline (index.ejs)
+						margin-right: calc(62px / var(--gs, 1) - 50px);
 					}
 
 					.number {

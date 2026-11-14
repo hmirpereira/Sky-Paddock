@@ -104,8 +104,8 @@ class Departures extends WeatherDisplay {
 		const height = Math.floor(ROW_HEIGHT * this.scale);
 		list.style.setProperty('--row-h', `${height}px`);
 		list.style.setProperty('--row-font', `${Math.round(height * 0.78)}px`);
-		// the tail icon: 90% of the height of the row
-		list.style.setProperty('--tail', `${Math.round(height * 0.9)}px`);
+		// the tail icon: 75% of the height of the row
+		list.style.setProperty('--tail', `${Math.round(height * 0.75)}px`);
 
 		fillFooter(this.elem, [...(this.lastUpdate ? [`Updated ${ConversionHelpers.formatTime(this.lastUpdate)}`] : [])], pageIndex, this.pages.length);
 

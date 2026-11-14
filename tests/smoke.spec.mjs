@@ -283,7 +283,7 @@ test('work mode shows only Work Schedule (Gates), Departures, Cancellations, Ove
 	test.skip(record, 'it does not ask the sites');
 	test.setTimeout(240_000);
 	const pi = piResponses(readMeta().time);
-	await openRotation(page, pi, null, { 'settings-workMode-checkbox': 'true' });
+	await openRotation(page, pi, null, { 'settings-workMode-checkbox': 'true', 'settings-debugMode-checkbox': 'true' });
 	const seen = new Set();
 	const titles = new Set();
 	let radar = [];
@@ -309,6 +309,12 @@ test('work mode shows only Work Schedule (Gates), Departures, Cancellations, Ove
 	expect([...titles].every((title) => title.startsWith('All Gates'))).toBe(true);
 	// the logo of work mode (images/workmode-logo.png, which the build gives a new name) instead of the Sky Paddock logo
 	expect(await page.locator('.weather-display.show .header .logo img').evaluate((img) => getComputedStyle(img).content)).toMatch(/workmode-logo/);
+	// Debug mode: the dot of the network connection is green, and red when the browser goes offline
+	await expect(page.locator('#version-mark .net.on')).toHaveCount(1);
+	await page.context().setOffline(true);
+	await expect(page.locator('#version-mark .net.on')).toHaveCount(0);
+	await page.context().setOffline(false);
+	await expect(page.locator('#version-mark .net.on')).toHaveCount(1);
 	// the Overhead is the radar page only, measured from the airport of the settings (not from home): the distances are those from the airport
 	expect([...radarTitles]).toEqual(['Within 50 km']);
 	const airport = pi['/airport.json'];
