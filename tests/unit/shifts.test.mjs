@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DateTime } from '../../server/scripts/vendor/auto/luxon.mjs';
 import {
-	keepDays, stillShown, shiftTimes, gatesDay, flightsToCome, gatesLabel, shiftSoon,
+	keepDays, stillShown, shiftTimes, gatesDay, flightsToCome, gatesLabel, shiftSoon, gateStaff,
 } from '../../server/scripts/modules/utils/shifts.mjs';
 
 const at = (iso) => DateTime.fromISO(iso, { zone: 'Europe/Lisbon' });
@@ -86,6 +86,20 @@ test('a flight leaves the Gates list once its departure has passed', () => {
 test('the title of the Gates page: Today, Tomorrow, then the date from two days on', () => {
 	const now = at('2026-11-12T09:00');
 	assert.deepEqual(['2026-11-12', '2026-11-13', '2026-11-14', '2026-11-20'].map((date) => gatesLabel(date, now)), ['Today', 'Tomorrow', 'Sat 14/11', 'Fri 20/11']);
+});
+
+const nice = (name) => name.toLowerCase().replace(/(^|[ .])([a-z])/g, (m, sep, letter) => sep + letter.toUpperCase());
+
+test('gateStaff: the owner first and in capitals, the others as they are written by nice', () => {
+	assert.deepEqual(gateStaff(['ANA M', 'HUGO P', 'TOM X'], 'HUGO P', nice), ['HUGO P', 'Ana M', 'Tom X']);
+	assert.deepEqual(gateStaff(['ANA M', 'hugo p'], ' Hugo P ', nice), ['HUGO P', 'Ana M']);
+});
+
+test('gateStaff: without the owner on the gate, or without a name from the Pi, the names are as they were', () => {
+	assert.deepEqual(gateStaff(['ANA M', 'TOM X'], 'HUGO P', nice), ['Ana M', 'Tom X']);
+	assert.deepEqual(gateStaff(['ANA M', 'HUGO P'], '', nice), ['Ana M', 'Hugo P']);
+	assert.deepEqual(gateStaff(['ANA M', 'HUGO P'], undefined, nice), ['Ana M', 'Hugo P']);
+	assert.deepEqual(gateStaff([], 'HUGO P', nice), []);
 });
 
 test('shiftSoon: a shift that has not begun and starts in 3 hours or less', () => {

@@ -33,6 +33,7 @@ const settings = {
 	personalSchedule: { value: ON },
 	personalGates: { value: ON },
 	workMode: { value: false },
+	musicStream: { value: false },
 	darkMode: { value: OFF },
 	christmas: { value: AUTOMATIC },
 	halloween: { value: AUTOMATIC },
@@ -99,6 +100,9 @@ const init = () => {
 	]);
 	// only the aviation screens and the gates of everybody, for a break room (utils/work-mode.mjs); read when the data loads
 	settings.workMode = new Setting('workMode', 'Work mode', 'checkbox', false, (value) => document.body.classList.toggle('work-mode', !!value), true);
+	// the music of the Pi: the files (by default) or the RFM radio. The site does not play it: the Pi reads this setting in the TV address
+	// (skypaddock-musica-tocar); in work mode the radio always plays, whatever this says
+	settings.musicStream = new Setting('musicStream', 'Music from the RFM radio (Pi)', 'checkbox', false, null, true);
 	// dark weather screens: Off, On, or Automatic (10 minutes after the sunset until 10 minutes after the sunrise)
 	settings.darkMode = new Setting('darkMode', 'Dark Mode', 'select', OFF, setDarkMode, true, [
 		[OFF, 'Off'],
@@ -135,7 +139,7 @@ const init = () => {
 	const GROUPS = [
 		['Location', ['airportIcao', 'ipmaArea', 'travelCity']],
 		['Units', ['windUnits', 'temperatureUnits', 'distanceUnits', 'pressureUnits', 'hoursFormat']],
-		['Screens', ['speed', 'personalSchedule', 'personalGates', 'workMode', 'newsTicker']],
+		['Screens', ['speed', 'personalSchedule', 'personalGates', 'workMode', 'musicStream', 'newsTicker']],
 		['Look', ['darkMode', 'wide', 'scanLines', 'vignette', 'colorFringe', 'imageFringe', 'christmas', 'halloween']],
 		['Advanced', ['kiosk', 'debugMode']],
 	];

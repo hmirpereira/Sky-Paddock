@@ -311,6 +311,9 @@ test('work mode shows only Work Schedule (Gates), Departures, Cancellations, Ove
 	expect(await page.locator('.weather-display.show .header .logo img').evaluate((img) => getComputedStyle(img).content)).toMatch(/workmode-logo/);
 	// the star of a gate with the owner and a colleague together (the Pi marks it, also on the gates of everybody) is never drawn in work mode
 	await expect(page.locator('#work-schedule-html .assign-gate .star')).toHaveCount(0);
+	// ... and the owner is not put first, nor in capitals (the names as the Pi sends them)
+	const names = await page.locator('#work-schedule-html .assign-gate:has(.number:text("LX2067")) .crew > div').allTextContents();
+	expect(names).toEqual(['Lia F', 'Hugo P']);
 	// Debug mode: the dot of the network connection is green, and red when the browser goes offline
 	await expect(page.locator('#version-mark .net.on')).toHaveCount(1);
 	await page.context().setOffline(true);
@@ -345,4 +348,18 @@ test('the star of a gate is drawn on the Gates page outside work mode', async ({
 		await page.waitForTimeout(200);
 	}
 	await expect(page.locator('#work-schedule-html .assign-gate .star')).toHaveCount(1);
+	// the owner is first on his gate and in capitals; the others are written as before
+	const names = await page.locator('#work-schedule-html .assign-gate:has(.number:text("LX2067")) .crew > div').allTextContents();
+	expect(names).toEqual(['HUGO P', 'Lia F']);
+});
+
+// the setting Music from the RFM radio (Pi) is read from the address: the Pi's music service looks for it there
+test('the setting Music from the RFM radio is read from the address', async ({ page, record }) => {
+	test.skip(record, 'it does not ask the sites');
+	await page.goto('./?settings-musicStream-checkbox=true', { waitUntil: 'domcontentloaded' });
+	await expect(page.locator('#settings-musicStream-checkbox')).toBeChecked();
+	await page.goto('./', { waitUntil: 'domcontentloaded' });
+	await page.evaluate(() => localStorage.clear());
+	await page.reload({ waitUntil: 'domcontentloaded' });
+	await expect(page.locator('#settings-musicStream-checkbox')).not.toBeChecked();
 });

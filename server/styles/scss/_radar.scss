@@ -51,14 +51,15 @@
 		flex-direction: column;
 		align-items: center;
 		font-family: 'Star4000 Small';
-		font-size: 12pt;
+		// the legend was too small to read on the TV: LIGHT and HEAVY at 18 pt, the boxes 22 x 26 px, the time of the frame at 16 pt
+		font-size: 18pt;
 		color: white;
 		@include u.text-shadow();
 
 		.scale {
 			display: flex;
 			align-items: center;
-			gap: 6px;
+			gap: 8px;
 		}
 
 		.scale-table {
@@ -67,8 +68,8 @@
 		}
 
 		.box {
-			width: 14px;
-			height: 16px;
+			width: 22px;
+			height: 26px;
 		}
 
 		// the colours the rain is drawn with (Universal Blue, the scheme of the tiles), from drizzle to heavy rain
@@ -83,7 +84,7 @@
 
 		.frame {
 			margin-top: 2px;
-			font-size: 11pt;
+			font-size: 16pt;
 		}
 	}
 }

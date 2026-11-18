@@ -64,6 +64,15 @@ const shiftSoon = (days, now, hours = 3) => days.some((day) => {
 	return !!times && times.start > now && times.start.diff(now, 'hours').hours <= hours;
 });
 
+// the names of a gate: the owner first and in capitals ("HUGO P"), the others as `nice` writes them. `me` is the name of the owner as the roster
+// writes it, which the Pi sends (the site has no names in it); without it, or when the owner is not on the gate, the names are as they were
+const gateStaff = (names, me, nice) => {
+	const owner = (me ?? '').trim().toUpperCase();
+	const mine = owner ? names.filter((name) => name.trim().toUpperCase() === owner) : [];
+	if (!mine.length) return names.map(nice);
+	return [...mine.map((name) => name.trim().toUpperCase()), ...names.filter((name) => !mine.includes(name)).map(nice)];
+};
+
 export {
-	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel, shiftSoon,
+	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel, shiftSoon, gateStaff,
 };

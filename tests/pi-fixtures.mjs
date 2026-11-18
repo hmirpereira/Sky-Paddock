@@ -108,7 +108,7 @@ const gates = {
 		},
 		{
 			dests: ['ZRH', 'VIE'],
-			with: ['LIA F', 'TOM X'],
+			with: ['LIA F', 'HUGO P'],
 			flights: [{
 				number: 'LX2067', time: '18:05', stand: 'S30', eta: '17:10', arrival: 'LX2066', ramp: 'OLGA',
 			}, { number: 'OS492', time: '19:40', arrival: 'OS491' }],
@@ -149,6 +149,8 @@ gates.allGates = [
 
 const schedule = (now) => ({
 	generated: iso(now - HOUR),
+	// the name of the owner in the roster (made up)
+	me: 'HUGO P',
 	days: Array.from({ length: 8 }, (_, i) => {
 		const date = lisbonDate(now + i * 24 * HOUR);
 		// the other schedule of the same day (R): a shift on some days, a day off on others

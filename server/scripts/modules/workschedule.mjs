@@ -20,7 +20,7 @@ import { workMode } from './utils/work-mode.mjs';
 import { fitRows, scaleSteps } from './utils/fit-rows.mjs';
 import { ON, OFF } from './utils/dark-mode.mjs';
 import {
-	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel,
+	LOCAL_TZ, shiftTimes, keepDays, stillShown, gatesDay, flightsToCome, gatesLabel, gateStaff,
 } from './utils/shifts.mjs';
 
 const SERVICE_URL = 'http://127.0.0.1:8095/schedule.json';
@@ -127,6 +127,8 @@ class WorkSchedule extends WeatherDisplay {
 		}
 
 		// from yesterday on, for a night shift still going on (the file on the Pi is refreshed every hour)
+		// the name of the owner as the roster writes it (the Pi sends it)
+		this.me = response.me ?? '';
 		this.days = keepDays(response.days ?? [], DateTime.now().setZone(LOCAL_TZ)).slice(0, 9);
 		if (this.days.length === 0) {
 			this.setStatus(STATUS.noData);
@@ -275,7 +277,8 @@ class WorkSchedule extends WeatherDisplay {
 			row.append(number);
 			// the staff as the Pi gives it (me included): two names, one under the other; three or more, in pairs ("A - B", "C"),
 			// to use less height
-			const staff = f.crew.map(niceName);
+			// (the owner first and in capitals, but not in work mode)
+			const staff = workMode() ? f.crew.map(niceName) : gateStaff(f.crew, this.me, niceName);
 			if (staff.length <= 2) staff.forEach((name) => div('.crew', name));
 			else for (let i = 0; i < staff.length; i += 2) div('.crew', staff.slice(i, i + 2).join(' - '));
 			// a star to the right of the names of a gate that the Pi marks (who makes a starred team is set on the Pi, not here)
