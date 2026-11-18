@@ -2,13 +2,16 @@
 // while the setting is on; anywhere but the Pi the request fails and the line stays empty.
 import { json } from './fetch.mjs';
 import { plainText } from './text.mjs';
+import setHubOnline from './net-status.mjs';
 
 const MUSIC_URL = 'http://127.0.0.1:8095/musica.json';
 const EVERY_MS = 15000;
 let timer = null;
 
 const show = async () => {
-	const track = await json(MUSIC_URL, { signal: AbortSignal.timeout(3000) }).then((d) => d.track, () => '');
+	const data = await json(MUSIC_URL, { signal: AbortSignal.timeout(3000) }).catch(() => null);
+	const track = data?.track ?? '';
+	setHubOnline(data?.online);
 	const element = document.querySelector('#version-mark .music');
 	if (element) element.textContent = plainText(track ?? '');
 };
