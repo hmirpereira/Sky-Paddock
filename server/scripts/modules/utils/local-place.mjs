@@ -21,7 +21,7 @@ const loadAirportCity = async () => {
 	const { icao } = airport();
 	if (!icao || icao in cities) return;
 	try {
-		const response = await fetch(`${CITY_URL}?icao=${icao}`, { signal: AbortSignal.timeout(3000) });
+		const response = await fetch(`${CITY_URL}?icao=${encodeURIComponent(icao)}`, { signal: AbortSignal.timeout(3000) });
 		if (response.ok) {
 			const data = await response.json();
 			cities[icao] = plainText(String(data.city ?? '').slice(0, 40)).trim();

@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.47.3** (2026-11-19): the airport code in the address of the local place lookup is encoded (a code with symbols no longer changes the airport asked for); no visible change
 - **1.47.2** (2026-11-19): the settings page writes its option texts as plain text (textContent), not as HTML; no visible change
 - **1.47.1** (2026-11-18): Debug mode: the network dot is read from the Pi (`online` in `/musica.json`: a default route through an interface that is up) instead of only the browser's link, which showed red with the network working; the browser's link is the fallback when the Pi does not answer
 - **1.47.0** (2026-11-18): Gates: the owner (the name the Pi sends, `me`) is always the first name on his gate and in capitals, except in work mode; Local Radar: a much bigger legend (18 pt, bigger colour boxes and time); a new setting, Music from the RFM radio (Pi), read by the music service of the Pi
