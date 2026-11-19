@@ -58,7 +58,7 @@ class Setting {
 		label.id = `settings-${this.shortName}-label`;
 
 		const span = document.createElement('span');
-		span.innerHTML = `${this.name} `;
+		span.textContent = `${this.name} `;
 		label.append(span);
 
 		const select = document.createElement('select');
@@ -78,7 +78,7 @@ class Setting {
 			const option = document.createElement('option');
 			option.value = value.toFixed(2);
 
-			option.innerHTML = text;
+			option.textContent = text;
 			parent.append(option);
 		});
 		label.append(select);
@@ -104,7 +104,7 @@ class Setting {
 		checkbox.checked = this.myValue;
 		checkbox.addEventListener('change', (e) => this.checkboxChange(e));
 		const span = document.createElement('span');
-		span.innerHTML = this.name;
+		span.textContent = this.name;
 
 		label.append(checkbox, span);
 
@@ -119,7 +119,7 @@ class Setting {
 		label.for = `settings-${this.shortName}-text`;
 		label.id = `settings-${this.shortName}-label`;
 		const span = document.createElement('span');
-		span.innerHTML = `${this.name} `;
+		span.textContent = `${this.name} `;
 		const input = document.createElement('input');
 		input.type = 'text';
 		input.id = `settings-${this.shortName}-text`;
