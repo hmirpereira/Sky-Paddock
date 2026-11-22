@@ -46,6 +46,11 @@ const duration = (from, to) => {
 	return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
 };
 
+// the hub asks for the jet every 5 minutes while it flies: a position older than this means no receiver hears it now
+const STALE_MIN = 15;
+const staleMinutes = (jet) => (jet.airborne && jet.position?.at ? Math.round(DateTime.now().diff(DateTime.fromISO(jet.position.at), 'minutes').minutes) : 0);
+const ago = (minutes) => (minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)}h ${String(minutes % 60).padStart(2, '0')}m`);
+
 class F1Jet extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
 		super(elemId, 'Verstappen Jet', defaultActive);
@@ -131,14 +136,19 @@ class F1Jet extends WeatherDisplay {
 			const alt = jet.position?.altitudeFt ? `${(Math.round((jet.position.altitudeFt * 0.3048) / 10) * 10).toLocaleString('en-US')} m` : '';
 			const speed = jet.position?.speedKt ? `${Math.round(jet.position.speedKt * KM_PER_NM)} km/h` : '';
 			// the destination is rarely known in flight: say where it took off from instead
-			const route = flight.to ? `To ${city(flight.to) || code(flight.to)}` : (flight.from && `Took off from ${code(flight.from)}`);
-			where.textContent = [route, alt, speed].filter(Boolean).join('   ');
+			const planned = flight.toBy === 'aerodatabox' ? ' (plan)' : '';
+			const route = flight.to ? `To ${city(flight.to) || code(flight.to)}${planned}` : (flight.from && `Took off from ${code(flight.from)}`);
+			const stale = staleMinutes(jet);
+			// no receiver hears it now: say when it was last seen instead of showing an old altitude and speed as current
+			where.textContent = stale > STALE_MIN ? [route, `last seen ${ago(stale)} ago`].filter(Boolean).join('   ') : [route, alt, speed].filter(Boolean).join('   ');
 		} else {
 			const place = city(flight.to) || code(flight.to);
 			const since = flight.landed ? DateTime.now().diff(DateTime.fromISO(flight.landed), 'hours').hours : null;
 			let stay = '';
 			if (since !== null && since >= 0) stay = since < 48 ? `${Math.floor(since)}h ${String(Math.floor((since % 1) * 60)).padStart(2, '0')}m` : `${Math.floor(since / 24)} days`;
-			where.textContent = stay ? `In ${place} for ${stay}` : `In ${place}`;
+			// a destination from the flight plan, never seen landing: presumed, not observed
+			const here = flight.toBy === 'aerodatabox' ? `Presumed in ${place}` : `In ${place}`;
+			where.textContent = stay ? `${here} for ${stay}` : here;
 		}
 	}
 
@@ -219,6 +229,9 @@ class F1Jet extends WeatherDisplay {
 			if (i === 0 || jump) runs.push({ gap: false, pts: [] });
 			runs.at(-1).pts.push(p);
 		});
+		// in flight, from the last point heard to the destination of the flight plan: dashed, it has not been tracked
+		const target = ends.at(-1);
+		if (jet.airborne && flight.to && track.length && target && target.code === code(flight.to)) runs.push({ gap: true, pts: [track.at(-1), [target.lon, target.lat]] });
 		const line = runs.map((run) => `<polyline class="track${run.gap ? ' gap' : ''}" points="${run.pts.map(([lon, lat]) => px(lon, lat).join(',')).join(' ')}"/>`).join('');
 		const marks = ends.map((a, i) => {
 			const [x, y] = px(a.lon, a.lat);
@@ -229,11 +242,11 @@ class F1Jet extends WeatherDisplay {
 		let plane = '';
 		if (jet.airborne && track.length) {
 			const [x, y] = px(...track.at(-1));
-			plane = `<circle class="plane" cx="${x}" cy="${y}" r="6"/>`;
+			plane = `<circle class="plane${staleMinutes(jet) > STALE_MIN ? ' stale' : ''}" cx="${x}" cy="${y}" r="6"/>`;
 		}
 		this.elem.querySelector('.map-svg').innerHTML = `<svg viewBox="0 0 ${MAP_W} ${MAP_H}"><rect class="sea" width="${MAP_W}" height="${MAP_H}"/>${land.join('')}${line}${marks.join('')}${plane}</svg>`;
 		this.elem.querySelector('.map-route').textContent = jet.airborne
-			? `${code(flight.from)}-${code(flight.to)}  since ${when(flight.departed)}`
+			? `${code(flight.from)}-${code(flight.to)}  since ${when(flight.departed)}${staleMinutes(jet) > STALE_MIN ? `  seen ${ago(staleMinutes(jet))} ago` : ''}`
 			: `${code(flight.from)}-${code(flight.to)}  ${duration(flight.departed, flight.landed)}`;
 	}
 }

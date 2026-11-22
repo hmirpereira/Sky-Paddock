@@ -252,6 +252,13 @@
 					fill: #ffd23f;
 					stroke: black;
 					stroke-width: 1;
+					// no receiver hears the jet now: this is where it was last seen
+					&.stale {
+						fill: none;
+						stroke: #ffd23f;
+						stroke-width: 2;
+						stroke-dasharray: 3 2;
+					}
 				}
 			}
 
