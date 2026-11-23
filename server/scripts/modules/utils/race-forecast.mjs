@@ -1,6 +1,6 @@
 // forecast for the hour a race starts, only when it is within Open-Meteo's 16 days (F1 Next Race, GT World Next)
+import { DateTime } from 'luxon';
 import { json } from './fetch.mjs';
-import { DateTime } from '../../vendor/auto/luxon.mjs';
 import { getConditionText } from './weather.mjs';
 import { getWeatherRegionalIconFromIconLink } from '../icons.mjs';
 import ConversionHelpers from './conversionHelpers.mjs';

@@ -19,6 +19,8 @@ import { workMode } from './utils/work-mode.mjs';
 const SERVICE_URL = 'http://127.0.0.1:8095/overhead.json';
 // everything on screen is metric; ADS-B gives feet and knots
 const RANGE_KM = 50;
+// the aircraft move: asked again when the first page is shown and the last answer is older than this
+const REFRESH_MS = 60 * 1000;
 const M_PER_FT = 0.3048;
 const RADAR_RADIUS = 140; // px, keep in sync with _overhead.scss
 // the radar background: map tiles (CARTO Dark Matter, from the Pi, which keeps the key and a cache) around home, drawn faint behind the rings
@@ -201,43 +203,59 @@ class Overhead extends WeatherDisplay {
 				return;
 			}
 		}
+		this.home = home;
+		if (!(await this.fetchAircraft()) || !this.compute()) {
+			this.setStatus(STATUS.noData);
+			return;
+		}
+		this.setStatus(STATUS.loaded);
+	}
+
+	// the aircraft from the Pi; false (and the old ones kept) when it does not answer
+	async fetchAircraft() {
 		try {
 			const data = await json(SERVICE_URL, { signal: AbortSignal.timeout(5000) });
-			this.home = home;
 			this.airport = data.airport ?? null;
 			this.allAircraft = data.aircraft ?? [];
 			// aircraft of the group still on their stand with the transponder off (last position kept by the Pi)
 			this.parked = (data.parked ?? []).map((ac) => ({ ...ac, ground: true, parked: true }));
-			this.aircraft = (data.aircraft ?? [])
-				.map((ac) => ({ ...ac, dist: distanceNm(this.home, ac) * KM_PER_NM, brg: bearing(this.home, ac) }))
-				.filter((ac) => ac.dist <= RANGE_KM)
-				.sort((a, b) => a.dist - b.dist);
+			this.fetchedAt = Date.now();
+			return true;
 		} catch (error) {
 			console.error('Overhead: no data from the Pi', error);
-			this.setStatus(STATUS.noData);
-			return;
+			return false;
 		}
-		this.closest = this.aircraft.find((ac) => !ac.ground);
+	}
+
+	// what the pages show, from the aircraft and the home; false when there is nothing to show (the pages are then left as they were)
+	compute() {
+		const aircraft = this.allAircraft
+			.map((ac) => ({ ...ac, dist: distanceNm(this.home, ac) * KM_PER_NM, brg: bearing(this.home, ac) }))
+			.filter((ac) => ac.dist <= RANGE_KM)
+			.sort((a, b) => a.dist - b.dist);
+		const closest = aircraft.find((ac) => !ac.ground);
 		// aircraft on the airport plan: on the ground, or very low over it (landing or taking off)
-		this.onAirport = this.airport?.map ? [
+		const onAirport = this.airport?.map ? [
 			...this.allAircraft.filter((ac) => insidePlan(this.airport, ac) && (ac.ground || ac.alt * M_PER_FT < 300)),
 			...this.parked.filter((ac) => insidePlan(this.airport, ac)),
 		] : [];
-		if (!this.closest && !this.onAirport.length) {
-			this.setStatus(STATUS.noData);
-			return;
-		}
+		if (!closest && !onAirport.length) return false;
+		this.aircraft = aircraft;
+		this.closest = closest;
+		this.onAirport = onAirport;
 		// aircraft on the ground go to the airport plan page when there is one, so the radar shows what is flying
-		this.radarAircraft = this.onAirport.length ? this.aircraft.filter((ac) => !ac.ground) : this.aircraft;
+		this.radarAircraft = onAirport.length ? aircraft.filter((ac) => !ac.ground) : aircraft;
 		// work mode: the radar and the airport plan, without Closest Now
-		this.pages = [!workMode() && this.closest && 'closest', this.closest && 'radar', this.onAirport.length && 'ground'].filter(Boolean);
+		this.pages = [!workMode() && closest && 'closest', closest && 'radar', onAirport.length && 'ground'].filter(Boolean);
 		this.timing.totalScreens = this.pages.length;
 		this.calcNavTiming();
-		this.setStatus(STATUS.loaded);
+		return true;
 	}
 
 	async drawCanvas() {
 		super.drawCanvas();
+		// the data came with the refresh of the whole page (every 10 minutes), too old for a radar: the first page asks the Pi again
+		if (this.screenIndex === 0 && Date.now() - this.fetchedAt > REFRESH_MS && await this.fetchAircraft()) this.compute();
 		const page = this.pages[Math.min(Math.max(this.screenIndex, 0), this.pages.length - 1)];
 		['closest', 'radar', 'ground'].forEach((name) => {
 			this.elem.querySelector(`.overhead-page.${name}`).style.display = page === name ? 'block' : 'none';
@@ -352,8 +370,10 @@ class Overhead extends WeatherDisplay {
 		card.querySelector('.callsign').textContent = flightText(ac);
 		card.querySelector('.airline').textContent = plainText(ac.airline ?? '');
 		const tail = card.querySelector('.tail');
-		tail.style.display = GROUP_ICONS.includes(ac.iataAirline) ? '' : 'none';
-		tail.src = `images/airlines/${ac.iataAirline}.png`;
+		// only the airlines of the group have a picture: asking for the others would be a 404 at every draw
+		const hasTail = GROUP_ICONS.includes(ac.iataAirline);
+		tail.style.display = hasTail ? '' : 'none';
+		if (hasTail) tail.src = `images/airlines/${ac.iataAirline}.png`;
 		// no route, or one that does not fit where the aircraft is (checked by the Pi service)
 		card.querySelector('.route').classList.toggle('unknown', !(ac.from?.iata && ac.to?.iata));
 		card.querySelector('.from .code').textContent = ac.from?.iata ?? '';

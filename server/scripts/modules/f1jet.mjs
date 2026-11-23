@@ -4,12 +4,12 @@
 // and serves /f1jet.json; anywhere else the screen is skipped. Until 1.3 the data came from
 // F1 Jet Tracker, which now lets only its own site read its files.
 // Page 1: where the jet is now and its last flight. Page 2: map of the last flight.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { escapeHtml } from './utils/html.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import { plainText } from './utils/text.mjs';
 import { KM_PER_NM } from './utils/units.mjs';
 import fillFooter from './utils/footer.mjs';

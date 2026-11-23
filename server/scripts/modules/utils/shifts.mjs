@@ -1,5 +1,5 @@
 // shift times and which days of the Work Schedule are still worth showing (no page needed, so they can be tested in Node)
-import { DateTime } from '../../vendor/auto/luxon.mjs';
+import { DateTime } from 'luxon';
 
 const LOCAL_TZ = 'Europe/Lisbon';
 

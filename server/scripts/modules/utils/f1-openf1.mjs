@@ -1,14 +1,14 @@
 // OpenF1 (https://openf1.org) as a backup for the F1 screens when Jolpica F1 has not yet
 // published a session (it can take until after the weekend). Free use is refused while any
 // session is live; the screens then try again later (utils/f1-weekend.mjs).
+import { DateTime } from 'luxon';
 import { json } from './fetch.mjs';
-import { DateTime } from '../../vendor/auto/luxon.mjs';
 
 const JOLPICA = 'https://api.jolpi.ca';
 const OPENF1 = 'https://api.openf1.org/v1';
 
 // the alpha API and OpenF1 give team names, not the constructorId used for the icons
-export const TEAM_NAMES = {
+const TEAM_NAMES = {
 	'red bull': 'red_bull',
 	'red bull racing': 'red_bull',
 	'rb f1 team': 'rb',

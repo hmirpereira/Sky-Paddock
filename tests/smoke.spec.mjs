@@ -9,9 +9,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { test as base, expect } from '@playwright/test';
+import { DateTime } from 'luxon';
 import piResponses from './pi-fixtures.mjs';
 import jolpicaResponses from './f1-fixtures.mjs';
-import { DateTime } from '../server/scripts/vendor/auto/luxon.mjs';
 
 const test = base.extend({ record: [false, { option: true }] });
 

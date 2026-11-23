@@ -1,7 +1,7 @@
 // base weather display class
 
+import { DateTime } from 'luxon';
 import STATUS, { calcStatusClass, statusClasses } from './status.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import {
 	msg, displayNavMessage, isPlaying, updateStatus, timeZone,
 } from './navigation.mjs';
@@ -37,7 +37,7 @@ class WeatherDisplay {
 		// default navigation timing
 		this.timing = {
 			totalScreens: 1,
-			baseDelay: 9000, // 5 seconds
+			baseDelay: 9000, // 9 seconds
 			delay: 1, // 1*1second = 1 second total display time
 		};
 		this.navBaseCount = 0;
@@ -80,7 +80,7 @@ class WeatherDisplay {
 
 		// create a checkbox in the selected displays area
 		const label = document.createElement('label');
-		label.for = `${this.elemId}-checkbox`;
+		label.htmlFor = `${this.elemId}-checkbox`;
 		label.id = `${this.elemId}-label`;
 		const checkbox = document.createElement('input');
 		checkbox.type = 'checkbox';

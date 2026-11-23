@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DateTime } from '../../server/scripts/vendor/auto/luxon.mjs';
+import { DateTime } from 'luxon';
 import {
 	keepDays, stillShown, shiftTimes, gatesDay, flightsToCome, gatesLabel, shiftSoon, gateStaff,
 } from '../../server/scripts/modules/utils/shifts.mjs';

@@ -7,9 +7,9 @@
 // The season schedule comes from Jolpica F1 once a day.
 // Results are asked for shortly after each session and then every 20 minutes until they appear,
 // and once more at the next F1 update time (22:00) to catch penalties given after the session.
+import { DateTime } from 'luxon';
 import { json } from './fetch.mjs';
 import { readCache, writeCache, isFresh } from './f1-update.mjs';
-import { DateTime } from '../../vendor/auto/luxon.mjs';
 
 const SCHEDULE_URL = 'https://api.jolpi.ca/ergast/f1/current/races/?limit=40';
 const SCHEDULE_KEY = 'f1-schedule-cache';

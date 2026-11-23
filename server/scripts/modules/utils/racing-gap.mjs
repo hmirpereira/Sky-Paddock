@@ -1,7 +1,7 @@
 // The racing gap: no F1 or GT event starts in the next 21 days and the last one ended more than 72 hours ago.
 // Then the F1 and GT screens are skipped. Only the rule is here (no page code), so it can be tested on its own;
 // the events are read in racing-gap-events.mjs.
-import { DateTime } from '../../vendor/auto/luxon.mjs';
+import { DateTime } from 'luxon';
 
 const AHEAD_DAYS = 21;
 const SINCE_HOURS = 72;

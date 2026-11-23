@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Settings } from '../../server/scripts/vendor/auto/luxon.mjs';
+import { Settings } from 'luxon';
 import { isFresh } from '../../server/scripts/modules/utils/f1-update.mjs';
 
 // isFresh(copy) is true when the copy was saved after the latest update time (Friday to Monday, 22:00 Lisbon)

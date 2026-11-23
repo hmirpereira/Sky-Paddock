@@ -1,7 +1,7 @@
 // Racing gap: the F1 and GT screens are skipped only when no event starts in 21 days and the last one ended over 72 h ago
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DateTime } from '../../server/scripts/vendor/auto/luxon.mjs';
+import { DateTime } from 'luxon';
 import isRacingGap, { gtEventSpan } from '../../server/scripts/modules/utils/racing-gap.mjs';
 
 const now = DateTime.fromISO('2026-07-10T12:00:00', { zone: 'Europe/Lisbon' });

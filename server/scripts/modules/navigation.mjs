@@ -1,4 +1,5 @@
 // navigation handles progress, next/previous and initial load messages from the parent frame
+import { DateTime } from 'luxon';
 import noSleep from './utils/nosleep.mjs';
 import { isFullscreen } from './utils/fullscreen.mjs';
 import STATUS from './status.mjs';
@@ -12,7 +13,6 @@ import settings from './settings.mjs';
 import { parseQueryString } from './share.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import piHeartbeat from './utils/pi-heartbeat.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import { LOCAL_TZ, shiftSoon } from './utils/shifts.mjs';
 import { workMode } from './utils/work-mode.mjs';
 

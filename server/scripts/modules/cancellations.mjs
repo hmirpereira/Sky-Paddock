@@ -2,13 +2,13 @@
 // Comes from the same skypaddock-hub service on the Raspberry Pi as the Departures screen. The list is
 // only refreshed when the service calls AeroDataBox for the Lufthansa Group flights (no extra calls),
 // so the footer shows when it was last updated. Anywhere else this screen is skipped.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { loadAirportCity, placeTitle } from './utils/local-place.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import fillFooter from './utils/footer.mjs';
 import { plainText } from './utils/text.mjs';
 

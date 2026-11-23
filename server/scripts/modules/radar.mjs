@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-underscore-dangle */
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 
 import { json } from './utils/fetch.mjs';
 import { getConditionText } from './utils/weather.mjs';

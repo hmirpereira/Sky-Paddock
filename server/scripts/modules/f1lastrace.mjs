@@ -3,12 +3,12 @@
 // Sprint: from about 1 h after the start until qualifying (see utils/f1-weekend.mjs).
 // Between those, the F1 Grid screen takes its place. Source: Jolpica F1; OpenF1 while Jolpica
 // has not published the result yet.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import racingGap from './utils/racing-gap-events.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import { getPhase, getSessionResult } from './utils/f1-weekend.mjs';
 import {
 	teamsByNumber, teamId, findSession, sessionResult, laps,

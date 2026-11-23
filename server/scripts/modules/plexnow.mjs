@@ -3,7 +3,7 @@
 // and serves /plexnow.json and the posters; the key of Tautulli never leaves the Pi. With nothing playing the screen is skipped,
 // as anywhere but the Pi. The page asks the service once a minute (a small local answer) and only redraws when a session starts,
 // stops, pauses or resumes.
-import { DateTime } from '../vendor/auto/luxon.mjs';
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';

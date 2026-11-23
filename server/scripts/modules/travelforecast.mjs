@@ -1,9 +1,9 @@
 // travel forecast display: page 1 high and low of a few cities, page 2 the current weather and local time
 // of one city chosen in the settings (utils/travel-cities.mjs). Both from Open-Meteo.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import { getWeatherRegionalIconFromIconLink, getWeatherIconFromIconLink } from './icons.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { getConditionText, shortConditions } from './utils/weather.mjs';

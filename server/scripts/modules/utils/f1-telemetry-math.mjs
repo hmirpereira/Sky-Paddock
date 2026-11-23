@@ -1,5 +1,5 @@
 // pure helpers of the F1 Telemetry screen (no page needed, so they can be tested in Node)
-import { DateTime } from '../../vendor/auto/luxon.mjs';
+import { DateTime } from 'luxon';
 
 const COLOURS = ['#38c8ff', '#ffd23f']; // without team colours: cyan and yellow
 

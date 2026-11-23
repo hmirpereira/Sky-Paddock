@@ -3,6 +3,7 @@
 // story from several sources. BREAKING: the source marks it as such ("Ultima hora") in the last 2 hours;
 // TOP STORY: the same story in 3 or more sources in the last 3 hours. Then a page of aviation news (Aviacao TV,
 // last 3 days) and a last page with the Formula 1 news of FlyingLapF1, F1PT and PlanetF1 (last 7 days). Each source is shown by its logo. Anywhere else this screen is skipped.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
@@ -10,7 +11,6 @@ import ConversionHelpers from './utils/conversionHelpers.mjs';
 import {
 	newsFresh, sourceLogo, isF1Source, isAviationSource,
 } from './utils/news.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import { plainText } from './utils/text.mjs';
 import fillFooter from './utils/footer.mjs';
 import f1Title from './utils/f1-title.mjs';

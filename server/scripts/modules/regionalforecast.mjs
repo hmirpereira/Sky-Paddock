@@ -5,10 +5,10 @@
 // of the radar (utils/regional-map.mjs draws them); the cities and their coordinates come from utils/regional-pt.mjs
 // (made by ferramentas/mkregional.py from Natural Earth, public domain; its map images are no longer used).
 // (The original screen used the US National Weather Service and a US map, so it never worked here.)
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import fillFooter from './utils/footer.mjs';
 import { registerDisplay } from './navigation.mjs';

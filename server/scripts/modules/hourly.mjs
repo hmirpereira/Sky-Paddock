@@ -1,7 +1,7 @@
 // hourly forecast list
 
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
 import { directionToNSEW } from './utils/calc.mjs';
 import ScrollWeatherDisplay from './scrollweatherdisplay.mjs';

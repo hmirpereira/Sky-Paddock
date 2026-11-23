@@ -2,7 +2,7 @@
 // so it is downloaded once a day on these days, from this hour (Portuguese time) on,
 // and saved in the browser; the rest of the time the saved copy is shown.
 // Friday to Monday at 22h: Monday catches races in the Americas, which end late on Sunday in Lisbon.
-import { DateTime } from '../../vendor/auto/luxon.mjs';
+import { DateTime } from 'luxon';
 
 const UPDATE_WEEKDAYS = [5, 6, 7, 1]; // 1 = Monday ... 7 = Sunday
 const UPDATE_HOUR = 22;

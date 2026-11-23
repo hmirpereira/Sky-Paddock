@@ -1,6 +1,6 @@
 // Reads the F1 and GT events for the racing gap (utils/racing-gap.mjs). Unknown data gives null for its series,
 // and then there is no gap: a missing event must not hide a screen that has something to show.
-import { DateTime } from '../../vendor/auto/luxon.mjs';
+import { DateTime } from 'luxon';
 import { json } from './fetch.mjs';
 import { f1Events } from './f1-weekend.mjs';
 import isRacingGap, { gtEventSpan } from './racing-gap.mjs';

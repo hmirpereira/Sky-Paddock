@@ -3,12 +3,12 @@
 // for the start of the main race (page 2). Same layout as F1 Next Race.
 // The skypaddock-hub service on the Pi reads the event page of the official site and serves it in /gt.json
 // ('next'); anywhere else this screen is skipped. Outlines and positions: utils/gt-circuits.mjs.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import { gtRacingGap } from './utils/racing-gap-events.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import GT_CIRCUITS from './utils/gt-circuits.mjs';
 import { plainText } from './utils/text.mjs';

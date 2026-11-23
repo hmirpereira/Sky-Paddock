@@ -3,13 +3,13 @@
 // (skypaddock-hub), which keeps the API key private and serves the result on the Pi only; it also decides which day is shown
 // (tomorrow's flights an hour after the last one of today has left).
 // Anywhere else the service is not reachable and this screen is skipped.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { loadAirportCity, placeTitle } from './utils/local-place.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import fillFooter from './utils/footer.mjs';
 import { fitRows, scaleSteps } from './utils/fit-rows.mjs';
 

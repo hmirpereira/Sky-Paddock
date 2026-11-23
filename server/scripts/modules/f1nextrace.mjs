@@ -2,12 +2,12 @@
 // weekend schedule in Portuguese time and race-time forecast at the circuit (page 2)
 // Sources: Jolpica F1 (schedule), bacinger/f1-circuits (outlines, see utils/f1-circuits.mjs),
 // Open-Meteo (forecast at the circuit, up to 16 days ahead)
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import racingGap from './utils/racing-gap-events.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import ConversionHelpers from './utils/conversionHelpers.mjs';
 import { readCache, writeCache, isFresh } from './utils/f1-update.mjs';
 import CIRCUITS from './utils/f1-circuits.mjs';

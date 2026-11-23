@@ -6,12 +6,12 @@
 // Sources: race grid from Jolpica F1 (qualifying); sprint grid from Jolpica F1's alpha API
 // (sprint qualifying); OpenF1 as a backup for both while Jolpica has not published them.
 // Team icons come from the car number.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import racingGap from './utils/racing-gap-events.mjs';
 import { json } from './utils/fetch.mjs';
 import ScrollWeatherDisplay from './scrollweatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import { getPhase, getSessionResult } from './utils/f1-weekend.mjs';
 import {
 	teamsByNumber, teamId, findSession, sessionResult, openf1,

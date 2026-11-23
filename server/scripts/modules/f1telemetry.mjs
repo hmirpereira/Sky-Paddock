@@ -7,13 +7,13 @@
 // 0..1 scale; small differences in the line taken are ignored. OpenF1 refuses free requests while a
 // session is live, and needs some minutes to publish the data after the end, so the saved copy is
 // shown until a newer session can be read.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import racingGap from './utils/racing-gap-events.mjs';
 import { openf1 } from './utils/f1-openf1.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 import { readCache, writeCache } from './utils/f1-update.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import { escapeHtml } from './utils/html.mjs';
 import {
 	COLOURS, driverColours, interp, isStale, lapProfile, lapTime,

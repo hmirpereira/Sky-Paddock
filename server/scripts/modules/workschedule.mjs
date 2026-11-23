@@ -6,6 +6,7 @@
 // Shifts are read from the skypaddock-hub service on the Raspberry Pi, which serves what
 // skypaddock-horario extracts from a private schedule spreadsheet. The schedule never leaves the Pi;
 // anywhere else this screen is skipped. Weather: Open-Meteo hourly forecast for the chosen location.
+import { DateTime } from 'luxon';
 import STATUS from './status.mjs';
 import { json } from './utils/fetch.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
@@ -14,7 +15,6 @@ import ConversionHelpers from './utils/conversionHelpers.mjs';
 import fillFooter from './utils/footer.mjs';
 import { getConditionText } from './utils/weather.mjs';
 import { getWeatherRegionalIconFromIconLink } from './icons.mjs';
-import { DateTime } from '../vendor/auto/luxon.mjs';
 import settings from './settings.mjs';
 import { workMode } from './utils/work-mode.mjs';
 import { fitRows, scaleSteps } from './utils/fit-rows.mjs';

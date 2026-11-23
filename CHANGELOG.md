@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.47.5** (2026-11-23): Overhead asks the Pi for the aircraft again when its first page comes round (they were as old as the 10-minute refresh) and no longer asks for the picture of an airline that has none; luxon comes from npm (3.7.2) instead of a copy of 3.5.0 in the repository (8,000 lines less); 282 lines of CSS that nothing used are gone; the checkbox label of a screen points at its checkbox; no other visible change
 - **1.47.4** (2026-11-22): Verstappen Jet: a destination that only comes from the flight plan is shown as "(plan)" (or "Presumed in" when parked), a position older than 15 minutes is shown as "last seen ... ago", and the map draws the stretch from the last position to the planned destination dashed
 - **1.47.3** (2026-11-19): the airport code in the address of the local place lookup is encoded (a code with symbols no longer changes the airport asked for); no visible change
 - **1.47.2** (2026-11-19): the settings page writes its option texts as plain text (textContent), not as HTML; no visible change
