@@ -310,6 +310,28 @@ const f1photo = (now) => ({
 	error: null,
 });
 
+const gta = (now) => ({
+	updated: iso(now - HOUR),
+	exe: { status: 'released', releasedAt: iso(now - 3 * 24 * HOUR) },
+	leaders: [
+		{
+			name: 'Project One', score: 91.3, stage: 'Playable', fps: 22,
+		},
+		{
+			name: 'Project Two', score: 89.6, stage: 'Playable', fps: 25,
+		},
+		{
+			name: 'Project Three', score: 87.1, stage: 'Playable', fps: 16,
+		},
+		{
+			name: 'Project Four', score: 84.8, stage: 'Playable', fps: 15,
+		},
+	],
+	news: ['Made-up headline about a build'],
+	ok: iso(now - 10 * MIN),
+	error: null,
+});
+
 const health = (now) => ({ generated: iso(now), problems: [] });
 
 // path on the Pi service -> answer
@@ -320,6 +342,7 @@ const piResponses = (now) => ({
 	'/schedule.json': schedule(now),
 	'/f1jet.json': f1jet(now),
 	'/gt.json': gt(now),
+	'/gta.json': gta(now),
 	'/news.json': news(now),
 	'/plex.json': plex(now),
 	'/plexnow.json': plexNow(now),

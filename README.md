@@ -22,7 +22,7 @@ Sky Paddock is a personal project. It runs full screen on a 1080p TV from a Rasp
 
 More detail lives in `docs-src/`:
 
-- Screens: [Weather](docs-src/screens/weather.md), [Aviation](docs-src/screens/aviation.md), [Formula 1](docs-src/screens/formula-1.md), [GT World](docs-src/screens/gt-world.md), [News](docs-src/screens/news.md), [Plex](docs-src/screens/plex.md)
+- Screens: [Weather](docs-src/screens/weather.md), [Aviation](docs-src/screens/aviation.md), [Formula 1](docs-src/screens/formula-1.md), [GT World](docs-src/screens/gt-world.md), [Games](docs-src/screens/games.md), [News](docs-src/screens/news.md), [Plex](docs-src/screens/plex.md)
 - [Look and feel](docs-src/look-and-feel.md): the page, scrolling, bottom bar, themes, icons, analogue look, Debug mode, Status, display options, Dark Mode, Christmas and Halloween Effects
 - [Sources and limits](docs-src/sources.md): every outside source, how often it is asked, its limits and what happens when it refuses
 - [Development](docs-src/development.md): running, testing and publishing in full
@@ -60,6 +60,7 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | Verstappen Jet (Pi) | Where Max Verstappen's jet is and its last flight, with a map of the route | [adsb.fi](https://adsb.fi) (ADS-B), OpenSky, [OurAirports](https://ourairports.com), [Celebplanes](https://www.celebplanes.com) (missing airports, once a day), Natural Earth |
 | GT World (Pi) | Result of the latest GT World Challenge Europe race(s), with Verstappen's team always shown | Public pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com) |
 | GT World Next (Pi) | Next GT World Challenge Europe event: track outline, round, cup, country with flag, length and turns, race date, countdown, weekend timetable and race forecast | Public event pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com), Open-Meteo |
+| GTA VI on PC (Pi) | How close the community projects are to running GTA VI on a PC: the closest one with a progress bar, three more, whether the executable is out and the latest headline. Off by default | Public tracker of [portwatch-vi.xyz](https://portwatch-vi.xyz) (its scores, not ours) |
 
 Every screen can be switched on or off on the page. How often each source is asked and what limits it has: [Sources and limits](docs-src/sources.md).
 
@@ -73,7 +74,7 @@ See [Look and feel](docs-src/look-and-feel.md) for the page, the settings and th
 
 The Pi-only screens read their data from services on the Pi that are not in this repository, because they hold private keys, the home position and personal data:
 
-- `skypaddock-hub` (the Pi's data service, called `skypaddock-voos` until 1.5.0; one core file plus `hub_*.py` modules for the news, Plex, GT World, airport and F1 photo data since 30 October 2026) serves `http://127.0.0.1:8095/`: `flights.json` and `cancelled.json` (AeroDataBox), `taf.json` (aviationweather.gov), `overhead.json` (ADS-B receiver, adsb.lol, OpenSky for the aircraft on the ground at the airport, adsbdb, airport plan), `f1jet.json` (adsb.lol, OurAirports), `news.json` (Portuguese RSS feeds), `schedule.json`, `health.json`, and `beat` and `kiosk.json` for the kiosk watchdog.
+- `skypaddock-hub` (the Pi's data service, called `skypaddock-voos` until 1.5.0; one core file plus `hub_*.py` modules for the news, Plex, GT World, GTA VI, airport and F1 photo data since 30 October 2026) serves `http://127.0.0.1:8095/`: `flights.json` and `cancelled.json` (AeroDataBox), `taf.json` (aviationweather.gov), `overhead.json` (ADS-B receiver, adsb.lol, OpenSky for the aircraft on the ground at the airport, adsbdb, airport plan), `f1jet.json` (adsb.lol, OurAirports), `gta.json` (portwatch-vi.xyz), `news.json` (Portuguese RSS feeds), `schedule.json`, `health.json`, and `beat` and `kiosk.json` for the kiosk watchdog.
 - `skypaddock-horario` turns the private schedule spreadsheet into JSON for the Work Schedule screen.
 
 Chromium on the Pi lets the public site read the local service through the `LocalNetworkAccessAllowedForUrls` and `LoopbackNetworkAllowedForUrls` policies. Anywhere else those requests fail and the screens are skipped.

@@ -32,6 +32,7 @@ import './modules/f1jet.mjs';
 import './modules/f1photo.mjs';
 import './modules/gtrace.mjs';
 import './modules/gtnextrace.mjs';
+import './modules/gta.mjs';
 import './modules/progress.mjs';
 import './modules/tabs.mjs';
 import './index.mjs';
