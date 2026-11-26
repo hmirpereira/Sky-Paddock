@@ -30,6 +30,7 @@
 
 				.meta {
 					height: 26px;
+					overflow: hidden;
 					font-family: 'Star4000 Small';
 					font-size: 20pt;
 					line-height: 26px;
@@ -50,16 +51,29 @@
 						line-height: 14px;
 					}
 
-					// the Star4000 Small letters sit low: lifted so the time and the count are centred on the logo plate
-					.when {
-						position: relative;
-						top: -3px;
-						margin-left: 14px;
-						color: white;
+					// the source and the others with the same story, side by side
+					.logos .source-logo + .source-logo {
+						margin-left: 6px;
 					}
+
 				}
 
-				// a small picture of the news on the left of the row, when the source gives one
+				// the Star4000 Small letters sit low: lifted so the time is centred on the logo plate
+				.when,
+				.age {
+					position: relative;
+					top: -3px;
+					margin-left: 14px;
+					color: white;
+				}
+
+				.age {
+					margin-left: 10px;
+					font-size: 16pt;
+					color: #b8c8ff;
+				}
+
+				// a small picture of the news on the right of the row, when the source gives one
 				.thumb {
 					display: none;
 					position: absolute;
@@ -108,7 +122,108 @@
 					-webkit-line-clamp: 4;
 				}
 
+				// the lead story on top of the first page: a big picture on the left and big letters
+				&.lead {
+					height: 150px;
+					padding-top: 8px;
+					border-bottom-color: rgba(255, 255, 255, 0.45);
+
+					.thumb {
+						top: 9px;
+						left: 0;
+						right: auto;
+						width: 184px;
+						height: 132px;
+						border-width: 3px;
+						box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.6);
+					}
+
+					&.has-thumb {
+						padding-right: 0;
+						padding-left: 198px;
+					}
+
+					// the time of the lead story, at the bottom of its box
+					.stamp {
+						position: absolute;
+						bottom: 8px;
+						height: 26px;
+						font-family: 'Star4000 Small';
+						font-size: 20pt;
+						line-height: 26px;
+						white-space: pre;
+						@include u.text-shadow(2px, 1px);
+
+						.when {
+							margin-left: 0;
+						}
+					}
+
+					&.has-thumb .stamp {
+						left: 198px;
+					}
+
+					.headline {
+						margin-top: 4px;
+						font-size: 24pt;
+						line-height: 30px;
+						-webkit-line-clamp: 2;
+						@include u.text-shadow(3px, 1.5px);
+					}
+
+					// between the logos and the time there is room for 80px of headline
+					&.long .headline {
+						font-size: 20pt;
+						line-height: 25px;
+						-webkit-line-clamp: 3;
+					}
+
+					&.long.very-long .headline {
+						font-size: 16pt;
+						line-height: 20px;
+						-webkit-line-clamp: 4;
+					}
+				}
+
+				// the two short rows under the lead story
+				&.compact {
+					height: 66px;
+					padding-top: 3px;
+
+					.thumb {
+						top: 6px;
+						width: 72px;
+						height: 54px;
+					}
+
+					&.has-thumb {
+						padding-right: 84px;
+					}
+
+					.headline,
+					&.long .headline {
+						font-size: 16pt;
+						line-height: 19px;
+						-webkit-line-clamp: 2;
+					}
+
+					&.long .headline {
+						font-size: 14pt;
+					}
+				}
+
+				// a coloured bar on the left of breaking and top stories, in the margin of the list
+				&.breaking,
+				&.top {
+					margin-left: -14px;
+					padding-left: 8px;
+					border-left: 6px solid;
+				}
+
 				&.breaking {
+					border-left-color: #e02020;
+					background: linear-gradient(90deg, rgba(200, 0, 0, 0.35), rgba(200, 0, 0, 0) 75%);
+
 					.badge {
 						display: inline-block;
 						background: #c00000;
@@ -120,12 +235,29 @@
 					}
 				}
 
-				&.top .badge {
-					display: inline-block;
-					background: #e0b000;
-					color: black;
-					text-shadow: none;
+				&.top {
+					border-left-color: #e0b000;
+					background: linear-gradient(90deg, rgba(224, 176, 0, 0.22), rgba(224, 176, 0, 0) 75%);
+
+					.badge {
+						display: inline-block;
+						background: #e0b000;
+						color: black;
+						text-shadow: none;
+					}
 				}
+			}
+
+			// the aviation and F1 pages: every row with a bar in the colour of the page
+			&.aviation .news-item,
+			&.f1 .news-item {
+				margin-left: -14px;
+				padding-left: 8px;
+				border-left: 6px solid #4aa8ff;
+			}
+
+			&.f1 .news-item {
+				border-left-color: #e10600;
 			}
 		}
 
