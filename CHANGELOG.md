@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.51.0** (2026-11-26): the GT World and GT World Next screens are gone, with their styles, backgrounds, team logo and docs; the racing gap now follows the F1 calendar alone.
 - **1.50.0** (2026-11-26): News redesigned: the first page opens with a lead story (the breaking or top story, else the latest with a picture) with a big picture and big letters, and two short rows under it; every headline shows the logos of all the sources with the same story (up to three) and how long ago it came out; breaking and top stories have a red or gold bar on the left, and every row of the aviation and F1 pages a blue or red one.
 - **1.49.0** (2026-11-26): GTA VI on PC redesigned in three pages: the leader (ladder of the five steps and the four meters), the race (top five and the leader's score by day) and the latest news.
 - **1.48.0** (2026-11-26): new screen GTA VI on PC (Pi, off by default): the closest community project with a progress bar, three more, whether the executable is out and the latest headline, from the public tracker of portwatch-vi.xyz read every 3 hours by the Pi service (`gta.json`).

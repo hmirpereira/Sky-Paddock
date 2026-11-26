@@ -1,6 +1,6 @@
 # Sky Paddock
 
-A fork of WeatherStar 4000+ International shown on a kitchen TV: weather, aviation, F1, GT World and
+A fork of WeatherStar 4000+ International shown on a kitchen TV: weather, aviation, F1 and
 news screens in the 1990s WeatherStar look. It runs as a Chromium kiosk on a Raspberry Pi 3
 (DietPi, 1080p, widescreen), loading the site published on GitHub Pages. Screens marked "Pi" read a
 local service on the Pi (`skypaddock-hub`, http://127.0.0.1:8095) and are skipped anywhere else.
@@ -27,7 +27,7 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 - `server/scripts/modules/*.mjs`: one module per screen, each a `WeatherDisplay` subclass
   registered with `registerDisplay(new X(elemId, defaultActive))`.
 - `server/styles/scss/`: one file per screen, all imported by `main.scss`; themes in
-  `_f1-theme.scss`, `_aviation-theme.scss`, `_gt-theme.scss`.
+  `_f1-theme.scss`, `_aviation-theme.scss`.
 - `server/images/`: copied as they are to the build (screens load them by name at run time).
 
 ## Things that break easily

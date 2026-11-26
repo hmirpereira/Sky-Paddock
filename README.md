@@ -22,7 +22,7 @@ Sky Paddock is a personal project. It runs full screen on a 1080p TV from a Rasp
 
 More detail lives in `docs-src/`:
 
-- Screens: [Weather](docs-src/screens/weather.md), [Aviation](docs-src/screens/aviation.md), [Formula 1](docs-src/screens/formula-1.md), [GT World](docs-src/screens/gt-world.md), [Games](docs-src/screens/games.md), [News](docs-src/screens/news.md), [Plex](docs-src/screens/plex.md)
+- Screens: [Weather](docs-src/screens/weather.md), [Aviation](docs-src/screens/aviation.md), [Formula 1](docs-src/screens/formula-1.md), [Games](docs-src/screens/games.md), [News](docs-src/screens/news.md), [Plex](docs-src/screens/plex.md)
 - [Look and feel](docs-src/look-and-feel.md): the page, scrolling, bottom bar, themes, icons, analogue look, Debug mode, Status, display options, Dark Mode, Christmas and Halloween Effects
 - [Sources and limits](docs-src/sources.md): every outside source, how often it is asked, its limits and what happens when it refuses
 - [Development](docs-src/development.md): running, testing and publishing in full
@@ -58,8 +58,6 @@ In rotation order. "Pi" means the screen only works on the Raspberry Pi and is s
 | F1 Drivers | Drivers' championship, scrolling through the field | Jolpica F1 |
 | F1 Next Race | Track, details and countdown; weekend schedule and race forecast | Jolpica F1, [f1-circuits](https://github.com/bacinger/f1-circuits), Open-Meteo |
 | Verstappen Jet (Pi) | Where Max Verstappen's jet is and its last flight, with a map of the route | [adsb.fi](https://adsb.fi) (ADS-B), OpenSky, [OurAirports](https://ourairports.com), [Celebplanes](https://www.celebplanes.com) (missing airports, once a day), Natural Earth |
-| GT World (Pi) | Result of the latest GT World Challenge Europe race(s), with Verstappen's team always shown | Public pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com) |
-| GT World Next (Pi) | Next GT World Challenge Europe event: track outline, round, cup, country with flag, length and turns, race date, countdown, weekend timetable and race forecast | Public event pages of [gt-world-challenge-europe.com](https://www.gt-world-challenge-europe.com), Open-Meteo |
 | GTA VI on PC (Pi) | How close the community projects are to running GTA VI on a PC: the closest one with a progress bar, three more, whether the executable is out and the latest headline. Off by default | Public tracker of [portwatch-vi.xyz](https://portwatch-vi.xyz) (its scores, not ours) |
 
 Every screen can be switched on or off on the page. How often each source is asked and what limits it has: [Sources and limits](docs-src/sources.md).
@@ -74,7 +72,7 @@ See [Look and feel](docs-src/look-and-feel.md) for the page, the settings and th
 
 The Pi-only screens read their data from services on the Pi that are not in this repository, because they hold private keys, the home position and personal data:
 
-- `skypaddock-hub` (the Pi's data service, called `skypaddock-voos` until 1.5.0; one core file plus `hub_*.py` modules for the news, Plex, GT World, GTA VI, airport and F1 photo data since 30 October 2026) serves `http://127.0.0.1:8095/`: `flights.json` and `cancelled.json` (AeroDataBox), `taf.json` (aviationweather.gov), `overhead.json` (ADS-B receiver, adsb.lol, OpenSky for the aircraft on the ground at the airport, adsbdb, airport plan), `f1jet.json` (adsb.lol, OurAirports), `gta.json` (portwatch-vi.xyz), `news.json` (Portuguese RSS feeds), `schedule.json`, `health.json`, and `beat` and `kiosk.json` for the kiosk watchdog.
+- `skypaddock-hub` (the Pi's data service, called `skypaddock-voos` until 1.5.0; one core file plus `hub_*.py` modules for the news, Plex, GTA VI, airport and F1 photo data since 30 October 2026) serves `http://127.0.0.1:8095/`: `flights.json` and `cancelled.json` (AeroDataBox), `taf.json` (aviationweather.gov), `overhead.json` (ADS-B receiver, adsb.lol, OpenSky for the aircraft on the ground at the airport, adsbdb, airport plan), `f1jet.json` (adsb.lol, OurAirports), `gta.json` (portwatch-vi.xyz), `news.json` (Portuguese RSS feeds), `schedule.json`, `health.json`, and `beat` and `kiosk.json` for the kiosk watchdog.
 - `skypaddock-horario` turns the private schedule spreadsheet into JSON for the Work Schedule screen.
 
 Chromium on the Pi lets the public site read the local service through the `LocalNetworkAccessAllowedForUrls` and `LoopbackNetworkAllowedForUrls` policies. Anywhere else those requests fail and the screens are skipped.
@@ -107,7 +105,7 @@ The whole story (requests and retries, the tests, text from other sites, layout,
 - Fonts and weather icons from [TWCClassics](https://twcclassics.com/downloads.html): fonts by Nick Smith; icons by Charles Abel, Nick Smith and Malek Masoud.
 - Track outlines from [bacinger/f1-circuits](https://github.com/bacinger/f1-circuits), MIT License, Copyright (c) 2019-2025 Tomislav Bacinger. Lap records and corner names (`utils/circuit-facts.mjs`) are facts taken from public sources such as Wikipedia, not copied text. The positions of the start lines and corners were checked against [tobi/track-atlas](https://github.com/tobi/track-atlas) (geometry from OpenStreetMap contributors, ODbL; corner data from Lovely-Sim-Racing); none of its data is included, only our own measurements of where things are on our outlines.
 - Map data: [Natural Earth](https://www.naturalearthdata.com) (public domain); airport plans (c) OpenStreetMap contributors, [ODbL](https://opendatacommons.org/licenses/odbl/).
-- Data: Open-Meteo, IPMA, RainViewer, metar.vatsim.net, aviationweather.gov, Jolpica F1, OpenF1, RTP, Expresso, Publico, CNN Portugal, Aviacao TV, FlyingLapF1, F1PT, PlanetF1, Tautulli and Plex, gt-world-challenge-europe.com, AeroDataBox, adsb.fi, airplanes.live, adsb.lol, The OpenSky Network, adsbdb, OurAirports.
+- Data: Open-Meteo, IPMA, RainViewer, metar.vatsim.net, aviationweather.gov, Jolpica F1, OpenF1, RTP, Expresso, Publico, CNN Portugal, Aviacao TV, FlyingLapF1, F1PT, PlanetF1, Tautulli and Plex, AeroDataBox, adsb.fi, airplanes.live, adsb.lol, The OpenSky Network, adsbdb, OurAirports.
 - Licence: MIT, as the projects it is built on; see [LICENSE](LICENSE).
 
 **Disclaimer**: this is a personal, non-commercial project. Do not rely on it in dangerous weather or for flight operations; the data can be late, wrong or missing. The WeatherSTAR 4000 belongs to The Weather Channel. Sky Paddock is not affiliated with The Weather Channel, Formula 1, the FIA, the Lufthansa Group, Max Verstappen or any team or airline; their names and marks (including the MV logo) belong to their owners.

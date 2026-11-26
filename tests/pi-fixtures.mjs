@@ -191,45 +191,6 @@ const f1jet = (now) => ({
 	error: null,
 });
 
-const gt = (now) => {
-	const result = (pos, car, drivers, team, gap, highlight = false) => ({
-		pos, car, cls: 'Pro Cup', drivers, team, model: 'GT3', best: '1:44.500', laps: '94', gap, highlight,
-	});
-	const results = [
-		result(1, '17', ['Driver One', 'Driver Two'], 'Team Alpha', ''),
-		result(2, '80', ['Driver Three', 'Driver Four'], 'Team Bravo', '5.062'),
-		result(3, '3', ['Driver Five', 'Driver Six'], 'Verstappen Racing', '8.110', true),
-		result(4, '32', ['Driver Seven', 'Driver Eight'], 'Team Charlie', '12.400'),
-	];
-	const day = 24 * HOUR;
-	return {
-		season: new Date(now).getUTCFullYear(),
-		event: 'Portimao',
-		dates: 'last weekend',
-		races: [{ race: 'Main Race', results }],
-		highlight: 'Verstappen',
-		source: 'gt-world-challenge-europe.com',
-		next: {
-			event: 'Barcelona',
-			country: 'Spain',
-			dates: 'next weekend',
-			round: '11',
-			cup: null,
-			length: '4.657km',
-			turns: '14',
-			sessions: [
-				{ name: 'Free Practice 1', start: iso(now + 5 * day) },
-				{ name: 'Qualifying', start: iso(now + 6 * day) },
-				{ name: 'Race', start: iso(now + 7 * day) },
-			],
-			race: iso(now + 7 * day),
-			url: 'https://www.gt-world-challenge-europe.com/',
-		},
-		ok: iso(now - 10 * MIN),
-		error: null,
-	};
-};
-
 // made-up news pictures (a sky with a sun, hills, a plane), as the thumbnails beside the headlines
 const picture = (sky, ground, extra = '') => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120"><rect width="160" height="120" fill="${sky}"/><circle cx="120" cy="35" r="16" fill="#ffd34d"/><path d="M0 90 Q40 60 80 85 T160 80 V120 H0Z" fill="${ground}"/>${extra}</svg>`)}`;
 const PLANE = '<path d="M30 50 L110 42 L118 46 L110 50 L30 54Z M70 46 L58 26 L66 26 L86 46Z M70 50 L58 70 L66 70 L86 50Z" fill="white"/>';
@@ -294,7 +255,7 @@ const sources = (now) => ({
 	},
 	rows: [
 		['Flights', 5, '90 units left', 720], ['ADS-B receiver', 1, '', 15], ['ADS-B network', 1, '', 15], ['OpenSky', 2, '6738 credits', 30], ['METAR', 40, '', 360],
-		['Verstappen Jet', 50, '', 30], ['News', 4, '', 30], ['GT World', 120, '', 480], ['Plex', 20, '', 720], ['Schedule', 30, '', 360], ['TV page', 1, '', 5],
+		['Verstappen Jet', 50, '', 30], ['News', 4, '', 30], ['Plex', 20, '', 720], ['Schedule', 30, '', 360], ['TV page', 1, '', 5],
 	].map(([name, minutes, note, limit]) => ({
 		name, ok: minutes === null ? null : iso(now - minutes * MIN), note, limit,
 	})),
@@ -357,7 +318,6 @@ const piResponses = (now) => ({
 	'/overhead.json': overhead(now),
 	'/schedule.json': schedule(now),
 	'/f1jet.json': f1jet(now),
-	'/gt.json': gt(now),
 	'/gta.json': gta(now),
 	'/news.json': news(now),
 	'/plex.json': plex(now),
