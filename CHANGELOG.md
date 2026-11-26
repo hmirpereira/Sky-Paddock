@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.49.0** (2026-11-26): GTA VI on PC redesigned in three pages: the leader (ladder of the five steps and the four meters), the race (top five and the leader's score by day) and the latest news.
 - **1.48.0** (2026-11-26): new screen GTA VI on PC (Pi, off by default): the closest community project with a progress bar, three more, whether the executable is out and the latest headline, from the public tracker of portwatch-vi.xyz read every 3 hours by the Pi service (`gta.json`).
 - **1.47.5** (2026-11-23): Overhead asks the Pi for the aircraft again when its first page comes round (they were as old as the 10-minute refresh) and no longer asks for the picture of an airline that has none; luxon comes from npm (3.7.2) instead of a copy of 3.5.0 in the repository (8,000 lines less); 282 lines of CSS that nothing used are gone; the checkbox label of a screen points at its checkbox; no other visible change
 - **1.47.4** (2026-11-22): Verstappen Jet: a destination that only comes from the flight plan is shown as "(plan)" (or "Presumed in" when parked), a position older than 15 minutes is shown as "last seen ... ago", and the map draws the stretch from the last position to the planned destination dashed

@@ -310,27 +310,43 @@ const f1photo = (now) => ({
 	error: null,
 });
 
-const gta = (now) => ({
-	updated: iso(now - HOUR),
-	exe: { status: 'released', releasedAt: iso(now - 3 * 24 * HOUR) },
-	leaders: [
-		{
-			name: 'Project One', score: 91.3, stage: 'Playable', fps: 22,
+// made-up projects (no real names), in the shape of the Pi's gta.json
+const gta = (now) => {
+	const project = (name, score, fps, story, gpu, stars, commits) => ({
+		name,
+		score,
+		stage: 'Playable',
+		fps,
+		ladder: [1, 1, 1, 1, 1],
+		tracks: {
+			story, render: 0.7, perf: Math.min(1, fps / 30), stability: 0.8,
 		},
-		{
-			name: 'Project Two', score: 89.6, stage: 'Playable', fps: 25,
-		},
-		{
-			name: 'Project Three', score: 87.1, stage: 'Playable', fps: 16,
-		},
-		{
-			name: 'Project Four', score: 84.8, stage: 'Playable', fps: 15,
-		},
-	],
-	news: ['Made-up headline about a build'],
-	ok: iso(now - 10 * MIN),
-	error: null,
-});
+		gpu,
+		stars,
+		commits,
+	});
+	const day = 24 * HOUR;
+	return {
+		updated: iso(now - HOUR),
+		exe: { status: 'released', releasedAt: iso(now - 3 * day) },
+		tracked: 12,
+		leaders: [
+			project('Project One', 91.3, 22, 0.8, ['AMD'], 2071, 100),
+			project('Project Two', 89.6, 25, 0.8, [], null, null),
+			project('Project Three', 87.1, 16, 0.8, ['NVIDIA'], null, null),
+			project('Project Four', 84.8, 15, 0.7, [], null, null),
+			project('Project Five', 82.1, 4, 0.8, [], null, null),
+		],
+		history: [6.3, 8.8, 30, 61, 83.1, 91.3].map((leader, i) => ({ date: lisbonDate(now - (5 - i) * day), leader })),
+		news: [
+			{ date: lisbonDate(now - day), category: 'Port', title: 'Made-up headline about a build that runs well on an AMD card' },
+			{ date: lisbonDate(now - day), category: 'Port', title: 'Another made-up headline, a little shorter' },
+			{ date: lisbonDate(now - 2 * day), category: 'Leak', title: 'A third made-up headline about the missing file' },
+		],
+		ok: iso(now - 10 * MIN),
+		error: null,
+	};
+};
 
 const health = (now) => ({ generated: iso(now), problems: [] });
 

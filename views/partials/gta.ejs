@@ -1,19 +1,27 @@
 <%- include('header.ejs', {title: '<img class="gta-logo" src="images/gta6-logo.svg" alt="Grand Theft Auto VI"><span>On PC</span>', hasTime: true, noaaLogo: false}) %>
 	<div class="main has-scroll gta">
-		<div class="gta-top"><span class="label">CLOSEST PROJECT</span><span class="exe"></span></div>
-		<div class="leader">
+		<div class="gta-top"><span class="label"></span><span class="exe"></span></div>
+		<div class="gta-page leader">
 			<div class="line"><span class="name"></span><span class="score"></span></div>
-			<div class="bar"><div class="fill"></div></div>
-			<div class="stage"></div>
+			<div class="meta"></div>
+			<div class="ladder">
+				<div class="rail"><div class="done"></div></div>
+				<div class="steps"></div>
+			</div>
+			<div class="meters"></div>
 		</div>
-		<div class="gta-lines">
-			<div class="gta-row template">
-				<div class="pos"></div>
-				<div class="name"></div>
-				<div class="fps"></div>
-				<div class="score"></div>
+		<div class="gta-page race">
+			<div class="rows"></div>
+			<div class="trend">
+				<svg class="spark" viewBox="0 0 488 56" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+					<polygon class="area" points="" />
+					<polyline class="line" points="" />
+				</svg>
+				<div class="caption"></div>
 			</div>
 		</div>
-		<div class="headline"></div>
+		<div class="gta-page news">
+			<div class="stories"></div>
+		</div>
 	</div>
 	<%- include('scroll.ejs') %>

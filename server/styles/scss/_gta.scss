@@ -1,14 +1,15 @@
 @use 'shared/_utils'as u;
 
-// GTA VI on PC: the closest project with its progress bar, three more below, the exe state and a headline.
-// 310px = page 282 + bottom bar 28 (_source-footer.scss).
+// GTA VI on PC: three pages (gta.mjs): the leader (ladder and meters), the race (top five and the leader's score by day)
+// and the latest headlines. Everything stays inside the box of the background (x 64 to 576): 76px from each side.
 // Colours of the game's artwork, a Vice City sunset: violet night, hot pink and orange, neon teal for small details.
 // The frame and header band are recoloured copies of the WeatherStar backgrounds (recolor_theme.py gta).
 $gta-pink: #ff5aa8;
 $gta-orange: #ffb04a;
 $gta-teal: #46e6d6;
 $gta-lilac: #d8c4ff;
-$gta-panel: rgba(20, 4, 40, 0.55);
+$gta-panel: rgba(20, 4, 40, 0.6);
+$gta-sunset: linear-gradient(90deg, $gta-pink, $gta-orange);
 
 #gta-html {
 	background-image: url(/images/BackGround1_1_gta.png);
@@ -28,6 +29,15 @@ $gta-panel: rgba(20, 4, 40, 0.55);
 	background: url(/images/BackGround1_1_wide_gta.png);
 }
 
+// small capitals in lilac, used for labels all over the screen
+@mixin gta-label($size: 16pt) {
+	white-space: pre;
+	font-family: 'Star4000 Small';
+	font-size: $size;
+	color: $gta-lilac;
+	@include u.text-shadow(2px, 1px);
+}
+
 .weather-display .main.gta {
 	&.main {
 		overflow: hidden;
@@ -42,14 +52,12 @@ $gta-panel: rgba(20, 4, 40, 0.55);
 			right: 76px;
 			top: 8px;
 			height: 30px;
-			font-family: 'Star4000 Small';
-			font-size: 18pt;
 			line-height: 30px;
-			@include u.text-shadow(2px, 1px);
+			@include gta-label(18pt);
 
 			.label {
 				float: left;
-				color: $gta-lilac;
+				color: $gta-teal;
 			}
 
 			.exe {
@@ -62,12 +70,16 @@ $gta-panel: rgba(20, 4, 40, 0.55);
 			}
 		}
 
-		.leader {
+		.gta-page {
 			position: absolute;
 			left: 76px;
 			right: 76px;
 			top: 42px;
+			height: 262px;
+		}
 
+		// page 1: the leader
+		.leader {
 			.line {
 				display: flex;
 				justify-content: space-between;
@@ -89,47 +101,122 @@ $gta-panel: rgba(20, 4, 40, 0.55);
 					flex-shrink: 0;
 					padding-left: 10px;
 					font-family: 'Star4000 Large';
-					font-size: 28pt;
+					font-size: 30pt;
 					color: $gta-orange;
 				}
 			}
 
-			.bar {
-				height: 20px;
-				background: $gta-panel;
-				border: 2px solid white;
-				box-sizing: border-box;
+			.meta {
+				height: 24px;
+				line-height: 24px;
+				white-space: nowrap;
+				overflow: hidden;
+				@include gta-label;
+			}
 
-				.fill {
-					height: 100%;
-					width: 0;
-					background: linear-gradient(90deg, $gta-pink, $gta-orange);
+			// five nodes on a rail, lit from the left up to the step reached
+			.ladder {
+				position: relative;
+				margin: 12px 26px 0;
+				height: 56px;
+
+				.rail {
+					position: absolute;
+					left: 0;
+					right: 0;
+					top: 8px;
+					height: 6px;
+					background: $gta-panel;
+					border: 1px solid rgba(255, 255, 255, 0.5);
+
+					.done {
+						height: 100%;
+						width: 0;
+						background: $gta-sunset;
+					}
+				}
+
+				.step {
+					position: absolute;
+					top: 0;
+					width: 80px;
+					margin-left: -40px;
+					text-align: center;
+
+					.dot {
+						width: 16px;
+						height: 16px;
+						margin: 0 auto;
+						border: 3px solid rgba(255, 255, 255, 0.6);
+						border-radius: 50%;
+						background: #1c0838;
+					}
+
+					.step-name {
+						margin-top: 4px;
+						line-height: 24px;
+						@include gta-label(14pt);
+					}
+
+					&.reached {
+						.dot {
+							border-color: white;
+							background: $gta-orange;
+						}
+
+						.step-name {
+							color: white;
+						}
+					}
+
+					&.partial .dot {
+						border-color: white;
+						background: linear-gradient(90deg, $gta-pink 50%, #1c0838 50%);
+					}
 				}
 			}
 
-			.stage {
-				margin-top: 4px;
-				height: 30px;
-				font-family: 'Star4000 Small';
-				font-size: 18pt;
-				line-height: 30px;
-				color: $gta-lilac;
-				@include u.text-shadow(2px, 1px);
+			// the four meters, two by two
+			.meters {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				column-gap: 24px;
+				row-gap: 10px;
+				margin-top: 8px;
+
+				.meter-head {
+					display: flex;
+					justify-content: space-between;
+					height: 26px;
+					line-height: 26px;
+					@include gta-label;
+
+					.amount {
+						color: white;
+					}
+				}
+
+				.meter-bar {
+					height: 12px;
+					background: $gta-panel;
+					border: 1px solid rgba(255, 255, 255, 0.5);
+
+					.fill {
+						height: 100%;
+						background: $gta-sunset;
+					}
+				}
 			}
 		}
 
-		.gta-lines {
-			position: absolute;
-			left: 76px;
-			right: 76px;
-			top: 150px;
-
-			.gta-row {
+		// page 2: the race
+		.race {
+			.race-row {
 				display: grid;
-				grid-template-columns: 26px 1fr 90px 60px;
-				height: 34px;
-				line-height: 34px;
-				font-size: 20pt;
+				grid-template-columns: 24px 184px 1fr 60px;
+				align-items: center;
+				height: 32px;
+				font-size: 18pt;
 				@include u.text-shadow(2px, 1px);
 
 				.pos {
@@ -140,33 +227,97 @@ $gta-panel: rgba(20, 4, 40, 0.55);
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
+					padding-right: 10px;
 				}
 
-				.fps {
-					text-align: right;
-					color: $gta-lilac;
+				.bar {
+					height: 12px;
+					background: $gta-panel;
+					border: 1px solid rgba(255, 255, 255, 0.4);
+
+					.fill {
+						height: 100%;
+						background: rgba(255, 90, 168, 0.75);
+					}
 				}
 
 				.score {
 					text-align: right;
 				}
+
+				&.first {
+					.name,
+					.score {
+						color: $gta-orange;
+					}
+
+					.bar .fill {
+						background: $gta-sunset;
+					}
+				}
+			}
+
+			.trend {
+				margin-top: 10px;
+
+				.spark {
+					display: block;
+					width: 100%;
+					height: 56px;
+					background: $gta-panel;
+					border: 1px solid rgba(255, 255, 255, 0.3);
+
+					.area {
+						fill: rgba(255, 90, 168, 0.35);
+					}
+
+					.line {
+						fill: none;
+						stroke: $gta-orange;
+						stroke-width: 3;
+						stroke-linejoin: round;
+						vector-effect: non-scaling-stroke;
+					}
+				}
+
+				.caption {
+					margin-top: 4px;
+					height: 24px;
+					line-height: 24px;
+					white-space: nowrap;
+					overflow: hidden;
+					@include gta-label(14pt);
+				}
 			}
 		}
 
-		.headline {
-			position: absolute;
-			left: 76px;
-			right: 76px;
-			top: 258px;
-			height: 24px;
-			font-family: 'Star4000 Small';
-			font-size: 16pt;
-			line-height: 24px;
-			color: white;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			@include u.text-shadow(2px, 1px);
+		// page 3: the latest headlines
+		.news {
+			.story {
+				height: 82px;
+				border-left: 4px solid $gta-pink;
+				padding-left: 12px;
+				margin-bottom: 4px;
+				box-sizing: border-box;
+
+				.tag {
+					height: 24px;
+					line-height: 24px;
+					@include gta-label(14pt);
+					color: $gta-orange;
+				}
+
+				.title {
+					font-size: 18pt;
+					line-height: 27px;
+					max-height: 54px;
+					overflow: hidden;
+					display: -webkit-box;
+					-webkit-line-clamp: 2;
+					-webkit-box-orient: vertical;
+					@include u.text-shadow(2px, 1px);
+				}
+			}
 		}
 	}
 }
