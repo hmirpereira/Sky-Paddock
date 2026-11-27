@@ -175,29 +175,8 @@ const updateStatus = (value) => {
 	if (!progress) return;
 	progress.drawCanvas(displays, countLoadedDisplays());
 
-	// first display is hazards and it must load before evaluating the first display
-	if (displays[0].status === STATUS.loading) return;
-
-	// calculate first enabled display
-	const firstDisplayIndex = displays.findIndex((display) => display.enabled && display.timing.totalScreens > 0);
-
-	// value.id = 0 is hazards, if they fail to load hot-wire a new value.id to the current display to see if it needs to be loaded
-	// typically this plays out as current conditions loads, then hazards fails.
-	if (value.id === 0 && value.status === STATUS.failed) {
-		value.id = firstDisplayIndex;
-		value.status = displays[firstDisplayIndex].status;
-	}
-
-	// if hazards data arrives after the firstDisplayIndex loads, then we need to hot wire this to the first display
-	if (value.id === 0 && value.status === STATUS.loaded && displays[0].timing.totalScreens === 0) {
-		value.id = firstDisplayIndex;
-		value.status = displays[firstDisplayIndex].status;
-	}
-
-	// if this is the first display and we're playing, load it up so it starts playing
-	if (isPlaying() && value.id === firstDisplayIndex && value.status === STATUS.loaded) {
-		navTo(msg.command.firstFrame);
-	}
+	// start the rotation once the screen it starts on has loaded
+	if (isPlaying() && !currentDisplay()) navTo(msg.command.firstFrame);
 
 	// send loaded messaged to parent
 	if (countLoadedDisplays() < displays.length) return;
@@ -240,22 +219,20 @@ const displayNavMessage = (myMessage) => {
 	if (myMessage.type === msg.response.next) loadDisplay(1);
 };
 
+// the screen the rotation starts on: the first, in the order of the rotation, that is still loading (it may turn out to be the one) or is on
+// and has something to show. Hazards, which has nothing to show most of the time, is first by default; with another order (screenOrder) it
+// is whichever comes first. The rotation waits for the ones before it, and starts on it once loaded
+const startDisplayIndex = () => displays.findIndex((display) => display.status === STATUS.loading || (display.enabled && display.timing.totalScreens > 0));
+
 // navigate to next or previous
 const navTo = (direction) => {
 	// test for a current display
 	const current = currentDisplay();
 	progress.hideCanvas();
 	if (!current) {
-		// special case for no active displays (typically on progress screen)
-		// find the first ready display
-		let firstDisplay;
-		let displayCount = 0;
-		do {
-			if (displays[displayCount].status === STATUS.loaded && displays[displayCount].timing.totalScreens > 0) firstDisplay = displays[displayCount];
-			displayCount += 1;
-		} while (!firstDisplay && displayCount < displays.length);
-
-		if (!firstDisplay) return;
+		// special case for no active displays (typically on progress screen): start on the first screen of the rotation, once it is loaded
+		const firstDisplay = displays[startDisplayIndex()];
+		if (firstDisplay?.status !== STATUS.loaded) return;
 
 		firstDisplay.navNext(msg.command.firstFrame);
 		firstDisplay.showCanvas();

@@ -379,3 +379,11 @@ test('the order of the screens follows the address', async ({ page, record }) =>
 	const ids = await page.locator('#enabledDisplays input[type=checkbox]').evaluateAll((boxes) => boxes.map((b) => b.id.replace('-checkbox', '')));
 	expect(ids.slice(0, 3)).toEqual(['radar', 'hourly', 'hazards']);
 });
+
+// the rotation starts on the first screen of the order, even when the weather loads before it
+test('the rotation starts on the first screen of the order', async ({ page, record }) => {
+	test.skip(record, 'it does not ask the sites');
+	test.setTimeout(120_000);
+	await openRotation(page, piResponses(readMeta().time), ['work-schedule', 'current-weather', 'hourly'], { 'settings-screenOrder-text': 'work-schedule,hazards,current-weather,hourly' });
+	expect(await shownScreen(page)).toBe('work-schedule');
+});
