@@ -19,27 +19,11 @@ const NEWS_TZ = 'Europe/Lisbon';
 const ROWS_PER_PAGE = 3;
 const MAX_PAGES = 4;
 const F1_ROWS = 3;
-// headline lengths from which the letters get smaller ("long") and smaller still ("very long"), for each kind of row,
-// with a picture beside the headline (it narrows the text) and without: the lead story on top of the first page,
-// the two short rows under it, and the usual rows of the other pages
-const SIZES = {
-	lead: { picture: [55, 105], plain: [90, 170] },
-	compact: { picture: [70, Infinity], plain: [90, Infinity] },
-	row: { picture: [62, 100], plain: [84, 150] },
-};
-const MAX_LOGOS = 3; // the source of the headline and the others that have the same story
-
-// only https pictures (or the made-up ones of the tests)
-const hasPicture = (item) => /^https:\/\//.test(item.image ?? '') || /^data:image\//.test(item.image ?? '');
-
-// "12 min ago", "3 h ago"; nothing for news older than a day (its time already says the day)
-const age = (time) => {
-	const minutes = Math.floor(DateTime.now().diff(time, 'minutes').minutes);
-	if (minutes < 1) return 'just now';
-	if (minutes < 60) return `${minutes} min ago`;
-	if (minutes < 24 * 60) return `${Math.floor(minutes / 60)} h ago`;
-	return '';
-};
+// headlines longer than this go to the smaller letters on three lines (the picture beside a headline narrows its text)
+const LONG_HEADLINE = 84;
+const LONG_HEADLINE_WITH_PICTURE = 62;
+const VERY_LONG_HEADLINE = 150; // even smaller letters, on four lines
+const VERY_LONG_WITH_PICTURE = 100;
 
 class News extends WeatherDisplay {
 	constructor(elemId, defaultActive) {
@@ -66,13 +50,9 @@ class News extends WeatherDisplay {
 			this.setStatus(STATUS.noData);
 			return;
 		}
-		// the first page opens with a lead story: the breaking or top story (they come first), else the first of the
-		// three latest with a picture
-		const lead = items.findIndex((item, i) => i < ROWS_PER_PAGE && (item.breaking || item.top || hasPicture(item)));
-		if (lead > 0) items.unshift(...items.splice(lead, 1));
 		this.sources = data.sources ?? [];
 		this.pages = [];
-		for (let i = 0; i < items.length; i += ROWS_PER_PAGE) this.pages.push({ lead: i === 0, items: items.slice(i, i + ROWS_PER_PAGE) });
+		for (let i = 0; i < items.length; i += ROWS_PER_PAGE) this.pages.push({ items: items.slice(i, i + ROWS_PER_PAGE) });
 		if (aviation.length) this.pages.push({ aviation: true, items: aviation });
 		if (f1.length) this.pages.push({ f1: true, items: f1 });
 		this.timing.totalScreens = this.pages.length;
@@ -91,43 +71,27 @@ class News extends WeatherDisplay {
 		// "Latest News", "Aviation News", or "F1 News" with the red F1 logo, in one line
 		const title = this.elem.querySelector('.header .title.dual');
 		title.querySelector('.top').innerHTML = page.f1 ? f1Title('News', true) : (page.aviation && 'Aviation News') || 'Latest News';
-		const rows = page.items.map((item, i) => {
-			let kind = 'row';
-			if (page.lead) kind = i === 0 ? 'lead' : 'compact';
+		const rows = page.items.map((item) => {
 			const time = DateTime.fromISO(item.time).setZone(NEWS_TZ);
 			const when = time.hasSame(today, 'day') ? ConversionHelpers.formatTime(time) : `${time.toFormat('ccc')} ${ConversionHelpers.formatTime(time)}`;
 			const row = this.fillTemplate('news-item', {
 				badge: item.breaking ? 'BREAKING' : 'TOP STORY',
 				when,
-				age: age(time),
 				headline: plainText(item.title),
 			});
-			row.classList.add(kind);
-			// the logo of the source, then of the others that have the same story
-			const sources = [item.source, ...(item.sources ?? []).filter((source) => source !== item.source)].slice(0, MAX_LOGOS);
-			const logos = document.createElement('span');
-			logos.className = 'logos';
-			logos.append(...sources.map(sourceLogo));
-			row.querySelector('.source').replaceWith(logos);
-			// the lead story has its time at the bottom, under the headline (its line on top is full of logos)
-			if (kind === 'lead') {
-				const stamp = document.createElement('div');
-				stamp.className = 'stamp';
-				stamp.append(row.querySelector('.when'), row.querySelector('.age'));
-				row.append(stamp);
-			}
-			// a picture of the news, when the source gives one (a picture that fails is left out)
+			row.querySelector('.source').replaceWith(sourceLogo(item.source));
+			// a small picture beside the headline, when the source gives one (only https; a picture that fails is left out)
 			const thumb = row.querySelector('.thumb');
-			if (hasPicture(item)) {
+			if (/^https:\/\//.test(item.image ?? '') || /^data:image\//.test(item.image ?? '')) {
 				thumb.src = item.image;
 				thumb.addEventListener('error', () => row.classList.remove('has-thumb'), { once: true });
 				row.classList.add('has-thumb');
 			}
-			// smaller letters for long headlines
+			// more than two lines at the usual size
 			const { length } = plainText(item.title);
-			const [long, veryLong] = SIZES[kind][row.classList.contains('has-thumb') ? 'picture' : 'plain'];
-			if (length > long) row.classList.add('long');
-			if (length > veryLong) row.classList.add('long', 'very-long');
+			const withPicture = row.classList.contains('has-thumb');
+			if (length > (withPicture ? LONG_HEADLINE_WITH_PICTURE : LONG_HEADLINE)) row.classList.add('long');
+			if (length > (withPicture ? VERY_LONG_WITH_PICTURE : VERY_LONG_HEADLINE)) row.classList.add('long', 'very-long');
 			if (item.breaking) row.classList.add('breaking');
 			else if (item.top) row.classList.add('top');
 			return row;
@@ -135,8 +99,6 @@ class News extends WeatherDisplay {
 
 		const list = this.elem.querySelector('.news-lines');
 		list.innerHTML = '';
-		list.classList.toggle('f1', !!page.f1);
-		list.classList.toggle('aviation', !!page.aviation);
 		list.append(...rows);
 
 		// general sources | aviation sources | Formula 1 sources

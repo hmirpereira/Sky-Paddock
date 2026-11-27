@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.54.3** (2026-11-27): the News screens go back to the design they had before 1.50.0 (no lead story; the files of that redesign are restored as they were in 1.49); the two names on one line of the Gates page are now 14 pt (were 13 pt): the longest name measured, 186 px, still fits the 210 px of the column
 - **1.54.2** (2026-11-27): on the aviation screens (METAR, Departures, Cancellations, Overhead, Work Schedule) every yellow is now the orange `#ffad00` of the flight numbers (the Next Shift page too, and the owner's name); with Personal Gates off no name on the Gates page is highlighted; two names on one line are smaller, so a long name is not cut
 - **1.54.1** (2026-11-27): the rotation starts on the first screen of the order set in `screenOrder` (it started on the first one that loaded, so Work Schedule first still began on the weather); no change with the default order
 - **1.54.0** (2026-11-27): Personal Gates also shows Rita's gates (her name is set on the Pi); on the Gates page the owner's name is in capitals and in the yellow of the flight numbers, and Rita's in capitals and green; the texts of Personal Schedule (Rita's schedule) and Personal Gates are corrected
