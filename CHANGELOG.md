@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.53.0** (2026-11-27): the order of the screens can be changed with `settings-screenOrder-text` in the TV address (ids with commas; the others follow in the default order); `skypaddock-status` lists the screens in that order and moves them
 - **1.52.0** (2026-11-27): the site shows only weather: the screen list has the weather screens and the airport METAR, the settings page no longer has the owner's options (Personal Schedule, Personal Gates, Work mode, Music from the RFM radio, Breaking News ticker, Debug mode), the Copy TV command button is gone (tab renamed Link); all of them are still read from the address, which the Pi sets
 - **1.51.0** (2026-11-26): the GT World and GT World Next screens are gone, with their styles, backgrounds, team logo and docs; the racing gap now follows the F1 calendar alone.
 - **1.50.0** (2026-11-26): News redesigned: the first page opens with a lead story (the breaking or top story, else the latest with a picture) with a big picture and big letters, and two short rows under it; every headline shows the logos of all the sources with the same story (up to three) and how long ago it came out; breaking and top stories have a red or gold bar on the left, and every row of the aviation and F1 pages a blue or red one.

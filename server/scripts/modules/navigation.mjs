@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // The rotation order of the screens, by elemId: a screen's position here is its navId. registerDisplay
 // gives it, so there are no numbers to keep contiguous (a hole in the numbering used to crash the
 // navigation). A new screen only needs its elemId here; the order of the imports in main.mjs does not matter.
-const DISPLAY_ORDER = [
+const DEFAULT_ORDER = [
 	'hazards', 'current-weather', 'hourly', 'hourly-graph',
 	'travel', 'regional-forecast', 'extended-forecast', 'almanac',
 	'radar', 'pollen', 'work-schedule',
@@ -32,6 +32,20 @@ const DISPLAY_ORDER = [
 	'f1-standings', 'f1-next-race', 'f1-jet',
 	'plex', 'plex-now', 'status', 'gta',
 ];
+
+// The owner can change the order with the setting screenOrder (settings-screenOrder-text in the address: ids with commas, for example
+// "radar,hourly"; kept in the browser like the other settings). Those come first in that order; the others follow in the default order,
+// so a screen left out or added later is never lost. Read here, at load, because the screens register before the settings are built.
+const savedOrder = () => {
+	let raw = parseQueryString()['settings-screenOrder-text'];
+	try {
+		if (raw === undefined) raw = JSON.parse(localStorage.getItem('Settings') ?? '{}').screenOrder;
+		else localStorage.setItem('Settings', JSON.stringify({ ...JSON.parse(localStorage.getItem('Settings') ?? '{}'), screenOrder: raw }));
+	} catch { /* storage unavailable: the address is enough */ }
+	const given = String(raw ?? '').split(',').map((id) => id.trim()).filter((id) => DEFAULT_ORDER.includes(id));
+	return [...new Set([...given, ...DEFAULT_ORDER])];
+};
+const DISPLAY_ORDER = savedOrder();
 const displays = [];
 let playing = false;
 let progress;

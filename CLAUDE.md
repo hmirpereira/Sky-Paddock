@@ -32,7 +32,7 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 
 ## Things that break easily
 
-- The rotation order is `DISPLAY_ORDER` (elemIds) in `navigation.mjs`; a screen's navId is its position there, given by `registerDisplay`, which throws for an elemId that is not in the list. A new screen: add its elemId there.
+- The rotation order is `DISPLAY_ORDER` (elemIds) in `navigation.mjs`; a screen's navId is its position there, given by `registerDisplay`, which throws for an elemId that is not in the list. A new screen: add its elemId there. The owner can change the order with `settings-screenOrder-text` in the TV address (ids with commas; the ones left out follow in the default order); `DEFAULT_ORDER` holds the default, and `skypaddock-status` (Sky-Paddock-Pi) keeps a copy of it.
 - `STATUS` values are Symbols: wrap them in `String()` inside template strings.
 - The page has a Content-Security-Policy (`csp.mjs`, added to `docs/index.html` as a `<meta>` by `vite.config.mjs`): no inline `<script>`, no eval, and fetches only to the hosts listed there. A new host (a fetch, a map tile, a picture source) must be added to `csp.mjs`; `npm run test:unit` and the smoke test fail otherwise. Pictures may come from any https host, scripts only from the site itself.
 - Text from other sites is never HTML: `fillTemplate` fills strings with `textContent` (HTML only as `{ html }`), and hand-built markup runs outside text through `escapeHtml` (`utils/html.mjs`).

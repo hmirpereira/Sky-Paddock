@@ -371,3 +371,11 @@ test('the owner settings are not shown but are read from the address', async ({ 
 	const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('Settings')).musicStream);
 	expect(stored).toBe(true);
 });
+
+// the owner can change the rotation order with settings-screenOrder-text; the screens left out follow in the default order
+test('the order of the screens follows the address', async ({ page, record }) => {
+	test.skip(record, 'it does not ask the sites');
+	await page.goto('./?settings-screenOrder-text=radar,hourly', { waitUntil: 'domcontentloaded' });
+	const ids = await page.locator('#enabledDisplays input[type=checkbox]').evaluateAll((boxes) => boxes.map((b) => b.id.replace('-checkbox', '')));
+	expect(ids.slice(0, 3)).toEqual(['radar', 'hourly', 'hazards']);
+});
