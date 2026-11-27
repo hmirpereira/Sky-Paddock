@@ -1,5 +1,7 @@
 // aviation screens (Airport METAR, Departures, Cancellations, Work Schedule): navy and silver instead of the
 // WeatherStar blue, purple and orange, with yellow flight numbers (colours only; no airline marks)
+// RULE: on the aviation screens the colour that would be yellow is always $av-yellow (#ffad00, orange): flight numbers, titles, labels,
+// the owner's name, a delayed flight; never `yellow`, #ffff00 or another yellow
 $av-row-1: #0b2470;
 $av-row-2: #020b2e;
 $av-column-header: #010618;
@@ -79,7 +81,11 @@ $av-yellow: #ffad00;
 		}
 	}
 
-	.assign-gate .flights .number {
+	.assign-gate .flights .number,
+	.assign-gate .crew .me,
+	// the yellow letters of the Next Shift page: the same colour as the flight numbers
+	.schedule-page.next .when,
+	.schedule-page.next .weather-pair .label {
 		color: $av-yellow;
 	}
 

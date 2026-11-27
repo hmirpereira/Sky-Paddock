@@ -280,15 +280,19 @@ class WorkSchedule extends WeatherDisplay {
 			// the staff as the Pi gives it (me included): two names, one under the other; three or more, in pairs ("A - B", "C"),
 			// to use less height
 			// (the owner first and in capitals, but not in work mode)
-			const staff = workMode() ? f.crew.map(niceName) : gateStaff(f.crew, this.me, niceName, this.rita);
-			// my name (in yellow, like the flight numbers) and Rita's (green) are the ones the Pi gave in capitals
+			// (only with Personal Gates on: with it off, and in work mode, every name is like any other)
+			const plain = this.allGates;
+			const staff = plain ? f.crew.map(niceName) : gateStaff(f.crew, this.me, niceName, this.rita);
+			// my name (in the orange of the flight numbers) and Rita's (green) are the ones the Pi gave in capitals
 			const crewLine = (names) => {
 				const line = div('.crew', '');
+				// two names on a line: smaller letters, so that long names are not cut
+				if (names.length > 1) line.classList.add('pair');
 				names.forEach((name, n) => {
 					if (n) line.append(' - ');
 					const span = document.createElement('span');
 					span.textContent = name;
-					if (!workMode() && name === name.toUpperCase()) span.className = name === this.me.trim().toUpperCase() ? 'me' : 'rita';
+					if (!plain && name === name.toUpperCase()) span.className = name === this.me.trim().toUpperCase() ? 'me' : 'rita';
 					line.append(span);
 				});
 			};
@@ -307,7 +311,7 @@ class WorkSchedule extends WeatherDisplay {
 			div('.stands', f.stand ?? '');
 			const eta = div('.etas', f.eta ?? '');
 			// minutes to the arrival in small under the ETA ("T-45"), as of the moment the page is drawn; nothing once it has passed.
-			// Under 20 minutes it is yellow and blinks slowly, under 10 red and faster
+			// Under 20 minutes it is orange and blinks slowly, under 10 red and faster
 			const at = DateTime.fromISO(`${day.date}T${f.eta}`, { zone: LOCAL_TZ });
 			const mins = Math.ceil(at.diffNow('minutes').minutes);
 			if (!later && at.isValid && mins >= 0) {

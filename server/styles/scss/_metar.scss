@@ -1,5 +1,6 @@
 @use 'shared/_colors'as c;
 @use 'shared/_utils'as u;
+@use 'aviation-theme'as av;
 
 .weather-display .main.metar {
 	&.main {
@@ -26,7 +27,7 @@
 					width: 140px;
 					flex: none;
 					margin-left: 10px;
-					color: c.$title-color;
+					color: av.$av-yellow;
 				}
 
 				.value {

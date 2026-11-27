@@ -1,5 +1,6 @@
 @use 'shared/_colors'as c;
 @use 'shared/_utils'as u;
+@use 'aviation-theme'as av;
 
 // 310px in total: headers 30 + rows 280 (7 x 40)
 .weather-display .main.work-schedule {
@@ -16,7 +17,7 @@
 				top: -4px;
 				font-family: 'Star4000 Small';
 				font-size: 24pt;
-				color: c.$column-header-text;
+				color: av.$av-yellow;
 				@include u.text-shadow();
 			}
 		}
@@ -127,7 +128,7 @@
 				}
 
 				.day {
-					color: c.$title-color;
+					color: av.$av-yellow;
 				}
 
 				// weather at the start of the shift: icon and temperature
@@ -228,7 +229,7 @@
 				.flights > div {
 					display: flex;
 					align-items: center;
-					color: #ffe97a;
+					color: av.$av-yellow;
 
 					img {
 						// the tail icon is 363 x 256: 75% of the height of a row of one or two names (46 px), 35 px high and 50 wide (it is not
@@ -269,10 +270,10 @@
 						line-height: 14px;
 						color: #b5d0ff;
 
-						// under 20 minutes: yellow, blinking slowly; under 10: red and faster (two steps a cycle, no frames in between)
+						// under 20 minutes: orange, blinking slowly; under 10: red and faster (two steps a cycle, no frames in between)
 						&.soon,
 						&.now {
-							color: #ffe97a;
+							color: av.$av-yellow;
 							animation: gate-blink 2s steps(1) infinite;
 						}
 
@@ -302,11 +303,12 @@
 						text-overflow: ellipsis;
 					}
 
-					// my name in the yellow of the flight numbers, Rita's in green (both in capitals, from gateStaff)
-					.me {
-						color: #ffe97a;
+					// two names on a line (a gate of three or more): smaller, so that long names are not cut
+					div.pair {
+						font-size: 13pt;
 					}
 
+					// the owner's name is in the colour of the flight numbers (_aviation-theme.scss), Rita's in green
 					.rita {
 						color: #7dffb0;
 					}
@@ -347,7 +349,7 @@
 				padding-top: 16px;
 				font-family: 'Star4000 Large';
 				font-size: 24pt;
-				color: c.$title-color;
+				color: av.$av-yellow;
 			}
 
 			.hours {
@@ -375,7 +377,7 @@
 				.label {
 					font-family: 'Star4000 Small';
 					font-size: 20pt;
-					color: c.$title-color;
+					color: av.$av-yellow;
 				}
 
 				.icon img {

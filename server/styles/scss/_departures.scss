@@ -1,5 +1,6 @@
 @use 'shared/_colors'as c;
 @use 'shared/_utils'as u;
+@use 'aviation-theme'as av;
 
 .weather-display .main.departures {
 	&.main {
@@ -16,7 +17,7 @@
 				top: -4px;
 				font-family: 'Star4000 Small';
 				font-size: 24pt;
-				color: c.$column-header-text;
+				color: av.$av-yellow;
 				@include u.text-shadow();
 			}
 
@@ -129,7 +130,7 @@
 					}
 
 					&.delayed {
-						color: yellow;
+						color: av.$av-yellow;
 					}
 
 					&.cancelled {

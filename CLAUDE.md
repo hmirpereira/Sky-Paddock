@@ -27,7 +27,7 @@ Personal notes (owner, Pi, deploy, history) are in `CLAUDE.local.md`, which is n
 - `server/scripts/modules/*.mjs`: one module per screen, each a `WeatherDisplay` subclass
   registered with `registerDisplay(new X(elemId, defaultActive))`.
 - `server/styles/scss/`: one file per screen, all imported by `main.scss`; themes in
-  `_f1-theme.scss`, `_aviation-theme.scss`.
+  `_f1-theme.scss`, `_aviation-theme.scss`. **Colour rule of the aviation screens** (Airport METAR, Departures, Cancellations, Overhead, Work Schedule): where yellow would be used it is always orange `#ffad00` (`$av-yellow`); never `yellow`, `#ffff00` or another yellow (a smoke test scans them).
 - `server/images/`: copied as they are to the build (screens load them by name at run time).
 
 ## Things that break easily

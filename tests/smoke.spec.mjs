@@ -387,3 +387,48 @@ test('the rotation starts on the first screen of the order', async ({ page, reco
 	await openRotation(page, piResponses(readMeta().time), ['work-schedule', 'current-weather', 'hourly'], { 'settings-screenOrder-text': 'work-schedule,hazards,current-weather,hourly' });
 	expect(await shownScreen(page)).toBe('work-schedule');
 });
+
+// with Personal Gates off every name is like any other: no capitals, no colour, no first place
+test('no name is highlighted on the Gates page with Personal Gates off', async ({ page, record }) => {
+	test.skip(record, 'it does not ask the sites');
+	test.setTimeout(120_000);
+	await openRotation(page, piResponses(readMeta().time), ['work-schedule'], { 'settings-personalGates-select': '1.00' });
+	for (let steps = 0; steps < 20; steps += 1) {
+		// eslint-disable-next-line no-await-in-loop
+		const title = await page.locator('#work-schedule-html .header .title.dual .bottom').textContent();
+		if (title.includes('Gates')) break;
+		// eslint-disable-next-line no-await-in-loop
+		await page.evaluate(() => document.querySelector('#NavigateNext').click());
+		// eslint-disable-next-line no-await-in-loop
+		await page.waitForTimeout(200);
+	}
+	await expect(page.locator('#work-schedule-html .assign-gate')).not.toHaveCount(0);
+	await expect(page.locator('#work-schedule-html .crew .me, #work-schedule-html .crew .rita')).toHaveCount(0);
+	const names = await page.locator('#work-schedule-html .crew').allTextContents();
+	expect(names.join(' ')).not.toMatch(/HUGO P/);
+});
+
+// the rule of the aviation screens: where yellow would be used it is orange (#ffad00, $av-yellow in _aviation-theme.scss)
+test('the aviation screens use no yellow', async ({ page, record }) => {
+	test.skip(record, 'it does not ask the sites');
+	test.setTimeout(180_000);
+	await openRotation(page, piResponses(readMeta().time), ['work-schedule', 'metar', 'departures', 'cancellations', 'overhead']);
+	const found = {};
+	for (let steps = 0; steps < 60; steps += 1) {
+		// eslint-disable-next-line no-await-in-loop
+		const r = await page.evaluate(() => {
+			const out = [];
+			document.querySelectorAll('.weather-display.show *').forEach((el) => {
+				const c = getComputedStyle(el).color;
+				if (c === 'rgb(255, 255, 0)' || c === 'rgb(255, 233, 122)') out.push(`${el.closest('.weather-display').id}:${el.className || el.tagName}:${(el.textContent || '').trim().slice(0, 15)}`);
+			});
+			return out;
+		});
+		r.forEach((x) => { found[x] = true; });
+		// eslint-disable-next-line no-await-in-loop
+		await page.evaluate(() => document.querySelector('#NavigateNext').click());
+		// eslint-disable-next-line no-await-in-loop
+		await page.waitForTimeout(150);
+	}
+	expect(Object.keys(found)).toEqual([]);
+});
