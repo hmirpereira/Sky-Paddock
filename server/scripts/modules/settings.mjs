@@ -88,12 +88,12 @@ const init = () => {
 		[1.25, 'Slow'],
 		[1.5, 'Very Slow'],
 	]);
-	// Work Schedule: the (R) schedule of each day in small under the shift (On), or the big text only (Off)
+	// Work Schedule: Rita's (R) schedule of each day in small under the owner's shift (On), or the big text only (Off)
 	settings.personalSchedule = new Setting('personalSchedule', 'Personal Schedule', 'select', ON, null, true, [
 		[ON, 'On'],
 		[OFF, 'Off'],
 	]);
-	// Work Schedule, Gates page: shown greyed out and does nothing yet (its function is still to come), so it is not stored
+	// Work Schedule, Gates page: only the owner's gates (On) or those of everybody (Off); set by the address, not kept in the browser
 	settings.personalGates = new Setting('personalGates', 'Personal Gates', 'select', ON, null, false, [
 		[ON, 'On'],
 		[OFF, 'Off'],

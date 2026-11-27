@@ -64,13 +64,16 @@ const shiftSoon = (days, now, hours = 3) => days.some((day) => {
 	return !!times && times.start > now && times.start.diff(now, 'hours').hours <= hours;
 });
 
-// the names of a gate: the owner first and in capitals ("HUGO P"), the others as `nice` writes them. `me` is the name of the owner as the roster
-// writes it, which the Pi sends (the site has no names in it); without it, or when the owner is not on the gate, the names are as they were
-const gateStaff = (names, me, nice) => {
-	const owner = (me ?? '').trim().toUpperCase();
-	const mine = owner ? names.filter((name) => name.trim().toUpperCase() === owner) : [];
-	if (!mine.length) return names.map(nice);
-	return [...mine.map((name) => name.trim().toUpperCase()), ...names.filter((name) => !mine.includes(name)).map(nice)];
+// the names of a gate: the owner first and in capitals ("HUGO P"), then Rita, also in capitals, then the others as `nice` writes them.
+// `me` and `rita` are the names as the roster writes them, which the Pi sends (the site has no names in it); without them, or when they are
+// not on the gate, the names are as they were
+const gateStaff = (names, me, nice, rita) => {
+	const same = (name, who) => !!who?.trim() && name.trim().toUpperCase() === who.trim().toUpperCase();
+	const pick = (who) => names.filter((name) => same(name, who)).map((name) => name.trim().toUpperCase());
+	const mine = pick(me);
+	const hers = pick(rita);
+	const others = names.filter((name) => !same(name, me) && !same(name, rita)).map(nice);
+	return [...mine, ...hers, ...others];
 };
 
 export {

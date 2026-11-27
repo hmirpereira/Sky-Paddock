@@ -129,6 +129,8 @@ class WorkSchedule extends WeatherDisplay {
 		// from yesterday on, for a night shift still going on (the file on the Pi is refreshed every hour)
 		// the name of the owner as the roster writes it (the Pi sends it)
 		this.me = response.me ?? '';
+		// Rita, as the roster writes her name (set on the Pi): her gates join mine, and her name is highlighted too
+		this.rita = response.rita ?? '';
 		this.days = keepDays(response.days ?? [], DateTime.now().setZone(LOCAL_TZ)).slice(0, 9);
 		if (this.days.length === 0) {
 			this.setStatus(STATUS.noData);
@@ -278,9 +280,20 @@ class WorkSchedule extends WeatherDisplay {
 			// the staff as the Pi gives it (me included): two names, one under the other; three or more, in pairs ("A - B", "C"),
 			// to use less height
 			// (the owner first and in capitals, but not in work mode)
-			const staff = workMode() ? f.crew.map(niceName) : gateStaff(f.crew, this.me, niceName);
-			if (staff.length <= 2) staff.forEach((name) => div('.crew', name));
-			else for (let i = 0; i < staff.length; i += 2) div('.crew', staff.slice(i, i + 2).join(' - '));
+			const staff = workMode() ? f.crew.map(niceName) : gateStaff(f.crew, this.me, niceName, this.rita);
+			// my name (in yellow, like the flight numbers) and Rita's (green) are the ones the Pi gave in capitals
+			const crewLine = (names) => {
+				const line = div('.crew', '');
+				names.forEach((name, n) => {
+					if (n) line.append(' - ');
+					const span = document.createElement('span');
+					span.textContent = name;
+					if (!workMode() && name === name.toUpperCase()) span.className = name === this.me.trim().toUpperCase() ? 'me' : 'rita';
+					line.append(span);
+				});
+			};
+			if (staff.length <= 2) staff.forEach((name) => crewLine([name]));
+			else for (let i = 0; i < staff.length; i += 2) crewLine(staff.slice(i, i + 2));
 			// a star to the right of the names of a gate that the Pi marks (who makes a starred team is set on the Pi, not here)
 			// (never in work mode: the star is the owner's, with a colleague)
 			if (f.star && !workMode()) {

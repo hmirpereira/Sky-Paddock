@@ -2,6 +2,7 @@
 
 One line per version, newest first (the subject of its commit; the details are in the README). Add the new version here when publishing.
 
+- **1.54.0** (2026-11-27): Personal Gates also shows Rita's gates (her name is set on the Pi); on the Gates page the owner's name is in capitals and in the yellow of the flight numbers, and Rita's in capitals and green; the texts of Personal Schedule (Rita's schedule) and Personal Gates are corrected
 - **1.53.0** (2026-11-27): the order of the screens can be changed with `settings-screenOrder-text` in the TV address (ids with commas; the others follow in the default order); `skypaddock-status` lists the screens in that order and moves them
 - **1.52.0** (2026-11-27): the site shows only weather: the screen list has the weather screens and the airport METAR, the settings page no longer has the owner's options (Personal Schedule, Personal Gates, Work mode, Music from the RFM radio, Breaking News ticker, Debug mode), the Copy TV command button is gone (tab renamed Link); all of them are still read from the address, which the Pi sets
 - **1.51.0** (2026-11-26): the GT World and GT World Next screens are gone, with their styles, backgrounds, team logo and docs; the racing gap now follows the F1 calendar alone.

@@ -301,6 +301,15 @@
 						overflow: hidden;
 						text-overflow: ellipsis;
 					}
+
+					// my name in the yellow of the flight numbers, Rita's in green (both in capitals, from gateStaff)
+					.me {
+						color: #ffe97a;
+					}
+
+					.rita {
+						color: #7dffb0;
+					}
 				}
 			}
 

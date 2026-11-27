@@ -116,3 +116,9 @@ test('shiftSoon: a night shift over midnight counts from the evening before', ()
 	assert.equal(shiftSoon([night], at('2026-11-07T19:30')), true);
 	assert.equal(shiftSoon([night], at('2026-11-07T23:00')), false);
 });
+
+test('gateStaff: Rita comes after the owner, also in capitals', () => {
+	assert.deepEqual(gateStaff(['ANA M', 'RITA S', 'HUGO P'], 'HUGO P', nice, 'Rita S'), ['HUGO P', 'RITA S', 'Ana M']);
+	assert.deepEqual(gateStaff(['ANA M', 'RITA S'], 'HUGO P', nice, 'RITA S'), ['RITA S', 'Ana M']);
+	assert.deepEqual(gateStaff(['ANA M', 'RITA S'], 'HUGO P', nice, ''), ['Ana M', 'Rita S']);
+});
