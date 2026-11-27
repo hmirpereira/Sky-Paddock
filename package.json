@@ -1,6 +1,6 @@
 {
 	"name": "sky-paddock",
-	"version": "1.51.0",
+	"version": "1.52.0",
 	"description": "Sky Paddock: a kitchen TV with weather, Formula 1, aviation and news, a personal fork of WeatherStar 4000+ International",
 	"main": "vite.config.mjs",
 	"scripts": {

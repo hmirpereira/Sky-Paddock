@@ -135,13 +135,15 @@ const init = () => {
 	// (utils/music-name.mjs), and the Status screen with the last answer of every source of the Pi service
 	settings.debugMode = new Setting('debugMode', 'Debug mode', 'checkbox', false, setDebugMode, true);
 
-	// generate html objects, in groups with a title (a setting not named here is not shown); Debug mode is last of the page
+	// generate html objects, in groups with a title. A setting not named here is not shown but still works: it is read from the
+	// address and from the browser's storage. The owner's settings (personalSchedule, personalGates, workMode, musicStream,
+	// newsTicker, debugMode) are only for the Pi: they are set in the TV address (skypaddock-tv url), not on the site
 	const GROUPS = [
 		['Location', ['airportIcao', 'ipmaArea', 'travelCity']],
 		['Units', ['windUnits', 'temperatureUnits', 'distanceUnits', 'pressureUnits', 'hoursFormat']],
-		['Screens', ['speed', 'personalSchedule', 'personalGates', 'workMode', 'musicStream', 'newsTicker']],
+		['Screens', ['speed']],
 		['Look', ['darkMode', 'wide', 'scanLines', 'vignette', 'colorFringe', 'imageFringe', 'christmas', 'halloween']],
-		['Advanced', ['kiosk', 'debugMode']],
+		['Advanced', ['kiosk']],
 	];
 	const groupHtml = GROUPS.map(([title, keys]) => {
 		const box = document.createElement('div');

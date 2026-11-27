@@ -64,7 +64,7 @@ Every screen can be switched on or off on the page. How often each source is ask
 
 ## Settings and the TV address
 
-Every choice on the page goes into the address, so a whole setup is one link. **Copy TV command** (TV and link tab) copies `skypaddock-tv url '<address>'` with the screens and settings chosen on the page, plus kiosk, widescreen, scan lines and the version mark. On the Pi, that command replaces the browser address, keeps the previous one and restarts the browser. Kiosk mode can also be added to any link with `&kiosk=true`.
+Every choice on the page goes into the address, so a whole setup is one link (**Copy permalink**, Link tab). The settings and screens that only work on the Raspberry Pi are not on the page: the TV's address is changed by hand on the Pi with `skypaddock-tv url '<address>'`, which keeps the previous address and restarts the browser. Kiosk mode can also be added to any link with `&kiosk=true`.
 
 See [Look and feel](docs-src/look-and-feel.md) for the page, the settings and the display options.
 

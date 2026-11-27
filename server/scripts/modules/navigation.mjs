@@ -419,23 +419,24 @@ const DISPLAY_GROUPS = [
 	{ title: 'Debug', ids: ['status'] },
 	{ title: 'Games', ids: ['gta'] },
 ];
-// screens that read data served by the Raspberry Pi (skipped anywhere else)
-const PI_ONLY = ['departures', 'cancellations', 'overhead', 'work-schedule', 'f1-jet', 'f1-photo', 'news', 'plex', 'plex-now', 'status', 'gta'];
+// the only screens listed on the site are the weather ones (the airport's METAR is weather too). The others (aviation traffic,
+// personal, news, media, Formula 1, debug, games) are turned on and off in the TV address
+const listedOnSite = (id) => id === 'metar' || !DISPLAY_GROUPS.some((g) => g.ids?.includes(id));
 
 const generateCheckboxes = () => {
 	const availableDisplays = document.querySelector('#enabledDisplays');
 
 	if (!availableDisplays) return;
 	const grouped = new Set(DISPLAY_GROUPS.flatMap((g) => g.ids ?? []));
+	// the other screens' checkboxes stay in a hidden box: the permalink and the tests build the address from the checkboxes of the page
+	const hiddenLabels = [];
 	const groups = DISPLAY_GROUPS.map((group) => {
 		const members = displays.filter((d) => d && (group.ids ? group.ids.includes(d.elemId) : !grouped.has(d.elemId)));
 		const checkboxes = members.map((d) => {
 			const label = d.generateCheckbox(d.defaultEnabled);
-			if (label && PI_ONLY.includes(d.elemId) && !label.querySelector('.pi-only')) {
-				const tag = document.createElement('span');
-				tag.className = 'pi-only';
-				tag.textContent = 'Pi';
-				label.append(tag);
+			if (label && !listedOnSite(d.elemId)) {
+				hiddenLabels.push(label);
+				return null;
 			}
 			return label;
 		}).filter((d) => d);
@@ -451,7 +452,10 @@ const generateCheckboxes = () => {
 
 	// write to page
 	availableDisplays.innerHTML = '';
-	availableDisplays.append(...groups);
+	const hiddenBox = document.createElement('div');
+	hiddenBox.hidden = true;
+	hiddenBox.append(...hiddenLabels);
+	availableDisplays.append(...groups, hiddenBox);
 };
 
 // special registration method for progress display

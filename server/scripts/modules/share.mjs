@@ -9,20 +9,11 @@ const init = () => {
 	// add action to existing link
 	const shareLink = document.querySelector('#share-link');
 	shareLink.addEventListener('click', createLink);
-	document.querySelector('#tv-link')?.addEventListener('click', createTvLink);
 
 	// if navigator.clipboard does not exist, change text
 	if (!navigator?.clipboard) {
 		shareLink.textContent = 'Get Permalink';
 	}
-};
-
-// settings the TV always needs, whatever is chosen on this page
-const TV_SETTINGS = {
-	'settings-kiosk-checkbox': true,
-	'settings-wide-checkbox': true,
-	'settings-scanLines-checkbox': true,
-	'settings-debugMode-checkbox': true,
 };
 
 const createLink = async (e) => {
@@ -38,35 +29,7 @@ const createLink = async (e) => {
 	}
 };
 
-// the same address with the TV settings, ready for "skypaddock-tv url" on the Pi
-const createTvLink = async (e) => {
-	e.preventDefault();
-	const box = document.querySelector('#tv-link-command');
-	// the TV needs a location: without one it would stop at "Enter your location"
-	if (!localStorage.getItem('latLon') && !parseQueryString().latLon) {
-		box.value = 'Choose a location first (search box at the top), then copy the TV command again.';
-		box.style.display = 'block';
-		return;
-	}
-	const url = buildUrl(TV_SETTINGS);
-	const command = `skypaddock-tv url '${url.toString()}'`;
-	box.value = command;
-	box.style.display = 'block';
-	box.focus();
-	box.select();
-	if (navigator?.clipboard) {
-		try {
-			await navigator.clipboard.writeText(command);
-			const confirmSpan = document.querySelector('#tv-link-copied');
-			confirmSpan.style.display = 'inline';
-			setTimeout(() => { confirmSpan.style.display = 'none'; }, 5000);
-		} catch (error) {
-			console.error(error);
-		}
-	}
-};
-
-const buildUrl = (overrides = {}) => {
+const buildUrl = () => {
 	// get all checkboxes on page
 	const checkboxes = document.querySelectorAll('input[type=checkbox]');
 
@@ -98,7 +61,6 @@ const buildUrl = (overrides = {}) => {
 	if (latLonQuery) queryStringElements.latLonQuery = latLonQuery;
 	if (latLon) queryStringElements.latLon = latLon;
 
-	Object.assign(queryStringElements, overrides);
 	const queryString = (new URLSearchParams(queryStringElements)).toString();
 
 	return new URL(`?${queryString}`, document.location.href);

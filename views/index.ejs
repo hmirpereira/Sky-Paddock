@@ -199,13 +199,13 @@
     <nav class="panel-tabs" role="tablist" aria-label="Page sections">
       <button type="button" role="tab" data-tab="screens">Screens</button>
       <button type="button" role="tab" data-tab="settings">Settings</button>
-      <button type="button" role="tab" data-tab="tv">TV and link</button>
+      <button type="button" role="tab" data-tab="tv">Link</button>
       <button type="button" role="tab" data-tab="about">About</button>
     </nav>
 
     <section class="panel panel-displays" data-tab-panel="screens">
       <div class="heading">Screens</div>
-      <div class="panel-note">In rotation order. Screens marked <span class="pi-only">Pi</span> only work on the Raspberry Pi; anywhere else they are skipped.</div>
+      <div class="panel-note">In rotation order.</div>
       <div id='enabledDisplays'>
       </div>
     </section>
@@ -216,12 +216,6 @@
     </section>
 
     <section class="panel panel-status" data-tab-panel="tv">
-      <div class="heading">TV</div>
-      <div class='info'>
-        <a href='' id='tv-link'>Copy TV command</a> <span id="tv-link-copied">Copied!</span>
-        <div class="panel-note">The choices on this page, plus kiosk, widescreen, scan lines and the version mark. Paste it on the Raspberry Pi: it updates the TV's address and restarts the browser.</div>
-        <textarea id="tv-link-command" rows="4" readonly></textarea>
-      </div>
       <div class="heading">Sharing</div>
       <div class='info'>
         <a href='' id='share-link'>Copy permalink</a> <span id="share-link-copied">Link copied to clipboard!</span>

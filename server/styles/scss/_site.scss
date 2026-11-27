@@ -238,18 +238,6 @@ body:not(.kiosk) {
 		border-bottom: 1px solid $site-border;
 	}
 
-	.pi-only {
-		display: inline-block;
-		margin-left: 6px;
-		padding: 0 5px;
-		font-size: 10pt;
-		line-height: 15px;
-		color: #06102a;
-		background: $site-muted;
-		border-radius: 3px;
-		vertical-align: 1px;
-	}
-
 	#settings {
 		margin-bottom: 0;
 
@@ -293,24 +281,6 @@ body:not(.kiosk) {
 	#divInfo,
 	#divRefresh {
 		margin-bottom: 4px;
-	}
-
-	#tv-link-copied {
-		display: none;
-		color: $site-accent;
-	}
-
-	#tv-link-command {
-		display: none;
-		width: 100%;
-		box-sizing: border-box;
-		margin-top: 6px;
-		font-family: monospace;
-		font-size: 11px;
-		color: $site-text;
-		background: $site-bg;
-		border: 1px solid $site-border;
-		resize: vertical;
 	}
 
 	#settings input[type=text] {

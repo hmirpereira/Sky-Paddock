@@ -124,7 +124,7 @@ const shownScreen = (page) => page.evaluate(() => document.querySelector('.weath
 		params.set('settings-airportIcao-text', LOCATION.airportIcao);
 		params.set('settings-ipmaArea-select', LOCATION.ipmaArea);
 		params.set('settings-wide-checkbox', String(wide));
-		// as on the TV (TV_SETTINGS in share.mjs)
+		// as on the TV
 		params.set('kiosk', 'true');
 		params.set('settings-scanLines-checkbox', 'true');
 		params.set('settings-debugMode-checkbox', 'true');
@@ -353,13 +353,21 @@ test('the star of a gate is drawn on the Gates page outside work mode', async ({
 	expect(names).toEqual(['HUGO P', 'Lia F']);
 });
 
-// the setting Music from the RFM radio (Pi) is read from the address: the Pi's music service looks for it there
-test('the setting Music from the RFM radio is read from the address', async ({ page, record }) => {
+// the owner's settings are not on the settings page (only the TV address sets them), but the address still reaches them:
+// the Pi's music service looks for Music from the RFM radio there
+test('the owner settings are not shown but are read from the address', async ({ page, record }) => {
 	test.skip(record, 'it does not ask the sites');
 	await page.goto('./?settings-musicStream-checkbox=true', { waitUntil: 'domcontentloaded' });
-	await expect(page.locator('#settings-musicStream-checkbox')).toBeChecked();
-	await page.goto('./', { waitUntil: 'domcontentloaded' });
-	await page.evaluate(() => localStorage.clear());
-	await page.reload({ waitUntil: 'domcontentloaded' });
-	await expect(page.locator('#settings-musicStream-checkbox')).not.toBeChecked();
+	await expect(page.locator('#settings-musicStream-checkbox')).toHaveCount(0);
+	await expect(page.locator('#settings-workMode-checkbox')).toHaveCount(0);
+	await expect(page.locator('#settings-debugMode-checkbox')).toHaveCount(0);
+	await expect(page.locator('#settings-personalSchedule-select')).toHaveCount(0);
+	// only the weather screens are listed, but the page still builds the address from the checkboxes of all of them
+	await Promise.all(['departures', 'f1-grid', 'news', 'gta'].map(async (id) => {
+		await expect(page.locator(`#${id}-checkbox`)).toBeHidden();
+		await expect(page.locator(`#${id}-checkbox`)).toHaveCount(1);
+	}));
+	await Promise.all(['hourly', 'radar', 'metar'].map((id) => expect(page.locator(`#${id}-checkbox`)).toBeVisible()));
+	const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('Settings')).musicStream);
+	expect(stored).toBe(true);
 });
